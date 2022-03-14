@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/planListLayout"
+    style="@style/globalMainframe"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context="com.artyum.dynamicnavlog.PlanListFragment">
+
+    <RelativeLayout
+        style="@style/globalFragmentFrame"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:clipToPadding="true"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/caption"
+            style="@style/globalCaption"
+            android:text="@string/txtFlightPlans" />
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/searchBox"
+            style="@style/inputLayout"
+            android:layout_width="match_parent"
+            android:layout_below="@id/caption"
+            android:layout_marginBottom="10dp"
+            android:hint="@string/txtSearch">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/searchInput"
+                style="@style/layoutTextNormal" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/planListRecycler"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_below="@id/searchBox"
+            android:clipToPadding="false"
+            tools:listitem="@layout/fragment_planlist_item" />
+
+    </RelativeLayout>
+
+
+</RelativeLayout>

@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <style name="globalMainframe">
+        <item name="android:background">@color/lightBlue</item>
+        <item name="android:padding">8dp</item>
+    </style>
+
+    <style name="globalFragmentFrame">
+        <item name="android:padding">10dp</item>
+        <item name="android:background">@drawable/frame_white</item>
+    </style>
+
+    <style name="mainMenuButton">
+        <item name="android:layout_width">150dp</item>
+        <item name="android:layout_height">80dp</item>
+        <item name="android:textSize">14sp</item>
+        <item name="android:layout_marginBottom">5dp</item>
+        <item name="android:layout_marginLeft">10dp</item>
+        <item name="android:layout_marginRight">10dp</item>
+    </style>
+
+    <style name="globalCaption">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:gravity">left</item>
+        <item name="android:background">@drawable/frame_caption</item>
+        <item name="android:paddingHorizontal">15dp</item>
+        <item name="android:paddingVertical">6dp</item>
+        <item name="android:textColor">@color/caption</item>
+        <item name="android:textSize">15sp</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:layout_marginBottom">10dp</item>
+    </style>
+
+    <style name="spacer">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_margin">@dimen/tableMargin</item>
+    </style>
+
+    <style name="noActiveFlight" parent="globalCaption">
+        <item name="android:background">@drawable/frame_red</item>
+        <item name="android:textColor">@color/white</item>
+    </style>
+</resources>

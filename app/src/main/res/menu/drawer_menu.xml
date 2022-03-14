@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:showIn="navigation_view">
+
+    <group
+        android:id="@+id/groupPurchase"
+        android:checkableBehavior="none"
+        android:visible="false">
+        <item
+            android:id="@+id/drawerItemPurchase"
+            android:icon="@drawable/ic_purchase"
+            android:title="@string/txtRemoveAds" />
+    </group>
+    <group
+        android:id="@+id/groupNew"
+        android:checkableBehavior="none">
+        <item
+            android:id="@+id/drawerItemNew"
+            android:icon="@drawable/ic_new_flightplan"
+            android:title="@string/txtNewFlightPlan" />
+
+        <item
+            android:id="@+id/drawerItemOpen"
+            android:icon="@drawable/ic_list"
+            android:title="@string/txtFlightPlans" />
+
+    </group>
+    <group
+        android:id="@+id/calculators"
+        android:checkableBehavior="none">
+        <item
+            android:id="@+id/drawerWindCalc"
+            android:icon="@drawable/ic_wind"
+            android:title="@string/txtWindCalculator" />
+        <item
+            android:id="@+id/drawerFuelCalc"
+            android:icon="@drawable/ic_fuel"
+            android:title="@string/txtFuelCalculator" />
+        <item
+            android:id="@+id/drawerTimeAndDistance"
+            android:icon="@drawable/ic_timers"
+            android:title="@string/txtTimeAndDistance" />
+        <item
+            android:id="@+id/drawerDensity2Calc"
+            android:icon="@drawable/ic_density"
+            android:title="@string/txtDensityCalculator" />
+        <item
+            android:id="@+id/drawerUnitsCalc"
+            android:icon="@drawable/ic_calculator"
+            android:title="@string/txtUnitsConverter" />
+    </group>
+    <group
+        android:id="@+id/groupManual"
+        android:checkableBehavior="none">
+        <item
+            android:id="@+id/drawerItemAbout"
+            android:icon="@drawable/ic_about"
+            android:title="@string/txtAbout" />
+    </group>
+</menu>

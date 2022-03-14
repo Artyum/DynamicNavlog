@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item
+        android:id="@+id/timersFragment"
+        android:icon="@drawable/ic_timers"
+        android:title="@string/txtTimeStamps"
+        app:showAsAction="never" />
+    <item
+        android:id="@+id/optionsExportCsv"
+        android:icon="@drawable/ic_share"
+        android:title="@string/txtExportCSV"
+        app:showAsAction="never" />
+    <item
+        android:id="@+id/optionsExportGpx"
+        android:icon="@drawable/ic_share"
+        android:title="@string/txtExportGPX"
+        app:showAsAction="never" />
+    <item
+        android:id="@+id/optionRevertTrack"
+        android:icon="@drawable/ic_revert"
+        android:title="@string/txtReverseTrack"
+        android:visible="false"
+        app:showAsAction="never" />
+    <item
+        android:id="@+id/optionResetFlight"
+        android:icon="@drawable/ic_reset"
+        android:title="@string/txtRestartFlight"
+        app:showAsAction="never" />
+</menu>

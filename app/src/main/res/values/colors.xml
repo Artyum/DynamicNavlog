@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#178AC7</color>
+    <color name="colorPrimaryTransparent">#8B1749C7</color>
+    <color name="colorPrimaryVariant">#2279BC</color>
+    <color name="colorSecondary">#2C5B7A</color>
+    <color name="colorSecondaryVariant">#FF018786</color>
+    <color name="black">#000000</color>
+    <color name="lightBlack">#404040</color>
+    <color name="caption">#E2F4EF</color>
+    <color name="white">#FFFFFF</color>
+    <color name="white2">#E7E7E7</color>
+    <color name="green">#01C501</color>
+    <color name="gray">#B5B5B5</color>
+    <color name="grayTransparent">#92B5B5B5</color>
+    <color name="grayTransparent2">#4DB5B5B5</color>
+    <color name="grayTransparent3">#1BB5B5B5</color>
+    <color name="blue">#3939D8</color>
+    <color name="red">#C52F2F</color>
+    <color name="magenta">#FF00FF</color>
+    <color name="cyan">#00FFFF</color>
+    <color name="color1">#f0f0f0</color>
+    <color name="color2">#f7f7f7</color>
+    <color name="hdg">#e1e1e1</color>
+    <color name="warning">#D34545</color>
+    <color name="inactive">#bbbbbb</color>
+    <color name="lightBlue">#DCE7ED</color>
+    <color name="button">#315DCA</color>
+    <color name="trackdefault">#A4F33939</color>
+    <color name="trackpassed">#74436ED8</color>
+    <color name="trackcurrent">#A6FF00FF</color>
+    <color name="trackinactive">#B26B5088</color>
+</resources>

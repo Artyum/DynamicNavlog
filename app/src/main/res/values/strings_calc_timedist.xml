@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="manualTimeDist1">Enter any two of the three values. The empty field will be calculated.</string>
+    <string name="manualTimeDist2">The field <b>Time</b> will accept the time in minutes or in HOUR:MINUTE format. You can enter a value of 165 as well as 2:45.</string>
+</resources>

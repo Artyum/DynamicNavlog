@@ -1,0 +1,170 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/navlogLayout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context="com.artyum.dynamicnavlog.NavlogFragment">
+
+    <HorizontalScrollView
+        android:layout_width="wrap_content"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toTopOf="@id/summaryTotals"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_marginTop="1dp"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/tempTv"
+                style="@style/navlogItem"
+                android:visibility="gone" />
+
+            <LinearLayout
+                android:id="@+id/header"
+                style="@style/navLogHeader"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/txtNavlogDestHeader"
+                    style="@style/navLogHeaderItem"
+                    android:layout_width="@dimen/recyclerViewDescWidth"
+                    android:gravity="start|center_vertical"
+                    android:text="@string/txtDest" />
+
+                <TextView
+                    style="@style/navLogHeaderItem"
+                    android:text="@string/txtTt" />
+
+                <TextView
+                    style="@style/navLogHeaderItem"
+                    android:text="@string/txtDec"
+                    android:textAllCaps="false" />
+
+                <TextView
+                    style="@style/navLogHeaderItem"
+                    android:text="@string/txtMt" />
+
+                <TextView
+                    style="@style/navLogHeaderItem"
+                    android:text="@string/txtDist" />
+
+                <TextView
+                    style="@style/navLogHeaderItem"
+                    android:text="@string/txtWca" />
+
+                <TextView
+                    style="@style/navLogHeaderItem"
+                    android:text="@string/txtHdg" />
+
+                <TextView
+                    style="@style/navLogHeaderItem"
+                    android:text="@string/txtGs" />
+
+                <TextView
+                    style="@style/navLogHeaderItem"
+                    android:layout_width="90dp"
+                    android:text="@string/txtTime" />
+
+                <TextView
+                    style="@style/navLogHeaderItem"
+                    android:layout_width="90dp"
+                    android:text="@string/txtEta" />
+
+                <TextView
+                    style="@style/navLogHeaderItem"
+                    android:layout_width="90dp"
+                    android:text="@string/txtAta" />
+
+                <TextView
+                    style="@style/navLogHeaderItem"
+                    android:text="@string/txtFuel" />
+            </LinearLayout>
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/navlogRecycler"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:clipToPadding="false"
+                tools:listitem="@layout/fragment_navlog_item" />
+        </LinearLayout>
+    </HorizontalScrollView>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="14dp"
+        android:layout_marginBottom="45dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintRight_toRightOf="parent">
+
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/btnDisplayToggle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="5dp"
+            android:backgroundTint="@color/colorSecondary"
+            app:elevation="0dp"
+            app:fabSize="mini"
+            app:layout_constraintBottom_toTopOf="@id/btnNavlogInsert"
+            app:layout_constraintRight_toRightOf="parent"
+            app:srcCompat="@drawable/ic_eye"
+            app:tint="@color/white2" />
+
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/btnNavlogInsert"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:backgroundTint="@color/colorSecondary"
+            app:elevation="0dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:srcCompat="@drawable/ic_add"
+            app:tint="@color/white2" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <LinearLayout
+        android:id="@+id/summaryTotals"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="1dp"
+        android:background="@color/colorPrimaryVariant"
+        android:clipToPadding="true"
+        android:padding="5dp"
+        app:layout_constraintBottom_toBottomOf="parent">
+
+        <TextView
+            style="@style/navlogSummary"
+            android:text="@string/txtTotalDistance" />
+
+        <TextView
+            android:id="@+id/txtTotalDist"
+            style="@style/navlogSummary"
+            android:layout_marginEnd="20dp" />
+
+        <TextView
+            style="@style/navlogSummary"
+            android:text="Total Time" />
+
+        <TextView
+            android:id="@+id/txtTotalTime"
+            style="@style/navlogSummary"
+            android:layout_marginEnd="20dp" />
+
+        <TextView
+            style="@style/navlogSummary"
+            android:text="@string/txtTotalFuel" />
+
+        <TextView
+            android:id="@+id/txtTotalFuel"
+            style="@style/navlogSummary" />
+
+    </LinearLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

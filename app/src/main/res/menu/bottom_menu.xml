@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/homeFragment"
+        android:icon="@drawable/ic_display"
+        android:title="@string/txtFlightDisplay" />
+    <item
+        android:id="@+id/settingsFragment"
+        android:icon="@drawable/ic_settings"
+        android:title="@string/txtSettings" />
+    <item
+        android:id="@+id/navlogFragment"
+        android:icon="@drawable/ic_navigation"
+        android:title="@string/txtNavigationLog" />
+    <item
+        android:id="@+id/mapFragment"
+        android:icon="@drawable/ic_map"
+        android:title="@string/txtMap" />
+</menu>

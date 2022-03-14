@@ -1,0 +1,309 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/density2Layout"
+    style="@style/globalMainframe"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="CalcDensity2Fragment">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <LinearLayout
+            style="@style/globalFragmentFrame"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <TextView
+                style="@style/globalCaption"
+                android:text="@string/txtDensityCalculator" />
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content">
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/boxAirTemperature"
+                    style="@style/inputLayout"
+                    android:layout_width="@dimen/valuesWidth"
+                    android:hint="@string/txtAirTemperature"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintTop_toTopOf="parent">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/edtDensityAirTemperature"
+                        style="@style/layoutTextDecimalSigned" />
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <RadioGroup
+                    android:id="@+id/radioAirTemperature"
+                    style="@style/rgDensityAltitude2"
+                    app:layout_constraintBottom_toBottomOf="@id/boxAirTemperature"
+                    app:layout_constraintLeft_toRightOf="@id/boxAirTemperature"
+                    app:layout_constraintTop_toTopOf="@id/boxAirTemperature">
+
+                    <RadioButton
+                        android:id="@+id/radioAirF"
+                        style="@style/rbDensityAltitude2"
+                        android:checked="true"
+                        android:text="\u2109" />
+
+                    <RadioButton
+                        android:id="@+id/radioAirC"
+                        style="@style/rbDensityAltitude2"
+                        android:text="\u2103" />
+                </RadioGroup>
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/tableMargin">
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/boxDewpoint"
+                    style="@style/inputLayout"
+                    android:layout_width="@dimen/valuesWidth"
+                    android:hint="@string/txtDewpoint"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintTop_toTopOf="parent">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/edtDensityDewpoint"
+                        style="@style/layoutTextDecimalSigned" />
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <RadioGroup
+                    android:id="@+id/radioDewpoint"
+                    style="@style/rgDensityAltitude2"
+                    app:layout_constraintBottom_toBottomOf="@id/boxDewpoint"
+                    app:layout_constraintLeft_toRightOf="@id/boxDewpoint"
+                    app:layout_constraintTop_toTopOf="@id/boxDewpoint">
+
+                    <RadioButton
+                        android:id="@+id/radioDewF"
+                        style="@style/rbDensityAltitude2"
+                        android:checked="true"
+                        android:text="\u2109" />
+
+                    <RadioButton
+                        android:id="@+id/radioDewC"
+                        style="@style/rbDensityAltitude2"
+                        android:text="\u2103" />
+                </RadioGroup>
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/tableMargin">
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/boxPressure"
+                    style="@style/inputLayout"
+                    android:layout_width="@dimen/valuesWidth"
+                    android:hint="@string/txtAltimeterSetting"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintTop_toTopOf="parent">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/edtDensityAltimeter"
+                        style="@style/layoutTextDecimal" />
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <RadioGroup
+                    android:id="@+id/radioPressure"
+                    style="@style/rgDensityAltitude2"
+                    app:layout_constraintBottom_toBottomOf="@id/boxPressure"
+                    app:layout_constraintLeft_toRightOf="@id/boxPressure"
+                    app:layout_constraintTop_toTopOf="@id/boxPressure">
+
+                    <RadioButton
+                        android:id="@+id/radioINHG"
+                        style="@style/rbDensityAltitude2"
+                        android:checked="true"
+                        android:text="inHG" />
+
+                    <RadioButton
+                        android:id="@+id/radioHPA"
+                        style="@style/rbDensityAltitude2"
+                        android:text="HPa" />
+                </RadioGroup>
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/tableMargin">
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/boxElevation"
+                    style="@style/inputLayout"
+                    android:layout_width="@dimen/valuesWidth"
+                    android:hint="@string/txtStationElevations"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintTop_toTopOf="parent">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/edtDensityElevation"
+                        style="@style/layoutTextDecimalSigned" />
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <RadioGroup
+                    android:id="@+id/radioElevation"
+                    style="@style/rgDensityAltitude2"
+                    app:layout_constraintBottom_toBottomOf="@id/boxElevation"
+                    app:layout_constraintLeft_toRightOf="@id/boxElevation"
+                    app:layout_constraintTop_toTopOf="@id/boxElevation">
+
+                    <RadioButton
+                        android:id="@+id/radioFT"
+                        style="@style/rbDensityAltitude2"
+                        android:checked="true"
+                        android:text="ft" />
+
+                    <RadioButton
+                        android:id="@+id/radioM"
+                        style="@style/rbDensityAltitude2"
+                        android:text="m" />
+                </RadioGroup>
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/buttons"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginVertical="10dp">
+
+                <Button
+                    android:id="@+id/btnClear"
+                    android:layout_width="70dp"
+                    android:layout_height="wrap_content"
+                    android:backgroundTint="@color/red"
+                    android:text="@string/txtClear"
+                    app:cornerRadius="@dimen/btnRadius"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <Button
+                    android:id="@+id/btnCalculate"
+                    android:layout_width="160dp"
+                    android:layout_height="wrap_content"
+                    android:text="@string/txtCalculate"
+                    app:cornerRadius="@dimen/btnRadius"
+                    app:layout_constraintRight_toRightOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <View style="@style/divider" />
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp">
+
+                <TextView
+                    android:id="@+id/txtRelativeHumidity"
+                    style="@style/txtRowText"
+                    android:layout_marginTop="0dp"
+                    android:text="@string/txtRelativeHumidity"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <TextView
+                    android:id="@+id/outRelativeHumidity"
+                    style="@style/outRowText"
+                    app:layout_constraintBaseline_toBaselineOf="@id/txtRelativeHumidity"
+                    app:layout_constraintRight_toLeftOf="@id/outRelativeHumidityUnits" />
+
+                <TextView
+                    android:id="@+id/outRelativeHumidityUnits"
+                    style="@style/outRowTextUnits"
+                    app:layout_constraintBaseline_toBaselineOf="@id/txtRelativeHumidity"
+                    app:layout_constraintRight_toRightOf="parent" />
+
+                <TextView
+                    android:id="@+id/txtAirDensity"
+                    style="@style/txtRowText"
+                    android:text="@string/txtAirDensity"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/txtRelativeHumidity" />
+
+                <TextView
+                    android:id="@+id/outAirDensity"
+                    style="@style/outRowText"
+                    app:layout_constraintBaseline_toBaselineOf="@id/txtAirDensity"
+                    app:layout_constraintRight_toLeftOf="@id/outAirDensityUnits" />
+
+                <TextView
+                    android:id="@+id/outAirDensityUnits"
+                    style="@style/outRowTextUnits"
+                    app:layout_constraintBaseline_toBaselineOf="@id/txtAirDensity"
+                    app:layout_constraintRight_toRightOf="parent" />
+
+                <TextView
+                    android:id="@+id/txtRelativeDensity"
+                    style="@style/txtRowText"
+                    android:text="@string/txtRelativeDensity"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/txtAirDensity" />
+
+                <TextView
+                    android:id="@+id/outRelativeDensity"
+                    style="@style/outRowText"
+                    app:layout_constraintBaseline_toBaselineOf="@id/txtRelativeDensity"
+                    app:layout_constraintRight_toLeftOf="@id/outRelativeDensityUnits" />
+
+                <TextView
+                    android:id="@+id/outRelativeDensityUnits"
+                    style="@style/outRowTextUnits"
+                    app:layout_constraintBaseline_toBaselineOf="@id/txtRelativeDensity"
+                    app:layout_constraintRight_toRightOf="parent" />
+
+                <TextView
+                    android:id="@+id/txtAbsolutePressure"
+                    style="@style/txtRowText"
+                    android:text="@string/txtAbsolutePressure"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/txtRelativeDensity" />
+
+                <TextView
+                    android:id="@+id/outAbsolutePressure"
+                    style="@style/outRowText"
+                    app:layout_constraintBaseline_toBaselineOf="@id/txtAbsolutePressure"
+                    app:layout_constraintRight_toLeftOf="@id/outAbsolutePressureUnits" />
+
+                <TextView
+                    android:id="@+id/outAbsolutePressureUnits"
+                    style="@style/outRowTextUnits"
+                    app:layout_constraintBaseline_toBaselineOf="@id/txtAbsolutePressure"
+                    app:layout_constraintRight_toRightOf="parent" />
+
+                <TextView
+                    android:id="@+id/txtDensityAltitude"
+                    style="@style/txtRowText"
+                    android:text="@string/txtDensityAltitude"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/txtAbsolutePressure" />
+
+                <TextView
+                    android:id="@+id/outDensityAltitude"
+                    style="@style/outRowText"
+                    app:layout_constraintBaseline_toBaselineOf="@id/txtDensityAltitude"
+                    app:layout_constraintRight_toLeftOf="@id/outDensityAltitudeUnits" />
+
+                <TextView
+                    android:id="@+id/outDensityAltitudeUnits"
+                    style="@style/outRowTextUnits"
+                    app:layout_constraintBaseline_toBaselineOf="@id/txtDensityAltitude"
+                    app:layout_constraintRight_toRightOf="parent" />
+            </androidx.constraintlayout.widget.ConstraintLayout>
+        </LinearLayout>
+    </LinearLayout>
+</ScrollView>

@@ -1,0 +1,668 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/homeLayout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.artyum.dynamicnavlog.HomeFragment">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        style="@style/globalMainframe"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <LinearLayout
+                    style="@style/globalFragmentFrame"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:id="@+id/caption1"
+                        style="@style/globalCaption"
+                        android:layout_marginBottom="7dp"
+                        android:text="@string/txtNavigationDisplay" />
+
+                    <androidx.constraintlayout.widget.ConstraintLayout
+                        android:id="@+id/boxPrevCurrNext"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="10dp"
+                        android:gravity="center"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:id="@+id/txtWptPrev"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginEnd="@dimen/margin_prevCurNext"
+                            android:textAllCaps="true"
+                            android:textSize="14sp"
+                            app:layout_constraintBottom_toBottomOf="@id/arrow1"
+                            app:layout_constraintRight_toLeftOf="@id/arrow1"
+                            app:layout_constraintTop_toTopOf="@id/arrow1" />
+
+                        <TextView
+                            android:id="@+id/arrow1"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginEnd="@dimen/margin_prevCurNext"
+                            android:background="@drawable/ic_arrow_next"
+                            android:backgroundTint="@color/colorSecondary"
+                            app:layout_constraintBottom_toBottomOf="@id/txtWptCurr"
+                            app:layout_constraintRight_toLeftOf="@id/txtWptCurr"
+                            app:layout_constraintTop_toTopOf="@id/txtWptCurr" />
+
+                        <TextView
+                            android:id="@+id/txtWptCurr"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textAllCaps="true"
+                            android:textColor="@color/colorSecondary"
+                            android:textSize="18sp"
+                            android:textStyle="bold"
+                            app:layout_constraintLeft_toLeftOf="parent"
+                            app:layout_constraintRight_toRightOf="parent"
+                            app:layout_constraintTop_toTopOf="parent" />
+
+                        <TextView
+                            android:id="@+id/arrow2"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="@dimen/margin_prevCurNext"
+                            android:background="@drawable/ic_arrow_next"
+                            android:backgroundTint="@color/colorSecondary"
+                            app:layout_constraintBottom_toBottomOf="@id/txtWptCurr"
+                            app:layout_constraintLeft_toRightOf="@id/txtWptCurr"
+                            app:layout_constraintTop_toTopOf="@id/txtWptCurr" />
+
+                        <TextView
+                            android:id="@+id/txtWptNext"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="@dimen/margin_prevCurNext"
+                            android:textAllCaps="true"
+                            android:textSize="14sp"
+                            app:layout_constraintBottom_toBottomOf="@id/arrow2"
+                            app:layout_constraintLeft_toRightOf="@id/arrow2"
+                            app:layout_constraintTop_toTopOf="@id/arrow2" />
+                    </androidx.constraintlayout.widget.ConstraintLayout>
+
+                    <TableLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
+
+                        <TableRow>
+
+                            <androidx.constraintlayout.widget.ConstraintLayout style="@style/cellLayout">
+
+                                <TextView
+                                    android:id="@+id/txtWpt"
+                                    style="@style/txtItemCaption"
+                                    android:text="@string/txtWpt"
+                                    app:layout_constraintLeft_toLeftOf="parent"
+                                    app:layout_constraintRight_toRightOf="parent"
+                                    app:layout_constraintTop_toTopOf="parent" />
+
+                                <TextView
+                                    android:id="@+id/txtHomeDest"
+                                    style="@style/txtItemValue"
+                                    android:textAllCaps="true"
+                                    app:layout_constraintBottom_toBottomOf="parent"
+                                    app:layout_constraintLeft_toLeftOf="parent"
+                                    app:layout_constraintRight_toRightOf="parent"
+                                    app:layout_constraintTop_toBottomOf="@+id/txtWpt" />
+                            </androidx.constraintlayout.widget.ConstraintLayout>
+
+                            <androidx.constraintlayout.widget.ConstraintLayout
+                                style="@style/cellLayout"
+                                android:layout_marginHorizontal="@dimen/homeTableMargin">
+
+                                <TextView
+                                    android:id="@+id/txtHdg"
+                                    style="@style/txtItemCaption"
+                                    android:text="@string/txtHdg"
+                                    android:textStyle="bold"
+                                    app:layout_constraintLeft_toLeftOf="parent"
+                                    app:layout_constraintRight_toRightOf="parent"
+                                    app:layout_constraintTop_toTopOf="parent" />
+
+                                <TextView
+                                    android:id="@+id/txtDctHdg"
+                                    style="@style/txtPct"
+                                    app:layout_constraintBaseline_toBaselineOf="@id/txtHomeHdg"
+                                    app:layout_constraintLeft_toLeftOf="parent" />
+
+                                <TextView
+                                    android:id="@+id/txtHomeHdg"
+                                    style="@style/txtItemValue"
+                                    android:layout_width="wrap_content"
+                                    android:textStyle="bold"
+                                    app:layout_constraintBottom_toBottomOf="parent"
+                                    app:layout_constraintLeft_toLeftOf="parent"
+                                    app:layout_constraintRight_toRightOf="parent"
+                                    app:layout_constraintTop_toBottomOf="@+id/txtHdg" />
+
+                                <TextView
+                                    android:id="@+id/txtHomeHdgNext"
+                                    style="@style/txtPct"
+                                    app:layout_constraintBaseline_toBaselineOf="@id/txtHomeHdg"
+                                    app:layout_constraintRight_toRightOf="parent" />
+                            </androidx.constraintlayout.widget.ConstraintLayout>
+
+                            <androidx.constraintlayout.widget.ConstraintLayout style="@style/cellLayout">
+
+                                <TextView
+                                    android:id="@+id/txtEte"
+                                    style="@style/txtItemCaption"
+                                    android:text="@string/txtEte"
+                                    app:layout_constraintLeft_toLeftOf="parent"
+                                    app:layout_constraintRight_toRightOf="parent"
+                                    app:layout_constraintTop_toTopOf="parent" />
+
+                                <TextView
+                                    android:id="@+id/txtHomeEtePlus"
+                                    style="@style/plus"
+                                    app:layout_constraintBottom_toBottomOf="@id/txtHomeEte"
+                                    app:layout_constraintRight_toLeftOf="@id/txtHomeEte"
+                                    app:layout_constraintTop_toTopOf="@id/txtHomeEte" />
+
+                                <TextView
+                                    android:id="@+id/txtHomeEte"
+                                    style="@style/txtItemValue"
+                                    app:layout_constraintBottom_toBottomOf="parent"
+                                    app:layout_constraintLeft_toRightOf="@id/txtHomeStopwatch"
+                                    app:layout_constraintRight_toRightOf="parent"
+                                    app:layout_constraintTop_toBottomOf="@+id/txtEte" />
+
+                                <TextView
+                                    android:id="@+id/txtHomeStopwatch"
+                                    style="@style/txtPct"
+                                    app:layout_constraintBaseline_toBaselineOf="@id/txtHomeEte"
+                                    app:layout_constraintLeft_toLeftOf="parent" />
+                            </androidx.constraintlayout.widget.ConstraintLayout>
+                        </TableRow>
+
+                        <TableRow android:layout_marginTop="@dimen/homeTableMargin">
+
+                            <androidx.constraintlayout.widget.ConstraintLayout style="@style/cellLayout">
+
+                                <TextView
+                                    android:id="@+id/txtGsGpsTag"
+                                    style="@style/homeGpsTag"
+                                    android:text="@string/txtGPS"
+                                    android:visibility="gone"
+                                    app:layout_constraintBaseline_toBaselineOf="@id/txtGs"
+                                    app:layout_constraintLeft_toLeftOf="parent" />
+
+                                <TextView
+                                    android:id="@+id/txtGs"
+                                    style="@style/txtItemCaption"
+                                    android:text="@string/txtGs"
+                                    app:layout_constraintLeft_toLeftOf="parent"
+                                    app:layout_constraintRight_toRightOf="parent"
+                                    app:layout_constraintTop_toTopOf="parent" />
+
+                                <TextView
+                                    android:id="@+id/txtHomeGs"
+                                    style="@style/txtItemValue"
+                                    app:layout_constraintBottom_toBottomOf="parent"
+                                    app:layout_constraintLeft_toLeftOf="parent"
+                                    app:layout_constraintRight_toRightOf="parent"
+                                    app:layout_constraintTop_toBottomOf="@+id/txtGs" />
+
+                                <TextView
+                                    android:id="@+id/txtHomeGsUnits"
+                                    style="@style/homeUnits"
+                                    app:layout_constraintBaseline_toBaselineOf="@id/txtGs"
+                                    app:layout_constraintRight_toRightOf="parent" />
+
+                                <TextView
+                                    android:id="@+id/txtGsGpsDiff"
+                                    style="@style/txtPct"
+                                    app:layout_constraintBaseline_toBaselineOf="@id/txtHomeGs"
+                                    app:layout_constraintRight_toRightOf="parent" />
+
+                            </androidx.constraintlayout.widget.ConstraintLayout>
+
+                            <androidx.constraintlayout.widget.ConstraintLayout
+                                style="@style/cellLayout"
+                                android:layout_marginHorizontal="@dimen/homeTableMargin">
+
+                                <TextView
+                                    android:id="@+id/txtDtk"
+                                    style="@style/txtItemCaption"
+                                    android:text="@string/txtDtk"
+                                    app:layout_constraintLeft_toLeftOf="parent"
+                                    app:layout_constraintRight_toRightOf="parent"
+                                    app:layout_constraintTop_toTopOf="parent" />
+
+                                <TextView
+                                    android:id="@+id/txtDctMt"
+                                    style="@style/txtPct"
+                                    app:layout_constraintBaseline_toBaselineOf="@id/txtHomeDtk"
+                                    app:layout_constraintLeft_toLeftOf="parent" />
+
+                                <TextView
+                                    android:id="@+id/txtHomeDtk"
+                                    style="@style/txtItemValue"
+                                    app:layout_constraintBottom_toBottomOf="parent"
+                                    app:layout_constraintLeft_toLeftOf="parent"
+                                    app:layout_constraintRight_toRightOf="parent"
+                                    app:layout_constraintTop_toBottomOf="@+id/txtDtk" />
+
+                                <TextView
+                                    android:id="@+id/txtTrackAngle"
+                                    style="@style/txtPct"
+                                    app:layout_constraintBaseline_toBaselineOf="@id/txtHomeDtk"
+                                    app:layout_constraintRight_toRightOf="parent" />
+
+                                <androidx.constraintlayout.widget.ConstraintLayout
+                                    android:id="@+id/txtTrackAngleIndicatorBox"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginBottom="3dp"
+                                    app:layout_constraintBottom_toBottomOf="parent"
+                                    app:layout_constraintLeft_toLeftOf="parent"
+                                    app:layout_constraintRight_toRightOf="parent">
+
+                                    <com.google.android.material.progressindicator.LinearProgressIndicator
+                                        android:id="@+id/txtTrackAngleIndicatorLeft"
+                                        style="@style/homeProgressBar"
+                                        android:progress="100"
+                                        app:indicatorColor="@color/lightBlue"
+                                        app:layout_constraintLeft_toLeftOf="parent"
+                                        app:layout_constraintRight_toLeftOf="@id/txtTrackSpacer"
+                                        app:layout_constraintTop_toTopOf="parent"
+                                        app:trackColor="@color/colorPrimary" />
+
+                                    <com.google.android.material.progressindicator.LinearProgressIndicator
+                                        android:id="@+id/txtTrackSpacer"
+                                        android:layout_width="2dp"
+                                        android:layout_height="wrap_content"
+                                        app:indicatorColor="@color/lightBlue"
+                                        app:layout_constraintLeft_toRightOf="@id/txtTrackAngleIndicatorLeft"
+                                        app:layout_constraintRight_toLeftOf="@id/txtTrackAngleIndicatorRight"
+                                        app:layout_constraintTop_toTopOf="parent"
+                                        app:trackColor="@color/black" />
+
+                                    <com.google.android.material.progressindicator.LinearProgressIndicator
+                                        android:id="@+id/txtTrackAngleIndicatorRight"
+                                        style="@style/homeProgressBar"
+                                        app:indicatorColor="@color/colorPrimary"
+                                        app:layout_constraintLeft_toRightOf="@id/txtTrackSpacer"
+                                        app:layout_constraintRight_toRightOf="parent"
+                                        app:layout_constraintTop_toTopOf="parent"
+                                        app:trackColor="@color/lightBlue" />
+                                </androidx.constraintlayout.widget.ConstraintLayout>
+                            </androidx.constraintlayout.widget.ConstraintLayout>
+
+                            <androidx.constraintlayout.widget.ConstraintLayout style="@style/cellLayout">
+
+                                <TextView
+                                    android:id="@+id/txtDist"
+                                    style="@style/txtItemCaption"
+                                    android:text="@string/txtDist"
+                                    app:layout_constraintLeft_toLeftOf="parent"
+                                    app:layout_constraintRight_toRightOf="parent"
+                                    app:layout_constraintTop_toTopOf="parent" />
+
+                                <TextView
+                                    android:id="@+id/txtHomeDistPlus"
+                                    style="@style/plus"
+                                    app:layout_constraintBottom_toBottomOf="@id/txtHomeDist"
+                                    app:layout_constraintRight_toLeftOf="@id/txtHomeDist"
+                                    app:layout_constraintTop_toTopOf="@id/txtHomeDist" />
+
+                                <TextView
+                                    android:id="@+id/txtHomeDistFromPrevWpt"
+                                    style="@style/txtPct"
+                                    app:layout_constraintBaseline_toBaselineOf="@id/txtHomeDist"
+                                    app:layout_constraintLeft_toLeftOf="parent" />
+
+                                <TextView
+                                    android:id="@+id/txtHomeDist"
+                                    style="@style/txtItemValue"
+                                    android:layout_width="wrap_content"
+                                    app:layout_constraintBottom_toBottomOf="parent"
+                                    app:layout_constraintLeft_toRightOf="@id/txtHomeDistFromPrevWpt"
+                                    app:layout_constraintRight_toLeftOf="@+id/txtHomeDistPct"
+                                    app:layout_constraintTop_toBottomOf="@+id/txtDist" />
+
+                                <TextView
+                                    android:id="@+id/txtHomeDistUnits"
+                                    style="@style/homeUnits"
+                                    app:layout_constraintBaseline_toBaselineOf="@id/txtDist"
+                                    app:layout_constraintRight_toRightOf="parent" />
+
+                                <TextView
+                                    android:id="@+id/txtHomeDistPct"
+                                    style="@style/txtPct"
+                                    app:layout_constraintBaseline_toBaselineOf="@id/txtHomeDist"
+                                    app:layout_constraintRight_toRightOf="parent" />
+
+                                <com.google.android.material.progressindicator.LinearProgressIndicator
+                                    android:id="@+id/txtHomeDistPctBar"
+                                    style="@style/homeProgressBar"
+                                    app:layout_constraintBottom_toBottomOf="parent"
+                                    app:layout_constraintLeft_toLeftOf="parent"
+                                    app:layout_constraintRight_toRightOf="parent"
+                                    app:trackColor="@color/lightBlue" />
+
+                            </androidx.constraintlayout.widget.ConstraintLayout>
+
+                        </TableRow>
+                    </TableLayout>
+
+                    <com.google.android.material.textfield.TextInputLayout
+                        android:id="@+id/boxHomeRemarks"
+                        style="@style/txtRemarks"
+                        android:layout_marginTop="10dp"
+                        android:hint="@string/txtRmk">
+
+                        <com.google.android.material.textfield.TextInputEditText
+                            android:id="@+id/txtHomeRemarks"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:lineHeight="30dp"
+                            android:textColor="@color/lightBlack"
+                            android:textSize="16sp" />
+                    </com.google.android.material.textfield.TextInputLayout>
+
+                </LinearLayout>
+
+                <LinearLayout
+                    style="@style/globalFragmentFrame"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:orientation="vertical">
+
+                    <TextView
+                        style="@style/globalCaption"
+                        android:text="@string/txtFlightComputer" />
+
+                    <TableLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
+
+                        <TableRow>
+
+                            <androidx.constraintlayout.widget.ConstraintLayout style="@style/cellLayout">
+
+                                <TextView
+                                    android:id="@+id/txtFlightTime"
+                                    style="@style/txtItemCaption"
+                                    android:text="@string/txtEta"
+                                    app:layout_constraintLeft_toLeftOf="parent"
+                                    app:layout_constraintRight_toRightOf="parent"
+                                    app:layout_constraintTop_toTopOf="parent" />
+
+                                <TextView
+                                    android:id="@+id/txtHomeEta"
+                                    style="@style/txtItemValueFc"
+                                    app:layout_constraintBottom_toBottomOf="parent"
+                                    app:layout_constraintLeft_toLeftOf="parent"
+                                    app:layout_constraintRight_toLeftOf="@+id/txtHomeTimeDeviation"
+                                    app:layout_constraintTop_toBottomOf="@+id/txtFlightTime" />
+
+                                <TextView
+                                    android:id="@+id/txtHomeEtaUnits"
+                                    style="@style/homeUnits"
+                                    app:layout_constraintBaseline_toBaselineOf="@id/txtHomeEta"
+                                    app:layout_constraintLeft_toRightOf="@id/txtHomeEta" />
+
+                                <TextView
+                                    android:id="@+id/txtHomeTimeDeviation"
+                                    style="@style/txtPct"
+                                    app:layout_constraintBaseline_toBaselineOf="@id/txtHomeEta"
+                                    app:layout_constraintRight_toRightOf="parent" />
+                            </androidx.constraintlayout.widget.ConstraintLayout>
+
+                            <androidx.constraintlayout.widget.ConstraintLayout
+                                style="@style/cellLayout"
+                                android:layout_marginHorizontal="@dimen/homeTableMargin">
+
+                                <TextView
+                                    android:id="@+id/txtTimeToLand"
+                                    style="@style/txtItemCaption"
+                                    android:text="@string/txtTimeToLand"
+                                    app:layout_constraintLeft_toLeftOf="parent"
+                                    app:layout_constraintRight_toRightOf="parent"
+                                    app:layout_constraintTop_toTopOf="parent" />
+
+                                <TextView
+                                    android:id="@+id/txtHomeTimeToLand"
+                                    style="@style/txtItemValueFc"
+                                    app:layout_constraintBottom_toBottomOf="parent"
+                                    app:layout_constraintLeft_toLeftOf="parent"
+                                    app:layout_constraintRight_toLeftOf="@+id/txtHomeTimeToLandPct"
+                                    app:layout_constraintTop_toBottomOf="@+id/txtTimeToLand" />
+
+                                <TextView
+                                    android:id="@+id/txtHomeTimeToLandPct"
+                                    style="@style/txtPct"
+                                    app:layout_constraintBaseline_toBaselineOf="@id/txtHomeTimeToLand"
+                                    app:layout_constraintRight_toRightOf="parent" />
+
+                                <com.google.android.material.progressindicator.LinearProgressIndicator
+                                    android:id="@+id/txtHomeTimeToLandBar"
+                                    style="@style/homeProgressBar"
+                                    app:layout_constraintBottom_toBottomOf="parent"
+                                    app:layout_constraintLeft_toLeftOf="parent"
+                                    app:layout_constraintRight_toRightOf="parent"
+                                    app:trackColor="@color/lightBlue" />
+
+                            </androidx.constraintlayout.widget.ConstraintLayout>
+
+                            <androidx.constraintlayout.widget.ConstraintLayout style="@style/cellLayout">
+
+                                <TextView
+                                    android:id="@+id/txtFuelToLand"
+                                    style="@style/txtItemCaption"
+                                    android:text="@string/txtFuelToLand"
+                                    app:layout_constraintLeft_toLeftOf="parent"
+                                    app:layout_constraintRight_toRightOf="parent"
+                                    app:layout_constraintTop_toTopOf="parent" />
+
+                                <TextView
+                                    android:id="@+id/txtHomeFuelToLand"
+                                    style="@style/txtItemValueFc"
+                                    app:layout_constraintBottom_toBottomOf="parent"
+                                    app:layout_constraintLeft_toLeftOf="parent"
+                                    app:layout_constraintRight_toRightOf="parent"
+                                    app:layout_constraintTop_toBottomOf="@+id/txtFuelToLand" />
+
+                                <TextView
+                                    android:id="@+id/txtHomeFuelToLandNotice"
+                                    style="@style/txtPct"
+                                    app:layout_constraintBaseline_toBaselineOf="@id/txtHomeFuelToLand"
+                                    app:layout_constraintRight_toRightOf="parent" />
+                            </androidx.constraintlayout.widget.ConstraintLayout>
+
+                        </TableRow>
+
+                        <TableRow android:layout_marginTop="@dimen/homeTableMargin">
+
+                            <androidx.constraintlayout.widget.ConstraintLayout style="@style/cellLayout">
+
+                                <TextView
+                                    android:id="@+id/txtEngineTime"
+                                    style="@style/txtItemCaption"
+                                    android:text="@string/txtEngineTime"
+                                    app:layout_constraintLeft_toLeftOf="parent"
+                                    app:layout_constraintRight_toRightOf="parent"
+                                    app:layout_constraintTop_toTopOf="parent" />
+
+                                <TextView
+                                    android:id="@+id/txtHomeEngineTime"
+                                    style="@style/txtItemValueFc"
+                                    app:layout_constraintBottom_toBottomOf="parent"
+                                    app:layout_constraintLeft_toLeftOf="parent"
+                                    app:layout_constraintRight_toRightOf="parent"
+                                    app:layout_constraintTop_toBottomOf="@+id/txtEngineTime" />
+
+                            </androidx.constraintlayout.widget.ConstraintLayout>
+
+                            <androidx.constraintlayout.widget.ConstraintLayout
+                                style="@style/cellLayout"
+                                android:layout_marginHorizontal="@dimen/homeTableMargin">
+
+                                <TextView
+                                    android:id="@+id/txtItemCaption"
+                                    style="@style/txtItemCaption"
+                                    android:text="@string/txtFlightTimeRemaining"
+                                    app:layout_constraintLeft_toLeftOf="parent"
+                                    app:layout_constraintRight_toRightOf="parent"
+                                    app:layout_constraintTop_toTopOf="parent" />
+
+                                <TextView
+                                    android:id="@+id/txtHomeTimeRemaining"
+                                    style="@style/txtItemValueFc"
+                                    app:layout_constraintBottom_toBottomOf="parent"
+                                    app:layout_constraintLeft_toLeftOf="parent"
+                                    app:layout_constraintRight_toRightOf="parent"
+                                    app:layout_constraintTop_toBottomOf="@+id/txtItemCaption" />
+
+                            </androidx.constraintlayout.widget.ConstraintLayout>
+
+                            <androidx.constraintlayout.widget.ConstraintLayout style="@style/cellLayout">
+
+                                <TextView
+                                    android:id="@+id/txtFuelRemaining"
+                                    style="@style/txtItemCaption"
+                                    android:text="@string/txtFuelRemaining"
+                                    app:layout_constraintLeft_toLeftOf="parent"
+                                    app:layout_constraintRight_toRightOf="parent"
+                                    app:layout_constraintTop_toTopOf="parent" />
+
+                                <TextView
+                                    android:id="@+id/txtHomeFuelRemaining"
+                                    style="@style/txtItemValueFc"
+                                    app:layout_constraintBottom_toBottomOf="parent"
+                                    app:layout_constraintLeft_toLeftOf="parent"
+                                    app:layout_constraintRight_toLeftOf="@+id/txtHomeFuelRemainingPct"
+                                    app:layout_constraintTop_toBottomOf="@+id/txtFuelRemaining" />
+
+                                <TextView
+                                    android:id="@+id/txtHomeFuelRemainingPct"
+                                    style="@style/txtPct"
+                                    app:layout_constraintBaseline_toBaselineOf="@id/txtHomeFuelRemaining"
+                                    app:layout_constraintRight_toRightOf="parent" />
+
+                                <com.google.android.material.progressindicator.LinearProgressIndicator
+                                    android:id="@+id/txtHomeFuelPctBar"
+                                    style="@style/homeProgressBar"
+                                    app:layout_constraintBottom_toBottomOf="parent"
+                                    app:layout_constraintLeft_toLeftOf="parent"
+                                    app:layout_constraintRight_toRightOf="parent"
+                                    app:trackColor="@color/lightBlue" />
+
+                            </androidx.constraintlayout.widget.ConstraintLayout>
+                        </TableRow>
+                    </TableLayout>
+                </LinearLayout>
+
+                <LinearLayout
+                    style="@style/globalFragmentFrame"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:orientation="vertical">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical">
+
+                        <TextView
+                            style="@style/globalCaption"
+                            android:text="@string/txtWind" />
+
+                        <ImageView
+                            android:id="@+id/imgHomeView"
+                            android:layout_width="match_parent"
+                            android:layout_height="@dimen/circleHeight"
+                            android:layout_gravity="center"
+                            android:adjustViewBounds="true" />
+                    </LinearLayout>
+
+                </LinearLayout>
+            </LinearLayout>
+
+        </ScrollView>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <RelativeLayout
+        android:id="@+id/btnBox"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="20dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent">
+
+        <Button
+            android:id="@+id/btnOffBlock"
+            style="@style/navButtonRound"
+            android:text="@string/txtSetOffBlock"
+            android:visibility="gone" />
+
+        <Button
+            android:id="@+id/btnTakeoff"
+            style="@style/navButtonRound"
+            android:text="@string/txtTakeoff"
+            android:visibility="gone" />
+
+        <LinearLayout
+            android:id="@+id/btnBoxPrevNext"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+
+            <Button
+                android:id="@+id/btnPrevWpt"
+                style="@style/navButtonPrev"
+                android:text="@string/txtPrevWPT"
+                android:textColor="@color/colorPrimaryTransparent"
+                app:backgroundTint="@color/grayTransparent3"
+                app:shapeAppearance="@style/navButtonPrevShape"
+                app:strokeColor="@color/colorPrimaryTransparent"
+                app:strokeWidth="1dp" />
+
+            <Button
+                android:id="@+id/btnNextWpt"
+                style="@style/navButtonNext"
+                android:text="@string/txtNextWPT" />
+
+            <Button
+                android:id="@+id/btnNextLand"
+                style="@style/navButtonNext"
+                android:text="@string/txtLanding"
+                android:textColor="@color/white" />
+        </LinearLayout>
+
+        <Button
+            android:id="@+id/btnLanding"
+            style="@style/navButtonRound"
+            android:text="@string/txtLanding"
+            android:visibility="gone" />
+
+        <Button
+            android:id="@+id/btnOnBlock"
+            style="@style/navButtonRound"
+            android:text="@string/txtOnBlock"
+            android:visibility="gone" />
+    </RelativeLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

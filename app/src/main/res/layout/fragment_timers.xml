@@ -1,0 +1,204 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/timersLayout"
+    style="@style/globalMainframe"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <LinearLayout
+            style="@style/globalFragmentFrame"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <TextView
+                style="@style/globalCaption"
+                android:text="@string/txtTimeStamps" />
+
+            <TextView
+                style="@style/phazeText"
+                android:text="@string/txtPhazeStart" />
+
+            <androidx.constraintlayout.widget.ConstraintLayout style="@style/timersLayout">
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/box1"
+                    style="@style/timersTextInput"
+                    android:hint="@string/txtOffBlockTime"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintRight_toLeftOf="@id/btn1"
+                    app:layout_constraintTop_toTopOf="parent">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/timeOffBlock"
+                        style="@style/timersText" />
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <Button
+                    android:id="@+id/btn1"
+                    style="@style/timersButton"
+                    android:text="@string/txtSet"
+                    app:cornerRadius="@dimen/btnRadius"
+                    app:layout_constraintBottom_toBottomOf="@id/box1"
+                    app:layout_constraintRight_toRightOf="parent"
+                    app:layout_constraintTop_toTopOf="@id/box1" />
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                style="@style/timersLayout"
+                android:layout_marginBottom="5dp">
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/box2"
+                    style="@style/timersTextInput"
+                    android:hint="@string/txtTakeoff"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintRight_toLeftOf="@id/btn2"
+                    app:layout_constraintTop_toTopOf="parent">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/timeTakeoff"
+                        style="@style/timersText" />
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <Button
+                    android:id="@+id/btn2"
+                    style="@style/timersButton"
+                    android:layout_toEndOf="@id/box2"
+                    android:text="@string/txtSet"
+                    app:cornerRadius="@dimen/btnRadius"
+                    app:layout_constraintBottom_toBottomOf="@id/box2"
+                    app:layout_constraintRight_toRightOf="parent"
+                    app:layout_constraintTop_toTopOf="@id/box2" />
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <View style="@style/divider" />
+
+            <TextView
+                style="@style/phazeText"
+                android:text="@string/txtPhazeEnd" />
+
+            <androidx.constraintlayout.widget.ConstraintLayout style="@style/timersLayout">
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/box3"
+                    style="@style/timersTextInput"
+                    android:hint="@string/txtLandingTime"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintRight_toLeftOf="@id/btn3"
+                    app:layout_constraintTop_toTopOf="parent">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/timeLanding"
+                        style="@style/timersText" />
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <Button
+                    android:id="@+id/btn3"
+                    style="@style/timersButton"
+                    android:layout_toEndOf="@id/box3"
+                    android:text="@string/txtSet"
+                    app:cornerRadius="@dimen/btnRadius"
+                    app:layout_constraintBottom_toBottomOf="@id/box3"
+                    app:layout_constraintRight_toRightOf="parent"
+                    app:layout_constraintTop_toTopOf="@id/box3" />
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                style="@style/timersLayout"
+                android:layout_marginBottom="5dp">
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/box4"
+                    style="@style/timersTextInput"
+                    android:hint="@string/txtOnBlockTime"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintRight_toLeftOf="@id/btn4"
+                    app:layout_constraintTop_toTopOf="parent">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/timeOnBlock"
+                        style="@style/timersText" />
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <Button
+                    android:id="@+id/btn4"
+                    style="@style/timersButton"
+                    android:layout_toEndOf="@id/box4"
+                    android:text="@string/txtSet"
+                    app:cornerRadius="@dimen/btnRadius"
+                    app:layout_constraintBottom_toBottomOf="@id/box4"
+                    app:layout_constraintRight_toRightOf="parent"
+                    app:layout_constraintTop_toTopOf="@id/box4" />
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <View style="@style/divider" />
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <TextView
+                    style="@style/txtRowText"
+                    android:layout_marginTop="0dp"
+                    android:text="@string/txtGroundTime" />
+
+                <TextView
+                    android:id="@+id/outGroundTime"
+                    style="@style/outRowText"
+                    android:layout_marginStart="10dp"
+                    android:text="-" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/summaryBox"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:orientation="vertical">
+
+                    <TextView
+                        style="@style/txtRowText"
+                        android:layout_marginTop="0dp"
+                        android:text="@string/txtFlightTime" />
+
+                    <TextView
+                        android:id="@+id/outFlightTime"
+                        style="@style/outRowText"
+                        android:layout_marginStart="10dp"
+                        android:text="-" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:orientation="vertical">
+
+                    <TextView
+                        style="@style/txtRowText"
+                        android:layout_marginTop="0dp"
+                        android:text="@string/txtBlockTime" />
+
+                    <TextView
+                        android:id="@+id/outBlockTime"
+                        style="@style/outRowText"
+                        android:layout_marginStart="10dp"
+                        android:text="-" />
+                </LinearLayout>
+            </LinearLayout>
+        </LinearLayout>
+    </LinearLayout>
+</ScrollView>

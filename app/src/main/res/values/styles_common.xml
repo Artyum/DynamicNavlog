@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <style name="divider">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">1dp</item>
+        <item name="android:background">?android:attr/listDivider</item>
+        <item name="android:layout_marginVertical">20dp</item>
+    </style>
+
+    <style name="inputLayout" parent="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense">
+        <item name="android:layout_width">0dp</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_weight">1</item>
+        <item name="android:textSize">14sp</item>
+    </style>
+
+    <style name="outputLayout" parent="inputLayout">
+        <item name="android:enabled">false</item>
+        <item name="cornerSize">20dp</item>
+    </style>
+
+    <style name="layoutText">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textColor">@color/black</item>
+        <item name="android:textSize">16sp</item>
+        <item name="android:gravity">left</item>
+        <item name="android:inputType">text</item>
+    </style>
+
+    <style name="layoutTextDecimal" parent="layoutText">
+        <item name="android:inputType">numberDecimal</item>
+    </style>
+
+    <style name="layoutTextDecimalSigned" parent="layoutText">
+        <item name="android:inputType">numberSigned</item>
+    </style>
+
+    <style name="layoutTextNormal" parent="layoutText">
+        <item name="android:inputType">text</item>
+    </style>
+
+    <style name="layoutTextCaps" parent="layoutText">
+        <item name="android:inputType">textCapCharacters</item>
+    </style>
+
+    <style name="tableCell">
+        <item name="android:layout_weight">1</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textSize">18sp</item>
+        <item name="android:gravity">left</item>
+    </style>
+
+    <style name="settingsSwitch">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">38dp</item>
+        <item name="android:textSize">16sp</item>
+        <item name="android:textColor">@color/black</item>
+        <item name="android:gravity">center|start</item>
+    </style>
+
+    <style name="manualText">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_marginBottom">6dp</item>
+        <item name="android:textSize">14sp</item>
+    </style>
+
+    <style name="manualHeader1" parent="manualText">
+        <item name="android:textStyle">bold</item>
+        <item name="android:textSize">16sp</item>
+    </style>
+
+    <style name="manualHeader2" parent="manualText">
+        <item name="android:textStyle">italic</item>
+        <item name="android:textSize">16sp</item>
+        <item name="android:layout_marginBottom">2dp</item>
+    </style>
+
+    <style name="aboutText">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+    </style>
+
+    <style name="aboutTextBold" parent="aboutText">
+        <item name="android:textStyle">bold</item>
+    </style>
+
+    <style name="aboutTextVersion" parent="aboutTextBold">
+        <item name="android:layout_marginTop">8dp</item>
+    </style>
+
+    <style name="txtRowText">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_marginTop">10dp</item>
+        <item name="android:textSize">15sp</item>
+    </style>
+
+    <style name="outRowText">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textColor">@color/lightBlack</item>
+        <item name="android:textSize">17sp</item>
+        <item name="android:layout_marginEnd">4dp</item>
+    </style>
+
+    <style name="outRowTextUnits" parent="outRowText">
+        <item name="android:textColor">@color/lightBlack</item>
+        <item name="android:textSize">14sp</item>
+    </style>
+</resources>

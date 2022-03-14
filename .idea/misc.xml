@@ -1,0 +1,150 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="DesignSurface">
+    <option name="filePathToZoomLevelMap">
+      <map>
+        <entry key="..\:/Dokumenty/Moje dokumenty/Projekty/AndroidStudioProjects/DynamicNavLog/app/src/main/res/drawable-xxhdpi/frame_border.xml" value="0.39375" />
+        <entry key="..\:/Dokumenty/Moje dokumenty/Projekty/AndroidStudioProjects/DynamicNavLog/app/src/main/res/drawable/ic_calcularot.xml" value="0.5525" />
+        <entry key="..\:/Dokumenty/Moje dokumenty/Projekty/AndroidStudioProjects/DynamicNavLog/app/src/main/res/drawable/ic_gps.xml" value="0.4421875" />
+        <entry key="..\:/Dokumenty/Moje dokumenty/Projekty/AndroidStudioProjects/DynamicNavLog/app/src/main/res/layout/activity_main.xml" value="0.575" />
+        <entry key="..\:/Dokumenty/Moje dokumenty/Projekty/AndroidStudioProjects/DynamicNavLog/app/src/main/res/layout/drawer_header.xml" value="0.425" />
+        <entry key="..\:/Dokumenty/Moje dokumenty/Projekty/AndroidStudioProjects/DynamicNavLog/app/src/main/res/layout/fragment_about.xml" value="0.42604166666666665" />
+        <entry key="..\:/Dokumenty/Moje dokumenty/Projekty/AndroidStudioProjects/DynamicNavLog/app/src/main/res/layout/fragment_calc_density2.xml" value="0.36666666666666664" />
+        <entry key="..\:/Dokumenty/Moje dokumenty/Projekty/AndroidStudioProjects/DynamicNavLog/app/src/main/res/layout/fragment_calc_fuel.xml" value="0.42552083333333335" />
+        <entry key="..\:/Dokumenty/Moje dokumenty/Projekty/AndroidStudioProjects/DynamicNavLog/app/src/main/res/layout/fragment_calc_timedist.xml" value="0.42604166666666665" />
+        <entry key="..\:/Dokumenty/Moje dokumenty/Projekty/AndroidStudioProjects/DynamicNavLog/app/src/main/res/layout/fragment_calc_units.xml" value="0.4078125" />
+        <entry key="..\:/Dokumenty/Moje dokumenty/Projekty/AndroidStudioProjects/DynamicNavLog/app/src/main/res/layout/fragment_calc_wind.xml" value="0.575" />
+        <entry key="..\:/Dokumenty/Moje dokumenty/Projekty/AndroidStudioProjects/DynamicNavLog/app/src/main/res/layout/fragment_home.xml" value="0.575" />
+        <entry key="..\:/Dokumenty/Moje dokumenty/Projekty/AndroidStudioProjects/DynamicNavLog/app/src/main/res/layout/fragment_instructions.xml" value="0.38333333333333336" />
+        <entry key="..\:/Dokumenty/Moje dokumenty/Projekty/AndroidStudioProjects/DynamicNavLog/app/src/main/res/layout/fragment_map.xml" value="0.36666666666666664" />
+        <entry key="..\:/Dokumenty/Moje dokumenty/Projekty/AndroidStudioProjects/DynamicNavLog/app/src/main/res/layout/fragment_navlog.xml" value="0.24583333333333332" />
+        <entry key="..\:/Dokumenty/Moje dokumenty/Projekty/AndroidStudioProjects/DynamicNavLog/app/src/main/res/layout/fragment_navlog_dialog.xml" value="0.3020833333333333" />
+        <entry key="..\:/Dokumenty/Moje dokumenty/Projekty/AndroidStudioProjects/DynamicNavLog/app/src/main/res/layout/fragment_navlog_item.xml" value="0.36666666666666664" />
+        <entry key="..\:/Dokumenty/Moje dokumenty/Projekty/AndroidStudioProjects/DynamicNavLog/app/src/main/res/layout/fragment_planlist.xml" value="0.3020833333333333" />
+        <entry key="..\:/Dokumenty/Moje dokumenty/Projekty/AndroidStudioProjects/DynamicNavLog/app/src/main/res/layout/fragment_planlist_item.xml" value="0.575" />
+        <entry key="..\:/Dokumenty/Moje dokumenty/Projekty/AndroidStudioProjects/DynamicNavLog/app/src/main/res/layout/fragment_purchase.xml" value="0.575" />
+        <entry key="..\:/Dokumenty/Moje dokumenty/Projekty/AndroidStudioProjects/DynamicNavLog/app/src/main/res/layout/fragment_settings.xml" value="0.36666666666666664" />
+        <entry key="..\:/Dokumenty/Moje dokumenty/Projekty/AndroidStudioProjects/DynamicNavLog/app/src/main/res/layout/fragment_timers.xml" value="0.575" />
+        <entry key="..\:/Dokumenty/Moje dokumenty/Projekty/AndroidStudioProjects/DynamicNavLog/app/src/main/res/menu/bottom_menu.xml" value="0.42552083333333335" />
+        <entry key="..\:/Dokumenty/Moje dokumenty/Projekty/AndroidStudioProjects/DynamicNavLog/app/src/main/res/menu/drawer_menu.xml" value="0.575" />
+        <entry key="..\:/Dokumenty/Moje dokumenty/Projekty/AndroidStudioProjects/DynamicNavLog/app/src/main/res/menu/options_menu.xml" value="0.38333333333333336" />
+        <entry key="..\:/Dokumenty/Moje dokumenty/Projekty/AndroidStudioProjects/DynamicNavlog/app/src/main/res/drawable-mdpi/frame_caption.xml" value="0.3723958333333333" />
+        <entry key="..\:/Dokumenty/Moje dokumenty/Projekty/AndroidStudioProjects/DynamicNavlog/app/src/main/res/drawable-mdpi/frame_drawer_header.xml" value="0.3723958333333333" />
+        <entry key="..\:/Dokumenty/Moje dokumenty/Projekty/AndroidStudioProjects/DynamicNavlog/app/src/main/res/drawable-v24/ic_launcher_foreground.xml" value="0.3723958333333333" />
+        <entry key="..\:/Dokumenty/Moje dokumenty/Projekty/AndroidStudioProjects/DynamicNavlog/app/src/main/res/drawable-xxhdpi/frame_border.xml" value="0.3509259259259259" />
+        <entry key="..\:/Dokumenty/Moje dokumenty/Projekty/AndroidStudioProjects/DynamicNavlog/app/src/main/res/drawable-xxhdpi/frame_dark.xml" value="0.3723958333333333" />
+        <entry key="..\:/Dokumenty/Moje dokumenty/Projekty/AndroidStudioProjects/DynamicNavlog/app/src/main/res/drawable-xxhdpi/frame_flightplans.xml" value="0.3723958333333333" />
+        <entry key="..\:/Dokumenty/Moje dokumenty/Projekty/AndroidStudioProjects/DynamicNavlog/app/src/main/res/drawable/ic_arrow_next.xml" value="0.5911458333333334" />
+        <entry key="..\:/Dokumenty/Moje dokumenty/Projekty/AndroidStudioProjects/DynamicNavlog/app/src/main/res/drawable/ic_close.xml" value="0.37083333333333335" />
+        <entry key="..\:/Dokumenty/Moje dokumenty/Projekty/AndroidStudioProjects/DynamicNavlog/app/src/main/res/drawable/ic_help.xml" value="0.5911458333333334" />
+        <entry key="..\:/Dokumenty/Moje dokumenty/Projekty/AndroidStudioProjects/DynamicNavlog/app/src/main/res/drawable/ic_home.xml" value="0.5911458333333334" />
+        <entry key="..\:/Dokumenty/Moje dokumenty/Projekty/AndroidStudioProjects/DynamicNavlog/app/src/main/res/drawable/ic_navigation.xml" value="0.37083333333333335" />
+        <entry key="..\:/Dokumenty/Moje dokumenty/Projekty/AndroidStudioProjects/DynamicNavlog/app/src/main/res/drawable/ic_new_flightplan.xml" value="0.37083333333333335" />
+        <entry key="..\:/Dokumenty/Moje dokumenty/Projekty/AndroidStudioProjects/DynamicNavlog/app/src/main/res/drawable/ic_reset.xml" value="0.5911458333333334" />
+        <entry key="..\:/Dokumenty/Moje dokumenty/Projekty/AndroidStudioProjects/DynamicNavlog/app/src/main/res/drawable/ic_save.xml" value="0.5911458333333334" />
+        <entry key="..\:/Dokumenty/Moje dokumenty/Projekty/AndroidStudioProjects/DynamicNavlog/app/src/main/res/drawable/ic_save_as.xml" value="0.5911458333333334" />
+        <entry key="..\:/Dokumenty/Moje dokumenty/Projekty/AndroidStudioProjects/DynamicNavlog/app/src/main/res/drawable/ic_settings.xml" value="0.36875" />
+        <entry key="..\:/Dokumenty/Moje dokumenty/Projekty/AndroidStudioProjects/DynamicNavlog/app/src/main/res/drawable/ic_timers.xml" value="0.37395833333333334" />
+        <entry key="..\:/Dokumenty/Moje dokumenty/Projekty/AndroidStudioProjects/DynamicNavlog/app/src/main/res/font/roboto_mono.xml" value="0.38697916666666665" />
+        <entry key="..\:/Dokumenty/Moje dokumenty/Projekty/AndroidStudioProjects/DynamicNavlog/app/src/main/res/layout/activity_main.xml" value="0.575" />
+        <entry key="..\:/Dokumenty/Moje dokumenty/Projekty/AndroidStudioProjects/DynamicNavlog/app/src/main/res/layout/drawer_header.xml" value="0.4963768115942029" />
+        <entry key="..\:/Dokumenty/Moje dokumenty/Projekty/AndroidStudioProjects/DynamicNavlog/app/src/main/res/layout/fragment_about.xml" value="0.575" />
+        <entry key="..\:/Dokumenty/Moje dokumenty/Projekty/AndroidStudioProjects/DynamicNavlog/app/src/main/res/layout/fragment_calc_density.xml" value="0.5265519820493643" />
+        <entry key="..\:/Dokumenty/Moje dokumenty/Projekty/AndroidStudioProjects/DynamicNavlog/app/src/main/res/layout/fragment_calc_density2.xml" value="0.3888888888888889" />
+        <entry key="..\:/Dokumenty/Moje dokumenty/Projekty/AndroidStudioProjects/DynamicNavlog/app/src/main/res/layout/fragment_calc_fuel.xml" value="0.575" />
+        <entry key="..\:/Dokumenty/Moje dokumenty/Projekty/AndroidStudioProjects/DynamicNavlog/app/src/main/res/layout/fragment_calc_timedist.xml" value="0.575" />
+        <entry key="..\:/Dokumenty/Moje dokumenty/Projekty/AndroidStudioProjects/DynamicNavlog/app/src/main/res/layout/fragment_calc_units.xml" value="0.41394927536231885" />
+        <entry key="..\:/Dokumenty/Moje dokumenty/Projekty/AndroidStudioProjects/DynamicNavlog/app/src/main/res/layout/fragment_calc_wind.xml" value="0.575" />
+        <entry key="..\:/Dokumenty/Moje dokumenty/Projekty/AndroidStudioProjects/DynamicNavlog/app/src/main/res/layout/fragment_calculator.xml" value="0.4324074074074074" />
+        <entry key="..\:/Dokumenty/Moje dokumenty/Projekty/AndroidStudioProjects/DynamicNavlog/app/src/main/res/layout/fragment_fuel.xml" value="0.5054347826086957" />
+        <entry key="..\:/Dokumenty/Moje dokumenty/Projekty/AndroidStudioProjects/DynamicNavlog/app/src/main/res/layout/fragment_home.xml" value="0.575" />
+        <entry key="..\:/Dokumenty/Moje dokumenty/Projekty/AndroidStudioProjects/DynamicNavlog/app/src/main/res/layout/fragment_instructions.xml" value="0.49907407407407406" />
+        <entry key="..\:/Dokumenty/Moje dokumenty/Projekty/AndroidStudioProjects/DynamicNavlog/app/src/main/res/layout/fragment_item_planlist.xml" value="0.4287037037037037" />
+        <entry key="..\:/Dokumenty/Moje dokumenty/Projekty/AndroidStudioProjects/DynamicNavlog/app/src/main/res/layout/fragment_navlog.xml" value="0.3546875" />
+        <entry key="..\:/Dokumenty/Moje dokumenty/Projekty/AndroidStudioProjects/DynamicNavlog/app/src/main/res/layout/fragment_navlog_dialog.xml" value="0.575" />
+        <entry key="..\:/Dokumenty/Moje dokumenty/Projekty/AndroidStudioProjects/DynamicNavlog/app/src/main/res/layout/fragment_navlog_item.xml" value="0.575" />
+        <entry key="..\:/Dokumenty/Moje dokumenty/Projekty/AndroidStudioProjects/DynamicNavlog/app/src/main/res/layout/fragment_planlist.xml" value="0.3546875" />
+        <entry key="..\:/Dokumenty/Moje dokumenty/Projekty/AndroidStudioProjects/DynamicNavlog/app/src/main/res/layout/fragment_planlist_item.xml" value="0.575" />
+        <entry key="..\:/Dokumenty/Moje dokumenty/Projekty/AndroidStudioProjects/DynamicNavlog/app/src/main/res/layout/fragment_purchase.xml" value="0.36666666666666664" />
+        <entry key="..\:/Dokumenty/Moje dokumenty/Projekty/AndroidStudioProjects/DynamicNavlog/app/src/main/res/layout/fragment_purchases.xml" value="0.31979166666666664" />
+        <entry key="..\:/Dokumenty/Moje dokumenty/Projekty/AndroidStudioProjects/DynamicNavlog/app/src/main/res/layout/fragment_settings.xml" value="0.35833333333333334" />
+        <entry key="..\:/Dokumenty/Moje dokumenty/Projekty/AndroidStudioProjects/DynamicNavlog/app/src/main/res/layout/fragment_timers.xml" value="0.575" />
+        <entry key="..\:/Dokumenty/Moje dokumenty/Projekty/AndroidStudioProjects/DynamicNavlog/app/src/main/res/layout/fragment_units_converter.xml" value="0.575" />
+        <entry key="..\:/Dokumenty/Moje dokumenty/Projekty/AndroidStudioProjects/DynamicNavlog/app/src/main/res/layout/navlog_item.xml" value="0.30833333333333335" />
+        <entry key="..\:/Dokumenty/Moje dokumenty/Projekty/AndroidStudioProjects/DynamicNavlog/app/src/main/res/menu/bottom_menu.xml" value="0.49907407407407406" />
+        <entry key="..\:/Dokumenty/Moje dokumenty/Projekty/AndroidStudioProjects/DynamicNavlog/app/src/main/res/menu/drawer_menu.xml" value="0.5661538461538461" />
+        <entry key="..\:/Dokumenty/Moje dokumenty/Projekty/AndroidStudioProjects/DynamicNavlog/app/src/main/res/menu/options_menu.xml" value="0.575" />
+        <entry key="..\:/Dokumenty/Moje dokumenty/Projekty/AndroidStudioProjects/DynamicNavlog/app/src/main/res/mipmap-anydpi-v26/ic_launcher.xml" value="0.5911458333333334" />
+        <entry key="..\:/Dokumenty/Moje dokumenty/Projekty/AndroidStudioProjects/DynamicNavlog/app/src/main/res/mipmap-anydpi-v26/ic_launcher1.xml" value="0.5911458333333334" />
+        <entry key="..\:/Dokumenty/Moje dokumenty/Projekty/AndroidStudioProjects/DynamicNavlog/app/src/main/res/mipmap-anydpi-v26/ic_launcher2.xml" value="0.5911458333333334" />
+        <entry key="..\:/Dokumenty/Moje dokumenty/Projekty/AndroidStudioProjects/DynamicNavlog/app/src/main/res/mipmap-anydpi-v26/ic_launcher4.xml" value="0.3723958333333333" />
+        <entry key="..\:/Dokumenty/Moje dokumenty/Projekty/AndroidStudioProjects/DynamicNavlog/app/src/main/res/mipmap-anydpi-v26/ic_launcher_icon1.xml" value="0.5911458333333334" />
+        <entry key="..\:/Dokumenty/Moje dokumenty/Projekty/AndroidStudioProjects/DynamicNavlog/app/src/main/res/mipmap-anydpi-v26/ic_launcher_icon1_round.xml" value="0.5911458333333334" />
+        <entry key="..\:/Dokumenty/Moje dokumenty/Projekty/AndroidStudioProjects/DynamicNavlog/app/src/main/res/mipmap-anydpi-v26/ic_launcher_round.xml" value="0.5911458333333334" />
+        <entry key="..\:/Users/arkad/AndroidStudioProjects/DynamicNavlog/app/src/main/res/drawable-mdpi/frame_caption.xml" value="0.36875" />
+        <entry key="..\:/Users/arkad/AndroidStudioProjects/DynamicNavlog/app/src/main/res/drawable-mdpi/round_frame2.xml" value="0.2964102564102564" />
+        <entry key="..\:/Users/arkad/AndroidStudioProjects/DynamicNavlog/app/src/main/res/drawable-mdpi/round_frame_caption.xml" value="0.47552083333333334" />
+        <entry key="..\:/Users/arkad/AndroidStudioProjects/DynamicNavlog/app/src/main/res/drawable-xxhdpi/border.xml" value="0.47552083333333334" />
+        <entry key="..\:/Users/arkad/AndroidStudioProjects/DynamicNavlog/app/src/main/res/drawable-xxhdpi/frame_border.xml" value="0.3648148148148148" />
+        <entry key="..\:/Users/arkad/AndroidStudioProjects/DynamicNavlog/app/src/main/res/drawable-xxhdpi/frame_dark.xml" value="0.36770833333333336" />
+        <entry key="..\:/Users/arkad/AndroidStudioProjects/DynamicNavlog/app/src/main/res/drawable-xxhdpi/round_frame3.xml" value="0.575" />
+        <entry key="..\:/Users/arkad/AndroidStudioProjects/DynamicNavlog/app/src/main/res/drawable-xxhdpi/round_frame_red.xml" value="0.575" />
+        <entry key="..\:/Users/arkad/AndroidStudioProjects/DynamicNavlog/app/src/main/res/drawable/dialog.xml" value="0.3574074074074074" />
+        <entry key="..\:/Users/arkad/AndroidStudioProjects/DynamicNavlog/app/src/main/res/drawable/grad.xml" value="0.13240740740740742" />
+        <entry key="..\:/Users/arkad/AndroidStudioProjects/DynamicNavlog/app/src/main/res/drawable/ic_add.xml" value="0.36875" />
+        <entry key="..\:/Users/arkad/AndroidStudioProjects/DynamicNavlog/app/src/main/res/drawable/ic_display_white.xml" value="0.3020833333333333" />
+        <entry key="..\:/Users/arkad/AndroidStudioProjects/DynamicNavlog/app/src/main/res/drawable/ic_home.xml" value="0.15925925925925927" />
+        <entry key="..\:/Users/arkad/AndroidStudioProjects/DynamicNavlog/app/src/main/res/drawable/ic_settings.xml" value="0.47552083333333334" />
+        <entry key="..\:/Users/arkad/AndroidStudioProjects/DynamicNavlog/app/src/main/res/drawable/ic_timers.xml" value="0.36770833333333336" />
+        <entry key="..\:/Users/arkad/AndroidStudioProjects/DynamicNavlog/app/src/main/res/drawable/round_frame.xml" value="0.2964102564102564" />
+        <entry key="..\:/Users/arkad/AndroidStudioProjects/DynamicNavlog/app/src/main/res/drawable/round_frame1.xml" value="0.575" />
+        <entry key="..\:/Users/arkad/AndroidStudioProjects/DynamicNavlog/app/src/main/res/font/font.xml" value="0.4895833333333333" />
+        <entry key="..\:/Users/arkad/AndroidStudioProjects/DynamicNavlog/app/src/main/res/layout-land/fragment_calculator.xml" value="0.23697916666666666" />
+        <entry key="..\:/Users/arkad/AndroidStudioProjects/DynamicNavlog/app/src/main/res/layout/activity_main.xml" value="0.42962962962962964" />
+        <entry key="..\:/Users/arkad/AndroidStudioProjects/DynamicNavlog/app/src/main/res/layout/drawer_header.xml" value="0.4588541666666667" />
+        <entry key="..\:/Users/arkad/AndroidStudioProjects/DynamicNavlog/app/src/main/res/layout/fragment_calculator.xml" value="0.35260416666666666" />
+        <entry key="..\:/Users/arkad/AndroidStudioProjects/DynamicNavlog/app/src/main/res/layout/fragment_descend.xml" value="0.3453125" />
+        <entry key="..\:/Users/arkad/AndroidStudioProjects/DynamicNavlog/app/src/main/res/layout/fragment_home.xml" value="0.35260416666666666" />
+        <entry key="..\:/Users/arkad/AndroidStudioProjects/DynamicNavlog/app/src/main/res/layout/fragment_instructions.xml" value="0.4287037037037037" />
+        <entry key="..\:/Users/arkad/AndroidStudioProjects/DynamicNavlog/app/src/main/res/layout/fragment_navlog.xml" value="0.43333333333333335" />
+        <entry key="..\:/Users/arkad/AndroidStudioProjects/DynamicNavlog/app/src/main/res/layout/fragment_navlog_dialog.xml" value="0.4082051282051282" />
+        <entry key="..\:/Users/arkad/AndroidStudioProjects/DynamicNavlog/app/src/main/res/layout/fragment_navlog_dialog_pos.xml" value="0.49722222222222223" />
+        <entry key="..\:/Users/arkad/AndroidStudioProjects/DynamicNavlog/app/src/main/res/layout/fragment_settings.xml" value="0.31574074074074077" />
+        <entry key="..\:/Users/arkad/AndroidStudioProjects/DynamicNavlog/app/src/main/res/layout/fragment_timers.xml" value="0.4287037037037037" />
+        <entry key="..\:/Users/arkad/AndroidStudioProjects/DynamicNavlog/app/src/main/res/layout/navlog_item.xml" value="0.43333333333333335" />
+        <entry key="..\:/Users/arkad/AndroidStudioProjects/DynamicNavlog/app/src/main/res/menu/bottom_menu.xml" value="0.4287037037037037" />
+        <entry key="..\:/Users/arkad/AndroidStudioProjects/DynamicNavlog/app/src/main/res/menu/drawer_menu.xml" value="0.43148148148148147" />
+        <entry key="..\:/Users/arkad/AndroidStudioProjects/DynamicNavlog/app/src/main/res/menu/options_menu.xml" value="0.3055555555555556" />
+        <entry key="..\:/Users/arkad/AndroidStudioProjects/FlightAssistant/app/src/main/res/drawable/dialog.xml" value="0.47129629629629627" />
+        <entry key="..\:/Users/arkad/AndroidStudioProjects/FlightAssistant/app/src/main/res/drawable/ic_launcher_background.xml" value="0.3609375" />
+        <entry key="..\:/Users/arkad/AndroidStudioProjects/FlightAssistant/app/src/main/res/layout/activity_calculator.xml" value="0.575" />
+        <entry key="..\:/Users/arkad/AndroidStudioProjects/FlightAssistant/app/src/main/res/layout/activity_descend_calc.xml" value="0.4324074074074074" />
+        <entry key="..\:/Users/arkad/AndroidStudioProjects/FlightAssistant/app/src/main/res/layout/activity_descendcalc.xml" value="0.34479166666666666" />
+        <entry key="..\:/Users/arkad/AndroidStudioProjects/FlightAssistant/app/src/main/res/layout/activity_descendrate.xml" value="0.575" />
+        <entry key="..\:/Users/arkad/AndroidStudioProjects/FlightAssistant/app/src/main/res/layout/activity_main.xml" value="0.44722222222222224" />
+        <entry key="..\:/Users/arkad/AndroidStudioProjects/FlightAssistant/app/src/main/res/layout/activity_nav_log.xml" value="0.41574074074074074" />
+        <entry key="..\:/Users/arkad/AndroidStudioProjects/FlightAssistant/app/src/main/res/layout/activity_navlog.xml" value="0.34479166666666666" />
+        <entry key="..\:/Users/arkad/AndroidStudioProjects/FlightAssistant/app/src/main/res/layout/activity_wind_calc.xml" value="0.4222222222222222" />
+        <entry key="..\:/Users/arkad/AndroidStudioProjects/FlightAssistant/app/src/main/res/layout/activity_windcalc.xml" value="0.34479166666666666" />
+        <entry key="..\:/Users/arkad/AndroidStudioProjects/FlightAssistant/app/src/main/res/layout/fragment_calculator.xml" value="0.2962962962962963" />
+        <entry key="..\:/Users/arkad/AndroidStudioProjects/FlightAssistant/app/src/main/res/layout/fragment_descend.xml" value="0.5661538461538461" />
+        <entry key="..\:/Users/arkad/AndroidStudioProjects/FlightAssistant/app/src/main/res/layout/fragment_home.xml" value="0.3453125" />
+        <entry key="..\:/Users/arkad/AndroidStudioProjects/FlightAssistant/app/src/main/res/layout/fragment_navlog.xml" value="0.34549244398124024" />
+        <entry key="..\:/Users/arkad/AndroidStudioProjects/FlightAssistant/app/src/main/res/layout/fragment_navlog_dialog.xml" value="0.4287037037037037" />
+        <entry key="..\:/Users/arkad/AndroidStudioProjects/FlightAssistant/app/src/main/res/layout/fragment_settings.xml" value="0.3453125" />
+        <entry key="..\:/Users/arkad/AndroidStudioProjects/FlightAssistant/app/src/main/res/layout/fragment_timemeasure.xml" value="0.3453125" />
+        <entry key="..\:/Users/arkad/AndroidStudioProjects/FlightAssistant/app/src/main/res/layout/fragment_timers.xml" value="0.3458333333333333" />
+        <entry key="..\:/Users/arkad/AndroidStudioProjects/FlightAssistant/app/src/main/res/layout/navlog_item.xml" value="0.3453125" />
+        <entry key="..\:/Users/arkad/AndroidStudioProjects/FlightAssistant/app/src/main/res/menu/menu.xml" value="0.4324074074074074" />
+        <entry key="..\:/Users/arkad/AndroidStudioProjects/FlightAssistant/app/src/main/res/menu/options_menu.xml" value="0.4675925925925926" />
+        <entry key="..\:/Users/arkad/AndroidStudioProjects/FlightAssistant/app/src/main/res/mipmap-anydpi-v26/ic_launcher_round.xml" value="0.3614583333333333" />
+      </map>
+    </option>
+  </component>
+  <component name="ProjectRootManager" version="2" languageLevel="JDK_11" default="true" project-jdk-name="Android Studio default JDK" project-jdk-type="JavaSDK">
+    <output url="file://$PROJECT_DIR$/build/classes" />
+  </component>
+  <component name="ProjectType">
+    <option name="id" value="Android" />
+  </component>
+</project>
