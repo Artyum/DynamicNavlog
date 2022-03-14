@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/unitsLayout"
+    style="@style/globalMainframe"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="CalcUnitsFragment">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <LinearLayout
+            style="@style/globalFragmentFrame"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <TextView
+                style="@style/globalCaption"
+                android:text="@string/txtUnitsConverter" />
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/inputFrame"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <Spinner
+                    android:id="@+id/spinnerUnitsType"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/inputBox"
+                    style="@style/inputLayout"
+                    android:layout_width="@dimen/valuesWidth"
+                    android:hint="@string/txtValue"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/spinnerUnitsType">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/edtInputVal"
+                        style="@style/layoutTextDecimal" />
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <Spinner
+                    android:id="@+id/spinnerUnits"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="5dp"
+                    android:minWidth="80dp"
+                    app:layout_constraintBottom_toBottomOf="@id/inputBox"
+                    app:layout_constraintLeft_toRightOf="@id/inputBox"
+                    app:layout_constraintTop_toTopOf="@id/inputBox" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/buttons"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginVertical="15dp">
+
+                <Button
+                    android:id="@+id/btnClear"
+                    android:layout_width="70dp"
+                    android:layout_height="wrap_content"
+                    android:backgroundTint="@color/red"
+                    android:text="@string/txtClear"
+                    app:cornerRadius="@dimen/btnRadius"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <Button
+                    android:id="@+id/btnCalculate"
+                    android:layout_width="160dp"
+                    android:layout_height="wrap_content"
+                    android:text="@string/txtCalculate"
+                    app:cornerRadius="@dimen/btnRadius"
+                    app:layout_constraintRight_toRightOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <View style="@style/divider" />
+
+            <TextView
+                android:id="@+id/outputFrame"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:fontFamily="@font/roboto_mono"
+                android:gravity="end"
+                android:lineHeight="25dp"
+                android:textColor="@color/black"
+                android:textSize="20sp" />
+        </LinearLayout>
+
+    </LinearLayout>
+</ScrollView>

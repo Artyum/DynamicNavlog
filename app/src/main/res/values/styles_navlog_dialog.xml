@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <style name="navDialog" parent="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense">
+        <item name="android:layout_width">0dp</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_weight">1</item>
+        <item name="android:layout_marginBottom">@dimen/tableMargin</item>
+    </style>
+
+    <style name="navDialogText">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:inputType">textCapCharacters</item>
+        <item name="android:textSize">16sp</item>
+    </style>
+
+    <style name="navDialogRemarks" parent="navDialogText">
+        <item name="android:maxLines">4</item>
+        <item name="android:inputType">textMultiLine</item>
+        <item name="android:windowSoftInputMode">stateAlwaysVisible|adjustResize</item>
+        <item name="android:scrollbars">vertical</item>
+        <item name="android:lineHeight">22dp</item>
+    </style>
+
+    <style name="navDialogBtn" parent="@style/Widget.MaterialComponents.Button.TextButton">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_weight">1</item>
+        <item name="android:textColor">@color/black</item>
+    </style>
+</resources>

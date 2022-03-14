@@ -1,0 +1,276 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/settingLayout"
+    style="@style/globalMainframe"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.artyum.dynamicnavlog.SettingsFragment">
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <LinearLayout
+                style="@style/globalFragmentFrame"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <TableLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+
+                    <TableRow>
+
+                        <com.google.android.material.textfield.TextInputLayout
+                            android:id="@+id/settingFlightPlanNameBox"
+                            style="@style/inputLayout"
+                            android:layout_width="match_parent"
+                            android:hint="@string/txtFlightPlanName">
+
+                            <com.google.android.material.textfield.TextInputEditText
+                                android:id="@+id/settingFlightPlanName"
+                                style="@style/layoutText" />
+                        </com.google.android.material.textfield.TextInputLayout>
+                    </TableRow>
+
+                    <TableRow android:layout_marginVertical="@dimen/tableMargin">
+
+                        <com.google.android.material.textfield.TextInputLayout
+                            style="@style/inputLayout"
+                            android:hint="@string/txtDeparture">
+
+                            <com.google.android.material.textfield.TextInputEditText
+                                android:id="@+id/settingFrom"
+                                style="@style/layoutTextCaps" />
+                        </com.google.android.material.textfield.TextInputLayout>
+
+                        <TextView style="@style/spacer" />
+
+                        <com.google.android.material.textfield.TextInputLayout
+                            style="@style/inputLayout"
+                            android:hint="@string/txtDestination">
+
+                            <com.google.android.material.textfield.TextInputEditText
+                                android:id="@+id/settingDestination"
+                                style="@style/layoutTextCaps" />
+                        </com.google.android.material.textfield.TextInputLayout>
+
+                    </TableRow>
+
+                    <TableRow>
+
+                        <com.google.android.material.textfield.TextInputLayout
+                            style="@style/inputLayout"
+                            android:hint="@string/txtPlaneType">
+
+                            <com.google.android.material.textfield.TextInputEditText
+                                android:id="@+id/settingPlaneType"
+                                style="@style/layoutTextCaps" />
+                        </com.google.android.material.textfield.TextInputLayout>
+
+                        <TextView style="@style/spacer" />
+
+                        <com.google.android.material.textfield.TextInputLayout
+                            style="@style/inputLayout"
+                            android:hint="@string/txtRegistration">
+
+                            <com.google.android.material.textfield.TextInputEditText
+                                android:id="@+id/settingRegistration"
+                                style="@style/layoutTextCaps" />
+                        </com.google.android.material.textfield.TextInputLayout>
+                    </TableRow>
+                </TableLayout>
+
+                <View style="@style/divider" />
+
+                <TableLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <TableRow>
+
+                        <TextView
+                            android:id="@+id/settingsInfoBox"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginBottom="10dp"
+                            android:textColor="@color/red"
+                            android:textSize="14sp"
+                            android:visibility="gone" />
+                    </TableRow>
+
+                    <TableRow>
+
+                        <com.google.android.material.textfield.TextInputLayout
+                            style="@style/inputLayout"
+                            android:hint="@string/txtWindDirection">
+
+                            <com.google.android.material.textfield.TextInputEditText
+                                android:id="@+id/settingWindDir"
+                                style="@style/layoutTextDecimal" />
+                        </com.google.android.material.textfield.TextInputLayout>
+
+                        <TextView style="@style/spacer" />
+
+                        <com.google.android.material.textfield.TextInputLayout
+                            style="@style/inputLayout"
+                            android:hint="@string/txtWindSpeed">
+
+                            <com.google.android.material.textfield.TextInputEditText
+                                android:id="@+id/settingWindSpd"
+                                style="@style/layoutTextDecimal" />
+                        </com.google.android.material.textfield.TextInputLayout>
+
+                        <TextView style="@style/spacer" />
+
+                        <com.google.android.material.textfield.TextInputLayout
+                            style="@style/inputLayout"
+                            android:hint="@string/txtTAS">
+
+                            <com.google.android.material.textfield.TextInputEditText
+                                android:id="@+id/settingTas"
+                                style="@style/layoutTextDecimal" />
+                        </com.google.android.material.textfield.TextInputLayout>
+                    </TableRow>
+
+                    <TableRow android:layout_marginTop="@dimen/tableMargin">
+
+                        <com.google.android.material.textfield.TextInputLayout
+                            style="@style/inputLayout"
+                            android:hint="@string/txtFuelPerHour">
+
+                            <com.google.android.material.textfield.TextInputEditText
+                                android:id="@+id/settingFph"
+                                style="@style/layoutTextDecimal" />
+                        </com.google.android.material.textfield.TextInputLayout>
+
+                        <TextView style="@style/spacer" />
+
+                        <com.google.android.material.textfield.TextInputLayout
+                            style="@style/inputLayout"
+                            android:hint="@string/txtFuelOnboard">
+
+                            <com.google.android.material.textfield.TextInputEditText
+                                android:id="@+id/settingFuel"
+                                style="@style/layoutTextDecimal" />
+                        </com.google.android.material.textfield.TextInputLayout>
+
+                        <TextView style="@style/spacer" />
+
+                        <com.google.android.material.textfield.TextInputLayout
+                            style="@style/inputLayout"
+                            android:hint="@string/txtTankCapacity">
+
+                            <com.google.android.material.textfield.TextInputEditText
+                                android:id="@+id/settingTank"
+                                style="@style/layoutTextDecimal" />
+                        </com.google.android.material.textfield.TextInputLayout>
+                    </TableRow>
+                </TableLayout>
+
+                <View style="@style/divider" />
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    style="@style/settingsSwitch"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <TextView
+                        android:id="@+id/txtUnits"
+                        style="@style/settingsSwitch"
+                        android:layout_width="wrap_content"
+                        android:text="@string/txtDistanceSpeedUnits"
+                        app:layout_constraintLeft_toLeftOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <Spinner
+                        android:id="@+id/spinnerUnits"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        app:layout_constraintBaseline_toBaselineOf="@id/txtUnits"
+                        app:layout_constraintRight_toRightOf="parent" />
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+                <com.google.android.material.switchmaterial.SwitchMaterial
+                    android:id="@+id/settingTimeUTC"
+                    style="@style/settingsSwitch"
+                    android:text="@string/txtTimeUTC" />
+
+                <com.google.android.material.switchmaterial.SwitchMaterial
+                    android:id="@+id/settingsScreenOn"
+                    style="@style/settingsSwitch"
+                    android:text="@string/txtKeepScreenOn" />
+
+                <View style="@style/divider" />
+
+                <com.google.android.material.switchmaterial.SwitchMaterial
+                    android:id="@+id/settingGpsAssist"
+                    style="@style/settingsSwitch"
+                    android:text="@string/txtGPSEnabled" />
+
+                <com.google.android.material.switchmaterial.SwitchMaterial
+                    android:id="@+id/settingAutoNext"
+                    style="@style/settingsSwitch"
+                    android:text="@string/txtAutoNextWPT" />
+
+                <com.google.android.material.switchmaterial.SwitchMaterial
+                    android:id="@+id/settingTrace"
+                    style="@style/settingsSwitch"
+                    android:text="@string/txtTrackRecording" />
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    style="@style/settingsSwitch"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <TextView
+                        android:id="@+id/txtMapOrientation"
+                        style="@style/settingsSwitch"
+                        android:layout_width="wrap_content"
+                        android:text="@string/txtMapOrientation"
+                        app:layout_constraintLeft_toLeftOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <Spinner
+                        android:id="@+id/spinnerMapOrientation"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        app:layout_constraintBaseline_toBaselineOf="@id/txtMapOrientation"
+                        app:layout_constraintRight_toRightOf="parent" />
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    style="@style/settingsSwitch"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <TextView
+                        android:id="@+id/txtNextRadius"
+                        style="@style/settingsSwitch"
+                        android:layout_width="wrap_content"
+                        android:text="@string/txtNextRadius"
+                        app:layout_constraintLeft_toLeftOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <Spinner
+                        android:id="@+id/spinnerNextRadius"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        app:layout_constraintBaseline_toBaselineOf="@id/txtNextRadius"
+                        app:layout_constraintRight_toRightOf="parent" />
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+            </LinearLayout>
+
+        </LinearLayout>
+    </ScrollView>
+</RelativeLayout>

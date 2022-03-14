@@ -1,0 +1,202 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_graph"
+    app:startDestination="@id/homeFragment">
+
+    <fragment
+        android:id="@+id/homeFragment"
+        android:name="com.artyum.dynamicnavlog.HomeFragment"
+        android:label="@string/appName"
+        tools:layout="@layout/fragment_home" />
+    <action
+        android:id="@+id/action_global_homeFragment"
+        app:destination="@id/homeFragment"
+        app:enterAnim="@anim/nav_default_enter_anim"
+        app:exitAnim="@anim/nav_default_exit_anim"
+        app:popEnterAnim="@anim/nav_default_pop_enter_anim"
+        app:popExitAnim="@anim/nav_default_pop_exit_anim"
+        app:popUpToInclusive="true" />
+
+    <fragment
+        android:id="@+id/navlogFragment"
+        android:name="com.artyum.dynamicnavlog.NavlogFragment"
+        android:label="@string/txtNavigationLog"
+        tools:layout="@layout/fragment_navlog" />
+    <action
+        android:id="@+id/action_global_navlogFragment"
+        app:destination="@id/navlogFragment"
+        app:enterAnim="@anim/nav_default_enter_anim"
+        app:exitAnim="@anim/nav_default_exit_anim"
+        app:popEnterAnim="@anim/nav_default_pop_enter_anim"
+        app:popExitAnim="@anim/nav_default_pop_exit_anim"
+        app:popUpTo="@id/homeFragment"
+        app:popUpToInclusive="true" />
+
+    <fragment
+        android:id="@+id/calcWindFragment"
+        android:name="com.artyum.dynamicnavlog.CalcWindFragment"
+        android:label="@string/txtWindCalculator"
+        tools:layout="@layout/fragment_calc_wind" />
+    <action
+        android:id="@+id/action_global_calcWindFragment"
+        app:destination="@id/calcWindFragment"
+        app:enterAnim="@anim/nav_default_enter_anim"
+        app:exitAnim="@anim/nav_default_exit_anim"
+        app:popEnterAnim="@anim/nav_default_pop_enter_anim"
+        app:popExitAnim="@anim/nav_default_pop_exit_anim"
+        app:popUpTo="@id/homeFragment"
+        app:popUpToInclusive="true" />
+
+    <fragment
+        android:id="@+id/settingsFragment"
+        android:name="com.artyum.dynamicnavlog.SettingsFragment"
+        android:label="@string/txtSettings"
+        tools:layout="@layout/fragment_settings" />
+    <action
+        android:id="@+id/action_global_settingsFragment"
+        app:destination="@id/settingsFragment"
+        app:enterAnim="@anim/nav_default_enter_anim"
+        app:exitAnim="@anim/nav_default_exit_anim"
+        app:popEnterAnim="@anim/nav_default_pop_enter_anim"
+        app:popExitAnim="@anim/nav_default_pop_exit_anim"
+        app:popUpTo="@id/homeFragment"
+        app:popUpToInclusive="true" />
+
+    <fragment
+        android:id="@+id/timersFragment"
+        android:name="com.artyum.dynamicnavlog.TimersFragment"
+        android:label="@string/txtTimeMeasure"
+        tools:layout="@layout/fragment_timers" />
+    <action
+        android:id="@+id/action_global_timersFragment"
+        app:destination="@id/timersFragment"
+        app:enterAnim="@anim/nav_default_enter_anim"
+        app:exitAnim="@anim/nav_default_exit_anim"
+        app:popEnterAnim="@anim/nav_default_pop_enter_anim"
+        app:popExitAnim="@anim/nav_default_pop_exit_anim"
+        app:popUpTo="@id/homeFragment"
+        app:popUpToInclusive="true" />
+
+    <fragment
+        android:id="@+id/planListFragment"
+        android:name="com.artyum.dynamicnavlog.PlanListFragment"
+        android:label="@string/txtLoadFlightPlan"
+        tools:layout="@layout/fragment_planlist" />
+    <action
+        android:id="@+id/action_global_planListFragment"
+        app:destination="@id/planListFragment"
+        app:enterAnim="@anim/nav_default_enter_anim"
+        app:exitAnim="@anim/nav_default_exit_anim"
+        app:popEnterAnim="@anim/nav_default_pop_enter_anim"
+        app:popExitAnim="@anim/nav_default_pop_exit_anim"
+        app:popUpTo="@id/homeFragment"
+        app:popUpToInclusive="true" />
+
+    <fragment
+        android:id="@+id/calcFuelFragment"
+        android:name="com.artyum.dynamicnavlog.CalcFuelFragment"
+        android:label="@string/txtFuelCalculator"
+        tools:layout="@layout/fragment_calc_fuel" />
+    <action
+        android:id="@+id/action_global_calcFuelFragment"
+        app:destination="@id/calcFuelFragment"
+        app:enterAnim="@anim/nav_default_enter_anim"
+        app:exitAnim="@anim/nav_default_exit_anim"
+        app:popEnterAnim="@anim/nav_default_pop_enter_anim"
+        app:popExitAnim="@anim/nav_default_pop_exit_anim"
+        app:popUpTo="@id/homeFragment"
+        app:popUpToInclusive="true" />
+
+    <fragment
+        android:id="@+id/calcUnitsFragment"
+        android:name="com.artyum.dynamicnavlog.CalcUnitsFragment"
+        android:label="@string/txtUnitsConverter"
+        tools:layout="@layout/fragment_calc_units" />
+    <action
+        android:id="@+id/action_global_calcUnitsFragment"
+        app:destination="@id/calcUnitsFragment"
+        app:enterAnim="@anim/nav_default_enter_anim"
+        app:exitAnim="@anim/nav_default_exit_anim"
+        app:popEnterAnim="@anim/nav_default_pop_enter_anim"
+        app:popExitAnim="@anim/nav_default_pop_exit_anim"
+        app:popUpTo="@id/homeFragment"
+        app:popUpToInclusive="true" />
+
+    <fragment
+        android:id="@+id/calcTimeDistFragment"
+        android:name="com.artyum.dynamicnavlog.CalcTimeDistFragment"
+        android:label="@string/txtTimeAndDistance"
+        tools:layout="@layout/fragment_calc_timedist" />
+    <action
+        android:id="@+id/action_global_calcTimeDistFragment"
+        app:destination="@id/calcTimeDistFragment"
+        app:enterAnim="@anim/nav_default_enter_anim"
+        app:exitAnim="@anim/nav_default_exit_anim"
+        app:popEnterAnim="@anim/nav_default_pop_enter_anim"
+        app:popExitAnim="@anim/nav_default_pop_exit_anim"
+        app:popUpTo="@id/homeFragment"
+        app:popUpToInclusive="true" />
+
+    <fragment
+        android:id="@+id/calcDensity2Fragment"
+        android:name="com.artyum.dynamicnavlog.CalcDensity2Fragment"
+        android:label="@string/txtDensityCalculator"
+        tools:layout="@layout/fragment_calc_density2" />
+    <action
+        android:id="@+id/action_global_calcDensity2Fragment"
+        app:destination="@id/calcDensity2Fragment"
+        app:enterAnim="@anim/nav_default_enter_anim"
+        app:exitAnim="@anim/nav_default_exit_anim"
+        app:popEnterAnim="@anim/nav_default_pop_enter_anim"
+        app:popExitAnim="@anim/nav_default_pop_exit_anim"
+        app:popUpTo="@id/homeFragment"
+        app:popUpToInclusive="true" />
+
+    <fragment
+        android:id="@+id/purchaseFragment"
+        android:name="com.artyum.dynamicnavlog.PurchaseFragment"
+        android:label="@string/txtPurchase"
+        tools:layout="@layout/fragment_purchase" />
+    <action
+        android:id="@+id/action_global_purchaseFragment"
+        app:destination="@id/purchaseFragment"
+        app:enterAnim="@anim/nav_default_enter_anim"
+        app:exitAnim="@anim/nav_default_exit_anim"
+        app:popEnterAnim="@anim/nav_default_pop_enter_anim"
+        app:popExitAnim="@anim/nav_default_pop_exit_anim"
+        app:popUpTo="@id/homeFragment"
+        app:popUpToInclusive="true" />
+
+    <fragment
+        android:id="@+id/aboutFragment"
+        android:name="com.artyum.dynamicnavlog.AboutFragment"
+        android:label="@string/txtAbout"
+        tools:layout="@layout/fragment_about" />
+    <action
+        android:id="@+id/action_global_aboutFragment"
+        app:destination="@id/aboutFragment"
+        app:enterAnim="@anim/nav_default_enter_anim"
+        app:exitAnim="@anim/nav_default_exit_anim"
+        app:popEnterAnim="@anim/nav_default_pop_enter_anim"
+        app:popExitAnim="@anim/nav_default_pop_exit_anim"
+        app:popUpTo="@id/homeFragment"
+        app:popUpToInclusive="true" />
+
+    <fragment
+        android:id="@+id/mapFragment"
+        android:name="com.artyum.dynamicnavlog.MapFragment"
+        android:label="@string/txtMap"
+        tools:layout="@layout/fragment_map" />
+    <action
+        android:id="@+id/action_global_mapFragment"
+        app:destination="@id/mapFragment"
+        app:enterAnim="@anim/nav_default_enter_anim"
+        app:exitAnim="@anim/nav_default_exit_anim"
+        app:popEnterAnim="@anim/nav_default_pop_enter_anim"
+        app:popExitAnim="@anim/nav_default_pop_exit_anim"
+        app:popUpTo="@id/homeFragment"
+        app:popUpToInclusive="true" />
+
+</navigation>

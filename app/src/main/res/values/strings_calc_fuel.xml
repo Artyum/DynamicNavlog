@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="manualFuelCalc1">Enter any three of four values. The empty field will be calculated.</string>
+    <string name="manualFuelCalc2">The field <b>Time</b> will accept time in minutes or in HOUR:MINUTE format. E.g. you can enter a value of 165 as well as 2:45.</string>
+    <string name="manualFuelCalc3">The field <b>Fuel at end</b> is optional.</string>
+    <string name="manualFuelCalc4">Example 1: You have 100l at start. After the flight you measured 30. The flight took 2h 15m. You can calculate Fuel per hour rate (31.5).</string>
+    <string name="manualFuelCalc5">Example 2: You have 100l at start and consuming 25l/h. You can calculate maximum Time of flight (4h).</string>
+    <string name="manualFuelCalc6">Example 3: You know that the flight will take about 1h 30m, your fuel consumption is 30l/h and you want to have 40l of fuel at end. You can calculate Fuel at start (85l).</string>
+</resources>

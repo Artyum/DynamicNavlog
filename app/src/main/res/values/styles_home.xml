@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <style name="cellLayout">
+        <item name="android:layout_width">0dp</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_weight">1</item>
+        <item name="android:background">@drawable/frame_border</item>
+        <item name="android:paddingTop">2dp</item>
+        <item name="android:paddingLeft">5dp</item>
+        <item name="android:paddingRight">5dp</item>
+        <item name="android:paddingBottom">0dp</item>
+    </style>
+
+    <style name="txtItemCaption">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textSize">14sp</item>
+        <item name="android:textColor">@color/lightBlack</item>
+        <item name="android:textAllCaps">true</item>
+    </style>
+
+    <style name="txtItemValue">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textColor">@color/magenta</item>
+        <item name="android:textSize">22sp</item>
+        <item name="android:layout_marginTop">2dp</item>
+        <item name="android:layout_marginBottom">11dp</item>
+        <item name="android:maxLines">1</item>
+    </style>
+
+    <style name="txtItemValueFc" parent="txtItemValue">
+        <item name="android:textColor">@color/black</item>
+        <item name="android:textSize">21sp</item>
+    </style>
+
+    <style name="txtRemarks" parent="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:enabled">false</item>
+    </style>
+
+    <style name="txtPct">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textColor">@color/lightBlack</item>
+        <item name="android:textSize">14sp</item>◙
+    </style>
+
+    <style name="homeProgressBar">
+        <item name="android:layout_width">0dp</item>
+        <item name="android:layout_weight">1</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_marginBottom">3dp</item>
+    </style>
+
+    <style name="homeUnits">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textSize">13sp</item>
+        <item name="android:textStyle">italic</item>
+    </style>
+
+    <style name="homeGpsTag" parent="homeUnits">
+        <item name="android:textSize">13sp</item>
+        <item name="android:textStyle">italic</item>
+        <item name="android:textColor">@color/green</item>
+    </style>
+
+    <style name="plus">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textSize">14sp</item>
+        <item name="android:textColor">@color/black</item>
+        <item name="android:visibility">gone</item>
+        <item name="android:text">+</item>
+    </style>
+
+    <style name="navButtonPrev" parent="@style/Widget.MaterialComponents.Button.OutlinedButton">
+        <item name="android:layout_width">@dimen/homeBtnWidth</item>
+        <item name="android:layout_height">@dimen/homeBtnHeight</item>
+        <item name="android:textSize">@dimen/homeBtnTextSize</item>
+    </style>
+
+    <style name="navButtonNext" parent="@style/Widget.MaterialComponents.Button.TextButton">
+        <item name="android:layout_width">@dimen/homeBtnWidth</item>
+        <item name="android:layout_height">@dimen/homeBtnHeight</item>
+        <item name="android:textSize">@dimen/homeBtnTextSize</item>
+        <item name="android:textColor">@color/white</item>
+        <item name="shapeAppearance">@style/navButtonNextShape</item>
+        <item name="rippleColor">@color/lightBlue</item>
+        <item name="android:backgroundTint">@color/colorPrimaryTransparent</item>
+    </style>
+
+    <style name="navButtonPrevShape">
+        <item name="cornerSizeBottomLeft">@dimen/btnHomeRadius</item>
+        <item name="cornerSizeTopLeft">@dimen/btnHomeRadius</item>
+    </style>
+
+    <style name="navButtonNextShape">
+        <item name="cornerSizeBottomRight">@dimen/btnHomeRadius</item>
+        <item name="cornerSizeTopRight">@dimen/btnHomeRadius</item>
+    </style>
+
+    <style name="navButtonRound" parent="@style/Widget.MaterialComponents.Button.TextButton">
+        <item name="android:layout_width">150dp</item>
+        <item name="android:layout_height">@dimen/homeBtnHeight</item>
+        <item name="android:textSize">@dimen/homeBtnTextSize</item>
+        <item name="android:textColor">@color/white</item>
+        <item name="shapeAppearance">@style/navButtonRoundShape</item>
+        <item name="rippleColor">@color/lightBlue</item>
+        <item name="android:backgroundTint">@color/colorPrimaryTransparent</item>
+    </style>
+
+    <style name="navButtonRoundShape">
+        <item name="cornerSizeTopLeft">@dimen/btnHomeRadius</item>
+        <item name="cornerSizeTopRight">@dimen/btnHomeRadius</item>
+        <item name="cornerSizeBottomLeft">@dimen/btnHomeRadius</item>
+        <item name="cornerSizeBottomRight">@dimen/btnHomeRadius</item>
+    </style>
+</resources>
