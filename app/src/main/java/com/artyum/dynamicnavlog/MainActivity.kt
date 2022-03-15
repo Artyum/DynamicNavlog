@@ -560,18 +560,6 @@ class MainActivity : AppCompatActivity() {
         if (settings.gpsAssist) locationSubscribe() else locationUnsubscribe()
     }
 
-    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-
-        if (requestCode == C.LOCATION_PERMISSION_REQ_CODE) {
-            if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                //updateGPS()
-            } else {
-                Log.d(TAG, "GPS Permissions NOT granted by user")
-            }
-        }
-    }
-
     fun resetFlight() {
         tracePointsList.clear()
         resetTimers()
@@ -642,12 +630,19 @@ class MainActivity : AppCompatActivity() {
     fun locationSubscribe() {
         if (settings.gpsAssist && !locationSubscribed) {
             if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-                ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.ACCESS_FINE_LOCATION), C.LOCATION_PERMISSION_REQ_CODE)
-                return
+                val builder = AlertDialog.Builder(this@MainActivity)
+                builder.setMessage(R.string.txtLocationMessage)
+                    .setCancelable(false)
+                    .setPositiveButton(R.string.txtOk) { _, _ ->
+                        ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.ACCESS_FINE_LOCATION), C.LOCATION_PERMISSION_REQ_CODE)
+                    }
+                val alert = builder.create()
+                alert.show()
+            } else {
+                Log.d(TAG, "locationSubscribe")
+                fusedLocationProviderClient.requestLocationUpdates(locationRequest, locationCallback, Looper.getMainLooper())
+                locationSubscribed = true
             }
-            Log.d(TAG, "locationSubscribe")
-            locationSubscribed = true
-            fusedLocationProviderClient.requestLocationUpdates(locationRequest, locationCallback, Looper.getMainLooper())
         }
     }
 
@@ -659,6 +654,17 @@ class MainActivity : AppCompatActivity() {
             if (task.isSuccessful) Log.d(TAG, "Location Callback removed")
             else Log.d(TAG, "Failed to remove Location Callback")
             locationSubscribed = false
+        }
+    }
+
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        if (requestCode == C.LOCATION_PERMISSION_REQ_CODE) {
+            if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                locationSubscribe()
+            } else {
+                Log.d(TAG, "GPS Permissions NOT granted by user")
+            }
         }
     }
 

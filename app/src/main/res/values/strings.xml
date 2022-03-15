@@ -183,6 +183,7 @@
     <string name="txtAbsolutePressure">Absolute pressure</string>
     <string name="txtYes">Yes</string>
     <string name="txtNo">No</string>
+    <string name="txtOk">OK</string>
     <string name="txtSearch">Search</string>
     <string name="txtValid">Valid</string>
     <string name="txtInvalid">Invalid</string>
@@ -196,4 +197,7 @@
     <string name="txtHorizontalAcc">Horizontal accuracy</string>
     <string name="txtMap">Map</string>
     <string name="txtCannotConnectToGooglePlay">Cannot fetch data from Google Play. Check your Internet connection. Please try again later.</string>
+    <string name="txtLocationMessage">The application will ask for access to device\'s location.\n\nDynamic NavLog collects location data to present position on maps and for proper functionality
+        of features like automatic detection of takeoff, landing and waypoint arrival.\n\n\It is also strongly recommended to allow the app to collect location data while running in the background
+        or while the screen is off.\n\nMore information: www.youtube.com/watch?v=98Y0nIItm38</string>
 </resources>
