@@ -1,14 +1,14 @@
-*.iml
 /.gradle
 /.idea
-/app
+/app/build
 /build
-/captures
-local.properties
 
+#*.iml
+#local.properties
 #/.idea/caches
 #/.idea/libraries
 #/.idea/modules.xml
 #/.idea/workspace.xml
 #/.idea/navEditor.xml
 #/.idea/assetWizardSettings.xml
+#/captures
