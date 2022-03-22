@@ -60,6 +60,14 @@
 
             <TextView
                 style="@style/aboutTextVersion"
+                android:text="1.1.9" />
+
+            <TextView
+                style="@style/aboutText"
+                android:text="@string/v1.1.9" />
+
+            <TextView
+                style="@style/aboutTextVersion"
                 android:text="1.1.0" />
 
             <TextView

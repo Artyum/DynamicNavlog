@@ -138,7 +138,7 @@
     <string name="txtWarningNoGPS">Warning! No GPS signal</string>
     <string name="txtGPSStatus">GPS status</string>
     <string name="txtGPSSupport">GPS support</string>
-    <string name="txtGPSEnabled">GPS master switch</string>
+    <string name="txtGPSEnabled">Enable GPS support</string>
     <string name="txtAutoNextWPT">Auto-next stage</string>
     <string name="txtTrackRecording">Record flight trace</string>
     <string name="txtKeepScreenOn">Keep the screen on</string>
