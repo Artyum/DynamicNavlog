@@ -565,6 +565,7 @@ class MainActivity : AppCompatActivity() {
         resetTimers()
         resetNavlog()
         stopNavlogService()
+        calcNavlog()
         saveState()
     }
 
