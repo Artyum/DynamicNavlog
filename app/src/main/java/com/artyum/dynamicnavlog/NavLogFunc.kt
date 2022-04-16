@@ -219,43 +219,43 @@ fun getNextCoords(i: Int): LatLng? {
     else navlogList[next].coords
 }
 
-fun reverseNavlog() {
-    val newNavlogList = ArrayList<NavlogItem>()
-
-    // New Takeoff
-    val newFirst = getNavlogLastActiveItemId()
-    val newTakeoff = navlogList[newFirst].coords
-
-    // Reverse all waypoints
-    if (newFirst > 1) {
-        var i = newFirst - 1
-        while (i >= 0) {
-            newNavlogList.add(navlogList[i])
-            val l = newNavlogList.lastIndex
-            if (navlogList[i + 1].trueTrack != null) newNavlogList[l].trueTrack = normalizeBearing(navlogList[i + 1].trueTrack!! + 180.0)
-            if (navlogList[i + 1].magneticTrack != null) newNavlogList[l].magneticTrack = normalizeBearing(navlogList[i + 1].magneticTrack!! + 180.0)
-            i -= 1
-        }
-        newNavlogList.add(NavlogItem("END", magneticTrack = 0.0, distance = 0.0, coords = settings.takeoffCoords))
-    }
-
-    println("newNavlogList")
-    for (i in newNavlogList.indices) println(newNavlogList[i])
-
-    // Swap departure with destination
-    //val tmp = settings.destination
-    //settings.destination = settings.departure
-    //settings.departure = tmp
-
-    //val destination = if (settings.destination != "") settings.destination else "LAND"
-
-    // Add last point
-    //newNavlogList.add(NavlogItem(destination, magneticTrack = 0.0, distance = 0.0, coords = settings.takeoffCoords))
-
-    //settings.takeoffCoords = newTakeoff
-    //navlogList = newNavlogList
-    //calcNavlog()
-}
+//fun reverseNavlog() {
+//    val newNavlogList = ArrayList<NavlogItem>()
+//
+//    // New Takeoff
+//    val newFirst = getNavlogLastActiveItemId()
+//    val newTakeoff = navlogList[newFirst].coords
+//
+//    // Reverse all waypoints
+//    if (newFirst > 1) {
+//        var i = newFirst - 1
+//        while (i >= 0) {
+//            newNavlogList.add(navlogList[i])
+//            val l = newNavlogList.lastIndex
+//            if (navlogList[i + 1].trueTrack != null) newNavlogList[l].trueTrack = normalizeBearing(navlogList[i + 1].trueTrack!! + 180.0)
+//            if (navlogList[i + 1].magneticTrack != null) newNavlogList[l].magneticTrack = normalizeBearing(navlogList[i + 1].magneticTrack!! + 180.0)
+//            i -= 1
+//        }
+//        newNavlogList.add(NavlogItem("END", magneticTrack = 0.0, distance = 0.0, coords = settings.takeoffCoords))
+//    }
+//
+//    println("newNavlogList")
+//    for (i in newNavlogList.indices) println(newNavlogList[i])
+//
+//    // Swap departure with destination
+//    //val tmp = settings.destination
+//    //settings.destination = settings.departure
+//    //settings.departure = tmp
+//
+//    //val destination = if (settings.destination != "") settings.destination else "LAND"
+//
+//    // Add last point
+//    //newNavlogList.add(NavlogItem(destination, magneticTrack = 0.0, distance = 0.0, coords = settings.takeoffCoords))
+//
+//    //settings.takeoffCoords = newTakeoff
+//    //navlogList = newNavlogList
+//    //calcNavlog()
+//}
 
 fun recalculateFlight(adapter: NavlogAdapter?) {
     if (isNavlogReady()) {

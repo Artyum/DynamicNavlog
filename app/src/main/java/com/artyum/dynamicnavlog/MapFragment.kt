@@ -89,13 +89,7 @@ class MapFragment : Fragment(R.layout.fragment_map) {
                     override fun onMarkerDragEnd(m: Marker) {
                         val i: Int = m.tag as Int
                         if (!isFlightInProgress() || (isFlightInProgress() && i >= getNavlogCurrentItemId())) {
-                            if (i < 0) settings.takeoffCoords = m.position
-                            else navlogList[i].coords = m.position
-
-                            //println(i)
-                            //println(navlogList[i].dest)
-                            //println(m.position)
-
+                            if (i < 0) settings.takeoffCoords = m.position else navlogList[i].coords = m.position
                             calcNavlog()
                             saveState()
                         }
@@ -113,6 +107,13 @@ class MapFragment : Fragment(R.layout.fragment_map) {
                     true
                 }
 
+                map.setOnCameraMoveStartedListener { reason: Int ->
+                    if (settings.mapFollow && reason == GoogleMap.OnCameraMoveStartedListener.REASON_GESTURE) {
+                        settings.mapFollow = false
+                        bind.btnFollowToggle.setImageResource(R.drawable.ic_gps_unlock)
+                    }
+                }
+
                 mapReady = true
 
                 // Draw flight plan
@@ -125,6 +126,7 @@ class MapFragment : Fragment(R.layout.fragment_map) {
                 drawTrace()
             }
         }
+
 
         setFragmentResultListener("requestKey") { _, _ ->
             saveState()
@@ -216,19 +218,19 @@ class MapFragment : Fragment(R.layout.fragment_map) {
                         }
 
                         // Track line
-                        if (prev != null) addLine(prev, navlogList[i].coords!!, color)
+                        if (prev != null) addLine(prev, navlogList[i].coords!!, color, C.TRACK_WIDTH)
                     } else {
                         // Inactive markers
                         if (i >= item) addMarker(p = navlogList[i].coords!!, title = navlogList[i].dest, tag = i, hue = BitmapDescriptorFactory.HUE_VIOLET)
 
                         // Inactive track line
                         if (i == 0) {
-                            addLine(settings.takeoffCoords!!, navlogList[i].coords!!, R.color.trackinactive)
-                            if (navlogList.size > 1 && navlogList[1].active) addLine(navlogList[0].coords!!, navlogList[i + 1].coords!!, R.color.trackinactive)
+                            addLine(settings.takeoffCoords!!, navlogList[i].coords!!, R.color.trackinactive, C.TRACK_INACTIVE_WIDTH)
+                            if (navlogList.size > 1 && navlogList[1].active) addLine(navlogList[0].coords!!, navlogList[i + 1].coords!!, R.color.trackinactive, C.TRACK_INACTIVE_WIDTH)
                         } else if (i > 0 && i < navlogList.size) {
-                            addLine(navlogList[i - 1].coords!!, navlogList[i].coords!!, R.color.trackinactive)
+                            addLine(navlogList[i - 1].coords!!, navlogList[i].coords!!, R.color.trackinactive, C.TRACK_INACTIVE_WIDTH)
                             if (i < navlogList.size - 1 && navlogList[i + 1].active) {
-                                addLine(navlogList[i].coords!!, navlogList[i + 1].coords!!, R.color.trackinactive)
+                                addLine(navlogList[i].coords!!, navlogList[i + 1].coords!!, R.color.trackinactive, C.TRACK_INACTIVE_WIDTH)
                             }
                         }
                     }
@@ -407,12 +409,13 @@ class MapFragment : Fragment(R.layout.fragment_map) {
         }
     }
 
-    private fun addLine(p1: LatLng, p2: LatLng, c: Int) {
+    private fun addLine(p1: LatLng, p2: LatLng, color: Int, width: Float) {
         val l = map.addPolyline(
             PolylineOptions()
                 .clickable(false)
-                .color(ContextCompat.getColor(this.requireContext(), c))
+                .color(ContextCompat.getColor(this.requireContext(), color))
                 .geodesic(true)
+                .width(width)
                 .add(p1, p2)
         )
         trackLines.add(l)

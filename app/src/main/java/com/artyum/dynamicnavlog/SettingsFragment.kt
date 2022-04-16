@@ -300,7 +300,7 @@ class SettingsFragment : Fragment(R.layout.fragment_settings) {
 
         // Trace recording
         bind.settingTrace.setOnCheckedChangeListener { _, isChecked ->
-            settings.trace = isChecked
+            settings.recordTrace = isChecked
             change = true
             saveSettings()
             if (isFlightTraceEnabled()) CoroutineScope(CoroutineName("gpsCoroutine")).launch { (activity as MainActivity).traceThread() }
@@ -407,7 +407,7 @@ class SettingsFragment : Fragment(R.layout.fragment_settings) {
 
         bind.settingGpsAssist.isChecked = settings.gpsAssist
         bind.settingAutoNext.isChecked = settings.autoNext
-        bind.settingTrace.isChecked = settings.trace
+        bind.settingTrace.isChecked = settings.recordTrace
         bind.settingTimeUTC.isChecked = settings.timeInUTC
         bind.settingsScreenOn.isChecked = settings.keepScreenOn
 
@@ -441,7 +441,7 @@ fun isAutoNextEnabled(): Boolean {
 }
 
 fun isFlightTraceEnabled(): Boolean {
-    return settings.gpsAssist && settings.trace
+    return settings.gpsAssist && settings.recordTrace
 }
 
 fun isMapFollow(): Boolean {
@@ -465,12 +465,12 @@ fun resetSettings() {
 
     settings.units = 0
     settings.timeInUTC = false
-    settings.keepScreenOn = false
+    settings.keepScreenOn = true
 
     settings.gpsAssist = true
-    settings.autoNext = false
+    settings.autoNext = true
     settings.mapFollow = false
-    settings.trace = false
+    settings.recordTrace = true
 
     settings.takeoffCoords = null
     settings.mapType = GoogleMap.MAP_TYPE_NORMAL

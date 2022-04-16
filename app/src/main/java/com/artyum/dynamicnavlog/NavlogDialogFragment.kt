@@ -222,7 +222,7 @@ class NavlogDialogFragment(private val item: Int, private val adapter: NavlogAda
         val prevCoords = getPrevCoords(item)
         if (tt != null && dist != null && prevCoords != null) {
             val newCoords = calcDestinationCoords(from = prevCoords, bearing = tt, distance = distUnits2meters(dist))
-            val d = getDeclination(newCoords)
+            //val d = getDeclination(newCoords)
             //bind.dialogDeclination.setText(formatDouble(d, 1))
             bind.dialogLat.setText(formatDouble(newCoords.latitude, C.COORDS_PRECISION))
             bind.dialogLng.setText(formatDouble(newCoords.longitude, C.COORDS_PRECISION))

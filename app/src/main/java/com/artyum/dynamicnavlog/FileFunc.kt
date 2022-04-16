@@ -55,7 +55,7 @@ fun saveState() {
     file.appendText("maptype;${settings.mapType}\n")
     file.appendText("mapfollow;${settings.mapFollow}\n")
     file.appendText("nextRadius;${settings.nextRadius}\n")
-    file.appendText("trace;${settings.trace}\n")
+    file.appendText("trace;${settings.recordTrace}\n")
 
     // Timers
     file.appendText("\n${C.INI_TIMERS_STR}\n")
@@ -159,7 +159,7 @@ fun loadState(fileName: String = stateFileName) {
                         if (str[0] == "maptype") newSettings.mapType = str[1].toIntOrNull() ?: GoogleMap.MAP_TYPE_NORMAL
                         if (str[0] == "mapfollow") newSettings.mapFollow = str[1].toBoolean()
                         if (str[0] == "nextRadius") newSettings.nextRadius = str[1].toIntOrNull() ?: C.DEFAULT_NEXT_RADIUS
-                        if (str[0] == "trace") newSettings.trace = str[1].toBoolean()
+                        if (str[0] == "trace") newSettings.recordTrace = str[1].toBoolean()
                     }
 
                     if (mode == C.INI_TIMERS && str.size == 2 && str[1] != "" && str[1] != "null") {
@@ -385,7 +385,6 @@ fun saveAsCsv(): String {
 
 fun saveAsGpx(): String {
     var fileName = ""
-    var gpx = ""
     var export = false
     var wpt = ""
     var trkpt = ""
@@ -410,7 +409,7 @@ fun saveAsGpx(): String {
     }
 
     if (export) {
-        gpx = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
+        val gpx = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
                 "<gpx version=\"1.0\">\n" +
                 "\t<name>Example gpx</name>\n" +
                 wpt +
