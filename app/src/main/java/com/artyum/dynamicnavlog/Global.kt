@@ -1,7 +1,5 @@
 package com.artyum.dynamicnavlog
 
-import android.app.Activity
-import android.content.Context
 import android.content.res.Resources
 import android.graphics.Bitmap
 import android.graphics.Canvas
@@ -10,7 +8,6 @@ import android.graphics.Rect
 import android.util.Log
 import android.view.View
 import android.widget.ImageView
-import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.res.ResourcesCompat
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.model.LatLng
@@ -42,7 +39,7 @@ data class Settings(
     var mapType: Int = GoogleMap.MAP_TYPE_NORMAL,
     var mapOrientation: Int = C.MAP_ORIENTATION_NORTH,
     var autoNext: Boolean = true,
-    var trace: Boolean = false,
+    var recordTrace: Boolean = false,
     var mapFollow: Boolean = true,
     var tfDisplayToggle: Int = C.TF_DISPLAY_REM,
     var nextRadius: Int = C.DEFAULT_NEXT_RADIUS
@@ -168,6 +165,10 @@ object C {
     const val STAGE_3_FLIGHT_IN_PROGRESS = 3
     const val STAGE_4_AFTER_LANDING = 4
     const val STAGE_5_AFTER_ENGINE_SHUTDOWN = 5
+
+    // Track line width
+    const val TRACK_WIDTH = 20f
+    const val TRACK_INACTIVE_WIDTH = 10f
 }
 
 var navlogList = ArrayList<NavlogItem>()

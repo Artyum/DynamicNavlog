@@ -14,7 +14,6 @@ import android.view.MenuItem
 import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import androidx.appcompat.view.menu.MenuBuilder
 import androidx.core.app.ActivityCompat
 import androidx.core.content.FileProvider
 import androidx.navigation.NavController
@@ -214,22 +213,22 @@ class MainActivity : AppCompatActivity() {
                 if (fileName != "") shareFile(fileName, "application/gpx+xml") else Toast.makeText(this, getString(R.string.txtExportERR), Toast.LENGTH_SHORT).show()
             }
 
-            R.id.optionRevertTrack -> {
-                val msg = if (isFlightInProgress()) R.string.txtWarningFlightInProgressDialog else R.string.txtWarningAreYouSure
-                val builder = AlertDialog.Builder(this@MainActivity)
-                builder.setMessage(msg)
-                    .setCancelable(false)
-                    .setPositiveButton(R.string.txtYes) { _, _ ->
-                        reverseTrack()
-                        //navController.navigate(R.id.homeFragment)
-                        Toast.makeText(this, getString(R.string.txtReverseDone), Toast.LENGTH_SHORT).show()
-                    }
-                    .setNegativeButton(R.string.txtNo) { dialog, _ ->
-                        dialog.dismiss()
-                    }
-                val alert = builder.create()
-                alert.show()
-            }
+//            R.id.optionRevertTrack -> {
+//                val msg = if (isFlightInProgress()) R.string.txtWarningFlightInProgressDialog else R.string.txtWarningAreYouSure
+//                val builder = AlertDialog.Builder(this@MainActivity)
+//                builder.setMessage(msg)
+//                    .setCancelable(false)
+//                    .setPositiveButton(R.string.txtYes) { _, _ ->
+//                        reverseTrack()
+//                        //navController.navigate(R.id.homeFragment)
+//                        Toast.makeText(this, getString(R.string.txtReverseDone), Toast.LENGTH_SHORT).show()
+//                    }
+//                    .setNegativeButton(R.string.txtNo) { dialog, _ ->
+//                        dialog.dismiss()
+//                    }
+//                val alert = builder.create()
+//                alert.show()
+//            }
 
             R.id.optionResetFlight -> {
                 val msg = if (isFlightInProgress()) R.string.txtWarningFlightInProgressDialog else R.string.txtWarningAreYouSure
@@ -569,10 +568,10 @@ class MainActivity : AppCompatActivity() {
         saveState()
     }
 
-    fun reverseTrack() {
-        reverseNavlog()
-        resetFlight()
-    }
+//    fun reverseTrack() {
+//        reverseNavlog()
+//        resetFlight()
+//    }
 
     fun startNavlogService() {
         if (!serviceRunning) {

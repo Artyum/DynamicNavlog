@@ -48,6 +48,8 @@
     <string name="txtUnitsConverter">Units converter</string>
     <string name="txtPurchase">Purchase Dynamic NavLog</string>
     <string name="txtAbout">About</string>
+    <string name="txtContact">Contact</string>
+    <string name="txtVersion">Version</string>
     <string name="txtDensityCalculator">Density altitude</string>
     <string name="txtInvalidDialogCheck">Destination, Magnetic Track and Distance are mandatory fields</string>
     <string name="txtInvalidDensityParams">Please enter pressure and temperature</string>
