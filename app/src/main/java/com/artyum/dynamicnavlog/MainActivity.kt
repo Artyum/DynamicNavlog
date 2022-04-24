@@ -251,10 +251,6 @@ class MainActivity : AppCompatActivity() {
     }
 
     // Billing // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // //
-    // https://betterprogramming.pub/how-to-implement-in-app-purchases-in-your-android-app-7cc1f80148a4
-    // https://developer.android.google.cn/google/play/billing/release-notes?hl=en#4-0
-    // https://developer.android.google.cn/reference/com/android/billingclient/api/BillingClient?hl=EN-GB#queryPurchasesAsync(java.lang.String,%20com.android.billingclient.api.PurchasesResponseListener)
-
     private fun startBillingClient() {
         Log.d(TAG, "startBillingClient")
 

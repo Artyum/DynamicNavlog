@@ -154,9 +154,6 @@ class CalcDensity2Fragment : Fragment(R.layout.fragment_calc_density2) {
             }
 
             if (chk) {
-                // Density Altitude Calculator
-                // https://www.omnicalculator.com/physics/density-altitude#how-to-calculate-density-altitude-density-altitude-formula
-
                 //Saturated vapor pressure Es
                 val es = 6.11 * 10.0.pow((7.5 * air_c) / (237.3 + air_c))
 
