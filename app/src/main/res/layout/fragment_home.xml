@@ -500,7 +500,7 @@
                                 <TextView
                                     android:id="@+id/txtEngineTime"
                                     style="@style/txtItemCaption"
-                                    android:text="@string/txtEngineTime"
+                                    android:text="@string/txtBlockTime"
                                     app:layout_constraintLeft_toLeftOf="parent"
                                     app:layout_constraintRight_toRightOf="parent"
                                     app:layout_constraintTop_toTopOf="parent" />
@@ -616,7 +616,7 @@
         <Button
             android:id="@+id/btnOffBlock"
             style="@style/navButtonRound"
-            android:text="@string/txtSetOffBlock"
+            android:text="@string/txtOffBlock"
             android:visibility="gone" />
 
         <Button

@@ -48,7 +48,7 @@
 
                 <TextView
                     style="@style/aboutText"
-                    android:text="1.1.9"
+                    android:text="1.1.10"
                     app:layout_constraintBaseline_toBaselineOf="@id/a"
                     app:layout_constraintRight_toRightOf="parent" />
             </androidx.constraintlayout.widget.ConstraintLayout>

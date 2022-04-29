@@ -7,6 +7,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
@@ -107,6 +108,7 @@ class MapFragment : Fragment(R.layout.fragment_map) {
                     true
                 }
 
+                // Map drag disables Camera Follow
                 map.setOnCameraMoveStartedListener { reason: Int ->
                     if (settings.mapFollow && reason == GoogleMap.OnCameraMoveStartedListener.REASON_GESTURE) {
                         settings.mapFollow = false
@@ -150,9 +152,18 @@ class MapFragment : Fragment(R.layout.fragment_map) {
         bind.btnMapType.setOnClickListener {
             if (mapReady) {
                 when (map.mapType) {
-                    GoogleMap.MAP_TYPE_NORMAL -> map.mapType = GoogleMap.MAP_TYPE_HYBRID
-                    GoogleMap.MAP_TYPE_HYBRID -> map.mapType = GoogleMap.MAP_TYPE_TERRAIN
-                    GoogleMap.MAP_TYPE_TERRAIN -> map.mapType = GoogleMap.MAP_TYPE_NORMAL
+                    GoogleMap.MAP_TYPE_NORMAL -> {
+                        map.mapType = GoogleMap.MAP_TYPE_HYBRID
+                        Toast.makeText(view.context, getString(R.string.txtMapTypeHybrid), Toast.LENGTH_SHORT).show()
+                    }
+                    GoogleMap.MAP_TYPE_HYBRID -> {
+                        map.mapType = GoogleMap.MAP_TYPE_TERRAIN
+                        Toast.makeText(view.context, getString(R.string.txtMapTypeTerrain), Toast.LENGTH_SHORT).show()
+                    }
+                    GoogleMap.MAP_TYPE_TERRAIN -> {
+                        map.mapType = GoogleMap.MAP_TYPE_NORMAL
+                        Toast.makeText(view.context, getString(R.string.txtMapTypeNormal), Toast.LENGTH_SHORT).show()
+                    }
                 }
                 settings.mapType = map.mapType
             }

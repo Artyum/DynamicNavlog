@@ -296,22 +296,6 @@ fun refreshFlightPlanList(search: String = "") {
     planList.sortBy { it.fileName.lowercase() }
 }
 
-/*fun saveTracePosition(gps: GpsData) {
-    val tag = "FileFunc"
-    Log.d(tag, "saveTrackPosition")
-
-    val time = LocalDateTime.now()
-    val lat = formatDouble(gps.coords.latitude, C.COORDS_PRECISION)
-    val lng = formatDouble(gps.coords.longitude, C.COORDS_PRECISION)
-    val spd = formatDouble(gps.rawSpeed, 1)
-    val alt = formatDouble(gps.altitude, 1)
-    val msg = "$time;$lat;$lng;$spd;$alt"
-
-    val fileName = normalizePlantName() + C.TRK_EXTENSION
-    val file = File(externalAppDir, fileName)
-    file.appendText(msg)
-}*/
-
 fun saveTracePoint(p: LatLng) {
     Log.d("FileFunc", "saveTracePoints")
     if (tracePointsList.size == 0) return
@@ -354,8 +338,17 @@ fun saveAsCsv(): String {
         fileName = encodePlanName() + C.CSV_EXTENSION
         val file = File(externalAppDir, fileName)
 
-        // Header
-        file.writeText("Dest;TT;d;MT;DIST;WCA;HDG;GS;TIME;T.INC;ETA;ATA;FUEL;F.REM;RMK\n")
+        // Plan settings
+        file.writeText("PLAN NAME;" + settings.planName + "\n")
+        file.appendText("DEP / DEST;" + settings.departure + " / " + settings.destination + "\n")
+        file.appendText("PLANE;" + settings.planeType + " / " + settings.registration + "\n")
+        file.appendText("WIND DIR / SPD;" + formatDouble(settings.windDir) + " / " + formatDouble(settings.windSpd) + ' ' + getSpeedUnits() + "\n")
+        file.appendText("TAS;" + formatDouble(settings.tas) + ' ' + getSpeedUnits() + "\n")
+        file.appendText("FUEL / FPH;" + formatDouble(settings.fuelOnBoard) + " / " + formatDouble(settings.fph) + "\n")
+
+        // Table header
+        file.appendText("\n")
+        file.appendText("DEST;TT;d;MT;DIST;WCA;HDG;GS;TIME;T.INC;ETA;ATA;FUEL;F.REM;RMK\n")
 
         for (i in navlogList.indices) {
             if (navlogList[i].active) {
@@ -369,10 +362,10 @@ fun saveAsCsv(): String {
                         formatDouble(navlogList[i].gs) + ";" +
                         formatSecondsToTime(navlogList[i].time) + ";" +
                         formatSecondsToTime(navlogList[i].timeIncrement) + ";" +
-                        ";" +   // ETA
-                        ";" +   // ATA
                         formatDouble(navlogList[i].fuel, 1) + ";" +
                         formatDouble(navlogList[i].fuelRemaining) + ";" +
+                        ";" +   // ETA
+                        ";" +   // ATA
                         navlogList[i].remarks.replace("\n", " ")
                 msg = msg.replace("null", "")
                 file.appendText(msg + "\n")
