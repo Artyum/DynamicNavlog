@@ -66,7 +66,7 @@ class MainActivity : AppCompatActivity() {
             setOf(
                 R.id.homeFragment, R.id.settingsFragment, R.id.navlogFragment, R.id.mapFragment,
                 R.id.calcWindFragment, R.id.calcFuelFragment, R.id.calcTimeDistFragment, R.id.calcDensity2Fragment, R.id.calcUnitsFragment,
-                R.id.planListFragment, R.id.aboutFragment
+                R.id.planListFragment, R.id.aboutFragment, R.id.timersFragment
             ),
             bind.drawerLayout
         )

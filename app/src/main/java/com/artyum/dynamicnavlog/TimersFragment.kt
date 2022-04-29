@@ -39,148 +39,55 @@ class TimersFragment : Fragment(R.layout.fragment_timers) {
         bind.timersLayout.keepScreenOn = settings.keepScreenOn
 
         refreshView()
-
-        // OFF-BLOCK
-        bind.btn1.setOnClickListener {
-            if (timers.offblock == null) {
-                if (isNavlogReady()) {
-                    timers.offblock = getCurTimestamp()
-                    bind.btn2.isEnabled = true
-                    refreshView()
-                    startActivity()
-                } else Toast.makeText(view.context, R.string.txtNavlogNotReady, Toast.LENGTH_SHORT).show()
-            } else {
-                Toast.makeText(view.context, R.string.txtWarningLongClick, Toast.LENGTH_SHORT).show()
-            }
-        }
-
-        bind.btn1.setOnLongClickListener {
-            if (timers.offblock != null) {
-                timers.offblock = getCurTimestamp()
-                bind.btn2.isEnabled = true
-                refreshView()
-                startActivity()
-            }
-            true
-        }
-
-        // TAKEOFF
-        bind.btn2.setOnClickListener {
-            if (timers.takeoff == null) {
-                timers.takeoff = getCurTimestamp()
-                setFirstCurrent()
-                bind.btn3.isEnabled = true
-                startActivity()
-                refreshView()
-                setFirstCurrent()
-            } else Toast.makeText(view.context, R.string.txtWarningLongClick, Toast.LENGTH_SHORT).show()
-        }
-
-        bind.btn2.setOnLongClickListener {
-            if (timers.takeoff != null) {
-                timers.takeoff = getCurTimestamp()
-                refreshView()
-                startActivity()
-            }
-            true
-        }
-
-        // LANDING
-        bind.btn3.setOnClickListener {
-            if (timers.landing == null) {
-                timers.landing = getCurTimestamp()
-                bind.btn4.isEnabled = true
-                refreshView()
-                startActivity()
-                if (isNavlogReady()) navlogList[getNavlogCurrentItemId()].ata = getCurTimestamp()
-                calcFinalTimes()
-            } else Toast.makeText(view.context, R.string.txtWarningLongClick, Toast.LENGTH_SHORT).show()
-        }
-
-        bind.btn3.setOnLongClickListener {
-            timers.landing = getCurTimestamp()
-            refreshView()
-            startActivity()
-            if (isNavlogReady()) navlogList[getNavlogCurrentItemId()].ata = getCurTimestamp()
-            true
-        }
-
-        // ON-BLOCK
-        bind.btn4.setOnClickListener {
-            if (timers.onblock == null) {
-                timers.onblock = getCurTimestamp()
-                refreshView()
-                startActivity()
-                (activity as MainActivity).stopNavlogService()
-                calcFinalTimes()
-            } else Toast.makeText(view.context, R.string.txtWarningLongClick, Toast.LENGTH_SHORT).show()
-        }
-
-        bind.btn4.setOnLongClickListener {
-            timers.onblock = getCurTimestamp()
-            refreshView()
-            startActivity()
-            (activity as MainActivity).stopNavlogService()
-            true
-        }
-
-        calcFinalTimes()
-    }
-
-    private fun getCurTimestamp(): LocalDateTime = LocalDateTime.now()
-
-    private fun startActivity() {
-        calcNavlog()
-        (activity as MainActivity).startNavlogService()
-        saveState()
-    }
-
-    private fun calcFinalTimes() {
-        if (getFlightStage() == C.STAGE_5_AFTER_ENGINE_SHUTDOWN) {
-            // Flight Time
-            timers.flightTime = Duration.between(timers.takeoff, timers.landing).toMillis() / 1000
-
-            // Block time
-            timers.blockTime = Duration.between(timers.offblock, timers.onblock).toMillis() / 1000
-
-            // Ground Time
-            timers.groundTime = timers.blockTime!! - timers.flightTime!!
-
-            // Display
-            bind.outBlockTime.text = formatSecondsToTime(timers.blockTime)
-            bind.outFlightTime.text = formatSecondsToTime(timers.flightTime)
-            bind.outGroundTime.text = formatSecondsToTime(timers.groundTime)
-        }
+        calcSummary()
     }
 
     private fun refreshView() {
-        // Enable/disable buttons
-        when (getFlightStage()) {
-            C.STAGE_1_BEFORE_ENGINE_START -> {
-                bind.btn2.isEnabled = false
-                bind.btn3.isEnabled = false
-                bind.btn4.isEnabled = false
-            }
-            C.STAGE_2_ENGINE_RUNNING -> {
-                bind.btn3.isEnabled = false
-                bind.btn4.isEnabled = false
-            }
-            C.STAGE_3_FLIGHT_IN_PROGRESS -> {
-                bind.btn4.isEnabled = false
-            }
+        var str: String
+        val z = if (settings.timeInUTC) "z" else ""
+
+        bind.flightName.setText(settings.planName)
+
+        str = if (timers.offblock != null) formatDateTime(timers.offblock, C.FORMAT_DATETIME) + z else ""
+        bind.timeOffBlock.setText(str)
+
+        str = if (timers.takeoff != null) formatDateTime(timers.takeoff, C.FORMAT_DATETIME) + z else ""
+        bind.timeTakeoff.setText(str)
+
+        str = if (timers.landing != null) formatDateTime(timers.landing, C.FORMAT_DATETIME) + z else ""
+        bind.timeLanding.setText(str)
+
+        str = if (timers.onblock != null) formatDateTime(timers.onblock, C.FORMAT_DATETIME) + z else ""
+        bind.timeOnBlock.setText(str)
+    }
+
+    private fun calcSummary() {
+        var gnd1: Long = 0
+        var gnd2: Long = 0
+        var gndT: Long = 0
+        var flightTime: Long = 0
+        var blockTime: Long = 0
+
+        // Ground time
+        if (timers.offblock != null && timers.takeoff != null) gnd1 = Duration.between(timers.offblock, timers.takeoff).toMillis() / 1000
+        if (timers.landing != null && timers.onblock != null) gnd2 = Duration.between(timers.landing, timers.onblock).toMillis() / 1000
+        if (gnd1 != 0L && gnd2 != 0L) gndT = gnd1 + gnd2
+
+        // Flight time
+        if (timers.takeoff != null && timers.landing != null) flightTime = Duration.between(timers.takeoff, timers.landing).toMillis() / 1000
+
+        // Block time
+        if (timers.offblock != null && timers.onblock != null) blockTime = Duration.between(timers.offblock, timers.onblock).toMillis() / 1000
+
+        // Display
+        val stage = getFlightStage()
+        if (stage >= C.STAGE_3_FLIGHT_IN_PROGRESS) bind.outGroundTime1.setText(formatSecondsToTime(gnd1))
+        if (stage >= C.STAGE_5_AFTER_ENGINE_SHUTDOWN) {
+            bind.outGroundTime2.setText(formatSecondsToTime(gnd2))
+            bind.outGroundTimeT.setText(formatSecondsToTime(gndT))
+            bind.outBlockTime.setText(formatSecondsToTime(blockTime))
         }
-
-        // Buttons colors
-        if (timers.offblock != null) bind.btn1.setBackgroundColor(ContextCompat.getColor(bind.btn1.context, R.color.button))
-        if (timers.takeoff != null) bind.btn2.setBackgroundColor(ContextCompat.getColor(bind.btn2.context, R.color.button))
-        if (timers.landing != null) bind.btn3.setBackgroundColor(ContextCompat.getColor(bind.btn3.context, R.color.button))
-        if (timers.onblock != null) bind.btn4.setBackgroundColor(ContextCompat.getColor(bind.btn4.context, R.color.button))
-
-        // Times in TextViews
-        bind.timeOffBlock.setText(formatDateTime(timers.offblock, C.FORMAT_DATETIME))
-        bind.timeTakeoff.setText(formatDateTime(timers.takeoff, C.FORMAT_DATETIME))
-        bind.timeLanding.setText(formatDateTime(timers.landing, C.FORMAT_DATETIME))
-        bind.timeOnBlock.setText(formatDateTime(timers.onblock, C.FORMAT_DATETIME))
+        if (stage >= C.STAGE_4_AFTER_LANDING) bind.outFlightTime.setText(formatSecondsToTime(flightTime))
     }
 }
 
@@ -204,7 +111,7 @@ fun formatIniDateTime(t: LocalDateTime?): String {
 }
 
 fun formatEpochTime(timestamp: Long): String {
-    val sdf = SimpleDateFormat(C.FORMAT_DATETIMESS, Locale.US)
+    val sdf = SimpleDateFormat(C.FORMAT_DATETIME_SEC, Locale.US)
     val netDate = Date(timestamp)
     return sdf.format(netDate)
 }
