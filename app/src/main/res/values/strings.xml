@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="appName">Dynamic NavLog</string>
-    <string name="appEmail">dynamicnavlog@gmail.com</string>
+    <string name="linkEmail"><a href="mailto:dynamicnavlog@gmail.com\">dynamicnavlog@gmail.com</a></string>
     <string name="txtChangeLog">Change log</string>
     <string name="adStaticInfo">If this app is useful to you, please consider purchasing it to support the developer</string>
     <string name="adStaticEnjoyFlight"><b>Enjoy Your Flight</b></string>
@@ -30,8 +30,11 @@
     <string name="txtRightxwind">Right Xwind</string>
     <string name="txtClear">AC</string>
     <string name="txtSettings">Settings</string>
+    <string name="txtGpsOptions">GPS options</string>
     <string name="txtFlightSettings">Flight settings</string>
     <string name="txtOptions">Options</string>
+    <string name="txtFlightConditions">Flight conditions</string>
+    <string name="txtMisc">Misc</string>
     <string name="txtFlightPlan">Flight Plan</string>
     <string name="txtFlightPlanName">Flight plan name</string>
     <string name="txtInvalidFlightPlanName">Cannot save: Invalid flight plan name</string>
@@ -50,6 +53,8 @@
     <string name="txtPurchase">Purchase Dynamic NavLog</string>
     <string name="txtAbout">About</string>
     <string name="txtContact">Contact</string>
+    <string name="linkPrivacyPolicy"><a href="https://artyum.github.io/dynamicnavlog">Privacy policy</a></string>
+    <string name="linkPermissions"><a href="https://www.youtube.com/watch?v=98Y0nIItm38">Location permissions</a></string>
     <string name="txtVersion">Version</string>
     <string name="txtDensityCalculator">Density altitude</string>
     <string name="txtInvalidDialogCheck">Destination, Magnetic Track and Distance are mandatory fields</string>
@@ -139,12 +144,12 @@
     <string name="txtGroundTime2">Gnd time 2</string>
     <string name="txtGroundTimeTotal">Gnd time total</string>
     <string name="txtActive">Active</string>
-    <string name="txtTimeUTC">Display Zulu times</string>
+    <string name="txtTimeUTC">Display times in UTC</string>
     <string name="txtGPS">GPS</string>
     <string name="txtWarningNoGPS">Warning! No GPS signal</string>
     <string name="txtGPSStatus">GPS status</string>
     <string name="txtGPSSupport">GPS support</string>
-    <string name="txtGPSEnabled">Enable GPS support</string>
+    <string name="txtGPSEnabled">Enable GPS</string>
     <string name="txtAutoNextWPT">Auto-next stage</string>
     <string name="txtTrackRecording">Record flight trace</string>
     <string name="txtKeepScreenOn">Keep the screen on</string>
@@ -154,7 +159,7 @@
     <string name="txtWarningLongClick">Warning! Hold to overwrite</string>
     <string name="txtNavlogNotReady">Navigation log is not ready</string>
     <string name="txtHoldButtonToConfirm">Hold to confirm</string>
-    <string name="txtBackgroundServiceIsRunning">Application is running</string>
+    <string name="txtBackgroundServiceIsRunning">Dynamic NavLog is running</string>
     <string name="txtReverseTrack">Reverse track</string>
     <string name="txtRestartFlight">Reset flight plan</string>
     <string name="txtExportCSV">Export plan as CSV</string>
@@ -182,6 +187,7 @@
     <string name="txtDistanceSpeedUnits">Distance/speed units</string>
     <string name="txtMapOrientation">Map orientation</string>
     <string name="txtNextRadius">Next WPT radius</string>
+    <string name="txtScreenOrientation">Screen orientation</string>
     <string name="txtUnitsGroup">Select group</string>
     <string name="txtRelativeHumidity">Relative humidity</string>
     <string name="txtAirDensity">Air density</string>

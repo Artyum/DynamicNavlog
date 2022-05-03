@@ -9,8 +9,9 @@
     <dimen name="btnHomeRadius">20dp</dimen>
     <dimen name="valuesWidth">160dp</dimen>
     <dimen name="circleHeight">310dp</dimen>
-
+    <dimen name="aboutItemMargin">7dp</dimen>
     <dimen name="homeBtnWidth">120dp</dimen>
     <dimen name="homeBtnHeight">60dp</dimen>
     <dimen name="homeBtnTextSize">16sp</dimen>
+
 </resources>

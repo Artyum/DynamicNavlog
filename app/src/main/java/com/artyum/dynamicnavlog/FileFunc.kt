@@ -56,6 +56,7 @@ fun saveState() {
     file.appendText("mapfollow;${settings.mapFollow}\n")
     file.appendText("nextRadius;${settings.nextRadius}\n")
     file.appendText("trace;${settings.recordTrace}\n")
+    file.appendText("screenorient;${settings.screenOrientation}\n")
 
     // Timers
     file.appendText("\n${C.INI_TIMERS_STR}\n")
@@ -160,6 +161,7 @@ fun loadState(fileName: String = stateFileName) {
                         if (str[0] == "mapfollow") newSettings.mapFollow = str[1].toBoolean()
                         if (str[0] == "nextRadius") newSettings.nextRadius = str[1].toIntOrNull() ?: C.DEFAULT_NEXT_RADIUS
                         if (str[0] == "trace") newSettings.recordTrace = str[1].toBoolean()
+                        if (str[0] == "screenorient") newSettings.screenOrientation = str[1].toIntOrNull() ?: C.SCREEN_PORTRAIT
                     }
 
                     if (mode == C.INI_TIMERS && str.size == 2 && str[1] != "" && str[1] != "null") {

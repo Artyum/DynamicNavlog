@@ -1,8 +1,7 @@
+app/release/
 app/build
-build
-.gradle
+.gradle/
 .idea
-.gitignore
 
 #*.iml
 #local.properties
@@ -17,4 +16,3 @@ build
 # Commit
 # git rm -rf --cached .
 # git add .
-app/release/

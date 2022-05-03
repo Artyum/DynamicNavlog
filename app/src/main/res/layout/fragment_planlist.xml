@@ -13,20 +13,12 @@
         style="@style/globalFragmentFrame"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:clipToPadding="true"
         android:orientation="vertical">
-
-        <TextView
-            android:id="@+id/caption"
-            style="@style/globalCaption"
-            android:text="@string/txtFlightPlans" />
 
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/searchBox"
             style="@style/inputLayout"
             android:layout_width="match_parent"
-            android:layout_below="@id/caption"
-            android:layout_marginBottom="10dp"
             android:hint="@string/txtSearch">
 
             <com.google.android.material.textfield.TextInputEditText
@@ -34,11 +26,37 @@
                 style="@style/layoutTextNormal" />
         </com.google.android.material.textfield.TextInputLayout>
 
+        <LinearLayout
+            android:id="@+id/bbb"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/searchBox"
+            android:layout_marginVertical="10dp"
+            android:gravity="center"
+            android:orientation="horizontal">
+
+            <View
+                style="@style/dividerSet"
+                android:layout_weight="1" />
+
+            <TextView
+
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="15dp"
+                android:text="@string/txtFlightPlans"
+                android:textStyle="bold" />
+
+            <View
+                style="@style/dividerSet"
+                android:layout_weight="1" />
+        </LinearLayout>
+
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/planListRecycler"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_below="@id/searchBox"
+            android:layout_below="@id/bbb"
             android:clipToPadding="false"
             tools:listitem="@layout/fragment_planlist_item" />
 

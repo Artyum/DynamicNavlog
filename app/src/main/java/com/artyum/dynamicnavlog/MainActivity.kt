@@ -4,6 +4,7 @@ import android.Manifest
 import android.annotation.SuppressLint
 import android.app.AlertDialog
 import android.content.Intent
+import android.content.pm.ActivityInfo
 import android.content.pm.PackageManager
 import android.location.Location
 import android.os.Bundle
@@ -174,6 +175,7 @@ class MainActivity : AppCompatActivity() {
         loadState()
         calcNavlog()
         if (isEngineRunning()) startNavlogService()
+        setScreenOrientation()
 
         // Initialize fused location client
         locationSetup()
@@ -564,6 +566,13 @@ class MainActivity : AppCompatActivity() {
         saveState()
     }
 
+    fun setScreenOrientation() {
+        when (settings.screenOrientation) {
+            C.SCREEN_PORTRAIT -> requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
+            C.SCREEN_LANDSCAPE -> requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE
+            C.SCREEN_SENSOR -> requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_FULL_SENSOR
+        }
+    }
 //    fun reverseTrack() {
 //        reverseNavlog()
 //        resetFlight()
