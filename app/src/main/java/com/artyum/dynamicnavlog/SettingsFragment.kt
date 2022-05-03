@@ -1,5 +1,6 @@
 package com.artyum.dynamicnavlog
 
+import android.content.pm.ActivityInfo
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -8,6 +9,7 @@ import android.view.ViewGroup
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.Toast
+import androidx.core.view.isVisible
 import androidx.core.widget.doOnTextChanged
 import androidx.fragment.app.Fragment
 import com.artyum.dynamicnavlog.databinding.FragmentSettingsBinding
@@ -275,10 +277,10 @@ class SettingsFragment : Fragment(R.layout.fragment_settings) {
             if (navlogList.size == 0 || isNavlogGpsReady()) {
                 settings.gpsAssist = isChecked
                 if (settings.gpsAssist) {
-                    gpsSupportSwitch(true)
+                    setGpsGroup(true)
                     a.locationSubscribe()
                 } else {
-                    gpsSupportSwitch(false)
+                    setGpsGroup(false)
                     runBlocking { gpsMutex.withLock { gpsData.isValid = false } }
                     a.locationUnsubscribe()
                 }
@@ -335,6 +337,23 @@ class SettingsFragment : Fragment(R.layout.fragment_settings) {
             change = true
             saveSettings()
         }
+
+        // Screen orientation spinner
+        bind.spinnerScreenOrientation.onItemSelectedListener =
+            object : AdapterView.OnItemSelectedListener {
+                override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
+                    if (position != settings.screenOrientation) {
+                        settings.screenOrientation = position
+                        change = true
+                        (activity as MainActivity).setScreenOrientation()
+                        saveSettings()
+                    }
+                }
+
+                override fun onNothingSelected(parent: AdapterView<*>?) {
+                    return
+                }
+            }
     }
 
     override fun onStop() {
@@ -369,16 +388,23 @@ class SettingsFragment : Fragment(R.layout.fragment_settings) {
         bind.spinnerUnits.adapter = ArrayAdapter(view.context, R.layout.support_simple_spinner_dropdown_item, unitsTypeList)
 
         // Map orientation spinner
-        val orientationList = ArrayList<String>()
-        orientationList.add("North Up")     // 0
-        orientationList.add("Track Up")     // 1
-        orientationList.add("Bearing Up")   // 2
-        bind.spinnerMapOrientation.adapter = ArrayAdapter(view.context, R.layout.support_simple_spinner_dropdown_item, orientationList)
+        val mapOrientationList = ArrayList<String>()
+        mapOrientationList.add("North Up")     // 0
+        mapOrientationList.add("Track Up")     // 1
+        mapOrientationList.add("Bearing Up")   // 2
+        bind.spinnerMapOrientation.adapter = ArrayAdapter(view.context, R.layout.support_simple_spinner_dropdown_item, mapOrientationList)
 
         // Auto-next radius
         val nextRadiusOptions = ArrayList<String>()
-        for (i in nextRadiusList.indices) nextRadiusOptions.add(getNextRadiusUnist(i))
+        for (i in nextRadiusList.indices) nextRadiusOptions.add(getNextRadiusUnits(i))
         bind.spinnerNextRadius.adapter = ArrayAdapter(view.context, R.layout.support_simple_spinner_dropdown_item, nextRadiusOptions)
+
+        // Screen orientation spinner
+        val screenOrientationList = ArrayList<String>()
+        screenOrientationList.add("Portrait")    // 0
+        screenOrientationList.add("Landscape")   // 1
+        screenOrientationList.add("Auto")        // 2
+        bind.spinnerScreenOrientation.adapter = ArrayAdapter(view.context, R.layout.support_simple_spinner_dropdown_item, screenOrientationList)
     }
 
     private fun restoreSettings() {
@@ -393,6 +419,7 @@ class SettingsFragment : Fragment(R.layout.fragment_settings) {
         bind.settingPlaneType.setText(settings.planeType)
         bind.settingRegistration.setText(settings.registration)
 
+        // Flight conditions
         bind.settingWindDir.setText(formatDouble(settings.windDir, precision))
         bind.settingWindSpd.setText(formatDouble(settings.windSpd, precision))
         bind.settingTas.setText(formatDouble(settings.tas, precision))
@@ -401,26 +428,32 @@ class SettingsFragment : Fragment(R.layout.fragment_settings) {
         bind.settingFuel.setText(formatDouble(settings.fuelOnBoard, precision))
         bind.settingTank.setText(formatDouble(settings.tankCapacity, precision))
 
+        // Settings
         bind.spinnerUnits.setSelection(settings.units)
+        bind.settingGpsAssist.isChecked = settings.gpsAssist
+
+        // GPS settings
         bind.spinnerMapOrientation.setSelection(settings.mapOrientation)
         bind.spinnerNextRadius.setSelection(settings.nextRadius)
-
-        bind.settingGpsAssist.isChecked = settings.gpsAssist
         bind.settingAutoNext.isChecked = settings.autoNext
         bind.settingTrace.isChecked = settings.recordTrace
+
+        // Misc
         bind.settingTimeUTC.isChecked = settings.timeInUTC
         bind.settingsScreenOn.isChecked = settings.keepScreenOn
+        bind.spinnerScreenOrientation.setSelection(settings.screenOrientation)
 
-        gpsSupportSwitch(settings.gpsAssist)
+        setGpsGroup(settings.gpsAssist)
 
         refresh = false
     }
 
-    private fun gpsSupportSwitch(isEnabled: Boolean) {
-        bind.settingAutoNext.isEnabled = isEnabled
-        bind.settingTrace.isEnabled = isEnabled
-        bind.spinnerMapOrientation.isEnabled = isEnabled
-        bind.spinnerNextRadius.isEnabled = isEnabled
+    private fun setGpsGroup(isEnabled: Boolean) {
+        bind.gpsGroup.isVisible = isEnabled
+        //bind.settingAutoNext.isEnabled = isEnabled
+        //bind.settingTrace.isEnabled = isEnabled
+        //bind.spinnerMapOrientation.isEnabled = isEnabled
+        //bind.spinnerNextRadius.isEnabled = isEnabled
     }
 
     private fun validWinDir(v: Double?): Boolean {
@@ -477,4 +510,5 @@ fun resetSettings() {
     settings.mapOrientation = C.MAP_ORIENTATION_NORTH
     settings.tfDisplayToggle = C.TF_DISPLAY_REM
     settings.nextRadius = C.DEFAULT_NEXT_RADIUS
+    settings.screenOrientation = C.SCREEN_PORTRAIT
 }

@@ -32,6 +32,7 @@ class PlanListFragment : Fragment(R.layout.fragment_planlist), PlanListAdapter.O
     @SuppressLint("NotifyDataSetChanged")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        bind.planListLayout.keepScreenOn = settings.keepScreenOn
 
         // Search box
         bind.searchInput.doAfterTextChanged {

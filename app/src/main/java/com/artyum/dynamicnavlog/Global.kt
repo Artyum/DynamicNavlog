@@ -42,7 +42,8 @@ data class Settings(
     var recordTrace: Boolean = false,
     var mapFollow: Boolean = true,
     var tfDisplayToggle: Int = C.TF_DISPLAY_REM,
-    var nextRadius: Int = C.DEFAULT_NEXT_RADIUS
+    var nextRadius: Int = C.DEFAULT_NEXT_RADIUS,
+    var screenOrientation: Int = C.SCREEN_PORTRAIT
 )
 
 data class Timers(
@@ -145,9 +146,9 @@ object C {
     const val TF_DISPLAY_CUR = 0
     const val TF_DISPLAY_REM = 1
 
-    const val AUTO_TAKEOFF_SPEED_MPS = 25
-    const val AUTO_LANDING_SPEED_MPS = 25   // 15=~30kt / 20=~40kt / 25=~50kt
-    const val AUTO_NEXT_WAIT_SEC = 5        // Takeoff if speed is AUTO_TAKEOFF_SPEED_MPS for AUTO_NEXT_WAIT_SEC seconds
+    const val AUTO_TAKEOFF_SPEED_MPS = 20
+    const val AUTO_LANDING_SPEED_MPS = 20   // 15=~30kt / 20=~40kt / 25=~50kt
+    const val AUTO_NEXT_WAIT_SEC = 4        // Takeoff if speed is AUTO_TAKEOFF_SPEED_MPS for AUTO_NEXT_WAIT_SEC seconds
 
     const val DEFAULT_NEXT_RADIUS = 0       // Index in nextRadiusList array
 
@@ -155,6 +156,11 @@ object C {
     const val MAP_ORIENTATION_NORTH = 0
     const val MAP_ORIENTATION_TRACK = 1
     const val MAP_ORIENTATION_BEARING = 2
+
+    //Screen orientation
+    const val SCREEN_PORTRAIT = 0
+    const val SCREEN_LANDSCAPE = 1
+    const val SCREEN_SENSOR = 2
 
     // Limit in free version
     const val FREE_WPT_NUMBER_LIMIT = 10    // Limit in free version
@@ -446,7 +452,7 @@ fun getDistUnitsLong(): String {
     return ""
 }
 
-fun getNextRadiusUnist(i: Int): String {
+fun getNextRadiusUnits(i: Int): String {
     return formatDouble(nextRadiusList[i], 1) + " nm"
     /*when (settings.units) {
         C.NM -> return formatDouble(nextRadiusList[i], 1) + " nm"
