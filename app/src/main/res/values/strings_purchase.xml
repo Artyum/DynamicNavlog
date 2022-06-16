@@ -1,8 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="txtBtnPurchase">Buy NOW</string>
-    <string name="purchaseLine1">Thank you for using Dynamic NavLog. I hope it meets your expectations as a navigation log and flight computer. Please consider product evaluation and purchase.</string>
+    <string name="txtBtnPurchase">Donate</string>
+    <string name="purchaseLine1">Thank you for using Dynamic NavLog. I hope it meets your expectations as a navigation log and flight computer. Please consider 5 star rating and recommendation for a friend.</string>
     <string name="txtBenefits">Benefits</string>
-    <string name="purchaseLine2">You can already use all features of the application. By purchasing the app you will disable ads and get unlimited waypoints in the navigation log
-        which is otherwise limited to 10. This is a one-time purchase and never expires.</string>
+    <string name="purchaseLine2">The app is free and you can already use all of its features without any limitations. By donating you will support the further development and disable the startup message. Feel free to contact the developer in case of ideas or problems with the app.</string>
 </resources>

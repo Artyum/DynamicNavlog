@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <style name="topNavBox">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:gravity">center</item>
+        <item name="android:layout_weight">1</item>
+        <item name="android:orientation">vertical</item>
+        <item name="android:background">@color/white</item>
+        <item name="android:paddingVertical">5dp</item>
+        <item name="android:layout_marginHorizontal">1dp</item>
+        <item name="android:layout_marginVertical">1dp</item>
+    </style>
+
+    <style name="topNavLabel">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:gravity">center</item>
+        <item name="android:layout_marginBottom">2dp</item>
+        <item name="android:textSize">13sp</item>
+        <item name="android:textColor">@color/lightBlack</item>
+        <item name="android:textAllCaps">true</item>
+    </style>
+
+    <style name="topNavItem">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:gravity">center</item>
+        <item name="android:textColor">@color/black</item>
+        <item name="android:textSize">23sp</item>
+    </style>
+</resources>

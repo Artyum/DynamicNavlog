@@ -32,6 +32,7 @@ class CalcDensity2Fragment : Fragment(R.layout.fragment_calc_density2) {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        bind.density2Layout.keepScreenOn = settings.keepScreenOn
 
         bind.btnCalculate.setOnClickListener {
             it.hideKeyboard()

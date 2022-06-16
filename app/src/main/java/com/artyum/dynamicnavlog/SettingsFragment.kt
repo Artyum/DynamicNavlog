@@ -1,6 +1,5 @@
 package com.artyum.dynamicnavlog
 
-import android.content.pm.ActivityInfo
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -510,5 +509,5 @@ fun resetSettings() {
     settings.mapOrientation = C.MAP_ORIENTATION_NORTH
     settings.tfDisplayToggle = C.TF_DISPLAY_REM
     settings.nextRadius = C.DEFAULT_NEXT_RADIUS
-    settings.screenOrientation = C.SCREEN_PORTRAIT
+    settings.screenOrientation = C.SCREEN_SENSOR
 }

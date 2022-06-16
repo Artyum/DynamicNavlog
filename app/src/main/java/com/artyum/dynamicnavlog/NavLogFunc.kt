@@ -35,7 +35,7 @@ fun calcNavlog(adapter: NavlogAdapter? = null) {
     clearNavlogInvalidItems(adapter)
 
     // Remove items in free version
-    if (!isAppPurchased) while (navlogList.size > C.FREE_WPT_NUMBER_LIMIT) navlogList.removeLast()
+    //if (!isAppPurchased) while (navlogList.size > C.FREE_WPT_NUMBER_LIMIT) navlogList.removeLast()
 
     // Recalculate GPS data
     recalculateWaypoints()

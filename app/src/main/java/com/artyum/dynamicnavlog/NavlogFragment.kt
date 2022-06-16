@@ -43,17 +43,17 @@ class NavlogFragment : Fragment(R.layout.fragment_navlog), NavlogAdapter.OnItemC
             if (settings.gpsAssist && settings.takeoffCoords == null) {
                 Toast.makeText(view.context, R.string.txtNoTakeoffPoint, Toast.LENGTH_LONG).show()
             } else {
-                if (!isAppPurchased && navlogList.size >= C.FREE_WPT_NUMBER_LIMIT) {
-                    Toast.makeText(view.context, R.string.txtTooManyItems, Toast.LENGTH_LONG).show()
-                } else {
-                    val newItem = NavlogItem(dest = "", magneticTrack = null, distance = null)
-                    navlogList.add(newItem)
-                    adapter.notifyItemInserted(navlogList.lastIndex)
+                //if (!isAppPurchased && navlogList.size >= C.FREE_WPT_NUMBER_LIMIT) {
+                //Toast.makeText(view.context, R.string.txtTooManyItems, Toast.LENGTH_LONG).show()
+                //} else {
+                val newItem = NavlogItem(dest = "", magneticTrack = null, distance = null)
+                navlogList.add(newItem)
+                adapter.notifyItemInserted(navlogList.lastIndex)
 
-                    val recyclerView = bind.navlogRecycler
-                    recyclerView.scrollToPosition(navlogList.lastIndex)
-                    onItemClick(navlogList.lastIndex)
-                }
+                val recyclerView = bind.navlogRecycler
+                recyclerView.scrollToPosition(navlogList.lastIndex)
+                onItemClick(navlogList.lastIndex)
+                //}
             }
         }
 

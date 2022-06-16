@@ -28,6 +28,7 @@ class AboutFragment : Fragment(R.layout.fragment_about) {
 
         // Clickable links
         bind.linkEmail.movementMethod = LinkMovementMethod.getInstance()
+        bind.linkChangeLog.movementMethod = LinkMovementMethod.getInstance()
         bind.linkPrivacyPolicy.movementMethod = LinkMovementMethod.getInstance()
         bind.linkPermissions.movementMethod = LinkMovementMethod.getInstance()
     }

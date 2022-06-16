@@ -18,15 +18,13 @@ import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.*
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.sync.withLock
 import kotlin.math.cos
 import kotlin.math.sin
 import com.google.android.gms.maps.model.LatLngBounds
 
 import com.google.android.gms.maps.model.Marker
+import kotlinx.coroutines.*
 import java.util.regex.Pattern
 import kotlin.coroutines.coroutineContext
 import kotlin.math.abs
@@ -127,8 +125,10 @@ class MapFragment : Fragment(R.layout.fragment_map) {
                 // Draw trace
                 drawTrace()
             }
-        }
 
+            // Start home thread
+            CoroutineScope(CoroutineName("map")).launch { updateMapUIThread() }
+        }
 
         setFragmentResultListener("requestKey") { _, _ ->
             saveState()
@@ -182,7 +182,11 @@ class MapFragment : Fragment(R.layout.fragment_map) {
         refreshPageItems()
 
         // Summary update thread
-        if (settings.gpsAssist) lifecycleScope.launch { updateMapThread() }
+        if (settings.gpsAssist) {
+            bind.txtNavGs.text = getString(R.string.txtGs) + " (" + getSpeedUnits() + ")"
+            bind.txtNavDist.text = getString(R.string.txtDist) + " (" + getDistUnitsLong() + ")"
+            lifecycleScope.launch { updateMapThread() }
+        }
     }
 
     private fun drawFlightPlan() {
@@ -520,14 +524,11 @@ class MapFragment : Fragment(R.layout.fragment_map) {
                 if (gps.isValid) {
                     val lat = formatDouble(gps.coords?.latitude, C.COORDS_PRECISION)
                     val lon = formatDouble(gps.coords?.longitude, C.COORDS_PRECISION)
-                    val spd = formatDouble(gps.speed) + " " + getSpeedUnits()
                     a.runOnUiThread { b.txtLat.text = lat }
                     a.runOnUiThread { b.txtLng.text = lon }
-                    a.runOnUiThread { b.txtSpeed.text = spd }
                 } else {
                     a.runOnUiThread { b.txtLat.text = "" }
                     a.runOnUiThread { b.txtLng.text = "" }
-                    a.runOnUiThread { b.txtSpeed.text = "" }
                 }
 
                 // Check current and re-draw track on change
@@ -559,17 +560,63 @@ class MapFragment : Fragment(R.layout.fragment_map) {
         }
     }
 
-/*
-private fun rotateCoords(point: LatLng, pivot: LatLng, angle: Double): LatLng {
-    val s = sin(deg2rad(angle))
-    val c = cos(deg2rad(angle))
+    private fun updateMapUIThread() {
+        var prevTime = 0L
 
-    val x = point.latitude - pivot.latitude
-    val y = point.longitude - pivot.longitude
+        while (true) {
+            val a = activity as? MainActivity ?: break
+            val b = _binding ?: break
 
-    val xnew = x * c - y * s
-    val ynew = x * s + y * c
+            // Loop every 1 sec
+            val curTime = System.currentTimeMillis() / 1000L
+            if (curTime != prevTime) {
+                prevTime = curTime
 
-    return LatLng(xnew + pivot.latitude, ynew + pivot.longitude)
-}*/
+                val stage = getFlightStage()
+                if (stage > C.STAGE_1_BEFORE_ENGINE_START && stage < C.STAGE_4_AFTER_LANDING) {
+                    val h = HomeItem()
+
+                    // Show top navigation
+                    a.runOnUiThread { b.topNavigation.visibility = View.VISIBLE }
+
+                    // WPT
+                    a.runOnUiThread { b.topMapWpt.text = h.getWpt() }
+
+                    // GS
+                    val (gs, _) = h.getGs()
+                    a.runOnUiThread { b.topMapGs.text = gs }
+
+                    // HDG
+                    val (hdg, _, _) = h.getHdg()
+                    a.runOnUiThread { b.topMapHdg.text = hdg }
+
+                    // ETE
+                    a.runOnUiThread { b.topMapEte.text = h.getEte().ete }
+
+                    // Dist
+                    a.runOnUiThread { b.topMapDist.text = h.getDist().dist }
+
+                    // Track indicator
+                    if (h.gps.isValid) {
+                        val dab = h.getDtkAngleBar()
+                        a.runOnUiThread { b.topTrackIndicator.visibility = View.VISIBLE }
+                        a.runOnUiThread { b.txtTrackAngleIndicatorLeft.progress = dab.left }
+                        a.runOnUiThread { b.txtTrackAngleIndicatorRight.progress = dab.right }
+                        if (dab.hit) {
+                            a.runOnUiThread { b.txtTrackAngleIndicatorLeft.trackColor = ContextCompat.getColor(b.txtTrackAngleIndicatorLeft.context, R.color.colorPrimary) }
+                            a.runOnUiThread { b.txtTrackAngleIndicatorRight.setIndicatorColor(ContextCompat.getColor(b.txtTrackAngleIndicatorRight.context, R.color.colorPrimary)) }
+                        } else {
+                            a.runOnUiThread { b.txtTrackAngleIndicatorLeft.trackColor = ContextCompat.getColor(b.txtTrackAngleIndicatorLeft.context, R.color.red) }
+                            a.runOnUiThread { b.txtTrackAngleIndicatorRight.setIndicatorColor(ContextCompat.getColor(b.txtTrackAngleIndicatorRight.context, R.color.red)) }
+                        }
+                    } else {
+                        a.runOnUiThread { b.topTrackIndicator.visibility = View.GONE }
+                    }
+                } else {
+                    // Hide top navigation
+                    a.runOnUiThread { b.topNavigation.visibility = View.GONE }
+                }
+            }
+        }
+    }
 }
