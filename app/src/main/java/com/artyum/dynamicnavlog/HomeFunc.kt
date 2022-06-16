@@ -208,6 +208,7 @@ class HomeItem() {
 
             ret.sw = formatMillisToTime(Duration.between(prevTime, LocalDateTime.now()).toMillis())
         }
+        if (eteSec == 0L) ret.ete = "-"
         return ret
     }
 

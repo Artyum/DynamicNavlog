@@ -7,13 +7,132 @@
     android:layout_height="match_parent"
     tools:context="MapFragment">
 
+    <LinearLayout
+        android:id="@+id/topNavigation"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/colorPrimary"
+            android:gravity="center"
+            android:orientation="horizontal">
+
+            <LinearLayout style="@style/topNavBox">
+
+                <TextView
+                    style="@style/topNavLabel"
+                    android:text="@string/txtWpt" />
+
+                <TextView
+                    android:id="@+id/topMapWpt"
+                    style="@style/topNavItem" />
+            </LinearLayout>
+
+            <LinearLayout
+                style="@style/topNavBox"
+                android:layout_marginHorizontal="0dp">
+
+                <TextView
+                    android:id="@+id/txtNavGs"
+                    style="@style/topNavLabel"
+                    android:text="@string/txtGs" />
+
+                <TextView
+                    android:id="@+id/topMapGs"
+                    style="@style/topNavItem" />
+            </LinearLayout>
+
+            <LinearLayout style="@style/topNavBox">
+
+                <TextView
+                    style="@style/topNavLabel"
+                    android:text="@string/txtHdg"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/topMapHdg"
+                    style="@style/topNavItem"
+                    android:textColor="@color/magenta"
+                    android:textStyle="bold" />
+            </LinearLayout>
+
+            <LinearLayout
+                style="@style/topNavBox"
+                android:layout_marginHorizontal="0dp">
+
+                <TextView
+                    style="@style/topNavLabel"
+                    android:text="@string/txtEte" />
+
+                <TextView
+                    android:id="@+id/topMapEte"
+                    style="@style/topNavItem" />
+            </LinearLayout>
+
+            <LinearLayout style="@style/topNavBox">
+
+                <TextView
+                    android:id="@+id/txtNavDist"
+                    style="@style/topNavLabel"
+                    android:text="@string/txtDist" />
+
+                <TextView
+                    android:id="@+id/topMapDist"
+                    style="@style/topNavItem" />
+            </LinearLayout>
+        </LinearLayout>
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/topTrackIndicator"
+            android:layout_width="match_parent"
+            android:layout_height="5dp">
+
+            <com.google.android.material.progressindicator.LinearProgressIndicator
+                android:id="@+id/txtTrackAngleIndicatorLeft"
+                style="@style/homeProgressBar"
+                android:progress="100"
+                android:scaleY="3"
+                app:indicatorColor="@color/lightBlue"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toLeftOf="@id/txtTrackSpacer"
+                app:layout_constraintTop_toTopOf="parent"
+                app:trackColor="@color/colorPrimary" />
+
+            <com.google.android.material.progressindicator.LinearProgressIndicator
+                android:id="@+id/txtTrackSpacer"
+                android:layout_width="5dp"
+                android:layout_height="wrap_content"
+                android:scaleY="3"
+                app:indicatorColor="@color/lightBlue"
+                app:layout_constraintLeft_toRightOf="@id/txtTrackAngleIndicatorLeft"
+                app:layout_constraintRight_toLeftOf="@id/txtTrackAngleIndicatorRight"
+                app:layout_constraintTop_toTopOf="parent"
+                app:trackColor="@color/black" />
+
+            <com.google.android.material.progressindicator.LinearProgressIndicator
+                android:id="@+id/txtTrackAngleIndicatorRight"
+                style="@style/homeProgressBar"
+                android:scaleY="3"
+                app:indicatorColor="@color/colorPrimary"
+                app:layout_constraintLeft_toRightOf="@id/txtTrackSpacer"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:trackColor="@color/lightBlue" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </LinearLayout>
+
     <fragment
         android:id="@+id/mapFragment"
         android:name="com.google.android.gms.maps.SupportMapFragment"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         app:layout_constraintBottom_toTopOf="@id/summaryGps"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toBottomOf="@id/topNavigation" />
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="wrap_content"
@@ -77,14 +196,6 @@
             android:id="@+id/txtLng"
             style="@style/navlogSummary"
             android:layout_marginEnd="20dp" />
-
-        <TextView
-            style="@style/navlogSummary"
-            android:text="@string/txtGs" />
-
-        <TextView
-            android:id="@+id/txtSpeed"
-            style="@style/navlogSummary" />
     </LinearLayout>
 
     <LinearLayout

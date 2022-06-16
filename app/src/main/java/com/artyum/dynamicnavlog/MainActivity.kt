@@ -66,7 +66,7 @@ class MainActivity : AppCompatActivity() {
         appBarConfiguration = AppBarConfiguration(
             setOf(
                 R.id.homeFragment, R.id.settingsFragment, R.id.navlogFragment, R.id.mapFragment,
-                R.id.calcWindFragment, R.id.calcFuelFragment, R.id.calcTimeDistFragment, R.id.calcDensity2Fragment, R.id.calcUnitsFragment,
+                R.id.purchaseFragment, R.id.calcWindFragment, R.id.calcFuelFragment, R.id.calcTimeDistFragment, R.id.calcDensity2Fragment, R.id.calcUnitsFragment,
                 R.id.planListFragment, R.id.aboutFragment, R.id.timersFragment
             ),
             bind.drawerLayout
@@ -191,7 +191,7 @@ class MainActivity : AppCompatActivity() {
         CoroutineScope(CoroutineName("gpsCoroutine")).launch { traceThread() }
     }
 
-    // Menu // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // //
+    // Menus // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // //
 
     override fun onSupportNavigateUp(): Boolean {
         return navController.navigateUp(appBarConfiguration) || super.onSupportNavigateUp()
@@ -312,35 +312,6 @@ class MainActivity : AppCompatActivity() {
             }
         }
     }
-
-/*private fun queryPurchaseHistory() {
-    Log.d(TAG, "queryPurchaseHistoryAsync")
-
-    billingClient.queryPurchaseHistoryAsync(BillingClient.SkuType.INAPP) { billingResult, purchases ->
-        if (billingResult.responseCode == BillingClient.BillingResponseCode.OK && !purchases.isNullOrEmpty()) {
-            var itemExists = false
-            Log.d(TAG, "queryPurchaseHistoryAsync success")
-            for (purchase in purchases) {
-                val json = JSONObject(purchase.originalJson)
-                val productId = json.getString("productId")
-                if (productId == C.GOOGLE_PLAY_PRODUCT_ID) {
-                    Log.d(TAG, "queryPurchaseHistoryAsync item found!")
-                    itemExists = true
-                    //println("purchase.originalJson: " + purchase.originalJson)
-                    //checkPurchaseToken(purchase.purchaseToken)
-                }
-            }
-            if (itemExists) {
-                queryPurchases()
-            } else {
-                Log.d(TAG, "queryPurchaseHistoryAsync item NOT found!")
-                enableAds()
-            }
-        } else {
-            Log.d(TAG, "queryPurchaseHistoryAsync response NOT OK")
-        }
-    }
-}*/
 
     private fun queryPurchases() {
         Log.d(TAG, "queryPurchasesAsync")
@@ -474,6 +445,8 @@ class MainActivity : AppCompatActivity() {
             MobileAds.initialize(applicationContext)
             val adRequest = AdRequest.Builder().build()
             runOnUiThread { mAdView.loadAd(adRequest) }
+        } else {
+            CoroutineScope(CoroutineName("main")).launch { delayPurchaseNotice() }
         }
     }
 
@@ -531,7 +504,6 @@ class MainActivity : AppCompatActivity() {
         val file = File(getInternalAppDir(), Release.GOOGLE_PLAY_PRODUCT_ID)
         if (file.exists()) disableAds()
         else enableAds()
-
     }
 
     private fun deletePurchaseFile() {
@@ -603,7 +575,7 @@ class MainActivity : AppCompatActivity() {
             interval = 1000
             fastestInterval = 1000
             maxWaitTime = 1000
-            priority = LocationRequest.PRIORITY_HIGH_ACCURACY
+            priority = Priority.PRIORITY_HIGH_ACCURACY
         }
 
         locationCallback = object : LocationCallback() {
@@ -613,24 +585,6 @@ class MainActivity : AppCompatActivity() {
             }
         }
     }
-
-    /*fun getFreshLocation() {
-        if (settings.gpsAssist) {
-            if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-                ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.ACCESS_FINE_LOCATION), C.LOCATION_PERMISSION_REQ_CODE)
-                return
-            }
-            val cancellationToken = CancellationTokenSource().token
-            fusedLocationProviderClient.getCurrentLocation(LocationRequest.PRIORITY_HIGH_ACCURACY, cancellationToken)
-                .addOnSuccessListener {
-                    //Log.d(TAG, "getFreshGPSData Success")
-                    CoroutineScope(CoroutineName("gpsCoroutine")).launch { setGpsData(it) }
-                }
-                .addOnFailureListener {
-                    Log.d(TAG, "getFreshGPSData Failure")
-                }
-        }
-    }*/
 
     fun locationSubscribe() {
         if (settings.gpsAssist && !locationSubscribed) {
@@ -673,7 +627,8 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private suspend fun setGpsData(loc: Location) {
+    private suspend fun setGpsData(loc: Location?) {
+        if (loc == null) return
         gpsMutex.withLock {
             gpsData.time = loc.time
 
@@ -831,5 +786,14 @@ class MainActivity : AppCompatActivity() {
             }
             delay(5000)
         }
+    }
+
+    // Countdown to hide "support the developer message"
+    private suspend fun delayPurchaseNotice() {
+        for (i in C.FREE_PURCHASE_DELAY_SEC downTo 1) {
+            runOnUiThread { bind.purchaseCountdown.text = i.toString() }
+            delay(1000)
+        }
+        runOnUiThread { bind.adBox.visibility = View.GONE }
     }
 }

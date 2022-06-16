@@ -3,11 +3,11 @@
     <string name="appName">Dynamic NavLog</string>
     <string name="linkEmail"><a href="mailto:dynamicnavlog@gmail.com\">dynamicnavlog@gmail.com</a></string>
     <string name="txtChangeLog">Change log</string>
-    <string name="adStaticInfo">If this app is useful to you, please consider purchasing it to support the developer</string>
+    <string name="adStaticInfo">If this app is useful to you, please consider donation to support further development</string>
     <string name="adStaticEnjoyFlight"><b>Enjoy Your Flight</b></string>
     <string name="txtTooManyItems">Only 10 waypoints in free version are allowed. Please consider purchasing the app to disable the limit.</string>
     <string name="txtNotAllTrueTrackSet">To use the GPS assistance, all waypoints must contain co-ordinates</string>
-    <string name="txtNoTakeoffPoint">Before adding a waypoint, set the starting coordinates by clicking on the map</string>
+    <string name="txtNoTakeoffPoint">Before adding a waypoint, set the takeoff coordinates by clicking on the map</string>
     <string name="txtInvalidFlightParams">Please enter Course, Wind direction, Wind speed and TAS</string>
     <string name="txtInvalidCourseAndWind">Course and Wind Direction must be between 0 and 360</string>
     <string name="txtInvalidCourse">Course must be between 0 and 360</string>
@@ -53,8 +53,9 @@
     <string name="txtPurchase">Purchase Dynamic NavLog</string>
     <string name="txtAbout">About</string>
     <string name="txtContact">Contact</string>
-    <string name="linkPrivacyPolicy"><a href="https://artyum.github.io/dynamicnavlog">Privacy policy</a></string>
-    <string name="linkPermissions"><a href="https://www.youtube.com/watch?v=98Y0nIItm38">Location permissions</a></string>
+    <string name="linkChangeLog"><a href="https://artyum.github.io/dynamicnavlog/changelog.html">Change log</a></string>
+    <string name="linkPrivacyPolicy"><a href="https://artyum.github.io/dynamicnavlog/privacy-policy.html">Privacy policy</a></string>
+    <string name="linkPermissions"><a href="https://www.youtube.com/watch?v=98Y0nIItm38">Location permissions (video)</a></string>
     <string name="txtVersion">Version</string>
     <string name="txtDensityCalculator">Density altitude</string>
     <string name="txtInvalidDialogCheck">Destination, Magnetic Track and Distance are mandatory fields</string>
@@ -67,7 +68,7 @@
     <string name="txtSettingsOK">Settings saved</string>
     <string name="txtEnterValue">Enter the value to be converted</string>
     <string name="txtNewFlightPlan">New flight plan</string>
-    <string name="txtRemoveAds">Remove Ads</string>
+    <string name="txtRemoveAds">Donation</string>
     <string name="txtSaveFlightPlan">Save Plan</string>
     <string name="txtFlightPlanSaved">Saved</string>
     <string name="txtDestination">Destination</string>
@@ -149,7 +150,7 @@
     <string name="txtWarningNoGPS">Warning! No GPS signal</string>
     <string name="txtGPSStatus">GPS status</string>
     <string name="txtGPSSupport">GPS support</string>
-    <string name="txtGPSEnabled">Enable GPS</string>
+    <string name="txtGPSEnabled">Enable GPS mode</string>
     <string name="txtAutoNextWPT">Auto-next stage</string>
     <string name="txtTrackRecording">Record flight trace</string>
     <string name="txtKeepScreenOn">Keep the screen on</string>
@@ -171,7 +172,7 @@
     <string name="txtResetDone">The flight plan has been reset</string>
     <string name="txtMapTypeHybrid">Satellite map</string>
     <string name="txtMapTypeTerrain">Terrain map</string>
-    <string name="txtMapTypeNormal">Normal map</string>
+    <string name="txtMapTypeNormal">Street map</string>
     <string name="txtWarningFlightInProgressDialog">Warning! Flight in progress. Are you sure?</string>
     <string name="txtWarningAreYouSure">Are you sure?</string>
     <string name="txtFlightTime">Flight time</string>

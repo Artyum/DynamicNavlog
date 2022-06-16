@@ -33,6 +33,8 @@ class CalcTimeDistFragment : Fragment(R.layout.fragment_calc_timedist) {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        bind.timeDistLayout.keepScreenOn = settings.keepScreenOn
+
         val con = view.context
 
         unitsDistanceList

@@ -33,6 +33,7 @@ class CalcWindFragment : Fragment(layout.fragment_calc_wind) {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        bind.calcWindLayout.keepScreenOn = settings.keepScreenOn
 
         bind.btnCalculate.setOnClickListener {
             it.hideKeyboard()

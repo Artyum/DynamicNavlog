@@ -163,7 +163,8 @@ object C {
     const val SCREEN_SENSOR = 2
 
     // Limit in free version
-    const val FREE_WPT_NUMBER_LIMIT = 10    // Limit in free version
+    const val FREE_PURCHASE_DELAY_SEC = 10   // Time this time the purchase message is hidden
+    const val FREE_WPT_NUMBER_LIMIT = 10     // Limit of waypoints in free version (disabled)
 
     // Flight stages
     const val STAGE_1_BEFORE_ENGINE_START = 1

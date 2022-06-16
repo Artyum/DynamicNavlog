@@ -8,6 +8,7 @@ object Release {
     //const val GOOGLE_PLAY_PRODUCT_ID = "ads_remove_test3"
     //const val GOOGLE_PLAY_PRODUCT_ID = "ads_remove_test4"
     //const val GOOGLE_PLAY_PRODUCT_ID = "ads_remove_test5"
+    //const val GOOGLE_PLAY_PRODUCT_ID = "ads_remove_test6" // Not purchased
     //const val GOOGLE_PLAY_PRODUCT_ID = "not_exists"
 
     // PROD
@@ -16,6 +17,6 @@ object Release {
 
 // Release
 val releaseOptions = ReleaseOptions(
-    initializeAds = true,
+    initializeAds = false,
     startBillingClient = true
 )
