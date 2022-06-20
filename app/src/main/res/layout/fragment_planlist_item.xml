@@ -17,6 +17,12 @@
         android:src="@drawable/ic_circle" />
 
     <TextView
+        android:id="@+id/txtPlanID"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="gone" />
+
+    <TextView
         android:id="@+id/txtPlanListItem"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

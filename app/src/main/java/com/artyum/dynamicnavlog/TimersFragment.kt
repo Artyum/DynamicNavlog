@@ -4,12 +4,8 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
-import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.lifecycleScope
 import com.artyum.dynamicnavlog.databinding.FragmentTimersBinding
-import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 import java.time.Duration
 import java.time.LocalDateTime
@@ -18,7 +14,6 @@ import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter
 import java.util.*
 import java.util.concurrent.TimeUnit
-import kotlin.concurrent.timer
 
 class TimersFragment : Fragment(R.layout.fragment_timers) {
     private var _binding: FragmentTimersBinding? = null
@@ -103,10 +98,10 @@ fun formatDateTime(t: LocalDateTime?, pattern: String): String {
         ldtZoned.format(DateTimeFormatter.ofPattern(pattern))
 }
 
-fun formatIniDateTime(t: LocalDateTime?): String {
+fun formatDateTimeJson(t: LocalDateTime?): String {
     return if (t != null) {
         val ldtZoned: ZonedDateTime = t.atZone(ZoneId.systemDefault())
-        ldtZoned.format(DateTimeFormatter.ofPattern(C.INI_TIME_PATTERN))
+        ldtZoned.format(DateTimeFormatter.ofPattern(C.JSON_TIME_PATTERN))
     } else "null"
 }
 
@@ -159,7 +154,7 @@ fun formatSecondsToTime(sec: Long?, showSec: Boolean = false): String {
     return formatMillisToTime(sec * 1000, showSec)
 }
 
-fun strTime2sec(strTime: String): Double? {
+fun strTime2Sec(strTime: String): Double? {
     if (strTime == "") return null
 
     var str = strTime
@@ -240,4 +235,12 @@ fun resetTimers() {
     timers.groundTime = null
     timers.flightTime = null
     timers.blockTime = null
+}
+
+fun getCurrentDate(): String {
+    return SimpleDateFormat("yyyy-MM-dd").format(Date())
+}
+
+fun getCurrentTime(): String {
+    return SimpleDateFormat("HH:mm:ss").format(Date())
 }

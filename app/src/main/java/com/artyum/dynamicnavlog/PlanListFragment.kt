@@ -3,7 +3,6 @@ package com.artyum.dynamicnavlog
 import android.annotation.SuppressLint
 import android.app.AlertDialog
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -79,18 +78,23 @@ class PlanListFragment : Fragment(R.layout.fragment_planlist), PlanListAdapter.O
 
         override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
             val pos = viewHolder.absoluteAdapterPosition
-            deleteState(planList[pos].fileName)
+            val fileName = planList[pos].id
+
+            // Delete json
+            deleteFile(fileName)
+            // Delete trk
+            deleteFile(fileName.replace(C.JSON_EXTENSION, C.TRK_EXTENSION, ignoreCase = true))
+
             planList.removeAt(pos)
             adapter.notifyItemRemoved(pos)
         }
     }
 
     private fun loadFLightPlan(i: Int) {
-        val fpn = decodePlanName(planList[i].fileName)
+        val fpn = planList[i].id
 
-        if (fpn != settings.planName) {
-            //Log.d("loadFLightPlan", fpn)
-            loadState(planList[i].fileName)
+        if (fpn != settings.id) {
+            loadState(planList[i].id)
             calcNavlog()
         }
 

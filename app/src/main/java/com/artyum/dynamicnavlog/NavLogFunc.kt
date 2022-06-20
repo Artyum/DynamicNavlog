@@ -1,10 +1,7 @@
 package com.artyum.dynamicnavlog
 
 import android.util.Log
-import androidx.appcompat.app.AppCompatActivity
-import androidx.fragment.app.Fragment
 import com.google.android.gms.maps.model.LatLng
-import kotlinx.coroutines.*
 import java.time.LocalDateTime
 
 data class NavlogItem(
@@ -219,43 +216,38 @@ fun getNextCoords(i: Int): LatLng? {
     else navlogList[next].coords
 }
 
-//fun reverseNavlog() {
-//    val newNavlogList = ArrayList<NavlogItem>()
-//
-//    // New Takeoff
-//    val newFirst = getNavlogLastActiveItemId()
-//    val newTakeoff = navlogList[newFirst].coords
-//
-//    // Reverse all waypoints
-//    if (newFirst > 1) {
-//        var i = newFirst - 1
-//        while (i >= 0) {
-//            newNavlogList.add(navlogList[i])
-//            val l = newNavlogList.lastIndex
-//            if (navlogList[i + 1].trueTrack != null) newNavlogList[l].trueTrack = normalizeBearing(navlogList[i + 1].trueTrack!! + 180.0)
-//            if (navlogList[i + 1].magneticTrack != null) newNavlogList[l].magneticTrack = normalizeBearing(navlogList[i + 1].magneticTrack!! + 180.0)
-//            i -= 1
-//        }
-//        newNavlogList.add(NavlogItem("END", magneticTrack = 0.0, distance = 0.0, coords = settings.takeoffCoords))
-//    }
-//
-//    println("newNavlogList")
-//    for (i in newNavlogList.indices) println(newNavlogList[i])
-//
-//    // Swap departure with destination
-//    //val tmp = settings.destination
-//    //settings.destination = settings.departure
-//    //settings.departure = tmp
-//
-//    //val destination = if (settings.destination != "") settings.destination else "LAND"
-//
-//    // Add last point
-//    //newNavlogList.add(NavlogItem(destination, magneticTrack = 0.0, distance = 0.0, coords = settings.takeoffCoords))
-//
-//    //settings.takeoffCoords = newTakeoff
-//    //navlogList = newNavlogList
-//    //calcNavlog()
-//}
+fun invertNavlog() {
+    val first = getNavlogFirstActiveItemId()
+    val last = getNavlogLastActiveItemId()
+
+    // Swap Departure and Destination
+    val tmp = settings.departure
+    settings.departure = settings.destination
+    settings.destination = tmp
+
+    // Save takeoff coords as new last coords
+    val newLastCoords = settings.takeoffCoords!!
+    settings.takeoffCoords = navlogList[last].coords
+
+    val newNavlogList = ArrayList<NavlogItem>()
+    for (i in last - 1 downTo first) {
+        if (navlogList[i].active) {
+            newNavlogList.add(navlogList[i])
+        }
+    }
+
+    // Add last waypoint
+    val item = NavlogItem(
+        dest = settings.destination,
+        magneticTrack = navlogList[first].magneticTrack?.plus(180.0),
+        distance = navlogList[first].distance,
+        coords = newLastCoords
+    )
+    newNavlogList.add(item)
+
+    // Save new NavLog
+    navlogList = newNavlogList
+}
 
 fun recalculateFlight(adapter: NavlogAdapter?) {
     if (isNavlogReady()) {

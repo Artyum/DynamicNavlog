@@ -17,14 +17,15 @@ class PlanListAdapter(
     }
 
     override fun onBindViewHolder(holder: PlanListViewHolder, position: Int) {
-        val item = decodePlanName(planList[position].fileName)
-        holder.item.text = item
+        holder.id.text = planList[position].id
+        holder.planName.text = getPlanNameFromJson(planList[position].id)
     }
 
     override fun getItemCount(): Int = planList.size
 
     inner class PlanListViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView), View.OnClickListener {
-        val item: TextView = itemView.findViewById(R.id.txtPlanListItem)
+        val id: TextView = itemView.findViewById(R.id.txtPlanID)
+        val planName: TextView = itemView.findViewById(R.id.txtPlanListItem)
 
         init {
             itemView.setOnClickListener(this)

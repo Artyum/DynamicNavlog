@@ -18,17 +18,9 @@ import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.*
-import kotlinx.coroutines.sync.withLock
-import kotlin.math.cos
-import kotlin.math.sin
-import com.google.android.gms.maps.model.LatLngBounds
-
-import com.google.android.gms.maps.model.Marker
 import kotlinx.coroutines.*
-import java.util.regex.Pattern
-import kotlin.coroutines.coroutineContext
+import kotlinx.coroutines.sync.withLock
 import kotlin.math.abs
-import kotlin.math.min
 
 class MapFragment : Fragment(R.layout.fragment_map) {
     private val TAG = "MapFragment"
@@ -191,7 +183,7 @@ class MapFragment : Fragment(R.layout.fragment_map) {
 
     private fun drawFlightPlan() {
         if (!mapReady) return
-        //Log.d(TAG, "drawTrack")
+        //Log.d(TAG, "drawFlightPlan")
 
         if (settings.takeoffCoords != null) {
             trackMarkers.forEach { it.remove() }
@@ -273,7 +265,7 @@ class MapFragment : Fragment(R.layout.fragment_map) {
 
     private fun drawTrace() {
         if (!mapReady || tracePointsList.size == 0) return
-        Log.d(TAG, "drawTrack")
+        Log.d(TAG, "drawTrace")
 
         if (traceLine != null) traceLine!!.remove()
 
@@ -288,19 +280,51 @@ class MapFragment : Fragment(R.layout.fragment_map) {
         traceLine = map.addPolyline(opt)
     }
 
+    private fun zoomToAll() {
+        // Zoom to all waypoints and takeoff point
+        var chkTO = false
+        var chkItems = false
+        val builder = LatLngBounds.Builder()
+
+        if (settings.takeoffCoords != null) {
+            builder.include(settings.takeoffCoords!!)
+            chkTO = true
+        }
+        for (i in navlogList.indices) {
+            if (isNavlogItemGpsReady(i)) {
+                builder.include(navlogList[i].coords!!)
+                chkItems = true
+            }
+        }
+
+        if (chkTO || chkItems) {
+            val bounds = builder.build()
+            map.moveCamera(CameraUpdateFactory.newLatLngBounds(bounds, 130))
+
+            // Zoom only to TakeOff point
+            val zoom: Float = if (chkTO && !chkItems) 9f else map.cameraPosition.zoom
+
+            val cameraPosition = CameraPosition.Builder()
+                .target(bounds.center)
+                .zoom(zoom)
+                .bearing(0f)
+                .tilt(map.cameraPosition.tilt)
+                .build()
+            map.moveCamera(CameraUpdateFactory.newCameraPosition(cameraPosition))
+        }
+    }
+
     private fun zoomToTrack() {
         if (!mapReady) return
         //Log.d(TAG, "zoomToTrack")
 
-        var gps: GpsData
-        val builder = LatLngBounds.Builder()
-
         // Get current GPS
+        var gps: GpsData
         runBlocking { gpsMutex.withLock { gps = gpsData } }
 
         val stage = getFlightStage()
 
-        if (stage == C.STAGE_1_BEFORE_ENGINE_START || stage == C.STAGE_5_AFTER_ENGINE_SHUTDOWN || !gps.isValid) {
+        if (stage == C.STAGE_1_BEFORE_ENGINE_START || stage == C.STAGE_5_AFTER_ENGINE_SHUTDOWN) {
             if (settings.takeoffCoords == null && navlogList.size == 0) {
                 // New flight plan with no points -> Zoom to position
                 if (gps.isValid) {
@@ -311,42 +335,11 @@ class MapFragment : Fragment(R.layout.fragment_map) {
                         .tilt(0f)
                         .build()
                     map.moveCamera(CameraUpdateFactory.newCameraPosition(cameraPosition))
-                }
-            } else {
-                // Zoom to all waypoints and takeoff point
-                var chkTO = false
-                var chkItems = false
-
-                if (settings.takeoffCoords != null) {
-                    builder.include(settings.takeoffCoords!!)
-                    chkTO = true
-                }
-                for (i in navlogList.indices) {
-                    if (isNavlogItemGpsReady(i)) {
-                        builder.include(navlogList[i].coords!!)
-                        chkItems = true
-                    }
-                }
-
-                if (chkTO || chkItems) {
-                    val bounds = builder.build()
-                    map.moveCamera(CameraUpdateFactory.newLatLngBounds(bounds, 130))
-
-                    // Zoom only to TakeOff point
-                    val zoom: Float = if (chkTO && !chkItems) 9f else map.cameraPosition.zoom
-
-                    val cameraPosition = CameraPosition.Builder()
-                        .target(bounds.center)
-                        .zoom(zoom)
-                        .bearing(0f)
-                        .tilt(map.cameraPosition.tilt)
-                        .build()
-                    map.moveCamera(CameraUpdateFactory.newCameraPosition(cameraPosition))
-                }
-            }
+                } else zoomToAll()
+            } else zoomToAll()
         } else if (stage == C.STAGE_2_ENGINE_RUNNING || stage == C.STAGE_4_AFTER_LANDING) {
-            // Zoom to current gps position
             if (gps.isValid) {
+                // Zoom to current gps position
                 val cameraPosition = CameraPosition.Builder()
                     .target(gps.coords!!)
                     .zoom(15f)
@@ -354,27 +347,31 @@ class MapFragment : Fragment(R.layout.fragment_map) {
                     .tilt(map.cameraPosition.tilt)
                     .build()
                 map.moveCamera(CameraUpdateFactory.newCameraPosition(cameraPosition))
-            }
+            } else zoomToAll()
         } else if (stage == C.STAGE_3_FLIGHT_IN_PROGRESS) {
-            // Zoom to current, prev and gps coords
+            // Zoom to prev and current waypoint
             val item = getNavlogCurrentItemId()
-            val cur = navlogList[item].coords
-            if (cur != null) builder.include(cur)
-            val prev = getPrevCoords(item)
-            if (prev != null) builder.include(prev)
-
-            val bearing: Float
             val zoom: Float
             val target: LatLng
+            val bearing = if (settings.mapOrientation != C.MAP_ORIENTATION_NORTH && navlogList[item].trueTrack != null) navlogList[item].trueTrack!!.toFloat() else 0f
 
-            if (isMapFollow()) {
-                bearing = if (settings.mapOrientation != C.MAP_ORIENTATION_NORTH && navlogList[item].trueTrack != null) navlogList[item].trueTrack!!.toFloat() else 0f
+            if (isMapFollow() && gps.isValid) {
+                // Zoom to GPS pos
                 zoom = 12f
                 target = gps.coords!!
             } else {
+                val builder = LatLngBounds.Builder()
+
+                // Include current coords
+                val cur = navlogList[item].coords
+                if (cur != null) builder.include(cur)
+
+                // Include prev coords
+                val prev = getPrevCoords(item)
+                if (prev != null) builder.include(prev)
+
                 val bounds = builder.build()
-                map.moveCamera(CameraUpdateFactory.newLatLngBounds(bounds, 130))
-                bearing = if (settings.mapOrientation != C.MAP_ORIENTATION_NORTH && navlogList[item].trueTrack != null) navlogList[item].trueTrack!!.toFloat() else 0f
+                map.moveCamera(CameraUpdateFactory.newLatLngBounds(bounds, 200))
                 zoom = map.cameraPosition.zoom
                 target = bounds.center
             }
@@ -546,7 +543,7 @@ class MapFragment : Fragment(R.layout.fragment_map) {
                 }
 
                 // Refresh trace
-                if (isFlightTraceEnabled()) drawTrace()
+                if (isFlightTraceEnabled() && isFlightInProgress()) drawTrace()
             }
 
             if (followTimer == 0 && settings.mapFollow) {

@@ -16,10 +16,12 @@ import java.time.LocalDateTime
 import kotlin.math.*
 
 data class PlanListItem(
-    var fileName: String
+    var id: String,
+    var planName: String
 )
 
 data class Settings(
+    var id: String = "",
     var planName: String = "",
     var departure: String = "",
     var destination: String = "",
@@ -101,6 +103,7 @@ object C {
     const val GPX_EXTENSION = ".gpx"
     const val CSV_EXTENSION = ".csv"
     const val TRK_EXTENSION = ".trk"  // Trace
+    const val JSON_EXTENSION = ".json"
     const val INI_SETTINGS = 1
     const val INI_TIMERS = 2
     const val INI_NAVLOG = 3
@@ -108,6 +111,7 @@ object C {
     const val INI_TIMERS_STR = "[Timers]"
     const val INI_NAVLOG_STR = "[Navlog]"
     const val INI_TIME_PATTERN = "yyyy-MM-dd HH:mm:ss"
+    const val JSON_TIME_PATTERN = "yyyy-MM-dd HH:mm:ss"
 
     const val NM = 0
     const val SM = 1
@@ -133,11 +137,10 @@ object C {
     const val M_DELIMITER = "\'"
     const val S_DELIMITER = "\""
 
-    //const val EARTH_RADIUS_M = 6371008.7714
     const val EARTH_RADIUS_SHORT_M = 6356752.3142
     const val EARTH_RADIUS_LONG_M = 6378137.0
 
-    const val GPS_ALIVE_SEC = 10
+    const val GPS_ALIVE_SEC = 30
     const val GPS_MINIMUM_RAWSPEED = 1
     const val MAX_ANGLE_INDICATOR = 10
     const val COORDS_PRECISION = 6
@@ -499,11 +502,4 @@ fun getDoubleOrNull(value: String): Double? {
 
 fun clearString(str: String): String {
     return str.replace(";", " ").trim()
-}
-
-fun clearFlightPlanName(name: String): String {
-    var str = name
-    val reservedChars = arrayOf("|", "\\", "?", "*", "<", "\"", ":", ">", "/", "!", "@", "#", "$", "%", "^", "&", "~", "{", "}", "[", "]", ";")
-    for (chr in reservedChars) str = str.replace(chr, "")
-    return str.trim()
 }

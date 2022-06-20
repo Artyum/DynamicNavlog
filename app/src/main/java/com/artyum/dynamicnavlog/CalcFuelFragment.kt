@@ -49,7 +49,7 @@ class CalcFuelFragment : Fragment(R.layout.fragment_calc_fuel) {
         val fuelTime: Double?
 
         val txtTime = bind.edtFuelTime.text.toString()
-        fuelTime = strTime2sec(txtTime)
+        fuelTime = strTime2Sec(txtTime)
         bind.edtFuelTime.setText(formatSecondsToTime(fuelTime?.roundToLong(), true))
 
         if (fuelEnd == null) {
