@@ -58,7 +58,7 @@ class SettingsFragment : Fragment(R.layout.fragment_settings) {
 
         // Flight plan name
         bind.settingFlightPlanName.doOnTextChanged { text, _, _, _ ->
-            val tmp = clearFlightPlanName(text.toString())
+            val tmp = text.toString().trim()
             if (settings.planName != tmp) {
                 //println("planName")
                 settings.planName = tmp
@@ -276,10 +276,10 @@ class SettingsFragment : Fragment(R.layout.fragment_settings) {
             if (navlogList.size == 0 || isNavlogGpsReady()) {
                 settings.gpsAssist = isChecked
                 if (settings.gpsAssist) {
-                    setGpsGroup(true)
+                    setGpsGroupVisibility(true)
                     a.locationSubscribe()
                 } else {
-                    setGpsGroup(false)
+                    setGpsGroupVisibility(false)
                     runBlocking { gpsMutex.withLock { gpsData.isValid = false } }
                     a.locationUnsubscribe()
                 }
@@ -291,12 +291,13 @@ class SettingsFragment : Fragment(R.layout.fragment_settings) {
             saveSettings()
         }
 
-        // Auto next Waypoint
+        // Auto-detect Waypoint
         bind.settingAutoNext.setOnCheckedChangeListener { _, isChecked ->
             settings.autoNext = isChecked
+            setWptDetectVisibility(settings.autoNext)
             change = true
             saveSettings()
-            if (isAutoNextEnabled()) CoroutineScope(CoroutineName("gpsCoroutine")).launch { (activity as MainActivity).autoNextThread() }
+            if (isAutoNextEnabled()) CoroutineScope(CoroutineName("gpsCoroutine")).launch { (activity as MainActivity).detectFlightStageThread() }
         }
 
         // Trace recording
@@ -442,17 +443,18 @@ class SettingsFragment : Fragment(R.layout.fragment_settings) {
         bind.settingsScreenOn.isChecked = settings.keepScreenOn
         bind.spinnerScreenOrientation.setSelection(settings.screenOrientation)
 
-        setGpsGroup(settings.gpsAssist)
+        setGpsGroupVisibility(settings.gpsAssist)
+        setWptDetectVisibility(settings.autoNext)
 
         refresh = false
     }
 
-    private fun setGpsGroup(isEnabled: Boolean) {
-        bind.gpsGroup.isVisible = isEnabled
-        //bind.settingAutoNext.isEnabled = isEnabled
-        //bind.settingTrace.isEnabled = isEnabled
-        //bind.spinnerMapOrientation.isEnabled = isEnabled
-        //bind.spinnerNextRadius.isEnabled = isEnabled
+    private fun setGpsGroupVisibility(visible: Boolean) {
+        bind.gpsGroup.isVisible = visible
+    }
+
+    private fun setWptDetectVisibility(visible: Boolean) {
+        bind.settingWptDetection.isVisible = visible
     }
 
     private fun validWinDir(v: Double?): Boolean {
@@ -481,6 +483,8 @@ fun isMapFollow(): Boolean {
 }
 
 fun resetSettings() {
+    settings.id = generatePlanId()
+
     settings.planName = ""
     settings.departure = ""
     settings.destination = ""

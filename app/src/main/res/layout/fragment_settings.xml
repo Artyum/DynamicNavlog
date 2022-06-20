@@ -281,33 +281,8 @@
                         style="@style/settingsSwitch"
                         android:text="@string/txtAutoNextWPT" />
 
-                    <com.google.android.material.switchmaterial.SwitchMaterial
-                        android:id="@+id/settingTrace"
-                        style="@style/settingsSwitch"
-                        android:text="@string/txtTrackRecording" />
-
                     <androidx.constraintlayout.widget.ConstraintLayout
-                        style="@style/settingsSwitch"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content">
-
-                        <TextView
-                            android:id="@+id/txtMapOrientation"
-                            style="@style/settingsSwitch"
-                            android:layout_width="wrap_content"
-                            android:text="@string/txtMapOrientation"
-                            app:layout_constraintLeft_toLeftOf="parent"
-                            app:layout_constraintTop_toTopOf="parent" />
-
-                        <Spinner
-                            android:id="@+id/spinnerMapOrientation"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            app:layout_constraintBaseline_toBaselineOf="@id/txtMapOrientation"
-                            app:layout_constraintRight_toRightOf="parent" />
-                    </androidx.constraintlayout.widget.ConstraintLayout>
-
-                    <androidx.constraintlayout.widget.ConstraintLayout
+                        android:id="@+id/settingWptDetection"
                         style="@style/settingsSwitch"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content">
@@ -327,6 +302,11 @@
                             app:layout_constraintBaseline_toBaselineOf="@id/txtNextRadius"
                             app:layout_constraintRight_toRightOf="parent" />
                     </androidx.constraintlayout.widget.ConstraintLayout>
+
+                    <com.google.android.material.switchmaterial.SwitchMaterial
+                        android:id="@+id/settingTrace"
+                        style="@style/settingsSwitch"
+                        android:text="@string/txtTrackRecording" />
                 </LinearLayout>
 
                 <LinearLayout
@@ -351,15 +331,26 @@
                         android:layout_weight="1" />
                 </LinearLayout>
 
-                <com.google.android.material.switchmaterial.SwitchMaterial
-                    android:id="@+id/settingTimeUTC"
+                <androidx.constraintlayout.widget.ConstraintLayout
                     style="@style/settingsSwitch"
-                    android:text="@string/txtTimeUTC" />
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
 
-                <com.google.android.material.switchmaterial.SwitchMaterial
-                    android:id="@+id/settingsScreenOn"
-                    style="@style/settingsSwitch"
-                    android:text="@string/txtKeepScreenOn" />
+                    <TextView
+                        android:id="@+id/txtMapOrientation"
+                        style="@style/settingsSwitch"
+                        android:layout_width="wrap_content"
+                        android:text="@string/txtMapOrientation"
+                        app:layout_constraintLeft_toLeftOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <Spinner
+                        android:id="@+id/spinnerMapOrientation"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        app:layout_constraintBaseline_toBaselineOf="@id/txtMapOrientation"
+                        app:layout_constraintRight_toRightOf="parent" />
+                </androidx.constraintlayout.widget.ConstraintLayout>
 
                 <androidx.constraintlayout.widget.ConstraintLayout
                     style="@style/settingsSwitch"
@@ -381,6 +372,16 @@
                         app:layout_constraintBaseline_toBaselineOf="@id/txtScreenOrientation"
                         app:layout_constraintRight_toRightOf="parent" />
                 </androidx.constraintlayout.widget.ConstraintLayout>
+
+                <com.google.android.material.switchmaterial.SwitchMaterial
+                    android:id="@+id/settingTimeUTC"
+                    style="@style/settingsSwitch"
+                    android:text="@string/txtTimeUTC" />
+
+                <com.google.android.material.switchmaterial.SwitchMaterial
+                    android:id="@+id/settingsScreenOn"
+                    style="@style/settingsSwitch"
+                    android:text="@string/txtKeepScreenOn" />
             </LinearLayout>
 
         </LinearLayout>

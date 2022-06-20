@@ -171,6 +171,14 @@ class MainActivity : AppCompatActivity() {
         // Billing client
         if (releaseOptions.startBillingClient) startBillingClient() else disableAds()
 
+        // Convert all saves to xml
+        //todo delete this after some time v1.2.0 2022-06
+        convertAllDnlToJson()
+
+        // Clear unused files
+        clearFiles(C.GPX_EXTENSION)
+        clearFiles(C.CSV_EXTENSION)
+
         // Load state
         loadState()
         calcNavlog()
@@ -185,7 +193,7 @@ class MainActivity : AppCompatActivity() {
         CoroutineScope(CoroutineName("gpsCoroutine")).launch { gpsHealthCheckThread() }
 
         // Auto next waypoint thread
-        CoroutineScope(CoroutineName("gpsCoroutine")).launch { autoNextThread() }
+        CoroutineScope(CoroutineName("gpsCoroutine")).launch { detectFlightStageThread() }
 
         // Track recording thread
         CoroutineScope(CoroutineName("gpsCoroutine")).launch { traceThread() }
@@ -206,31 +214,18 @@ class MainActivity : AppCompatActivity() {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
             R.id.optionsExportCsv -> {
-                val fileName = saveAsCsv()
+                val fileName = savePlanAsCsv()
                 if (fileName != "") shareFile(fileName, "text/csv") else Toast.makeText(this, getString(R.string.txtExportERR), Toast.LENGTH_SHORT).show()
             }
 
             R.id.optionsExportGpx -> {
-                val fileName = saveAsGpx()
+                val fileName = savePlanAsGpx()
                 if (fileName != "") shareFile(fileName, "application/gpx+xml") else Toast.makeText(this, getString(R.string.txtExportERR), Toast.LENGTH_SHORT).show()
             }
-
-//            R.id.optionRevertTrack -> {
-//                val msg = if (isFlightInProgress()) R.string.txtWarningFlightInProgressDialog else R.string.txtWarningAreYouSure
-//                val builder = AlertDialog.Builder(this@MainActivity)
-//                builder.setMessage(msg)
-//                    .setCancelable(false)
-//                    .setPositiveButton(R.string.txtYes) { _, _ ->
-//                        reverseTrack()
-//                        //navController.navigate(R.id.homeFragment)
-//                        Toast.makeText(this, getString(R.string.txtReverseDone), Toast.LENGTH_SHORT).show()
-//                    }
-//                    .setNegativeButton(R.string.txtNo) { dialog, _ ->
-//                        dialog.dismiss()
-//                    }
-//                val alert = builder.create()
-//                alert.show()
-//            }
+            R.id.optionsExportTraceGpx -> {
+                val fileName = saveTraceAsGpx()
+                if (fileName != "") shareFile(fileName, "application/gpx+xml") else Toast.makeText(this, getString(R.string.txtExportTraceERR), Toast.LENGTH_SHORT).show()
+            }
 
             R.id.optionResetFlight -> {
                 val msg = if (isFlightInProgress()) R.string.txtWarningFlightInProgressDialog else R.string.txtWarningAreYouSure
@@ -241,6 +236,47 @@ class MainActivity : AppCompatActivity() {
                         resetFlight()
                         navController.navigate(R.id.homeFragment)
                         Toast.makeText(this, getString(R.string.txtResetDone), Toast.LENGTH_SHORT).show()
+                    }
+                    .setNegativeButton(R.string.txtNo) { dialog, _ ->
+                        dialog.dismiss()
+                    }
+                val alert = builder.create()
+                alert.show()
+            }
+
+            R.id.optionCopyPlan -> {
+                val msg = if (isFlightInProgress()) R.string.txtWarningFlightInProgressDialog else R.string.txtWarningAreYouSure
+                val builder = AlertDialog.Builder(this@MainActivity)
+                builder.setMessage(msg)
+                    .setCancelable(false)
+                    .setPositiveButton(R.string.txtYes) { _, _ ->
+                        copyFlightPlan("Copy")
+                        resetFlight()
+                        navController.navigate(R.id.settingsFragment)
+                        Toast.makeText(this, getString(R.string.txtCopyDone), Toast.LENGTH_SHORT).show()
+                    }
+                    .setNegativeButton(R.string.txtNo) { dialog, _ ->
+                        dialog.dismiss()
+                    }
+                val alert = builder.create()
+                alert.show()
+            }
+
+            R.id.optionInvertTrack -> {
+                val msg = if (isFlightInProgress()) R.string.txtWarningFlightInProgressDialog else R.string.txtWarningAreYouSure
+                val builder = AlertDialog.Builder(this@MainActivity)
+                builder.setMessage(msg)
+                    .setCancelable(false)
+                    .setPositiveButton(R.string.txtYes) { _, _ ->
+                        if (isNavlogReady()) {
+                            if (isNavlogGpsReady()) {
+                                copyFlightPlan("Inverted")
+                                invertNavlog()
+                                resetFlight()
+                                navController.navigate(R.id.settingsFragment)
+                                Toast.makeText(this, getString(R.string.txtReverseDone), Toast.LENGTH_SHORT).show()
+                            } else Toast.makeText(this, getString(R.string.txtReverseOnlyGPS), Toast.LENGTH_SHORT).show()
+                        } else Toast.makeText(this, getString(R.string.txtReverseNotReady), Toast.LENGTH_SHORT).show()
                     }
                     .setNegativeButton(R.string.txtNo) { dialog, _ ->
                         dialog.dismiss()
@@ -545,10 +581,6 @@ class MainActivity : AppCompatActivity() {
             C.SCREEN_SENSOR -> requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_FULL_SENSOR
         }
     }
-//    fun reverseTrack() {
-//        reverseNavlog()
-//        resetFlight()
-//    }
 
     fun startNavlogService() {
         if (!serviceRunning) {
@@ -700,7 +732,7 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    suspend fun autoNextThread() {
+    suspend fun detectFlightStageThread() {
         if (autoNextRunning) return
         autoNextRunning = true
 
@@ -716,7 +748,6 @@ class MainActivity : AppCompatActivity() {
                 //Log.d(TAG, "autoNextThread")
 
                 gpsMutex.withLock { gps = gpsData }
-                //println(gps)
 
                 if (gps.isValid) {
                     val stage = getFlightStage()

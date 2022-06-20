@@ -4,12 +4,7 @@ import android.app.Notification
 import android.app.PendingIntent
 import android.content.Intent
 import android.os.IBinder
-import android.util.Log
 import com.artyum.dynamicnavlog.App.Companion.CHANNEL_ID
-import kotlinx.coroutines.CoroutineName
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
 
 class Service : android.app.Service() {
     private val TAG = "Service"

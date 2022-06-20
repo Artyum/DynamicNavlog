@@ -82,7 +82,7 @@ class CalcTimeDistFragment : Fragment(R.layout.fragment_calc_timedist) {
             val p = 2
 
             val txtTime = bind.edtTime.text.toString()
-            time = strTime2sec(txtTime)
+            time = strTime2Sec(txtTime)
             bind.edtTime.setText(formatSecondsToTime(time?.roundToLong(), true))
 
             if (dist != null) {
