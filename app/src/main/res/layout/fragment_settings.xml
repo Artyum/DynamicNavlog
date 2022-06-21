@@ -243,6 +243,27 @@
 
                 </androidx.constraintlayout.widget.ConstraintLayout>
 
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    style="@style/settingsSwitch"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <TextView
+                        android:id="@+id/txtMapOrientation"
+                        style="@style/settingsSwitch"
+                        android:layout_width="wrap_content"
+                        android:text="@string/txtMapOrientation"
+                        app:layout_constraintLeft_toLeftOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <Spinner
+                        android:id="@+id/spinnerMapOrientation"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        app:layout_constraintBaseline_toBaselineOf="@id/txtMapOrientation"
+                        app:layout_constraintRight_toRightOf="parent" />
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
                 <com.google.android.material.switchmaterial.SwitchMaterial
                     android:id="@+id/settingGpsAssist"
                     style="@style/settingsSwitch"
@@ -330,27 +351,6 @@
                         style="@style/dividerSet"
                         android:layout_weight="1" />
                 </LinearLayout>
-
-                <androidx.constraintlayout.widget.ConstraintLayout
-                    style="@style/settingsSwitch"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
-
-                    <TextView
-                        android:id="@+id/txtMapOrientation"
-                        style="@style/settingsSwitch"
-                        android:layout_width="wrap_content"
-                        android:text="@string/txtMapOrientation"
-                        app:layout_constraintLeft_toLeftOf="parent"
-                        app:layout_constraintTop_toTopOf="parent" />
-
-                    <Spinner
-                        android:id="@+id/spinnerMapOrientation"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        app:layout_constraintBaseline_toBaselineOf="@id/txtMapOrientation"
-                        app:layout_constraintRight_toRightOf="parent" />
-                </androidx.constraintlayout.widget.ConstraintLayout>
 
                 <androidx.constraintlayout.widget.ConstraintLayout
                     style="@style/settingsSwitch"
