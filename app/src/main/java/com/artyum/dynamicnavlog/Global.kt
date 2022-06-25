@@ -477,7 +477,7 @@ fun isFlightOver(): Boolean {
 }
 
 fun isSettingsReady(): Boolean {
-    return settings.planeTas > settings.windSpd
+    return settings.planeId != "" && settings.planeTas > settings.windSpd
 }
 
 fun convertSettingsSpdUnits(old: Int, new: Int) {

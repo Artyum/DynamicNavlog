@@ -169,10 +169,15 @@ fun resetNavlogItem(i: Int) {
     navlogList[i].hdg = null
     navlogList[i].gs = null
     navlogList[i].time = null
-    //navlogList[i].eta = null
-    //navlogList[i].ata = null
+    navlogList[i].timeIncrement = null
     navlogList[i].fuel = null
     navlogList[i].fuelRemaining = null
+    //navlogList[i].eta = null
+    //navlogList[i].ata = null
+}
+
+fun resetAllNavlogItems() {
+    for (i in navlogList.indices) resetNavlogItem(i)
 }
 
 fun setNextWaypoint() {
@@ -299,7 +304,7 @@ fun recalculateFlight(adapter: NavlogAdapter?) {
             item += 1
         }
     } else {
-        if (!isFlightInProgress()) for (i in navlogList.indices) resetNavlogItem(i)
+        if (!isFlightInProgress()) resetAllNavlogItems()
     }
 }
 
