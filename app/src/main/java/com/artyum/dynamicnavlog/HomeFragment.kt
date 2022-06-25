@@ -101,8 +101,8 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
     }
 
     private fun displayUnits() {
-        bind.txtHomeDistUnits.text = getDistUnitsLong()
-        bind.txtHomeGsUnits.text = getSpeedUnits()
+        bind.txtHomeDistUnits.text = getUnitsDist()
+        bind.txtHomeGsUnits.text = getUnitsSpd()
         if (settings.timeInUTC && (isFlightInProgress() || isFlightOver())) bind.txtHomeEtaUnits.text = C.ZULU_SIGN
     }
 
@@ -214,7 +214,7 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
                 course = navlogList[i].magneticTrack!!,
                 windDir = settings.windDir,
                 hdg = navlogList[i].hdg!!,
-                speedRatio = navlogList[i].gs!! / settings.tas
+                speedRatio = navlogList[i].gs!! / settings.planeTas
             )
         } else if (isNavlogReady() && timers.takeoff == null) {
             val first = getNavlogFirstActiveItemId()
@@ -223,7 +223,7 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
                 course = navlogList[first].magneticTrack!!,
                 windDir = settings.windDir,
                 hdg = navlogList[first].hdg!!,
-                speedRatio = navlogList[first].gs!! / settings.tas
+                speedRatio = navlogList[first].gs!! / settings.planeTas
             )
         } else {
             paintWindCircle(

@@ -13,5 +13,5 @@
     <dimen name="homeBtnWidth">120dp</dimen>
     <dimen name="homeBtnHeight">60dp</dimen>
     <dimen name="homeBtnTextSize">16sp</dimen>
-
+    <dimen name="airplaneSpinnerWidth">140dp</dimen>
 </resources>

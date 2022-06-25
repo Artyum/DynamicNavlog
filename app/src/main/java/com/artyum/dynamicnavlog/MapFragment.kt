@@ -36,7 +36,7 @@ class MapFragment : Fragment(R.layout.fragment_map) {
     private val trackCircles = ArrayList<Circle>()
     private var traceLine: Polyline? = null
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         _binding = FragmentMapBinding.inflate(inflater, container, false)
         return bind.root
     }
@@ -171,12 +171,12 @@ class MapFragment : Fragment(R.layout.fragment_map) {
         }
 
         // Refresh bottom summary bar
-        refreshPageItems()
+        refreshBottomBar()
 
         // Summary update thread
         if (settings.gpsAssist) {
-            bind.txtNavGs.text = getString(R.string.txtGs) + " (" + getSpeedUnits() + ")"
-            bind.txtNavDist.text = getString(R.string.txtDist) + " (" + getDistUnitsLong() + ")"
+            bind.txtNavGs.text = getString(R.string.txtGs) + " (" + getUnitsSpd() + ")"
+            bind.txtNavDist.text = getString(R.string.txtDist) + " (" + getUnitsDist() + ")"
             lifecycleScope.launch { updateMapThread() }
         }
     }
@@ -260,7 +260,7 @@ class MapFragment : Fragment(R.layout.fragment_map) {
             }
         }
 
-        refreshPageItems()
+        refreshBottomBar()
     }
 
     private fun drawTrace() {
@@ -496,11 +496,12 @@ class MapFragment : Fragment(R.layout.fragment_map) {
         dialog.show(parentFragmentManager, "NavlogDialogFragment")
     }
 
-    private fun refreshPageItems() {
-        val t = formatDouble(totals.dist) + " " + getDistUnitsLong()
-        bind.txtTotalDist.text = t
+    private fun refreshBottomBar() {
+        val strDist = formatDouble(totals.dist) + " " + getUnitsDist()
+        bind.txtTotalDist.text = strDist
         bind.txtTotalTime.text = formatSecondsToTime(totals.time)
-        bind.txtTotalFuel.text = formatDouble(totals.fuel)
+        val strFuel = formatDouble(totals.fuel) + " " + getUnitsVolume()
+        bind.txtTotalFuel.text = strFuel
     }
 
     private suspend fun updateMapThread() {

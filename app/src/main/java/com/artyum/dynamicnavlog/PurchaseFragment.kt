@@ -13,7 +13,7 @@ class PurchaseFragment : Fragment(R.layout.fragment_purchase) {
     private var _binding: FragmentPurchaseBinding? = null
     private val bind get() = _binding!!
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         _binding = FragmentPurchaseBinding.inflate(inflater, container, false)
         return bind.root
     }

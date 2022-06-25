@@ -67,7 +67,7 @@ class MainActivity : AppCompatActivity() {
             setOf(
                 R.id.homeFragment, R.id.settingsFragment, R.id.navlogFragment, R.id.mapFragment,
                 R.id.purchaseFragment, R.id.calcWindFragment, R.id.calcFuelFragment, R.id.calcTimeDistFragment, R.id.calcDensity2Fragment, R.id.calcUnitsFragment,
-                R.id.planListFragment, R.id.aboutFragment, R.id.timersFragment
+                R.id.airplaneListFragment, R.id.planListFragment, R.id.aboutFragment, R.id.timersFragment
             ),
             bind.drawerLayout
         )
@@ -119,6 +119,14 @@ class MainActivity : AppCompatActivity() {
         // Flight plan list
         navView.menu.findItem(R.id.drawerItemOpen).setOnMenuItemClickListener {
             navController.navigate(PlanListFragmentDirections.actionGlobalPlanListFragment())
+            bind.drawerLayout.close()
+            true
+        }
+
+        // Airplanes list
+        navView.menu.findItem(R.id.drawerItemAirplanes).setOnMenuItemClickListener {
+            loadAirplaneList()
+            navController.navigate(AirplaneListFragmentDirections.actionGlobalAirplaneListFragment())
             bind.drawerLayout.close()
             true
         }
@@ -180,9 +188,14 @@ class MainActivity : AppCompatActivity() {
         clearFiles(C.CSV_EXTENSION)
 
         // Load state
+        loadAirplaneList()
         loadState()
         calcNavlog()
+
+        // Service
         if (isEngineRunning()) startNavlogService()
+
+        // Screen orientation
         setScreenOrientation()
 
         // Initialize fused location client
@@ -670,21 +683,28 @@ class MainActivity : AppCompatActivity() {
             gpsData.altitude = loc.altitude              // Altitude if available, in meters above the WGS 84 reference ellipsoid.
             if (loc.hasBearing()) gpsData.bearing = loc.bearing else gpsData.bearing = null
 
-            when (settings.units) {
-                C.NM -> {
+            when (settings.spdUnits) {
+                C.SPD_KNOTS -> {
                     gpsData.speed = mps2kt(gpsData.rawSpeed)
-                    gpsData.hAccuracy = m2ft(gpsData.hAccuracy)
-                    gpsData.altitude = m2ft(gpsData.altitude)
                 }
-                C.SM -> {
+                C.SPD_MPH -> {
                     gpsData.speed = mps2mph(gpsData.rawSpeed)
-                    gpsData.hAccuracy = m2ft(gpsData.hAccuracy)
-                    gpsData.altitude = m2ft(gpsData.altitude)
                 }
-                C.KM -> {
+                C.SPD_KPH -> {
                     gpsData.speed = mps2kph(gpsData.rawSpeed)
                 }
             }
+            when (settings.distUnits) {
+                C.DIS_NM -> {
+                    gpsData.hAccuracy = m2ft(gpsData.hAccuracy)
+                    gpsData.altitude = m2ft(gpsData.altitude)
+                }
+                C.DIS_SM -> {
+                    gpsData.hAccuracy = m2ft(gpsData.hAccuracy)
+                    gpsData.altitude = m2ft(gpsData.altitude)
+                }
+            }
+
             gpsData.heartbeat = true
             //println("GPS time: ${gpsData.time}")
             //println(gpsData.coords!!.latitude.toString() + " " + gpsData.coords!!.longitude.toString() + " rawSpeed=" + formatDouble(gpsData.rawSpeed, 2) + " spd=" + formatDouble(gpsData.speed, 2))

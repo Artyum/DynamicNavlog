@@ -13,20 +13,27 @@
         android:id="@+id/itemArrow"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="6dp"
-        android:src="@drawable/ic_circle" />
+        android:src="@drawable/ic_flight" />
 
     <TextView
-        android:id="@+id/txtID"
+        android:id="@+id/txtAirID"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:visibility="gone" />
 
-    <TextView
-        android:id="@+id/txtListItem"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textColor="@color/black"
-        android:textSize="16sp" />
+        android:layout_marginStart="30dp"
+        android:layout_marginEnd="15dp">
 
+        <TextView
+            android:id="@+id/txtAirReg"
+            style="@style/airplaneListItem"
+            android:textAllCaps="true" />
+
+        <TextView
+            android:id="@+id/txtAirType"
+            style="@style/airplaneListItem" />
+    </LinearLayout>
 </LinearLayout>

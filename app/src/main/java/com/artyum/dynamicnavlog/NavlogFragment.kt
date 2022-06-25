@@ -19,7 +19,7 @@ class NavlogFragment : Fragment(R.layout.fragment_navlog), NavlogAdapter.OnItemC
     private val adapter = NavlogAdapter(navlogList, this, this)
     private var isNavlogCahnged: Boolean = false
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         _binding = FragmentNavlogBinding.inflate(inflater, container, false)
         return bind.root
     }
@@ -70,7 +70,7 @@ class NavlogFragment : Fragment(R.layout.fragment_navlog), NavlogAdapter.OnItemC
         recyclerView.layoutManager = LinearLayoutManager(this.context)
 
         //calcNavlog(adapter)
-        refreshPageItems()
+        refreshBottomBar()
 
         if (isNavlogReady()) {
             recyclerView.scrollToPosition(getNavlogCurrentItemId())
@@ -88,7 +88,7 @@ class NavlogFragment : Fragment(R.layout.fragment_navlog), NavlogAdapter.OnItemC
         setFragmentResultListener("requestKey") { _, _ ->
             //val result = bundle.getString("action")
             saveState()
-            refreshPageItems()
+            refreshBottomBar()
         }
     }
 
@@ -134,66 +134,13 @@ class NavlogFragment : Fragment(R.layout.fragment_navlog), NavlogAdapter.OnItemC
 
     override fun onItemLongClick(position: Int) {}
 
-    private fun refreshPageItems() {
-        val t = formatDouble(totals.dist) + " " + getDistUnitsLong()
-        bind.txtTotalDist.text = t
+    private fun refreshBottomBar() {
+        val strDist = formatDouble(totals.dist) + " " + getUnitsDist()
+        bind.txtTotalDist.text = strDist
         bind.txtTotalTime.text = formatSecondsToTime(totals.time)
-        bind.txtTotalFuel.text = formatDouble(totals.fuel)
+        val strFuel = formatDouble(totals.fuel) + " " + getUnitsVolume()
+        bind.txtTotalFuel.text = strFuel
 
         if (navlogList.size == 0) bind.btnDisplayToggle.visibility = View.GONE else bind.btnDisplayToggle.visibility = View.VISIBLE
     }
-
-//    inline fun <T : View> T.afterMeasured(crossinline f: T.() -> Unit) {
-//        viewTreeObserver.addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
-//            override fun onGlobalLayout() {
-//                if (measuredWidth > 0 && measuredHeight > 0) {
-//                    viewTreeObserver.removeOnGlobalLayoutListener(this)
-//                    f()
-//                }
-//            }
-//        })
-//    }
-
-    //        private fun optimizeLayout() {
-//        var maxWidth = 100
-//        val recyclerView = navlogRecycler
-//
-//        //recyclerView.afterMeasured {
-//        recyclerView.doOnLayout {
-//            // Get width
-//            for (i in 0 until recyclerView.childCount) {
-//                val v = recyclerView.layoutManager?.findViewByPosition(i)
-//                val tv = v?.findViewById<TextView>(R.id.txtNavlogDest)
-//                if (tv != null) {
-//                    tv.measure(0, 0)
-//                    if (tv.measuredWidth > maxWidth) maxWidth = tv.measuredWidth
-//                    println("Item " + i.toString() + ": " + tv.measuredWidth)
-//                }
-//            }
-//            // Set width
-//            for (i in 0 until recyclerView.childCount) {
-//                val v = recyclerView.layoutManager?.findViewByPosition(i)
-//                val tv = v?.findViewById<TextView>(R.id.txtNavlogDest)
-//                if (tv != null) {
-//                    tv.width = maxWidth
-//                    //tv.post { tv.width = maxWidth }
-//                    println("Set item $i")
-//                }
-//            }
-//            //txtNavlogDestHeader.doOnLayout { txtNavlogDestHeader.width = maxWidth }
-//            txtNavlogDestHeader.width = maxWidth
-//            //txtNavlogDestHeader.post { txtNavlogDestHeader.width = maxWidth }
-//        }
-//    }
-
-//    private fun getMaxWidth() {
-//        var maxWidth = 100
-//        for (i in navlogList.indices) {
-//            tempTv.text = navlogList[i].dest
-//            tempTv.measure(0, 0)
-//            if (tempTv.measuredWidth > maxWidth) maxWidth = tempTv.measuredWidth
-//        }
-//        maxDestWidth = maxWidth + 50
-//        //println(maxDestWidth)
-//    }
 }

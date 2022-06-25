@@ -32,12 +32,13 @@
         <item name="android:layout_height">wrap_content</item>
         <item name="android:textColor">@color/black</item>
         <item name="android:textSize">16sp</item>
-        <item name="android:gravity">left</item>
+        <item name="android:gravity">center</item>
         <item name="android:inputType">text</item>
     </style>
 
     <style name="layoutTextDecimal" parent="layoutText">
         <item name="android:inputType">numberDecimal</item>
+        <item name="android:gravity">center</item>
     </style>
 
     <style name="layoutTextDecimalSigned" parent="layoutText">
@@ -116,5 +117,13 @@
     <style name="outRowTextUnits" parent="outRowText">
         <item name="android:textColor">@color/lightBlack</item>
         <item name="android:textSize">14sp</item>
+    </style>
+
+    <style name="errorMessage">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textColor">@color/red</item>
+        <item name="android:textSize">14sp</item>
+        <item name="android:visibility">gone</item>
     </style>
 </resources>

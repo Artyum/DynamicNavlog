@@ -259,7 +259,7 @@ fun recalculateFlight(adapter: NavlogAdapter?) {
 
         if (item < 0 || item == first) {
             item = first
-            fuelRemaining = settings.fuelOnBoard
+            fuelRemaining = settings.fob
         } else {
             fuelRemaining = navlogList[getNavlogPrevItemId(item)].fuelRemaining
         }
@@ -272,9 +272,9 @@ fun recalculateFlight(adapter: NavlogAdapter?) {
                     course = navlogList[item].magneticTrack!!,
                     windDir = settings.windDir,
                     windSpd = settings.windSpd,
-                    tas = settings.tas,
+                    tas = settings.planeTas,
                     dist = navlogList[item].distance,
-                    fph = settings.fph
+                    fph = settings.planeFph
                 )
 
                 navlogList[item].wca = fc.wca
@@ -314,7 +314,7 @@ fun recalculateTotals() {
             totals.time += navlogList[i].time ?: 0L
         }
     }
-    if (settings.fph != null) totals.fuel = settings.fph!! * totals.time / 3600.0
+    if (settings.planeFph != null) totals.fuel = settings.planeFph!! * totals.time / 3600.0
 }
 
 fun recalculateWaypoints() {

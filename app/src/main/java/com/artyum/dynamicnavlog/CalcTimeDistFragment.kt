@@ -21,7 +21,7 @@ class CalcTimeDistFragment : Fragment(R.layout.fragment_calc_timedist) {
     var unitsDistance: Int = 0
     var unitsSpeed: Int = 0
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         _binding = FragmentCalcTimedistBinding.inflate(inflater, container, false)
         return bind.root
     }

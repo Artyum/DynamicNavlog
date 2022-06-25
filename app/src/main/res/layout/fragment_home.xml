@@ -522,7 +522,7 @@
                                 <TextView
                                     android:id="@+id/txtItemCaption"
                                     style="@style/txtItemCaption"
-                                    android:text="@string/txtFlightTimeRemaining"
+                                    android:text="@string/txtEndurance"
                                     app:layout_constraintLeft_toLeftOf="parent"
                                     app:layout_constraintRight_toRightOf="parent"
                                     app:layout_constraintTop_toTopOf="parent" />

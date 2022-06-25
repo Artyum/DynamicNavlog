@@ -20,7 +20,7 @@ class CalcWindFragment : Fragment(layout.fragment_calc_wind) {
 
     val state = ArrayList<String>()
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         _binding = FragmentCalcWindBinding.inflate(inflater, container, false)
         setHasOptionsMenu(true)
         return bind.root
@@ -66,13 +66,13 @@ class CalcWindFragment : Fragment(layout.fragment_calc_wind) {
             bind.edtDistance.setText(state[1])
             if (state[2] != "") bind.edtWindDir.setText(state[2]) else bind.edtWindDir.setText(formatDouble(settings.windDir))
             if (state[3] != "") bind.edtWindSpd.setText(state[3]) else bind.edtWindSpd.setText(formatDouble(settings.windSpd))
-            if (state[3] != "") bind.edtTas.setText(state[4]) else bind.edtTas.setText(formatDouble(settings.tas))
-            if (state[4] != "") bind.edtFph.setText(state[5]) else bind.edtFph.setText(formatDouble(settings.fph))
+            if (state[3] != "") bind.edtTas.setText(state[4]) else bind.edtTas.setText(formatDouble(settings.planeTas))
+            if (state[4] != "") bind.edtFph.setText(state[5]) else bind.edtFph.setText(formatDouble(settings.planeFph))
         } else {
             bind.edtWindDir.setText(formatDouble(settings.windDir))
             bind.edtWindSpd.setText(formatDouble(settings.windSpd))
-            bind.edtTas.setText(formatDouble(settings.tas))
-            bind.edtFph.setText(formatDouble(settings.fph))
+            bind.edtTas.setText(formatDouble(settings.planeTas))
+            bind.edtFph.setText(formatDouble(settings.planeFph))
         }
     }
 

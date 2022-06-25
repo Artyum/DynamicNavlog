@@ -18,7 +18,9 @@ fun c2k(v: Double): Double = v + 273.15
 // Distance
 fun sm2nm(v: Double): Double = v * 0.86897624190065
 fun sm2m(v: Double): Double = v * 1609.344
+fun sm2km(v: Double): Double = v * 1.609344
 fun km2nm(v: Double): Double = v * 0.5399568034557235
+fun km2sm(v: Double): Double = v * 0.62137119223733
 fun m2nm(v: Double): Double = v * 0.0005399568034557236
 fun m2sm(v: Double): Double = v * 0.00062137119223733
 fun m2km(v: Double): Double = v * 0.001
@@ -43,6 +45,8 @@ fun kt2mph(v: Double): Double = v * 1.1507794480235
 fun kt2kph(v: Double): Double = v * 1.852
 fun kt2mps(v: Double): Double = v * 0.51444444444444
 fun kt2fpm(v: Double): Double = v * 101.26859142607
+fun mph2kph(v: Double): Double = v * 1.609344
+fun kph2mph(v: Double): Double = v * 0.621371192
 
 // Pressure
 fun mmhg2inhg(v: Double): Double = v * 0.039370079197446
@@ -63,3 +67,5 @@ fun usgal2l(v: Double): Double = v * 3.7854118
 fun ukgal2l(v: Double): Double = v * 4.54609
 fun l2usgal(v: Double): Double = v * 0.26417205124156
 fun l2ukgal(v: Double): Double = v * 0.21996924829908776
+fun usgal2ukgal(v: Double): Double = v * 0.8326741881485
+fun ukgal2usgal(v: Double): Double = v * 1.2009499204287

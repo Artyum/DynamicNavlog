@@ -21,7 +21,7 @@ class CalcUnitsFragment : Fragment(R.layout.fragment_calc_units) {
     private var unitsType: Int = 0
     private var unitsBase: Int = 0
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         _binding = FragmentCalcUnitsBinding.inflate(inflater, container, false)
         return bind.root
     }
@@ -84,7 +84,7 @@ class CalcUnitsFragment : Fragment(R.layout.fragment_calc_units) {
                         unitsList.add("oz")  // 2
                     }
                     5 -> {
-                        unitsList.add("Litres")        // 0
+                        unitsList.add("Liters")        // 0
                         unitsList.add("US gallons")    // 1
                         unitsList.add("UK gallons")  // 2
                     }
