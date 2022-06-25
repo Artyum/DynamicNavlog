@@ -19,7 +19,7 @@ class TimersFragment : Fragment(R.layout.fragment_timers) {
     private var _binding: FragmentTimersBinding? = null
     private val bind get() = _binding!!
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         _binding = FragmentTimersBinding.inflate(inflater, container, false)
         return bind.root
     }

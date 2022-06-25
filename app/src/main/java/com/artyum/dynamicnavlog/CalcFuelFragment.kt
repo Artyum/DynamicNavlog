@@ -14,7 +14,7 @@ class CalcFuelFragment : Fragment(R.layout.fragment_calc_fuel) {
     private var _binding: FragmentCalcFuelBinding? = null
     private val bind get() = _binding!!
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         _binding = FragmentCalcFuelBinding.inflate(inflater, container, false)
         return bind.root
     }

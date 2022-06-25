@@ -24,6 +24,10 @@
             android:id="@+id/drawerItemOpen"
             android:icon="@drawable/ic_list"
             android:title="@string/txtFlightPlans" />
+        <item
+            android:id="@+id/drawerItemAirplanes"
+            android:icon="@drawable/ic_flight"
+            android:title="@string/txtAirplanes" />
 
     </group>
     <group

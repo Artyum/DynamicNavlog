@@ -54,12 +54,12 @@ class HomeItem() {
             engineTimeSec = Duration.between(timers.offblock, LocalDateTime.now()).toMillis() / 1000
         }
 
-        if (settings.fph != null) {
-            fuelUsed = engineTimeSec.toDouble() / 3600.0 * settings.fph!!
+        if (settings.planeFph != null) {
+            fuelUsed = engineTimeSec.toDouble() / 3600.0 * settings.planeFph!!
 
-            if (settings.fuelOnBoard != null) {
-                fuelMaxTime = settings.fuelOnBoard!! / settings.fph!!
-                fuelRemaining = settings.fuelOnBoard!! - fuelUsed
+            if (settings.fob != null) {
+                fuelMaxTime = settings.fob!! / settings.planeFph!!
+                fuelRemaining = settings.fob!! - fuelUsed
                 fuelTimeRemaining = fuelMaxTime * 3600.0 - engineTimeSec.toDouble()
             }
         }
@@ -67,8 +67,8 @@ class HomeItem() {
         if (stage < C.STAGE_3_FLIGHT_IN_PROGRESS) {
             if (isNavlogReady()) estFlightTimeSec = totals.time
 
-            if (settings.fph != null) {
-                fuelToLand = settings.fph!! * totals.time.toDouble() / 3600.0
+            if (settings.planeFph != null) {
+                fuelToLand = settings.planeFph!! * totals.time.toDouble() / 3600.0
             }
 
         } else if (stage == C.STAGE_3_FLIGHT_IN_PROGRESS) {
@@ -124,7 +124,7 @@ class HomeItem() {
             }
 
             // Fuel to land
-            if (settings.fph != null) fuelToLand = settings.fph!! * timeToLand.toDouble() / 3600.0
+            if (settings.planeFph != null) fuelToLand = settings.planeFph!! * timeToLand.toDouble() / 3600.0
 
         } else if (stage >= C.STAGE_4_AFTER_LANDING) {
             estFlightTimeSec = Duration.between(timers.takeoff, timers.landing).toMillis() / 1000
@@ -188,7 +188,7 @@ class HomeItem() {
 
             if (gps.isValid) {
                 // Direct HDG (in HDG box)
-                val fc = flightCalculator(dmt, settings.windDir, settings.windSpd, settings.tas)
+                val fc = flightCalculator(dmt, settings.windDir, settings.windSpd, settings.planeTas)
                 hdgDct = formatDouble(fc.hdg)
             }
         }
@@ -347,13 +347,13 @@ class HomeItem() {
         if (stage < C.STAGE_5_AFTER_ENGINE_SHUTDOWN && fuelToLand > 0.0) ret.ftl = formatDouble(fuelToLand)
         if (distRemaining < 0.0) ret.ftlmark = "?"
         if (engineTimeSec > 0.0) ret.engineTime = formatSecondsToTime(engineTimeSec)
-        if (settings.fuelOnBoard != null && settings.fph != null) {
+        if (settings.fob != null && settings.planeFph != null) {
             ret.fuelTime = formatSecondsToTime(fuelTimeRemaining.toLong())
             ret.fuelRemaining = formatDouble(fuelRemaining)
         }
 
-        if (settings.tankCapacity != null) {
-            val pct = fuelRemaining / settings.tankCapacity!! * 100.0
+        if (settings.planeTank != null && settings.planeTank!! > 0.0) {
+            val pct = fuelRemaining / settings.planeTank!! * 100.0
             ret.fuelPct = formatDouble(pct) + '%'
             ret.fuelPctBar = pct.roundToInt()
         }

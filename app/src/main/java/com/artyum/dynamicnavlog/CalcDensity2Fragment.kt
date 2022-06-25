@@ -20,7 +20,7 @@ class CalcDensity2Fragment : Fragment(R.layout.fragment_calc_density2) {
     private var dewpointUnits: Int = C.TEMP_F
     private var elevationUnits: Int = C.ELEV_FT
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         _binding = FragmentCalcDensity2Binding.inflate(inflater, container, false)
         return bind.root
     }

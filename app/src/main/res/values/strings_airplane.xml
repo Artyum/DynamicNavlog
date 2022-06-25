@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="txtEnterPlaneType">Enter airplane type</string>
+    <string name="txtEnterPlaneReg">Enter airplane registration</string>
+    <string name="txtEnterPlaneTAS">Enter airplane cruise speed (TAS)</string>
+    <string name="txtEnterTank">Enter airplane tank capacity</string>
+    <string name="txtEnterFph">Enter fuel per hour</string>
+</resources>

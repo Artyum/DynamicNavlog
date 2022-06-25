@@ -1,6 +1,5 @@
 package com.artyum.dynamicnavlog
 
-import android.annotation.SuppressLint
 import android.app.AlertDialog
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -8,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.core.widget.doAfterTextChanged
 import androidx.fragment.app.Fragment
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -18,7 +18,7 @@ class PlanListFragment : Fragment(R.layout.fragment_planlist), PlanListAdapter.O
     private val bind get() = _binding!!
     private val adapter = PlanListAdapter(planList, this)
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         _binding = FragmentPlanlistBinding.inflate(inflater, container, false)
         return bind.root
     }
@@ -28,7 +28,6 @@ class PlanListFragment : Fragment(R.layout.fragment_planlist), PlanListAdapter.O
         _binding = null
     }
 
-    @SuppressLint("NotifyDataSetChanged")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         bind.planListLayout.keepScreenOn = settings.keepScreenOn
@@ -36,7 +35,7 @@ class PlanListFragment : Fragment(R.layout.fragment_planlist), PlanListAdapter.O
         // Search box
         bind.searchInput.doAfterTextChanged {
             val search = bind.searchInput.text.toString().trim()
-            refreshFlightPlanList(search)
+            loadFlightPlanList(search)
             adapter.notifyDataSetChanged()
         }
 
@@ -48,7 +47,7 @@ class PlanListFragment : Fragment(R.layout.fragment_planlist), PlanListAdapter.O
         val itemTouchHelper = ItemTouchHelper(simpleCallback)
         itemTouchHelper.attachToRecyclerView(recyclerView)
 
-        refreshFlightPlanList()
+        loadFlightPlanList()
     }
 
     // Open flight plan
@@ -98,8 +97,7 @@ class PlanListFragment : Fragment(R.layout.fragment_planlist), PlanListAdapter.O
             calcNavlog()
         }
 
-        val a = activity as MainActivity
-        a.resetFlight()
-        a.navController.navigate(SettingsFragmentDirections.actionGlobalSettingsFragment())
+        (activity as MainActivity).resetFlight()
+        findNavController().navigate(SettingsFragmentDirections.actionGlobalSettingsFragment())
     }
 }

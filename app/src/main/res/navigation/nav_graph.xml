@@ -200,4 +200,33 @@
         app:popUpTo="@id/homeFragment"
         app:popUpToInclusive="true" />
 
+    <fragment
+        android:id="@+id/airplaneListFragment"
+        android:name="com.artyum.dynamicnavlog.AirplaneListFragment"
+        android:label="@string/txtAirplanes"
+        tools:layout="@layout/fragment_airplanelist">
+        <action
+            android:id="@+id/action_airplaneListFragment_to_airplaneFragment"
+            app:destination="@id/airplaneFragment"
+            app:enterAnim="@anim/nav_default_enter_anim"
+            app:exitAnim="@anim/nav_default_exit_anim"
+            app:popEnterAnim="@anim/nav_default_pop_enter_anim"
+            app:popExitAnim="@anim/nav_default_pop_exit_anim"
+            app:popUpToInclusive="true" />
+    </fragment>
+    <action
+        android:id="@+id/action_global_airplaneListFragment"
+        app:destination="@id/airplaneListFragment"
+        app:enterAnim="@anim/nav_default_enter_anim"
+        app:exitAnim="@anim/nav_default_exit_anim"
+        app:popEnterAnim="@anim/nav_default_pop_enter_anim"
+        app:popExitAnim="@anim/nav_default_pop_exit_anim"
+        app:popUpTo="@id/homeFragment"
+        app:popUpToInclusive="true" />
+    <fragment
+        android:id="@+id/airplaneFragment"
+        android:name="com.artyum.dynamicnavlog.AirplaneFragment"
+        android:label="@string/txtEditAirplane"
+        tools:layout="@layout/fragment_airplane" />
+
 </navigation>

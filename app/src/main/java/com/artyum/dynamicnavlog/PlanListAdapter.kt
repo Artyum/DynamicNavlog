@@ -24,8 +24,8 @@ class PlanListAdapter(
     override fun getItemCount(): Int = planList.size
 
     inner class PlanListViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView), View.OnClickListener {
-        val id: TextView = itemView.findViewById(R.id.txtPlanID)
-        val planName: TextView = itemView.findViewById(R.id.txtPlanListItem)
+        val id: TextView = itemView.findViewById(R.id.txtID)
+        val planName: TextView = itemView.findViewById(R.id.txtListItem)
 
         init {
             itemView.setOnClickListener(this)
