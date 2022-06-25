@@ -563,7 +563,7 @@ fun getUnitsVolume(): String {
     when (settings.volUnits) {
         C.VOL_USGAL -> return "gal"
         C.VOL_UKGAL -> return "gal"
-        C.VOL_LITERS -> return "lit"
+        C.VOL_LITERS -> return "lit."
     }
     return ""
 }

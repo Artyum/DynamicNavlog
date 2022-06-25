@@ -132,7 +132,7 @@
     <string name="txtCruiseSpeerTAS">Cruise speed (TAS)</string>
     <string name="txtFph">Fuel/h</string>
     <string name="txtFuelPerHour">Fuel per hour</string>
-    <string name="txtTakeoffFuel">Takeoff fuel</string>
+    <string name="txtTakeoffFuel">T/O fuel</string>
     <string name="txtTank">Tank</string>
     <string name="txtTankCapacity">Tank capacity</string>
     <string name="txtPerformance">Performance</string>
