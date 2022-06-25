@@ -76,18 +76,15 @@
                     android:orientation="horizontal">
 
                     <View
-                        style="@style/dividerSet"
+                        style="@style/dividerLine"
                         android:layout_weight="1" />
 
                     <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginHorizontal="15dp"
-                        android:text="@string/txtAirplane"
-                        android:textStyle="bold" />
+                        style="@style/dividerText"
+                        android:text="@string/txtAirplane" />
 
                     <View
-                        style="@style/dividerSet"
+                        style="@style/dividerLine"
                         android:layout_weight="1" />
                 </LinearLayout>
 
@@ -203,18 +200,15 @@
                     android:orientation="horizontal">
 
                     <View
-                        style="@style/dividerSet"
+                        style="@style/dividerLine"
                         android:layout_weight="1" />
 
                     <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginHorizontal="15dp"
-                        android:text="@string/txtWindConditions"
-                        android:textStyle="bold" />
+                        style="@style/dividerText"
+                        android:text="@string/txtWindConditions" />
 
                     <View
-                        style="@style/dividerSet"
+                        style="@style/dividerLine"
                         android:layout_weight="1" />
                 </LinearLayout>
 
@@ -264,18 +258,15 @@
                     android:orientation="horizontal">
 
                     <View
-                        style="@style/dividerSet"
+                        style="@style/dividerLine"
                         android:layout_weight="1" />
 
                     <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginHorizontal="15dp"
-                        android:text="@string/txtGpsOptions"
-                        android:textStyle="bold" />
+                        style="@style/dividerText"
+                        android:text="@string/txtGpsOptions" />
 
                     <View
-                        style="@style/dividerSet"
+                        style="@style/dividerLine"
                         android:layout_weight="1" />
                 </LinearLayout>
 
@@ -333,18 +324,15 @@
                     android:orientation="horizontal">
 
                     <View
-                        style="@style/dividerSet"
+                        style="@style/dividerLine"
                         android:layout_weight="1" />
 
                     <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginHorizontal="15dp"
-                        android:text="@string/txtFlightPlanUnits"
-                        android:textStyle="bold" />
+                        style="@style/dividerText"
+                        android:text="@string/txtFlightPlanUnits" />
 
                     <View
-                        style="@style/dividerSet"
+                        style="@style/dividerLine"
                         android:layout_weight="1" />
                 </LinearLayout>
 
@@ -425,18 +413,15 @@
                     android:orientation="horizontal">
 
                     <View
-                        style="@style/dividerSet"
+                        style="@style/dividerLine"
                         android:layout_weight="1" />
 
                     <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginHorizontal="15dp"
-                        android:text="@string/txtSettings"
-                        android:textStyle="bold" />
+                        style="@style/dividerText"
+                        android:text="@string/txtSettings" />
 
                     <View
-                        style="@style/dividerSet"
+                        style="@style/dividerLine"
                         android:layout_weight="1" />
                 </LinearLayout>
 
