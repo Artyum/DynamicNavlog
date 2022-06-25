@@ -44,13 +44,6 @@ class SettingsFragment : Fragment(R.layout.fragment_settings) {
         super.onViewCreated(view, savedInstanceState)
         bind.settingLayout.keepScreenOn = settings.keepScreenOn
 
-        // Disable Flight Plan Name edit
-        if (timers.offblock != null) {
-            bind.settingFlightPlanNameBox.isEnabled = false
-        }
-
-        // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // //
-
         // Flight plan name
         bind.settingFlightPlanName.doOnTextChanged { text, _, _, _ ->
             val tmp = text.toString().trim()
@@ -97,7 +90,6 @@ class SettingsFragment : Fragment(R.layout.fragment_settings) {
             val dWindDir = getDoubleOrNull(text.toString())
             if (!validWinDir(dWindDir)) showSettingsError(getString(R.string.txtInvalidWind))
             else if (settings.windDir != dWindDir) {
-                //println("windDir")
                 settings.windDir = dWindDir!!
                 bind.settingsInfoBox.visibility = View.GONE
                 change = true
@@ -112,7 +104,6 @@ class SettingsFragment : Fragment(R.layout.fragment_settings) {
             val dWindSpd = getDoubleOrNull(text.toString())
             if (!validWinSpeed(dWindSpd)) showSettingsError(getString(R.string.txtInvalidWindSpeed))
             else if (settings.windSpd != dWindSpd) {
-                //println("windSpd")
                 settings.windSpd = dWindSpd!!
                 bind.settingsInfoBox.visibility = View.GONE
                 change = true
@@ -318,6 +309,12 @@ class SettingsFragment : Fragment(R.layout.fragment_settings) {
                 }
             }
 
+        // Disable edit during the flight
+        if (timers.offblock != null) {
+            bind.settingFlightPlanNameBox.isEnabled = false
+            bind.spinnerAirplane.isEnabled = false
+        }
+
         setupUI(view)
         restoreSettings()
     }
@@ -412,8 +409,10 @@ class SettingsFragment : Fragment(R.layout.fragment_settings) {
             bind.airplaneDetailsTank.text = formatDouble(settings.planeTank)
             bind.airplaneDetailsFph.text = formatDouble(settings.planeFph, 1)
             bind.airplaneDetailsBox.visibility = View.VISIBLE
+            bind.settingsSelectAirplaneMsg.visibility = View.GONE
         } else {
             bind.airplaneDetailsBox.visibility = View.GONE
+            bind.settingsSelectAirplaneMsg.visibility = View.VISIBLE
         }
         bind.airplaneSpdUnits.text = getUnitsSpd()
         bind.airplaneFuelUnits1.text = getUnitsVolume()

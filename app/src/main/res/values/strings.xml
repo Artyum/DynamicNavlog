@@ -219,6 +219,7 @@
     <string name="txtSAltitudeAcc">Altitude (accuracy)</string>
     <string name="txtHorizontalAcc">Horizontal accuracy</string>
     <string name="txtMap">Map</string>
+    <string name="txtNoAirplaneInSettings">An airplane must be selected for the flight plan</string>
     <string name="txtCannotConnectToGooglePlay">Cannot fetch data from Google Play. Check your Internet connection. Please try again later.</string>
     <string name="txtLocationMessage">The application will ask for access to device\'s location.\n\nDynamic NavLog collects location data to present position on maps and for proper functionality
         of features like automatic detection of takeoff, landing and waypoint arrival.\n\n\It is also strongly recommended to allow the app to collect location data while running in the background
