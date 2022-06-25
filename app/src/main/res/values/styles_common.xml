@@ -9,10 +9,19 @@
         <item name="android:layout_marginTop">20dp</item>
     </style>
 
-    <style name="dividerSet">
+    <style name="dividerLine">
         <item name="android:layout_width">0dp</item>
         <item name="android:layout_height">1dp</item>
         <item name="android:background">?android:attr/listDivider</item>
+    </style>
+
+    <style name="dividerText">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_marginHorizontal">15dp</item>
+        <item name="android:textSize">14sp</item>
+        <item name="android:textColor">@color/colorSecondary</item>
+        <item name="android:textStyle">bold</item>
     </style>
 
     <style name="inputLayout" parent="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense">
@@ -126,4 +135,5 @@
         <item name="android:textSize">14sp</item>
         <item name="android:visibility">gone</item>
     </style>
+
 </resources>
