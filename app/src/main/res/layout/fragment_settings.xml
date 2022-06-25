@@ -115,18 +115,20 @@
 
                 </LinearLayout>
 
-                <LinearLayout
+                <androidx.constraintlayout.widget.ConstraintLayout
                     android:id="@+id/airplaneDetailsBox"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="10dp"
-                    android:paddingHorizontal="5dp"
+                    android:paddingHorizontal="10dp"
                     android:paddingVertical="5dp">
 
                     <LinearLayout
+                        android:id="@+id/plane1"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_weight="1">
+                        app:layout_constraintLeft_toLeftOf="parent"
+                        app:layout_constraintTop_toTopOf="parent">
 
                         <TextView
                             android:layout_width="wrap_content"
@@ -145,10 +147,12 @@
                     </LinearLayout>
 
                     <LinearLayout
+                        android:id="@+id/plane2"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginHorizontal="30dp"
-                        android:layout_weight="1">
+                        app:layout_constraintLeft_toRightOf="@id/plane1"
+                        app:layout_constraintRight_toLeftOf="@id/plane3"
+                        app:layout_constraintTop_toTopOf="parent">
 
                         <TextView
                             android:layout_width="wrap_content"
@@ -167,9 +171,11 @@
                     </LinearLayout>
 
                     <LinearLayout
+                        android:id="@+id/plane3"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_weight="1">
+                        app:layout_constraintRight_toRightOf="parent"
+                        app:layout_constraintTop_toTopOf="parent">
 
                         <TextView
                             android:layout_width="wrap_content"
@@ -186,7 +192,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content" />
                     </LinearLayout>
-                </LinearLayout>
+                </androidx.constraintlayout.widget.ConstraintLayout>
 
                 <LinearLayout style="@style/dividerBox">
 
