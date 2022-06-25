@@ -19,7 +19,6 @@
 
             <com.google.android.material.textfield.TextInputLayout
                 style="@style/timersTextInput"
-                android:layout_marginBottom="15dp"
                 android:hint="@string/txtFlightPlanName">
 
                 <com.google.android.material.textfield.TextInputEditText
@@ -27,9 +26,20 @@
                     style="@style/timersText" />
             </com.google.android.material.textfield.TextInputLayout>
 
-            <TextView
-                style="@style/globalCaption"
-                android:text="@string/txtTimeStamps" />
+            <LinearLayout style="@style/dividerBox">
+
+                <View
+                    style="@style/dividerLine"
+                    android:layout_weight="1" />
+
+                <TextView
+                    style="@style/dividerText"
+                    android:text="@string/txtTimeStamps" />
+
+                <View
+                    style="@style/dividerLine"
+                    android:layout_weight="1" />
+            </LinearLayout>
 
             <com.google.android.material.textfield.TextInputLayout
                 style="@style/timersTextInput"
@@ -67,10 +77,20 @@
                     style="@style/timersText" />
             </com.google.android.material.textfield.TextInputLayout>
 
-            <TextView
-                style="@style/globalCaption"
-                android:layout_marginTop="15dp"
-                android:text="@string/txtSummary" />
+            <LinearLayout style="@style/dividerBox">
+
+                <View
+                    style="@style/dividerLine"
+                    android:layout_weight="1" />
+
+                <TextView
+                    style="@style/dividerText"
+                    android:text="@string/txtSummary" />
+
+                <View
+                    style="@style/dividerLine"
+                    android:layout_weight="1" />
+            </LinearLayout>
 
             <LinearLayout
                 android:layout_width="match_parent"

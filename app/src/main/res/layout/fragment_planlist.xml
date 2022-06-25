@@ -28,12 +28,8 @@
 
         <LinearLayout
             android:id="@+id/title"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/searchBox"
-            android:layout_marginVertical="10dp"
-            android:gravity="center"
-            android:orientation="horizontal">
+            style="@style/dividerBox"
+            android:layout_below="@id/searchBox">
 
             <View
                 style="@style/dividerLine"
