@@ -102,6 +102,7 @@
                         android:layout_weight="2" />
 
                     <com.google.android.material.textfield.TextInputLayout
+                        android:id="@+id/hintTakeoffFuel"
                         style="@style/inputLayout"
                         android:layout_width="0dp"
                         android:layout_weight="1"
@@ -228,6 +229,7 @@
                         <TextView style="@style/spacer" />
 
                         <com.google.android.material.textfield.TextInputLayout
+                            android:id="@+id/hintWindSpd"
                             style="@style/inputLayout"
                             android:hint="@string/txtWindSpeed">
 

@@ -399,9 +399,11 @@ class SettingsFragment : Fragment(R.layout.fragment_settings) {
         bind.settingFrom.setText(settings.departure)
         bind.settingDestination.setText(settings.destination)
 
-        // Airplane
+        // Takeoff fuel
         bind.settingFuel.setText(formatDouble(settings.fob, precision))
+        bind.hintTakeoffFuel.hint = getString(R.string.txtTakeoffFuel) + " (" + getUnitsVolume() + ")"
 
+        // Airplane
         val id = getAirplaneListPosition(settings.planeId)
         if (id > 0) {
             bind.spinnerAirplane.setSelection(id)
@@ -418,9 +420,10 @@ class SettingsFragment : Fragment(R.layout.fragment_settings) {
         bind.airplaneFuelUnits1.text = getUnitsVolume()
         bind.airplaneFuelUnits2.text = getUnitsVolume()
 
-        // Flight conditions
+        // Wind conditions
         bind.settingWindDir.setText(formatDouble(settings.windDir, precision))
         bind.settingWindSpd.setText(formatDouble(settings.windSpd, precision))
+        bind.hintWindSpd.hint = getString(R.string.txtWindSpeed) + " (" + getUnitsSpd() + ")"
 
         // Units
         bind.spinnerUnitsSpd.setSelection(settings.spdUnits)
