@@ -91,6 +91,12 @@
                         android:layout_weight="1" />
                 </LinearLayout>
 
+                <TextView
+                    android:id="@+id/settingsSelectAirplaneMsg"
+                    style="@style/errorMessage"
+                    android:layout_marginVertical="5dp"
+                    android:text="@string/txtNoAirplaneInSettings" />
+
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -120,9 +126,9 @@
                     android:id="@+id/airplaneDetailsBox"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginHorizontal="5dp"
-                    android:layout_marginTop="15dp"
-                    android:layout_marginBottom="10dp">
+                    android:layout_marginTop="10dp"
+                    android:paddingHorizontal="5dp"
+                    android:paddingVertical="5dp">
 
                     <LinearLayout
                         android:layout_width="wrap_content"
@@ -410,6 +416,7 @@
                         app:layout_constraintRight_toRightOf="parent" />
 
                 </androidx.constraintlayout.widget.ConstraintLayout>
+
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -432,6 +439,7 @@
                         style="@style/dividerSet"
                         android:layout_weight="1" />
                 </LinearLayout>
+
                 <androidx.constraintlayout.widget.ConstraintLayout
                     style="@style/settingsSwitch"
                     android:layout_width="match_parent"
