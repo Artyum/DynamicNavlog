@@ -690,7 +690,6 @@ fun copyFlightPlan(postfix: String) {
 }
 
 fun saveAirplaneList() {
-    if (airplaneList.size == 0) return
     val file = File(externalAppDir, C.airplanesFile)
 
     val json = JSONObject()
