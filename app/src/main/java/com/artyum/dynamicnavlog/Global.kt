@@ -493,10 +493,7 @@ fun convertSettingsSpdUnits(old: Int, new: Int) {
     if (old == C.SPD_KPH && new == C.SPD_MPH) ratio = kph2mph(1.0)
 
     settings.windSpd = settings.windSpd * ratio
-    val a = getAirplaneByID(settings.planeId)
-    if (a != null) {
-        settings.planeTas = a.tas
-    }
+    getAirplaneSettingsByID(settings.planeId)
 }
 
 fun convertSettingsDistUnits(old: Int, new: Int) {
@@ -527,11 +524,7 @@ fun convertSettingsVolUnits(old: Int, new: Int) {
     if (old == C.VOL_UKGAL && new == C.VOL_USGAL) ratio = ukgal2usgal(1.0)
 
     if (settings.fob != null) settings.fob = settings.fob!! * ratio
-    val a = getAirplaneByID(settings.planeId)
-    if (a != null) {
-        settings.planeTank = a.tank
-        settings.planeFph = a.fph
-    }
+    getAirplaneSettingsByID(settings.planeId)
 }
 
 fun formatDouble(value: Double?, precision: Int = 0): String {
