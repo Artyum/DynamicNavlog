@@ -471,19 +471,10 @@ class SettingsFragment : Fragment(R.layout.fragment_settings) {
     private fun getAirplaneSettings(i: Int = -1) {
         if (i < 0) {
             resetAirplaneSettings()
-            return
+        } else {
+            Log.d("SettingsFragment", "getAirplaneSettings")
+            getAirplaneSettingsByID(airplaneList[i].id)
         }
-        Log.d("SettingsFragment", "getAirplaneSettings")
-
-        settings.planeId = airplaneList[i].id
-        val airplane = getAirplaneByID(settings.planeId)
-        if (airplane != null) {
-            settings.planeType = airplane.type
-            settings.planeReg = airplane.reg
-            settings.planeTas = airplane.tas
-            settings.planeTank = airplane.tank
-            settings.planeFph = airplane.fph
-        } else resetAirplaneSettings()
     }
 }
 
@@ -508,8 +499,6 @@ fun resetSettings() {
 
     settings.windDir = 0.0
     settings.windSpd = 0.0
-
-    resetAirplaneSettings()
     settings.fob = null
 
     settings.spdUnits = 0
@@ -530,13 +519,6 @@ fun resetSettings() {
     settings.tfDisplayToggle = C.TF_DISPLAY_REM
     settings.nextRadius = C.DEFAULT_NEXT_RADIUS
     settings.screenOrientation = C.SCREEN_SENSOR
-}
 
-fun resetAirplaneSettings() {
-    settings.planeId = ""
-    settings.planeType = ""
-    settings.planeReg = ""
-    settings.planeTas = 0.0
-    settings.planeFph = 0.0
-    settings.planeTank = 0.0
+    resetAirplaneSettings()
 }

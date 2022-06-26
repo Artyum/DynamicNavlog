@@ -409,18 +409,7 @@ fun loadState(fileName: String = C.stateFileName) {
     loadTrace()
 
     // Load airplane
-    val airplane = getAirplaneByID(settings.planeId)
-    if (airplane != null) {
-        settings.planeTas = airplane.tas
-        settings.planeTank = airplane.tank
-        settings.planeFph = airplane.fph
-        settings.planeType = airplane.type
-        settings.planeReg = airplane.reg
-    } else {
-        settings.planeTas = 0.0
-        settings.planeTank = null
-        settings.planeFph = null
-    }
+    getAirplaneSettingsByID(settings.planeId)
 }
 
 fun deleteFile(fileName: String) {

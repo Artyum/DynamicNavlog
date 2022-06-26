@@ -177,11 +177,11 @@ class AirplaneFragment : Fragment() {
     }
 }
 
-fun getAirplaneByID(id: String): Airplane? {
-    if (id == "") return null
+fun getAirplaneSettingsByID(id: String) {
+    if (id == "") return
     for (i in airplaneList.indices) {
         if (airplaneList[i].id == id) {
-            Log.d("AirplaneFragment", "getAirplaneByID")
+            Log.d("AirplaneFragment", "getAirplaneByID $id")
             // Convert airplane units to flight plan units
 
             val airplane = airplaneList[i].copy()
@@ -210,10 +210,15 @@ fun getAirplaneByID(id: String): Airplane? {
                 airplane.fph = l2ukgal(airplane.fph)
             }
 
-            return airplane
+            settings.planeType = airplane.type
+            settings.planeReg = airplane.reg
+            settings.planeTas = airplane.tas
+            settings.planeTank = airplane.tank
+            settings.planeFph = airplane.fph
+            return
         }
     }
-    return null
+    resetAirplaneSettings()
 }
 
 fun getAirplaneListPosition(id: String): Int {
@@ -222,4 +227,13 @@ fun getAirplaneListPosition(id: String): Int {
         if (airplaneList[i].id == id) return i + 1
     }
     return 0
+}
+
+fun resetAirplaneSettings() {
+    settings.planeId = ""
+    settings.planeType = ""
+    settings.planeReg = ""
+    settings.planeTas = 0.0
+    settings.planeFph = 0.0
+    settings.planeTank = 0.0
 }
