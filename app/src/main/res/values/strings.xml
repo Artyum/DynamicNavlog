@@ -47,6 +47,7 @@
     <string name="txtEditAirplane">Edit Airplane</string>
     <string name="txtAirplane">Airplane</string>
     <string name="txtAirplanes">Airplanes</string>
+    <string name="txtAirplaneAndFuel">Airplane and fuel</string>
     <string name="txtDescend">Descend</string>
     <string name="txtTimeMeasure">Timestamps</string>
     <string name="txtWindCalculator">Wind calculator</string>
