@@ -11,6 +11,8 @@ import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import com.artyum.dynamicnavlog.databinding.FragmentAirplaneBinding
 
+val TAG = "AirplaneFragment"
+
 class AirplaneFragment : Fragment() {
     private var _binding: FragmentAirplaneBinding? = null
     private val bind get() = _binding!!
@@ -178,10 +180,11 @@ class AirplaneFragment : Fragment() {
 }
 
 fun getAirplaneSettingsByID(id: String) {
-    if (id == "") return
+    if (id == "") resetAirplaneSettings()
+
     for (i in airplaneList.indices) {
         if (airplaneList[i].id == id) {
-            Log.d("AirplaneFragment", "getAirplaneByID $id")
+            Log.d(TAG, "getAirplaneByID $id")
             // Convert airplane units to flight plan units
 
             val airplane = airplaneList[i].copy()
@@ -210,6 +213,7 @@ fun getAirplaneSettingsByID(id: String) {
                 airplane.fph = l2ukgal(airplane.fph)
             }
 
+            settings.planeId = id
             settings.planeType = airplane.type
             settings.planeReg = airplane.reg
             settings.planeTas = airplane.tas
@@ -222,6 +226,7 @@ fun getAirplaneSettingsByID(id: String) {
 }
 
 fun getAirplaneListPosition(id: String): Int {
+    // Index 0 -> "Select an airplane"
     if (id == "") return 0
     for (i in airplaneList.indices) {
         if (airplaneList[i].id == id) return i + 1
@@ -230,6 +235,7 @@ fun getAirplaneListPosition(id: String): Int {
 }
 
 fun resetAirplaneSettings() {
+    //Log.d(TAG, "resetAirplaneSettings")
     settings.planeId = ""
     settings.planeType = ""
     settings.planeReg = ""

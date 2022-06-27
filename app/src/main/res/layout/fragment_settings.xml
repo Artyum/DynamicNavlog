@@ -76,7 +76,7 @@
 
                     <TextView
                         style="@style/dividerText"
-                        android:text="@string/txtAirplane" />
+                        android:text="@string/txtAirplaneAndFuel" />
 
                     <View
                         style="@style/dividerLine"
