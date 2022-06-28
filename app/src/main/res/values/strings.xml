@@ -16,7 +16,7 @@
     <string name="txtInvalidWindSpeed">Wind speed must be at least 0 and less than TAS</string>
     <string name="txtInvalidTAS">TAS must be greater than Wind speed</string>
     <string name="txtInvalidFPH">Fuel per hour must be greater than 0</string>
-    <string name="txtInvalidFOB">Fuel on board must be greater than 0</string>
+    <string name="txtInvalidFOB">Fuel for takeoff must be greater than 0 and less than the tank capacity</string>
     <string name="txtInvalidTC">Fuel tank capacity must be greater than 0</string>
     <string name="txtDisplayCurrent">Show current</string>
     <string name="txtDisplayRemaining">Show incrementally</string>
@@ -112,7 +112,7 @@
     <string name="txtFuelAfterFlight">Fuel at end</string>
     <string name="txtWindDirection">Wind direction</string>
     <string name="txtWind">Wind</string>
-    <string name="txtWindConditions">Wind conditions</string>
+    <string name="txtWindAndFuel">Wind and fuel</string>
     <string name="txtStationPressure">Station pressure</string>
     <string name="txtAltimeterSetting">Altimeter setting</string>
     <string name="txtTemperature">Temperature</string>

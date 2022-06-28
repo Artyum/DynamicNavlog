@@ -116,9 +116,10 @@ class SettingsFragment : Fragment(R.layout.fragment_settings) {
 
         // Fuel on board / Takeoff fuel
         bind.settingFuel.doOnTextChanged { text, _, _, _ ->
-            val dFob = getDoubleOrNull(text.toString())
+            var dFob = getDoubleOrNull(text.toString())
             if (dFob != null) {
                 if (dFob > 0.0) {
+                    if (settings.planeTank != null && dFob > settings.planeTank!!) dFob = settings.planeTank
                     settings.fob = dFob
                     bind.settingsInfoBox.visibility = View.GONE
                     change = true
