@@ -196,7 +196,7 @@
             android:layout_marginEnd="20dp" />
     </LinearLayout>
 
-    <LinearLayout
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/summaryTotals"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -205,35 +205,58 @@
         android:background="@color/colorPrimaryVariant"
         android:clipToPadding="true"
         android:padding="5dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/summaryGps">
+        app:layout_constraintBottom_toBottomOf="parent">
 
-        <TextView
-            style="@style/navlogSummary"
-            android:text="@string/txtTotalDistance" />
+        <LinearLayout
+            android:id="@+id/totalsDistance"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
 
-        <TextView
-            android:id="@+id/txtTotalDist"
-            style="@style/navlogSummary"
-            android:layout_marginEnd="20dp" />
+            <TextView
+                style="@style/navlogSummary"
+                android:text="@string/txtTotalDistance" />
 
-        <TextView
-            style="@style/navlogSummary"
-            android:text="Total Time" />
+            <TextView
+                android:id="@+id/txtTotalDist"
+                style="@style/navlogSummary"
+                android:layout_marginStart="@dimen/unitsMargin" />
+        </LinearLayout>
 
-        <TextView
-            android:id="@+id/txtTotalTime"
-            style="@style/navlogSummary"
-            android:layout_marginEnd="20dp" />
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintLeft_toRightOf="@id/totalsDistance"
+            app:layout_constraintRight_toLeftOf="@id/totalsFuel"
+            app:layout_constraintTop_toTopOf="parent">
 
-        <TextView
-            style="@style/navlogSummary"
-            android:text="@string/txtTotalFuel" />
+            <TextView
+                style="@style/navlogSummary"
+                android:text="@string/txtTotalTime" />
 
-        <TextView
-            android:id="@+id/txtTotalFuel"
-            style="@style/navlogSummary" />
+            <TextView
+                android:id="@+id/txtTotalTime"
+                style="@style/navlogSummary"
+                android:layout_marginStart="@dimen/unitsMargin" />
+        </LinearLayout>
 
-    </LinearLayout>
+        <LinearLayout
+            android:id="@+id/totalsFuel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <TextView
+                style="@style/navlogSummary"
+                android:text="@string/txtTotalFuel" />
+
+            <TextView
+                android:id="@+id/txtTotalFuel"
+                style="@style/navlogSummary"
+                android:layout_marginStart="@dimen/unitsMargin" />
+        </LinearLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
