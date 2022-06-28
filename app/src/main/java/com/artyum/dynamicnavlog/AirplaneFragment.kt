@@ -125,17 +125,17 @@ class AirplaneFragment : Fragment() {
     private fun setupUI(view: View) {
         // Units
         val unitsTypeList = ArrayList<String>()
-        unitsTypeList.add("kt")      // 0
-        unitsTypeList.add("mph")     // 1
-        unitsTypeList.add("kph")     // 2
+        unitsTypeList.add("Knots")    // 0
+        unitsTypeList.add("Mph")      // 1
+        unitsTypeList.add("Kph")      // 2
         bind.spinnerSpeedUnits.adapter = ArrayAdapter(view.context, R.layout.support_simple_spinner_dropdown_item, unitsTypeList)
         bind.spinnerSpeedUnits.setSelection(spdUnits)
 
         // Volume
         val volumeTypeList = ArrayList<String>()
-        volumeTypeList.add("us. gal")    // 0
-        volumeTypeList.add("imp. gal")   // 1
-        volumeTypeList.add("liters")     // 2
+        volumeTypeList.add("US Gal")     // 0
+        volumeTypeList.add("Imp. Gal")   // 1
+        volumeTypeList.add("Liters")     // 2
         bind.spinnerVolUnits.adapter = ArrayAdapter(view.context, R.layout.support_simple_spinner_dropdown_item, volumeTypeList)
         bind.spinnerVolUnits.setSelection(volUnits)
     }
@@ -240,6 +240,6 @@ fun resetAirplaneSettings() {
     settings.planeType = ""
     settings.planeReg = ""
     settings.planeTas = 0.0
-    settings.planeFph = 0.0
-    settings.planeTank = 0.0
+    settings.planeFph = null
+    settings.planeTank = null
 }

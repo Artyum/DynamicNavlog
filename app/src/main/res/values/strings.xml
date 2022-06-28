@@ -47,7 +47,6 @@
     <string name="txtEditAirplane">Edit Airplane</string>
     <string name="txtAirplane">Airplane</string>
     <string name="txtAirplanes">Airplanes</string>
-    <string name="txtAirplaneAndFuel">Airplane and fuel</string>
     <string name="txtDescend">Descend</string>
     <string name="txtTimeMeasure">Timestamps</string>
     <string name="txtWindCalculator">Wind calculator</string>
@@ -68,7 +67,6 @@
     <string name="txtInvalidTemperature2">Air temperature must be greater than dew point temperature</string>
     <string name="txtInvalidPressure">The altimeter setting should be between 800 and 1200 HPa (23.6 to 35.4 inHG)</string>
     <string name="txtInvalidElevation">Elevation must be between \-500 and 10000 meters (\-1640 to 32808 ft)</string>
-    <string name="txtSettingsOK">Settings saved</string>
     <string name="txtEnterValue">Enter the value to be converted</string>
     <string name="txtNewFlightPlan">New flight plan</string>
     <string name="txtRemoveAds">Donation</string>
