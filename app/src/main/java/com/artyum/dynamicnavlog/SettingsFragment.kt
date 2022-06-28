@@ -18,6 +18,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.sync.withLock
+import kotlin.math.round
 
 class SettingsFragment : Fragment(R.layout.fragment_settings) {
     private val TAG = "SettingsFragment"
@@ -113,16 +114,15 @@ class SettingsFragment : Fragment(R.layout.fragment_settings) {
             if (!hasFocus) saveSettings()
         }
 
-        // Fuel on board
+        // Fuel on board / Takeoff fuel
         bind.settingFuel.doOnTextChanged { text, _, _, _ ->
             val dFob = getDoubleOrNull(text.toString())
             if (dFob != null) {
                 if (dFob > 0.0) {
-                    if (settings.fob != dFob) {
-                        settings.fob = dFob
-                        bind.settingsInfoBox.visibility = View.GONE
-                        change = true
-                    }
+                    settings.fob = dFob
+                    bind.settingsInfoBox.visibility = View.GONE
+                    change = true
+                    refreshSpareFuelBox()
                 } else showSettingsError(getString(R.string.txtInvalidFOB))
             }
         }
@@ -444,8 +444,45 @@ class SettingsFragment : Fragment(R.layout.fragment_settings) {
 
         setGpsGroupVisibility(settings.gpsAssist)
         setWptDetectVisibility(settings.autoNext)
+        refreshSpareFuelBox()
 
         refresh = false
+    }
+
+    private fun refreshSpareFuelBox() {
+        if (settings.planeId != "" && settings.fob != null && settings.planeFph != null && settings.planeFph!! > 0.0 && totals.fuel > 0) {
+            val spareFuel = settings.fob!! - totals.fuel
+
+            //Time
+            val h = spareFuel / settings.planeFph!!
+
+            //Distance
+            val tas = if (settings.spdUnits == C.SPD_KPH) kph2kt(settings.planeTas)
+            else if (settings.spdUnits == C.SPD_MPH) mph2kt(settings.planeTas)
+            else settings.planeTas
+            var extraDist = tas * h
+            if (settings.distUnits == C.DIS_KM) extraDist = nm2km(extraDist)
+            if (settings.distUnits == C.DIS_SM) extraDist = nm2sm(extraDist)
+
+            bind.requiredFuel.text = formatDouble(totals.fuel)
+            bind.requiredFuelUnits.text = getUnitsVolume()
+
+            bind.spareFuel.text = formatDouble(spareFuel)
+            bind.spareFuelUnits.text = getUnitsVolume()
+
+            bind.extraDistance.text = formatDouble(extraDist)
+            bind.extraDistanceUnits.text = getUnitsDist()
+
+            bind.additionalTime.text = formatSecondsToTime((h * 3600.0).toLong())
+        } else {
+            bind.requiredFuel.text = ""
+            bind.spareFuel.text = ""
+            bind.extraDistance.text = ""
+            bind.additionalTime.text = "-"
+            bind.requiredFuelUnits.text = "-"
+            bind.spareFuelUnits.text = "-"
+            bind.extraDistanceUnits.text = "-"
+        }
     }
 
     private fun setGpsGroupVisibility(visible: Boolean) {

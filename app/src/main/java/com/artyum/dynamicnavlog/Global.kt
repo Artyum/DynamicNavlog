@@ -14,7 +14,6 @@ import com.google.android.gms.maps.model.LatLng
 import kotlinx.coroutines.sync.Mutex
 import java.time.LocalDateTime
 import kotlin.math.*
-import kotlin.time.Duration.Companion.milliseconds
 
 data class PlanListItem(
     var id: String,
@@ -166,9 +165,12 @@ object C {
     const val DIST_THRESHOLD = 10
     const val TIME_THRESHOLD = 10
 
-    const val H_DELIMITER = ":"
-    const val M_DELIMITER = "\'"
-    const val S_DELIMITER = "\""
+    //const val H_DELIMITER = ":"
+    //const val M_DELIMITER = "\'"
+    //const val S_DELIMITER = "\""
+    const val H_DELIMITER = "h"
+    const val M_DELIMITER = "m"
+    const val S_DELIMITER = "s"
 
     const val EARTH_RADIUS_SHORT_M = 6356752.3142
     const val EARTH_RADIUS_LONG_M = 6378137.0
@@ -546,7 +548,7 @@ fun getUnitsSpd(): String {
 fun getUnitsDist(): String {
     when (settings.distUnits) {
         C.DIS_NM -> return "nm"
-        C.DIS_SM -> return "miles"
+        C.DIS_SM -> return "sm"
         C.DIS_KM -> return "km"
     }
     return ""
