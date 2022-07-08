@@ -68,7 +68,9 @@
 
                 </TableLayout>
 
-                <LinearLayout style="@style/dividerBox">
+                <LinearLayout
+                    style="@style/dividerBox"
+                    android:layout_marginBottom="5dp">
 
                     <View
                         style="@style/dividerLine"
@@ -238,7 +240,7 @@
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="10dp">
+                    android:layout_marginTop="15dp">
 
                     <LinearLayout
                         android:layout_width="wrap_content"

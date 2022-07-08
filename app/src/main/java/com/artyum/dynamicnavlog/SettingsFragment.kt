@@ -86,7 +86,7 @@ class SettingsFragment : Fragment(R.layout.fragment_settings) {
 
         // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // //
 
-        // WindDir
+        // Wind dir
         bind.settingWindDir.doOnTextChanged { text, _, _, _ ->
             val dWindDir = getDoubleOrNull(text.toString())
             if (!validWinDir(dWindDir)) showSettingsError(getString(R.string.txtInvalidWind))
@@ -100,7 +100,7 @@ class SettingsFragment : Fragment(R.layout.fragment_settings) {
             if (!hasFocus) saveSettings()
         }
 
-        // WindSpeed
+        // Wind speed
         bind.settingWindSpd.doOnTextChanged { text, _, _, _ ->
             val dWindSpd = getDoubleOrNull(text.toString())
             if (!validWinSpeed(dWindSpd)) showSettingsError(getString(R.string.txtInvalidWindSpeed))
@@ -354,23 +354,23 @@ class SettingsFragment : Fragment(R.layout.fragment_settings) {
 
         // Spinner - Speed units
         val unitsSpdList = ArrayList<String>()
-        unitsSpdList.add("Knots")   // 0
-        unitsSpdList.add("Mph")     // 1
-        unitsSpdList.add("Kph")     // 2
+        unitsSpdList.add("Knots (kt)")          // 0
+        unitsSpdList.add("Miles/h (mph)")       // 1
+        unitsSpdList.add("Kilometers/h (kph)")  // 2
         bind.spinnerUnitsSpd.adapter = ArrayAdapter(view.context, R.layout.support_simple_spinner_dropdown_item, unitsSpdList)
 
         // Spinner - Speed units
         val unitsDistList = ArrayList<String>()
-        unitsDistList.add("Nautical miles")    // 0
-        unitsDistList.add("Statute miles")     // 1
-        unitsDistList.add("Kilometers")        // 2
+        unitsDistList.add("Nautical miles (nm)")    // 0
+        unitsDistList.add("Statute miles (sm)")     // 1
+        unitsDistList.add("Kilometers (km)")        // 2
         bind.spinnerUnitsDist.adapter = ArrayAdapter(view.context, R.layout.support_simple_spinner_dropdown_item, unitsDistList)
 
         // Spinner - Volume units
         val unitsFuelList = ArrayList<String>()
-        unitsFuelList.add("US Gal")    // 0
-        unitsFuelList.add("UK Gal")    // 1
-        unitsFuelList.add("Liters")    // 2
+        unitsFuelList.add("US Gal (gal)")    // 0
+        unitsFuelList.add("UK Gal (gal)")    // 1
+        unitsFuelList.add("Liters (l)")      // 2
         bind.spinnerUnitsVol.adapter = ArrayAdapter(view.context, R.layout.support_simple_spinner_dropdown_item, unitsFuelList)
 
         // Spinner - Map orientation
@@ -510,9 +510,9 @@ class SettingsFragment : Fragment(R.layout.fragment_settings) {
         if (i < 0) {
             resetAirplaneSettings()
         } else {
-            Log.d("SettingsFragment", "getAirplaneSettings")
             getAirplaneSettingsByID(airplaneList[i].id)
         }
+        restoreSettings()
     }
 }
 

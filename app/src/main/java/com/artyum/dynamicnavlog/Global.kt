@@ -165,12 +165,16 @@ object C {
     const val DIST_THRESHOLD = 10
     const val TIME_THRESHOLD = 10
 
-    //const val H_DELIMITER = ":"
-    //const val M_DELIMITER = "\'"
-    //const val S_DELIMITER = "\""
-    const val H_DELIMITER = "h"
-    const val M_DELIMITER = "m"
-    const val S_DELIMITER = "s"
+    const val H_DELIMITER = ":"
+    const val M_DELIMITER = "\'"
+    const val S_DELIMITER = "\""
+    //const val H_DELIMITER = "h"
+    //const val M_DELIMITER = "m"
+    //const val S_DELIMITER = "s"
+    // Subscript
+    //const val H_DELIMITER = "\u2095"
+    //const val M_DELIMITER = "\u2098"
+    //const val S_DELIMITER = "\u209B"
 
     const val EARTH_RADIUS_SHORT_M = 6356752.3142
     const val EARTH_RADIUS_LONG_M = 6378137.0
@@ -558,7 +562,7 @@ fun getUnitsVolume(): String {
     when (settings.volUnits) {
         C.VOL_USGAL -> return "gal"
         C.VOL_UKGAL -> return "gal"
-        C.VOL_LITERS -> return "lit."
+        C.VOL_LITERS -> return "l"
     }
     return ""
 }

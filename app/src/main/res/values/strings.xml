@@ -124,7 +124,7 @@
     <string name="txtDensityAltitudeAprox">Density altitude (aprox.)</string>
     <string name="txtElevations">Elevation</string>
     <string name="txtStationElevations">Station elevation</string>
-    <string name="txtWindSpeed">Wind speed</string>
+    <string name="txtWindSpeed">Wind spd.</string>
     <string name="txtSpeed">Speed</string>
     <string name="txtSpeedUnits">Speed units</string>
     <string name="txtTAS">TAS</string>
