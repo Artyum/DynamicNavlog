@@ -642,16 +642,15 @@ fun saveTraceAsGpx(): String {
         var item: JSONObject
 
         val lines = file.readLines()
+
         for (line in lines) {
             try {
                 item = JSONObject(line)
+                // Json fields: "lat", "lng", "date", "time"
+                trkpt += ("\t<trkpt lat=\"${item["lat"]}\" lon=\"${item["lng"]}\"><ele></ele><time>${item["date"]}T${item["time"]}</time></trkpt>\n")
+                export = true
             } catch (e: Exception) {
-                Log.d(tag, e.toString())
-                return ""
             }
-            // Json fields: "lat", "lng", "date", "time"
-            trkpt += ("\t<trkpt lat=\"${item["lat"]}\" lon=\"${item["lng"]}\"><ele></ele><time>${item["date"]}T${item["time"]}</time></trkpt>\n")
-            export = true
         }
 
         if (export) {
