@@ -33,27 +33,7 @@ class NavlogFragment : Fragment(R.layout.fragment_navlog), NavlogAdapter.OnItemC
         super.onViewCreated(view, savedInstanceState)
         bind.navlogLayout.keepScreenOn = settings.keepScreenOn
 
-        // Insert Button
-        bind.btnNavlogInsert.setOnClickListener {
-            clearNavlogInvalidItems(adapter)
-
-            if (settings.gpsAssist && settings.takeoffCoords == null) {
-                Toast.makeText(view.context, R.string.txtNoTakeoffPoint, Toast.LENGTH_LONG).show()
-            } else {
-                //if (!isAppPurchased && navlogList.size >= C.FREE_WPT_NUMBER_LIMIT) {
-                //Toast.makeText(view.context, R.string.txtTooManyItems, Toast.LENGTH_LONG).show()
-                //} else {
-                val newItem = NavlogItem(dest = "", magneticTrack = null, distance = null)
-                navlogList.add(newItem)
-                adapter.notifyItemInserted(navlogList.lastIndex)
-
-                val recyclerView = bind.navlogRecycler
-                recyclerView.scrollToPosition(navlogList.lastIndex)
-                onItemClick(navlogList.lastIndex)
-                //}
-            }
-        }
-
+        // Current & Incrementally switch
         bind.btnDisplayToggle.setOnClickListener {
             if (settings.tfDisplayToggle == C.TF_DISPLAY_CUR) {
                 settings.tfDisplayToggle = C.TF_DISPLAY_REM
@@ -80,16 +60,6 @@ class NavlogFragment : Fragment(R.layout.fragment_navlog), NavlogAdapter.OnItemC
         // Helper on end drag item
         val itemTouchHelper = ItemTouchHelper(simpleCallback)
         itemTouchHelper.attachToRecyclerView(recyclerView)
-    }
-
-    // Listener for data exchange from Dialog
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setFragmentResultListener("requestKey") { _, _ ->
-            //val result = bundle.getString("action")
-            saveState()
-            refreshBottomBar()
-        }
     }
 
     // Moving/drag&drop items in RecycleView
