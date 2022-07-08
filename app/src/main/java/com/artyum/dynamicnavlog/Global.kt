@@ -180,7 +180,7 @@ object C {
     const val EARTH_RADIUS_LONG_M = 6378137.0
 
     const val GPS_ALIVE_SEC = 30
-    const val GPS_MINIMUM_RAWSPEED = 1
+    const val GPS_MINIMUM_RAWSPEED = 5      // 5m/s = ~10kt
     const val MAX_ANGLE_INDICATOR = 10
     const val COORDS_PRECISION = 6
     const val LOCATION_PERMISSION_REQ_CODE = 99
