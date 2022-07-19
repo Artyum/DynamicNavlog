@@ -32,6 +32,7 @@ class AirplaneListFragment : Fragment(R.layout.fragment_airplanelist), AirplaneL
         super.onViewCreated(view, savedInstanceState)
         bind.airplaneListLayout.keepScreenOn = settings.keepScreenOn
 
+        // Add airplane
         bind.addAirplane.setOnClickListener {
             editAirplaneID = null
             findNavController().navigate(AirplaneListFragmentDirections.actionAirplaneListFragmentToAirplaneFragment())
