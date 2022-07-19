@@ -7,8 +7,9 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
+import android.widget.Toast
+import androidx.core.widget.doAfterTextChanged
 import androidx.fragment.app.Fragment
-import androidx.navigation.fragment.findNavController
 import com.artyum.dynamicnavlog.databinding.FragmentAirplaneBinding
 
 val TAG = "AirplaneFragment"
@@ -40,6 +41,7 @@ class AirplaneFragment : Fragment() {
             object : AdapterView.OnItemSelectedListener {
                 override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
                     spdUnits = position
+                    refreshPerformance()
                 }
 
                 override fun onNothingSelected(parent: AdapterView<*>?) {
@@ -52,6 +54,7 @@ class AirplaneFragment : Fragment() {
             object : AdapterView.OnItemSelectedListener {
                 override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
                     volUnits = position
+                    refreshPerformance()
                 }
 
                 override fun onNothingSelected(parent: AdapterView<*>?) {
@@ -59,6 +62,11 @@ class AirplaneFragment : Fragment() {
                 }
             }
 
+        bind.airplaneTas.doAfterTextChanged { refreshPerformance() }
+        bind.airplaneTank.doAfterTextChanged { refreshPerformance() }
+        bind.airplaneFph.doAfterTextChanged { refreshPerformance() }
+
+        // Save airplane
         bind.btnApply.setOnClickListener {
             hideErrorBox()
             val type = clearString(bind.airplaneType.text.toString())
@@ -105,13 +113,40 @@ class AirplaneFragment : Fragment() {
                 airplane.spdUnits = spdUnits
                 airplane.volUnits = volUnits
                 addAirplane()
-                findNavController().popBackStack()
+                //findNavController().popBackStack()
+                Toast.makeText(context, getString(R.string.txtAirplaneSaved), Toast.LENGTH_SHORT).show()
             }
         }
 
         setupUI(view)
         loadAirplane()
         restoreSettings()
+    }
+
+    private fun refreshPerformance() {
+        val tas = bind.airplaneTas.text.toString().toDoubleOrNull()
+        val tank = bind.airplaneTank.text.toString().toDoubleOrNull()
+        val fph = bind.airplaneFph.text.toString().toDoubleOrNull()
+
+        if (tas != null && tank != null && fph != null) {
+            val time = tank / fph   // time in h
+            val range = tas * time
+            val units = when (spdUnits) {
+                0 -> "nm"
+                1 -> "m"
+                2 -> "km"
+                else -> ""
+            }
+
+            bind.perfRange.text = formatDouble(range)
+            bind.perfRangeUnits.text = units
+            bind.perfFlightTime.text = formatSecondsToTime((time * 3600.0).toLong())
+
+        } else {
+            bind.perfRange.text = "-"
+            bind.perfRangeUnits.text = ""
+            bind.perfFlightTime.text = "-"
+        }
     }
 
     private fun hideErrorBox() {
@@ -141,15 +176,19 @@ class AirplaneFragment : Fragment() {
     }
 
     private fun loadAirplane() {
-        if (!editAirplaneID.isNullOrEmpty()) {
+        if (editAirplaneID.isNullOrEmpty()) {
+            airplane = Airplane()
+            airplane.id = generateStringId()
+            return
+        } else {
+            // Search in airplane list
             for (i in airplaneList.indices) {
                 if (airplaneList[i].id == editAirplaneID) {
-                    airplane = airplaneList[i]
+                    airplane = airplaneList[i].copy()
                     return
                 }
             }
         }
-        airplane.id = generateStringId()
     }
 
     private fun restoreSettings() {

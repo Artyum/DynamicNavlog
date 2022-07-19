@@ -70,8 +70,7 @@
     <string name="txtEnterValue">Enter the value to be converted</string>
     <string name="txtNewFlightPlan">New flight plan</string>
     <string name="txtRemoveAds">Donation</string>
-    <string name="txtSaveFlightPlan">Save Plan</string>
-    <string name="txtFlightPlanSaved">Saved</string>
+    <string name="txtAirplaneSaved">Airplane saved</string>
     <string name="txtDestination">Destination</string>
     <string name="txtTimeAndDistance">Time &amp; distance</string>
     <string name="txtPlaneType">Plane type</string>
@@ -128,6 +127,7 @@
     <string name="txtSpeed">Speed</string>
     <string name="txtSpeedUnits">Speed units</string>
     <string name="txtTAS">TAS</string>
+    <string name="txtRange">Range</string>
     <string name="txtCruiseSpeerTAS">Cruise speed (TAS)</string>
     <string name="txtFph">Fuel/h</string>
     <string name="txtFuelPerHour">Fuel per hour</string>
@@ -136,6 +136,7 @@
     <string name="txtTankCapacity">Tank capacity</string>
     <string name="txtPerformance">Performance</string>
     <string name="txtApply">Apply</string>
+    <string name="txtSave">Save</string>
     <string name="txtCancel">Cancel</string>
     <string name="txtAdd">Add</string>
     <string name="txtDelete">Delete</string>
