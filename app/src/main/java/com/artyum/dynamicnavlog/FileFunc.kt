@@ -567,12 +567,13 @@ fun savePlanAsCsv(): String {
         val file = File(externalAppDir, fileName)
 
         // Plan settings
-        file.writeText("PLAN NAME;" + settings.planName + "\n")
-        file.appendText("DEP/DEST;" + settings.departure + " / " + settings.destination + "\n")
-        file.appendText("PLANE;" + settings.planeType + " / " + settings.planeReg + "\n")
-        file.appendText("WIND DIR/SPD;" + formatDouble(settings.windDir) + " / " + formatDouble(settings.windSpd) + ' ' + getUnitsSpd() + "\n")
-        file.appendText("TAS;" + formatDouble(settings.planeTas) + ' ' + getUnitsSpd() + "\n")
-        file.appendText("FUEL/FPH;" + formatDouble(settings.fob) + " / " + formatDouble(settings.planeFph) + "\n")
+        file.writeText("PLAN NAME;;" + settings.planName + "\n")
+        file.appendText("DEP/DEST;;" + settings.departure + "/" + settings.destination + "\n")
+        file.appendText("PLANE;;" + settings.planeType + "/" + settings.planeReg + "\n")
+        file.appendText("WIND DIR/SPD;;" + formatDouble(settings.windDir) + "/" + formatDouble(settings.windSpd) + getUnitsSpd() + "\n")
+        file.appendText("TAS;;" + formatDouble(settings.planeTas) + getUnitsSpd() + "\n")
+        file.appendText("FUEL/FPH;;" + formatDouble(settings.fob) + "/" + formatDouble(settings.planeFph) + "\n")
+        file.appendText("UNITS DIST/SPD/FUEL;;" + getUnitsSpd() + "/" + getUnitsDist() + "/" + getUnitsVolume() + "\n")
 
         // Table header
         file.appendText("\n")
