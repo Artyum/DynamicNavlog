@@ -765,6 +765,7 @@ class MainActivity : AppCompatActivity() {
         var speedCnt = 0
         var gps: GpsData
         var prevTime = 0L
+        var prevDist = 0.0
 
         while (isAutoNextEnabled()) {
             // Loop every 1 sec
@@ -796,9 +797,14 @@ class MainActivity : AppCompatActivity() {
                             val dist = m2nm(calcDistance(gps.coords!!, navlogList[item].coords!!))
                             if (dist <= nextRadiusList[settings.nextRadius]) {
                                 if (item < last) {
-                                    // Next Waypoint
+                                    // Auto Next Waypoint
+                                    // Detect passed waypoint when airplnane is in the circle and the distance from waypoint is increasing
                                     Log.d(TAG, "Auto next wpt")
-                                    setStageNext()
+                                    if (prevDist == 0.0) prevDist = dist
+                                    else if (dist > prevDist) {
+                                        prevDist = 0.0
+                                        setStageNext()
+                                    } else prevDist = dist
                                 } else {
                                     // Auto Landing
                                     if (gps.speed < C.AUTO_LANDING_SPEED_MPS) speedCnt += 1 else speedCnt = 0
