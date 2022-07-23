@@ -174,9 +174,12 @@
     <string name="txtCopyInvertTrack">Copy plan as inverted</string>
     <string name="txtExportCSV">Export plan as CSV</string>
     <string name="txtExportGPX">Export plan as GPX</string>
+    <string name="txtLoadLastTrace">Load last flight trace</string>
     <string name="txtExportTraceGPX">Export flight trace as GPX</string>
     <string name="txtPlanSavedAs">Plan saved as</string>
     <string name="txtExportERR">The plan cannot be saved</string>
+    <string name="txtLoadTraceOK">Trace loaded</string>
+    <string name="txtLoadTraceFailed">No trace to load</string>
     <string name="txtExportTraceERR">The flight trace cannot be saved</string>
     <string name="txtExit">Close</string>
     <string name="txtReverseDone">The track has been reversed</string>
