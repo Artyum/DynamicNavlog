@@ -422,6 +422,11 @@ fun loadState(fileName: String = C.stateFileName) {
 
     // Load airplane
     getAirplaneSettingsByID(settings.planeId)
+
+    // Load trace
+    if (isFlightInProgress()) {
+        loadTrace()
+    }
 }
 
 fun deleteFile(fileName: String) {
