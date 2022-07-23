@@ -15,8 +15,8 @@ import com.artyum.dynamicnavlog.databinding.FragmentAirplanelistBinding
 class AirplaneListFragment : Fragment(R.layout.fragment_airplanelist), AirplaneListAdapter.OnItemClickInterface {
     private var _binding: FragmentAirplanelistBinding? = null
     private val bind get() = _binding!!
-    private var list = ArrayList<Airplane>()
-    private var adapter = AirplaneListAdapter(list, this)
+    private var adapterList = ArrayList<Airplane>()
+    private var adapter = AirplaneListAdapter(adapterList, this)
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         _binding = FragmentAirplanelistBinding.inflate(inflater, container, false)
@@ -62,9 +62,8 @@ class AirplaneListFragment : Fragment(R.layout.fragment_airplanelist), AirplaneL
 
         override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
             val pos = viewHolder.absoluteAdapterPosition
-            val id = list[pos].id
+            val id = adapterList[pos].id
             deleteAirplane(id)
-            refreshList()
         }
     }
 
@@ -74,24 +73,28 @@ class AirplaneListFragment : Fragment(R.layout.fragment_airplanelist), AirplaneL
     }
 
     private fun refreshList() {
-        list.clear()
+        adapterList.clear()
         val search = bind.searchInput.text.toString().trim()
         if (search != "") {
             for (i in airplaneList.indices) {
                 if (airplaneList[i].type.indexOf(search, ignoreCase = true) != -1 ||
                     airplaneList[i].reg.indexOf(search, ignoreCase = true) != -1
-                ) list.add(airplaneList[i])
+                ) adapterList.add(airplaneList[i])
             }
         } else {
-            list.addAll(airplaneList)
+            adapterList.addAll(airplaneList)
         }
         adapter.notifyDataSetChanged()
     }
 
     private fun deleteAirplane(id: String) {
-        for (i in airplaneList.size - 1 downTo 0) {
-            if (airplaneList[i].id == id) airplaneList.removeAt(i)
+        for (i in airplaneList.indices) {
+            if (airplaneList[i].id == id) {
+                airplaneList.removeAt(i)
+                break
+            }
         }
         saveAirplaneList()
+        refreshList()
     }
 }
