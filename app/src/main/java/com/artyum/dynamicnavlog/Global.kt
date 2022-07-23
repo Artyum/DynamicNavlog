@@ -78,24 +78,6 @@ data class Airplane(
     @Volatile var volUnits: Int = 0
 )
 
-data class FlightCalc(
-    val wca: Double,
-    val hdg: Double,
-    val gs: Double,
-    val time: Long?, // Time in seconds
-    val fuel: Double?
-)
-
-data class SinCosAngle(
-    val sina: Float,
-    val cosa: Float
-)
-
-data class ReleaseOptions(
-    val initializeAds: Boolean,
-    val startBillingClient: Boolean
-)
-
 data class GpsData(
     @Volatile var coords: LatLng? = null,
     @Volatile var time: Long = 0L,
@@ -112,6 +94,24 @@ data class Totals(
     @Volatile var dist: Double = 0.0,
     @Volatile var time: Long = 0,
     @Volatile var fuel: Double = 0.0
+)
+
+data class FlightCalc(
+    val wca: Double,
+    val hdg: Double,
+    val gs: Double,
+    val time: Long?, // Time in seconds
+    val fuel: Double?
+)
+
+data class SinCosAngle(
+    val sina: Float,
+    val cosa: Float
+)
+
+data class ReleaseOptions(
+    val initializeAds: Boolean,
+    val startBillingClient: Boolean
 )
 
 object C {
