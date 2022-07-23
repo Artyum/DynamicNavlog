@@ -235,6 +235,12 @@ class MainActivity : AppCompatActivity() {
                 val fileName = savePlanAsGpx()
                 if (fileName != "") shareFile(fileName, "application/gpx+xml") else Toast.makeText(this, getString(R.string.txtExportERR), Toast.LENGTH_SHORT).show()
             }
+
+            R.id.optionsLoadLastTrace -> {
+                if (loadTrace()) Toast.makeText(this, getString(R.string.txtLoadTraceOK), Toast.LENGTH_SHORT).show()
+                else Toast.makeText(this, getString(R.string.txtLoadTraceFailed), Toast.LENGTH_SHORT).show()
+            }
+
             R.id.optionsExportTraceGpx -> {
                 val fileName = saveTraceAsGpx()
                 if (fileName != "") shareFile(fileName, "application/gpx+xml") else Toast.makeText(this, getString(R.string.txtExportTraceERR), Toast.LENGTH_SHORT).show()

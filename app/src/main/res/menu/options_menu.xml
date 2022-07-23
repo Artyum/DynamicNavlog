@@ -17,6 +17,11 @@
         android:title="@string/txtExportGPX"
         app:showAsAction="never" />
     <item
+        android:id="@+id/optionsLoadLastTrace"
+        android:icon="@drawable/ic_share"
+        android:title="@string/txtLoadLastTrace"
+        app:showAsAction="never" />
+    <item
         android:id="@+id/optionsExportTraceGpx"
         android:icon="@drawable/ic_share"
         android:title="@string/txtExportTraceGPX"
