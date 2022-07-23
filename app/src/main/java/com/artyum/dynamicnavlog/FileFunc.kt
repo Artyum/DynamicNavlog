@@ -12,11 +12,21 @@ var externalAppDir: File? = null
 //var internalAppDir: File? = null
 
 fun generateStringId(): String {
+    var ok = false
+    var randomString = ""
     val charPool: List<Char> = ('a'..'z') + ('A'..'Z') + ('0'..'9')
-    val randomString = (1..15)
-        .map { _ -> kotlin.random.Random.nextInt(0, charPool.size) }
-        .map(charPool::get)
-        .joinToString("");
+
+    while (!ok) {
+        randomString = (1..15)
+            .map { _ -> kotlin.random.Random.nextInt(0, charPool.size) }
+            .map(charPool::get)
+            .joinToString("");
+
+        ok = true
+        for (i in airplaneList.indices) {
+            if (airplaneList[i].id == randomString) ok = false
+        }
+    }
     return randomString
 }
 
