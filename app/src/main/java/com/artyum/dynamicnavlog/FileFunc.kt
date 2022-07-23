@@ -24,7 +24,10 @@ fun generateStringId(): String {
 
         ok = true
         for (i in airplaneList.indices) {
-            if (airplaneList[i].id == randomString) ok = false
+            if (airplaneList[i].id == randomString) {
+                ok = false
+                break
+            }
         }
     }
     return randomString
@@ -642,7 +645,7 @@ fun savePlanAsGpx(): String {
 }
 
 fun saveTraceAsGpx(): String {
-    val tag = "saveTraceAsGpx"
+    //val tag = "saveTraceAsGpx"
     val trkFile = settings.id + C.TRK_EXTENSION
     val file = File(externalAppDir, trkFile)
 
