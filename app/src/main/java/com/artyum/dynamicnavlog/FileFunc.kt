@@ -419,7 +419,6 @@ fun loadState(fileName: String = C.stateFileName) {
     settings = newSettings
     timers = newTimers
     navlogList = newNavlogList
-    loadTrace()
 
     // Load airplane
     getAirplaneSettingsByID(settings.planeId)
@@ -529,7 +528,7 @@ fun saveTracePoint(p: LatLng) {
     file.appendText("\n")
 }
 
-fun loadTrace() {
+fun loadTrace(): Boolean {
     val fileName = settings.id + C.TRK_EXTENSION
     val file = File(externalAppDir, fileName)
     if (file.exists()) {
@@ -543,7 +542,9 @@ fun loadTrace() {
                 if (lat != null && lng != null) tracePointsList.add(LatLng(lat, lng))
             }
         }
+        return true
     }
+    return false
 }
 
 fun deleteTrace() {
@@ -567,15 +568,15 @@ fun savePlanAsCsv(): String {
 
         // Plan settings
         file.writeText("PLAN NAME;" + settings.planName + "\n")
-        file.appendText("DEP / DEST;" + settings.departure + " / " + settings.destination + "\n")
+        file.appendText("DEP/DEST;" + settings.departure + " / " + settings.destination + "\n")
         file.appendText("PLANE;" + settings.planeType + " / " + settings.planeReg + "\n")
-        file.appendText("WIND DIR / SPD;" + formatDouble(settings.windDir) + " / " + formatDouble(settings.windSpd) + ' ' + getUnitsSpd() + "\n")
+        file.appendText("WIND DIR/SPD;" + formatDouble(settings.windDir) + " / " + formatDouble(settings.windSpd) + ' ' + getUnitsSpd() + "\n")
         file.appendText("TAS;" + formatDouble(settings.planeTas) + ' ' + getUnitsSpd() + "\n")
-        file.appendText("FUEL / FPH;" + formatDouble(settings.fob) + " / " + formatDouble(settings.planeFph) + "\n")
+        file.appendText("FUEL/FPH;" + formatDouble(settings.fob) + " / " + formatDouble(settings.planeFph) + "\n")
 
         // Table header
         file.appendText("\n")
-        file.appendText("DEST;TT;d;MT;DIST;WCA;HDG;GS;TIME;T.INC;ETA;ATA;FUEL;F.REM;RMK\n")
+        file.appendText("DEST;TT;d;MT;DIST;WCA;HDG;GS;TIME;T.INC;FUEL;F.REM;ETA;ATA;RMK\n")
 
         for (i in navlogList.indices) {
             if (navlogList[i].active) {
