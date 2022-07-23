@@ -351,7 +351,7 @@
                 <com.google.android.material.switchmaterial.SwitchMaterial
                     android:id="@+id/settingGpsAssist"
                     style="@style/settingsSwitch"
-                    android:text="@string/txtGPSEnabled" />
+                    android:text="@string/txtGPSAssist" />
 
                 <LinearLayout
                     android:id="@+id/gpsGroup"

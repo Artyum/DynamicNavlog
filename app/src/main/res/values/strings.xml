@@ -158,7 +158,7 @@
     <string name="txtTimeUTC">Display times in UTC</string>
     <string name="txtGPS">GPS</string>
     <string name="txtWarningNoGPS">Warning! No GPS signal</string>
-    <string name="txtGPSEnabled">GPS mode</string>
+    <string name="txtGPSAssist">GPS assist</string>
     <string name="txtAutoNextWPT">Detect T/O, LND and WPT</string>
     <string name="txtTrackRecording">Record flight trace</string>
     <string name="txtKeepScreenOn">Keep the screen on</string>

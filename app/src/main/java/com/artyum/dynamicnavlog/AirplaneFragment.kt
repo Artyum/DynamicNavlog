@@ -7,10 +7,11 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
-import android.widget.Toast
 import androidx.core.widget.doAfterTextChanged
 import androidx.fragment.app.Fragment
+import androidx.navigation.fragment.findNavController
 import com.artyum.dynamicnavlog.databinding.FragmentAirplaneBinding
+import com.google.android.material.button.MaterialButton
 
 val TAG = "AirplaneFragment"
 
@@ -41,7 +42,7 @@ class AirplaneFragment : Fragment() {
             object : AdapterView.OnItemSelectedListener {
                 override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
                     spdUnits = position
-                    refreshPerformance()
+                    onChange()
                 }
 
                 override fun onNothingSelected(parent: AdapterView<*>?) {
@@ -54,7 +55,7 @@ class AirplaneFragment : Fragment() {
             object : AdapterView.OnItemSelectedListener {
                 override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
                     volUnits = position
-                    refreshPerformance()
+                    onChange()
                 }
 
                 override fun onNothingSelected(parent: AdapterView<*>?) {
@@ -62,68 +63,28 @@ class AirplaneFragment : Fragment() {
                 }
             }
 
-        bind.airplaneTas.doAfterTextChanged { refreshPerformance() }
-        bind.airplaneTank.doAfterTextChanged { refreshPerformance() }
-        bind.airplaneFph.doAfterTextChanged { refreshPerformance() }
+        bind.airplaneType.doAfterTextChanged { onChange() }
+        bind.airplaneReg.doAfterTextChanged { onChange() }
+        bind.airplaneRmk.doAfterTextChanged { onChange() }
+        bind.airplaneTas.doAfterTextChanged { onChange() }
+        bind.airplaneTank.doAfterTextChanged { onChange() }
+        bind.airplaneFph.doAfterTextChanged { onChange() }
 
         // Save airplane
-        bind.btnApply.setOnClickListener {
-            hideErrorBox()
-            val type = clearString(bind.airplaneType.text.toString())
-            val reg = clearString(bind.airplaneReg.text.toString())
-            val rmk = clearString(bind.airplaneRmk.text.toString())
-            val tas = bind.airplaneTas.text.toString().toDoubleOrNull()
-            val tank = bind.airplaneTank.text.toString().toDoubleOrNull()
-            val fph = bind.airplaneFph.text.toString().toDoubleOrNull()
-
-            // Validation
-            var ok = true
-            if (type.isEmpty()) {
-                bind.errType.visibility = View.VISIBLE
-                ok = false
-            }
-
-            if (reg.isEmpty()) {
-                bind.errReg.visibility = View.VISIBLE
-                ok = false
-            }
-
-            if (tas == null || tas <= 0.0) {
-                bind.errTas.visibility = View.VISIBLE
-                ok = false
-            }
-
-            if (tank == null || tank <= 0.0) {
-                bind.errTank.visibility = View.VISIBLE
-                ok = false
-            }
-
-            if (fph == null || fph <= 0.0) {
-                bind.errFph.visibility = View.VISIBLE
-                ok = false
-            }
-
-            if (ok) {
-                airplane.type = type
-                airplane.reg = reg
-                airplane.rmk = rmk
-                airplane.tas = tas!!
-                airplane.tank = tank!!
-                airplane.fph = fph!!
-                airplane.spdUnits = spdUnits
-                airplane.volUnits = volUnits
-                addAirplane()
-                //findNavController().popBackStack()
-                Toast.makeText(context, getString(R.string.txtAirplaneSaved), Toast.LENGTH_SHORT).show()
-            }
-        }
+        bind.btnApply.setOnClickListener { saveAirplane() }
 
         setupUI(view)
         loadAirplane()
         restoreSettings()
     }
 
-    private fun refreshPerformance() {
+    private fun onChange() {
+        calcPerformance()
+        (bind.btnApply as MaterialButton).background.setTint(bind.btnApply.context.getColor(R.color.colorPrimary))
+
+    }
+
+    private fun calcPerformance() {
         val tas = bind.airplaneTas.text.toString().toDoubleOrNull()
         val tank = bind.airplaneTank.text.toString().toDoubleOrNull()
         val fph = bind.airplaneFph.text.toString().toDoubleOrNull()
@@ -133,7 +94,7 @@ class AirplaneFragment : Fragment() {
             val range = tas * time
             val units = when (spdUnits) {
                 0 -> "nm"
-                1 -> "m"
+                1 -> "miles"
                 2 -> "km"
                 else -> ""
             }
@@ -164,7 +125,6 @@ class AirplaneFragment : Fragment() {
         unitsTypeList.add("Mph")      // 1
         unitsTypeList.add("Kph")      // 2
         bind.spinnerSpeedUnits.adapter = ArrayAdapter(view.context, R.layout.support_simple_spinner_dropdown_item, unitsTypeList)
-        bind.spinnerSpeedUnits.setSelection(spdUnits)
 
         // Volume
         val volumeTypeList = ArrayList<String>()
@@ -172,15 +132,63 @@ class AirplaneFragment : Fragment() {
         volumeTypeList.add("Imp. Gal")   // 1
         volumeTypeList.add("Liters")     // 2
         bind.spinnerVolUnits.adapter = ArrayAdapter(view.context, R.layout.support_simple_spinner_dropdown_item, volumeTypeList)
-        bind.spinnerVolUnits.setSelection(volUnits)
+    }
+
+    private fun saveAirplane() {
+        hideErrorBox()
+        val type = clearString(bind.airplaneType.text.toString())
+        val reg = clearString(bind.airplaneReg.text.toString())
+        val rmk = clearString(bind.airplaneRmk.text.toString())
+        val tas = bind.airplaneTas.text.toString().toDoubleOrNull()
+        val tank = bind.airplaneTank.text.toString().toDoubleOrNull()
+        val fph = bind.airplaneFph.text.toString().toDoubleOrNull()
+
+        // Validation
+        var ok = true
+        if (type.isEmpty()) {
+            bind.errType.visibility = View.VISIBLE
+            ok = false
+        }
+
+        if (reg.isEmpty()) {
+            bind.errReg.visibility = View.VISIBLE
+            ok = false
+        }
+
+        if (tas == null || tas <= 0.0) {
+            bind.errTas.visibility = View.VISIBLE
+            ok = false
+        }
+
+        if (tank == null || tank <= 0.0) {
+            bind.errTank.visibility = View.VISIBLE
+            ok = false
+        }
+
+        if (fph == null || fph <= 0.0) {
+            bind.errFph.visibility = View.VISIBLE
+            ok = false
+        }
+
+        if (ok) {
+            airplane.type = type
+            airplane.reg = reg
+            airplane.rmk = rmk
+            airplane.tas = tas!!
+            airplane.tank = tank!!
+            airplane.fph = fph!!
+            airplane.spdUnits = spdUnits
+            airplane.volUnits = volUnits
+            addAirplane()
+
+            findNavController().popBackStack()
+            //Toast.makeText(context, getString(R.string.txtAirplaneSaved), Toast.LENGTH_SHORT).show()
+            //(bind.btnApply as MaterialButton).background.setTint(bind.btnApply.context.getColor(R.color.gray))
+        }
     }
 
     private fun loadAirplane() {
-        if (editAirplaneID.isNullOrEmpty()) {
-            airplane = Airplane()
-            airplane.id = generateStringId()
-            return
-        } else {
+        if (!editAirplaneID.isNullOrEmpty()) {
             // Search in airplane list
             for (i in airplaneList.indices) {
                 if (airplaneList[i].id == editAirplaneID) {
@@ -189,6 +197,8 @@ class AirplaneFragment : Fragment() {
                 }
             }
         }
+        airplane = Airplane()
+        airplane.id = generateStringId()
     }
 
     private fun restoreSettings() {
@@ -209,8 +219,11 @@ class AirplaneFragment : Fragment() {
     }
 
     private fun addAirplane() {
-        for (i in airplaneList.size - 1 downTo 0) {
-            if (airplaneList[i].id == airplane.id) airplaneList.removeAt(i)
+        for (i in airplaneList.indices) {
+            if (airplaneList[i].id == airplane.id) {
+                airplaneList.removeAt(i)
+                break
+            }
         }
         airplaneList.add(airplane)
         airplaneList.sortBy { it.reg }
