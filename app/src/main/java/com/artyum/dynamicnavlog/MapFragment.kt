@@ -271,7 +271,7 @@ class MapFragment : Fragment(R.layout.fragment_map) {
 
         val opt = PolylineOptions()
             .clickable(false)
-            .color(ContextCompat.getColor(this.requireContext(), R.color.black))
+            .color(ContextCompat.getColor(this.requireContext(), R.color.yellow))
             .geodesic(true)
             .pattern(listOf(Dash(15f), Gap(15f)))
             .width(8f)
