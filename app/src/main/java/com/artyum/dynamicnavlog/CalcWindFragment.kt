@@ -22,7 +22,6 @@ class CalcWindFragment : Fragment(layout.fragment_calc_wind) {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         _binding = FragmentCalcWindBinding.inflate(inflater, container, false)
-        setHasOptionsMenu(true)
         return bind.root
     }
 
