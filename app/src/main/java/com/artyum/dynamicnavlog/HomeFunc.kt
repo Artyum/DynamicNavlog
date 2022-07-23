@@ -304,7 +304,7 @@ class HomeItem() {
     }
 
     fun getEta(): List<String> {
-        var etaStr = ""
+        var etaStr = "-"
         var diffStr = ""
 
         //ETA
@@ -346,7 +346,7 @@ class HomeItem() {
 
         if (stage < C.STAGE_5_AFTER_ENGINE_SHUTDOWN && fuelToLand > 0.0) ret.ftl = formatDouble(fuelToLand)
         if (distRemaining < 0.0) ret.ftlmark = "?"
-        if (engineTimeSec > 0.0) ret.engineTime = formatSecondsToTime(engineTimeSec)
+        if (engineTimeSec > 0.0) ret.engineTime = formatSecondsToTime(engineTimeSec) else ret.engineTime = "-"
         if (settings.fob != null && settings.planeFph != null) {
             ret.fuelTime = formatSecondsToTime(fuelTimeRemaining.toLong())
             ret.fuelRemaining = formatDouble(fuelRemaining)
