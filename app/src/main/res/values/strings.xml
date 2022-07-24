@@ -155,7 +155,7 @@
     <string name="txtGroundTime2">GND after LND</string>
     <string name="txtGroundTimeTotal">GND total</string>
     <string name="txtActive">Active</string>
-    <string name="txtTimeUTC">Display times in UTC</string>
+    <string name="txtTimeUTC">Display UTC times</string>
     <string name="txtGPS">GPS</string>
     <string name="txtWarningNoGPS">Warning! No GPS signal</string>
     <string name="txtGPSAssist">GPS assist</string>
@@ -170,8 +170,8 @@
     <string name="txtHoldButtonToConfirm">Hold to confirm</string>
     <string name="txtBackgroundServiceIsRunning">Dynamic NavLog is running</string>
     <string name="txtRestartFlightPlan">Restart plan</string>
-    <string name="txtCopyFlightPlan">Copy plan as new</string>
-    <string name="txtCopyInvertTrack">Copy plan as inverted</string>
+    <string name="txtCopyFlightPlan">Copy plan (as is)</string>
+    <string name="txtCopyInvertTrack">Copy plan (inverted)</string>
     <string name="txtExportCSV">Export plan as CSV</string>
     <string name="txtExportGPX">Export plan as GPX</string>
     <string name="txtLoadLastTrace">Load last flight trace</string>

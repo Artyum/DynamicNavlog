@@ -115,8 +115,8 @@ data class ReleaseOptions(
 )
 
 object C {
-    const val FORMAT_DATETIME = "yyyy-MM-dd  HH:mm"
-    const val FORMAT_DATETIME_SEC = "yyyy-MM-dd  HH:mm:ss"
+    const val FORMAT_DATETIME = "yyyy-MM-dd   HH:mm"
+    const val FORMAT_DATETIME_SEC = "yyyy-MM-dd   HH:mm:ss"
     const val FORMAT_TIME = "HH:mm"
 
     const val DNL_EXTENSION = ".dnl"
