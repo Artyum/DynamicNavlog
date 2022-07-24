@@ -27,8 +27,8 @@ class NavlogAdapter(
 
         var tmp = ""
         if (item.declination != null) {
-            tmp = if (item.declination!! < 0.0) formatDouble(-item.declination!!) + "E"
-            else formatDouble(item.declination) + "W"
+            tmp = if (item.declination!! < 0.0) formatDouble(-item.declination!!) + "ᴱ"
+            else formatDouble(item.declination) + "ᵂ"
         }
         holder.tvDec.text = tmp
 

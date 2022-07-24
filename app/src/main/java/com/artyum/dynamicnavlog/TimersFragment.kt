@@ -19,6 +19,11 @@ class TimersFragment : Fragment(R.layout.fragment_timers) {
     private var _binding: FragmentTimersBinding? = null
     private val bind get() = _binding!!
 
+    private var tOffblock: LocalDateTime? = null
+    private var tTakeoff: LocalDateTime? = null
+    private var tLanding: LocalDateTime? = null
+    private var tOnblock: LocalDateTime? = null
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         _binding = FragmentTimersBinding.inflate(inflater, container, false)
         return bind.root
@@ -33,6 +38,11 @@ class TimersFragment : Fragment(R.layout.fragment_timers) {
         super.onViewCreated(view, savedInstanceState)
         bind.timersLayout.keepScreenOn = settings.keepScreenOn
 
+        tOffblock = roundToMinutes(timers.offblock)
+        tTakeoff = roundToMinutes(timers.takeoff)
+        tLanding = roundToMinutes(timers.landing)
+        tOnblock = roundToMinutes(timers.onblock)
+
         refreshView()
         calcSummary()
     }
@@ -43,16 +53,16 @@ class TimersFragment : Fragment(R.layout.fragment_timers) {
 
         bind.flightName.setText(settings.planName)
 
-        str = if (timers.offblock != null) formatDateTime(timers.offblock, C.FORMAT_DATETIME) + z else ""
+        str = if (timers.offblock != null) formatDateTime(tOffblock, C.FORMAT_DATETIME) + z else ""
         bind.timeOffBlock.setText(str)
 
-        str = if (timers.takeoff != null) formatDateTime(timers.takeoff, C.FORMAT_DATETIME) + z else ""
+        str = if (timers.takeoff != null) formatDateTime(tTakeoff, C.FORMAT_DATETIME) + z else ""
         bind.timeTakeoff.setText(str)
 
-        str = if (timers.landing != null) formatDateTime(timers.landing, C.FORMAT_DATETIME) + z else ""
+        str = if (timers.landing != null) formatDateTime(tLanding, C.FORMAT_DATETIME) + z else ""
         bind.timeLanding.setText(str)
 
-        str = if (timers.onblock != null) formatDateTime(timers.onblock, C.FORMAT_DATETIME) + z else ""
+        str = if (timers.onblock != null) formatDateTime(tOnblock, C.FORMAT_DATETIME) + z else ""
         bind.timeOnBlock.setText(str)
     }
 
@@ -64,15 +74,15 @@ class TimersFragment : Fragment(R.layout.fragment_timers) {
         var blockTime: Long = 0
 
         // Ground time
-        if (timers.offblock != null && timers.takeoff != null) gnd1 = Duration.between(timers.offblock, timers.takeoff).toMillis() / 1000
-        if (timers.landing != null && timers.onblock != null) gnd2 = Duration.between(timers.landing, timers.onblock).toMillis() / 1000
+        if (tOffblock != null && tTakeoff != null) gnd1 = Duration.between(tOffblock, tTakeoff).toMillis() / 1000
+        if (tLanding != null && tOnblock != null) gnd2 = Duration.between(tLanding, tOnblock).toMillis() / 1000
         if (gnd1 != 0L && gnd2 != 0L) gndT = gnd1 + gnd2
 
         // Flight time
-        if (timers.takeoff != null && timers.landing != null) flightTime = Duration.between(timers.takeoff, timers.landing).toMillis() / 1000
+        if (tTakeoff != null && tLanding != null) flightTime = Duration.between(tTakeoff, tLanding).toMillis() / 1000
 
         // Block time
-        if (timers.offblock != null && timers.onblock != null) blockTime = Duration.between(timers.offblock, timers.onblock).toMillis() / 1000
+        if (tOffblock != null && tOnblock != null) blockTime = Duration.between(tOffblock, tOnblock).toMillis() / 1000
 
         // Display
         val stage = getFlightStage()
@@ -84,6 +94,11 @@ class TimersFragment : Fragment(R.layout.fragment_timers) {
         }
         if (stage >= C.STAGE_4_AFTER_LANDING) bind.outFlightTime.setText(formatSecondsToTime(flightTime))
     }
+}
+
+fun roundToMinutes(t: LocalDateTime?): LocalDateTime? {
+    if (t == null) return null
+    return if (t.second <= 30) t.minusSeconds(t.second.toLong()) else t.plusSeconds((60 - t.second).toLong())
 }
 
 fun formatDateTime(t: LocalDateTime?, pattern: String): String {

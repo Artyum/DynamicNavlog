@@ -27,11 +27,6 @@
         android:title="@string/txtExportTraceGPX"
         app:showAsAction="never" />
     <item
-        android:id="@+id/optionResetFlight"
-        android:icon="@drawable/ic_reset"
-        android:title="@string/txtRestartFlightPlan"
-        app:showAsAction="never" />
-    <item
         android:id="@+id/optionCopyPlan"
         android:icon="@drawable/ic_reset"
         android:title="@string/txtCopyFlightPlan"
@@ -40,5 +35,10 @@
         android:id="@+id/optionInvertTrack"
         android:icon="@drawable/ic_revert"
         android:title="@string/txtCopyInvertTrack"
+        app:showAsAction="never" />
+    <item
+        android:id="@+id/optionResetFlight"
+        android:icon="@drawable/ic_reset"
+        android:title="@string/txtRestartFlightPlan"
         app:showAsAction="never" />
 </menu>

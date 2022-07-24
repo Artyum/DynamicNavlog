@@ -41,41 +41,57 @@
                     android:layout_weight="1" />
             </LinearLayout>
 
-            <com.google.android.material.textfield.TextInputLayout
-                style="@style/timersTextInput"
-                android:hint="@string/txtOffBlockTime">
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
 
-                <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/timeOffBlock"
-                    style="@style/timersText" />
-            </com.google.android.material.textfield.TextInputLayout>
+                <com.google.android.material.textfield.TextInputLayout
+                    style="@style/timersTextInput"
+                    android:hint="@string/txtOffBlockTime">
 
-            <com.google.android.material.textfield.TextInputLayout
-                style="@style/timersTextInput"
-                android:hint="@string/txtTakeoffTime">
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/timeOffBlock"
+                        style="@style/timersText" />
+                </com.google.android.material.textfield.TextInputLayout>
 
-                <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/timeTakeoff"
-                    style="@style/timersText" />
-            </com.google.android.material.textfield.TextInputLayout>
+                <LinearLayout style="@style/spacer" />
 
-            <com.google.android.material.textfield.TextInputLayout
-                style="@style/timersTextInput"
-                android:hint="@string/txtLandingTime">
+                <com.google.android.material.textfield.TextInputLayout
+                    style="@style/timersTextInput"
+                    android:hint="@string/txtTakeoffTime">
 
-                <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/timeLanding"
-                    style="@style/timersText" />
-            </com.google.android.material.textfield.TextInputLayout>
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/timeTakeoff"
+                        style="@style/timersText" />
+                </com.google.android.material.textfield.TextInputLayout>
+            </LinearLayout>
 
-            <com.google.android.material.textfield.TextInputLayout
-                style="@style/timersTextInput"
-                android:hint="@string/txtOnBlockTime">
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
 
-                <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/timeOnBlock"
-                    style="@style/timersText" />
-            </com.google.android.material.textfield.TextInputLayout>
+                <com.google.android.material.textfield.TextInputLayout
+                    style="@style/timersTextInput"
+                    android:hint="@string/txtLandingTime">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/timeLanding"
+                        style="@style/timersText" />
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <LinearLayout style="@style/spacer" />
+
+                <com.google.android.material.textfield.TextInputLayout
+                    style="@style/timersTextInput"
+                    android:hint="@string/txtOnBlockTime">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/timeOnBlock"
+                        style="@style/timersText" />
+                </com.google.android.material.textfield.TextInputLayout>
+            </LinearLayout>
 
             <LinearLayout style="@style/dividerBox">
 
@@ -128,24 +144,30 @@
                 </com.google.android.material.textfield.TextInputLayout>
             </LinearLayout>
 
-            <com.google.android.material.textfield.TextInputLayout
-                style="@style/timersTextInput"
-                android:hint="@string/txtFlightTime">
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
 
-                <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/outFlightTime"
-                    style="@style/timersText" />
-            </com.google.android.material.textfield.TextInputLayout>
+                <com.google.android.material.textfield.TextInputLayout
+                    style="@style/timersTextInput"
+                    android:hint="@string/txtFlightTime">
 
-            <com.google.android.material.textfield.TextInputLayout
-                style="@style/timersTextInput"
-                android:hint="@string/txtBlockTime">
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/outFlightTime"
+                        style="@style/timersText" />
+                </com.google.android.material.textfield.TextInputLayout>
 
-                <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/outBlockTime"
-                    style="@style/timersText" />
-            </com.google.android.material.textfield.TextInputLayout>
+                <LinearLayout style="@style/spacer" />
 
+                <com.google.android.material.textfield.TextInputLayout
+                    style="@style/timersTextInput"
+                    android:hint="@string/txtBlockTime">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/outBlockTime"
+                        style="@style/timersText" />
+                </com.google.android.material.textfield.TextInputLayout>
+            </LinearLayout>
         </LinearLayout>
     </LinearLayout>
 </ScrollView>
