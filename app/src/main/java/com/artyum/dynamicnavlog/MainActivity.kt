@@ -251,7 +251,7 @@ class MainActivity : AppCompatActivity() {
         CoroutineScope(CoroutineName("gpsCoroutine")).launch { detectFlightStageThread() }
 
         // Track recording thread
-        CoroutineScope(CoroutineName("gpsCoroutine")).launch { traceThread() }
+        CoroutineScope(CoroutineName("gpsCoroutine")).launch { recordTraceThread() }
 
         displayButtons()
     }
@@ -416,7 +416,7 @@ class MainActivity : AppCompatActivity() {
         Log.d(TAG, "queryPurchasesAsync")
         billingClient.queryPurchasesAsync(BillingClient.SkuType.INAPP) { billingResult, purchases ->
             if (billingResult.responseCode == BillingClient.BillingResponseCode.OK) {
-                if (!purchases.isNullOrEmpty()) {
+                if (purchases.isNotEmpty()) {
                     var itemExists = false
                     for (purchase in purchases) {
                         val json = JSONObject(purchase.originalJson)
@@ -938,7 +938,7 @@ class MainActivity : AppCompatActivity() {
                             if (dist <= nextRadiusList[settings.nextRadius]) {
                                 if (item < last) {
                                     // Auto Next Waypoint
-                                    // Detect passed waypoint when airplnane is in the circle and the distance from waypoint is increasing
+                                    // Detect passed waypoint when airplane is in the circle and the distance from waypoint is increasing
                                     Log.d(TAG, "Auto next wpt")
                                     if (prevDist == 0.0) prevDist = dist
                                     else if (dist > prevDist) {
@@ -967,21 +967,16 @@ class MainActivity : AppCompatActivity() {
         autoNextRunning = false
     }
 
-    suspend fun traceThread() {
+    private suspend fun recordTraceThread() {
         var gps: GpsData
         var preCoords = LatLng(0.0, 0.0)
 
-        // Disabled - clear only on Off-Block in fun setStageOffBlock
-        // tracePointsList.clear()
-
-        while (isFlightTraceEnabled()) {
-            //Log.d(TAG, "trackRecordingThread")
-
+        while (true) {
             val stage = getFlightStage()
             if (stage > C.STAGE_1_BEFORE_ENGINE_START && stage < C.STAGE_5_AFTER_ENGINE_SHUTDOWN) {
                 gpsMutex.withLock { gps = gpsData }
                 if (gps.isValid && preCoords != gps.coords) {
-                    if (calcDistance(preCoords, gps.coords!!) > 100.0) {
+                    if (calcDistance(preCoords, gps.coords!!) >= C.MINIMAL_TRACE_POINTS_DIST) {
                         preCoords = gps.coords!!
                         tracePointsList.add(gps.coords!!)
                         saveTracePoint(gps.coords!!)

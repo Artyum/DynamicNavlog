@@ -242,10 +242,9 @@ class SettingsFragment : Fragment(R.layout.fragment_settings) {
 
         // Switch - Trace recording
         bind.settingTrace.setOnCheckedChangeListener { _, isChecked ->
-            settings.recordTrace = isChecked
+            settings.displayTrace = isChecked
             change = true
             saveSettings()
-            if (isFlightTraceEnabled()) CoroutineScope(CoroutineName("gpsCoroutine")).launch { (activity as MainActivity).traceThread() }
         }
 
         // Switch - Auto-next radius
@@ -437,7 +436,7 @@ class SettingsFragment : Fragment(R.layout.fragment_settings) {
         bind.spinnerMapOrientation.setSelection(settings.mapOrientation)
         bind.spinnerNextRadius.setSelection(settings.nextRadius)
         bind.settingAutoNext.isChecked = settings.autoNext
-        bind.settingTrace.isChecked = settings.recordTrace
+        bind.settingTrace.isChecked = settings.displayTrace
 
         // Misc
         bind.settingTimeUTC.isChecked = settings.timeInUTC
@@ -521,8 +520,8 @@ fun isAutoNextEnabled(): Boolean {
     return settings.gpsAssist && settings.autoNext
 }
 
-fun isFlightTraceEnabled(): Boolean {
-    return settings.gpsAssist && settings.recordTrace
+fun isDisplayFlightTrace(): Boolean {
+    return settings.gpsAssist && settings.displayTrace
 }
 
 fun isMapFollow(): Boolean {
@@ -550,7 +549,7 @@ fun resetSettings() {
     settings.gpsAssist = true
     settings.autoNext = true
     settings.mapFollow = false
-    settings.recordTrace = true
+    settings.displayTrace = true
 
     settings.takeoffCoords = null
     settings.mapType = GoogleMap.MAP_TYPE_NORMAL
