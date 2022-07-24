@@ -131,39 +131,6 @@ class HomeItem() {
         }
     }
 
-    fun getPrevCurrNext(): List<String> {
-        var p = ""
-        var c = ""
-        var n = ""
-
-        if (stage == C.STAGE_1_BEFORE_ENGINE_START) {
-            if (isNavlogReady()) c = "Flight Plan Ready"
-            else c = "No Flight Plan"
-        } else if (stage == C.STAGE_2_ENGINE_RUNNING) {
-            c = "Before takeoff"
-        } else if (stage == C.STAGE_3_FLIGHT_IN_PROGRESS) {
-            // PREV
-            p = if (prev >= 0) navlogList[prev].dest else "Takeoff"
-
-            // CURR
-            if (item >= 0) c = navlogList[item].dest else if (first >= 0) c = navlogList[first].dest
-
-            // NEXT
-            if (item < 0) {
-                val i = getNavlogNextItemId(first)
-                if (i >= 0) n = navlogList[i].dest
-            } else {
-                n = if (next >= 0) navlogList[next].dest else "Landing"
-            }
-        } else if (stage == C.STAGE_4_AFTER_LANDING) {
-            c = "End of flight"
-        } else {
-            c = "On-block"
-        }
-
-        return listOf(p, c, n)
-    }
-
     fun getWpt(): String {
         if (stage >= C.STAGE_4_AFTER_LANDING) return ""
         return if (item >= 0) navlogList[item].dest

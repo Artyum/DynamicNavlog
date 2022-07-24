@@ -237,6 +237,7 @@ class SettingsFragment : Fragment(R.layout.fragment_settings) {
             settings.autoNext = isChecked
             setWptDetectVisibility(settings.autoNext)
             change = true
+            (activity as MainActivity).displayButtons()
             saveSettings()
             if (isAutoNextEnabled()) CoroutineScope(CoroutineName("gpsCoroutine")).launch { (activity as MainActivity).detectFlightStageThread() }
         }
