@@ -190,7 +190,7 @@ object C {
 
     const val AUTO_TAKEOFF_SPEED_MPS = 20
     const val AUTO_LANDING_SPEED_MPS = 20   // 15=~30kt / 20=~40kt / 25=~50kt
-    const val AUTO_NEXT_WAIT_SEC = 4        // Takeoff if speed is AUTO_TAKEOFF_SPEED_MPS for AUTO_NEXT_WAIT_SEC seconds
+    const val AUTO_NEXT_WAIT_SEC = 3        // Takeoff if speed is AUTO_TAKEOFF_SPEED_MPS for AUTO_NEXT_WAIT_SEC seconds
 
     const val DEFAULT_NEXT_RADIUS = 0       // Index in nextRadiusList array
 
@@ -268,9 +268,6 @@ var gpsMutex = Mutex()
 @Volatile
 var autoRefreshMap = false        // Refresh map on auto-next waypoint
 
-@Volatile
-var autoRefreshButtons = false    // Refresh buttons on HomePage
-
 fun roundDouble(value: Double, precision: Int): Double = (value * 10.0.pow(precision)).roundToLong() / 10.0.pow(precision)
 
 fun angleCalc(rad: Double): SinCosAngle {
@@ -282,8 +279,20 @@ fun generateStringId(): String {
     var randomString = ""
     val charPool: List<Char> = ('a'..'z') + ('A'..'Z') + ('0'..'9')
 
+    // No. of combinations
+    // 2 ->  1 891
+    // 3 ->  37 820
+    // 4 ->  557 845
+    // 5 ->  6 471 002
+    // 6 ->  61 474 519
+    // 7 ->  491 796 152
+    // 8 ->  3 381 098 545
+    // 9 ->  20 286 591 270
+    // 10 -> 107 518 933 731
+    // 15 -> 93 052 749 919 920
+
     while (!ok) {
-        randomString = (1..10)
+        randomString = (1..5)
             .map { _ -> kotlin.random.Random.nextInt(0, charPool.size) }
             .map(charPool::get)
             .joinToString("");

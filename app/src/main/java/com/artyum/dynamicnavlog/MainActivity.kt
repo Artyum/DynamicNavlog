@@ -26,6 +26,7 @@ import com.artyum.dynamicnavlog.databinding.ActivityMainBinding
 import com.google.android.gms.ads.*
 import com.google.android.gms.location.*
 import com.google.android.gms.maps.model.LatLng
+import com.google.android.material.button.MaterialButton
 import com.google.android.material.navigation.NavigationView
 import kotlinx.coroutines.CoroutineName
 import kotlinx.coroutines.CoroutineScope
@@ -173,6 +174,47 @@ class MainActivity : AppCompatActivity() {
             true
         }
 
+        // OFF-BLOCK
+        bind.btnOffBlock.setOnClickListener {
+            setStageOffBlock()
+            startNavlogService()
+            displayButtons()
+        }
+
+        // TAKEOFF
+        bind.btnTakeoff.setOnClickListener {
+            setStageTakeoff()
+            startNavlogService()
+            displayButtons()
+        }
+
+        // BACK
+        bind.btnPrevWpt.setOnClickListener {
+            setStageBack()
+            //drawHomeWinStar()
+            displayButtons()
+        }
+
+        // NEXT
+        bind.btnNextWpt.setOnClickListener {
+            setStageNext()
+            //drawHomeWinStar()
+            displayButtons()
+        }
+
+        // NEXT LAND
+        bind.btnNextLand.setOnClickListener {
+            setStageLanding()
+            displayButtons()
+        }
+
+        // ON-BLOCK
+        bind.btnOnBlock.setOnClickListener {
+            setStageOnBLock()
+            stopNavlogService()
+            displayButtons()
+        }
+
         // Check purchase file to enable or disable ads
         checkPurchaseFile()
 
@@ -210,6 +252,8 @@ class MainActivity : AppCompatActivity() {
 
         // Track recording thread
         CoroutineScope(CoroutineName("gpsCoroutine")).launch { traceThread() }
+
+        displayButtons()
     }
 
     // Menus // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // //
@@ -591,6 +635,102 @@ class MainActivity : AppCompatActivity() {
         stopNavlogService()
         calcNavlog()
         saveState()
+        displayButtons()
+    }
+
+    fun displayButtons() {
+        /*
+        Buttons structure
+        btnBox                // Main box with all buttons
+          - btnOffBlock
+          - btnTakeoff
+          - btnBoxPrevNext    // Box with Back/Next
+              - btnPrevWpt
+              - btnNextWpt
+              - btnNextLand
+          - btnLanding
+          - btnOnBlock
+        */
+
+        val stage = getFlightStage()
+
+        // Hide all buttons
+        hideAllButtons()
+
+        if (stage == C.STAGE_1_BEFORE_ENGINE_START) {
+            if (isNavlogReady()) bind.btnOffBlock.visibility = View.VISIBLE
+        } else if (stage == C.STAGE_2_ENGINE_RUNNING) {
+            if (!isAutoNextEnabled()) bind.btnTakeoff.visibility = View.VISIBLE
+        } else if (stage == C.STAGE_3_FLIGHT_IN_PROGRESS) {
+            if (!isAutoNextEnabled()) {
+                val item = getNavlogCurrentItemId()
+                val first = getNavlogFirstActiveItemId()
+                val last = getNavlogLastActiveItemId()
+                bind.btnBoxPrevNext.visibility = View.VISIBLE
+                if (item < last) {
+                    if (item == first) disableBtnPrev() else enableBtnPrev()
+                    showBtnNext()
+                    hideBtnNextLand()
+                } else {
+                    hideBtnNext()
+                    showBtnNextLand()
+                }
+            }
+        } else if (stage == C.STAGE_4_AFTER_LANDING) {
+            bind.btnOnBlock.visibility = View.VISIBLE
+        }
+    }
+
+    private fun hideAllButtons() {
+        //bind.btnBox.visibility = View.VISIBLE
+        bind.btnOffBlock.visibility = View.GONE
+        bind.btnTakeoff.visibility = View.GONE
+        bind.btnBoxPrevNext.visibility = View.GONE
+        //bind.btnPrevWpt.visibility = View.GONE
+        //bind.btnNextWpt.visibility = View.GONE
+        //bind.btnNextLand.visibility = View.GONE
+        bind.btnLanding.visibility = View.GONE
+        bind.btnOnBlock.visibility = View.GONE
+    }
+
+    private fun disableBtnPrev() {
+        bind.btnPrevWpt.isEnabled = false
+        (bind.btnPrevWpt as MaterialButton).setStrokeColorResource(R.color.grayTransparent)
+        (bind.btnPrevWpt as MaterialButton).setTextColor(bind.btnPrevWpt.context.getColor(R.color.grayTransparent))
+    }
+
+    private fun enableBtnPrev() {
+        bind.btnPrevWpt.isEnabled = true
+        (bind.btnPrevWpt as MaterialButton).setStrokeColorResource(R.color.colorPrimaryTransparent)
+        (bind.btnPrevWpt as MaterialButton).setTextColor(bind.btnPrevWpt.context.getColor(R.color.colorPrimaryTransparent))
+    }
+
+    private fun disableBtnNext() {
+        bind.btnNextWpt.isEnabled = false
+        (bind.btnNextWpt as MaterialButton).background.setTint(bind.btnNextWpt.context.getColor(R.color.grayTransparent2))
+    }
+
+    private fun enableBtnNext() {
+        bind.btnNextWpt.isEnabled = true
+        (bind.btnNextWpt as MaterialButton).background.setTint(bind.btnNextWpt.context.getColor(R.color.colorPrimaryTransparent))
+    }
+
+    private fun hideBtnNext() {
+        bind.btnNextWpt.visibility = View.GONE
+        disableBtnNext()
+    }
+
+    private fun showBtnNext() {
+        bind.btnNextWpt.visibility = View.VISIBLE
+        enableBtnNext()
+    }
+
+    private fun showBtnNextLand() {
+        bind.btnNextLand.visibility = View.VISIBLE
+    }
+
+    private fun hideBtnNextLand() {
+        bind.btnNextLand.visibility = View.GONE
     }
 
     fun setScreenOrientation() {
@@ -811,6 +951,7 @@ class MainActivity : AppCompatActivity() {
                                     if (speedCnt >= C.AUTO_NEXT_WAIT_SEC) {
                                         Log.d(TAG, "Auto landing")
                                         setStageLanding()
+                                        displayButtons()
                                         speedCnt = 0
                                     }
                                 }

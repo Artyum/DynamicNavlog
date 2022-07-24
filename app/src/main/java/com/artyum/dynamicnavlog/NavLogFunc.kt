@@ -348,8 +348,8 @@ fun setStageOffBlock() {
     timers.offblock = LocalDateTime.now()
     saveState()
     tracePointsList.clear()
-    autoRefreshButtons = true
     deleteTrace()
+    autoRefreshMap = true
 }
 
 fun setStageTakeoff() {
@@ -358,13 +358,14 @@ fun setStageTakeoff() {
     setFirstCurrent()
     calcNavlog()
     saveState()
-    autoRefreshButtons = true
+    autoRefreshMap = true
 }
 
 fun setStageBack() {
     setPrevWaypoint()
     calcNavlog()
     saveState()
+    autoRefreshMap = true
 }
 
 fun setStageNext() {
@@ -372,7 +373,6 @@ fun setStageNext() {
     calcNavlog()
     saveState()
     autoRefreshMap = true
-    autoRefreshButtons = true
 }
 
 fun setStageLanding() {
@@ -381,10 +381,10 @@ fun setStageLanding() {
     calcNavlog()
     saveState()
     autoRefreshMap = true
-    autoRefreshButtons = true
 }
 
 fun setStageOnBLock() {
     timers.onblock = LocalDateTime.now()
     saveState()
+    autoRefreshMap = true
 }

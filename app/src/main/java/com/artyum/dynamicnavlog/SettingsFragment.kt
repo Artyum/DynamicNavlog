@@ -209,7 +209,7 @@ class SettingsFragment : Fragment(R.layout.fragment_settings) {
                 }
             }
 
-        // Switch - GPS master
+        // Switch - GPS assist master
         bind.settingGpsAssist.setOnCheckedChangeListener { _, isChecked ->
             val a = activity as MainActivity
             if (navlogList.size == 0 || isNavlogGpsReady()) {
@@ -227,6 +227,7 @@ class SettingsFragment : Fragment(R.layout.fragment_settings) {
                 Toast.makeText(view.context, R.string.txtNotAllTrueTrackSet, Toast.LENGTH_LONG).show()
             }
             change = true
+            (activity as MainActivity).displayButtons()
             saveSettings()
         }
 

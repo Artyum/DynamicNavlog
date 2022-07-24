@@ -97,6 +97,67 @@
             app:layout_constraintTop_toBottomOf="@id/adBox"
             app:navGraph="@navigation/nav_graph" />
 
+        <RelativeLayout
+            android:id="@+id/btnBox"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="30dp"
+            app:layout_constraintBottom_toTopOf="@id/bottomNav"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent">
+
+            <Button
+                android:id="@+id/btnOffBlock"
+                style="@style/navButtonRound"
+                android:text="@string/txtOffBlock"
+                android:visibility="gone" />
+
+            <Button
+                android:id="@+id/btnTakeoff"
+                style="@style/navButtonRound"
+                android:text="@string/txtTakeoff"
+                android:visibility="gone" />
+
+            <LinearLayout
+                android:id="@+id/btnBoxPrevNext"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content">
+
+                <Button
+                    android:id="@+id/btnPrevWpt"
+                    style="@style/navButtonPrev"
+                    android:text="@string/txtPrevWPT"
+                    android:textColor="@color/colorPrimaryTransparent"
+                    app:backgroundTint="@color/grayTransparent3"
+                    app:shapeAppearance="@style/navButtonPrevShape"
+                    app:strokeColor="@color/colorPrimaryTransparent"
+                    app:strokeWidth="1dp" />
+
+                <Button
+                    android:id="@+id/btnNextWpt"
+                    style="@style/navButtonNext"
+                    android:text="@string/txtNextWPT" />
+
+                <Button
+                    android:id="@+id/btnNextLand"
+                    style="@style/navButtonNext"
+                    android:text="@string/txtLanding"
+                    android:textColor="@color/white" />
+            </LinearLayout>
+
+            <Button
+                android:id="@+id/btnLanding"
+                style="@style/navButtonRound"
+                android:text="@string/txtLanding"
+                android:visibility="gone" />
+
+            <Button
+                android:id="@+id/btnOnBlock"
+                style="@style/navButtonRound"
+                android:text="@string/txtOnBlock"
+                android:visibility="gone" />
+        </RelativeLayout>
+
         <com.google.android.material.bottomnavigation.BottomNavigationView
             android:id="@+id/bottomNav"
             android:layout_width="match_parent"
