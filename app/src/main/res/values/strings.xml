@@ -195,7 +195,7 @@
     <string name="txtFlightTime">Flight time</string>
     <string name="txtFuelToLand">Fuel to land</string>
     <string name="txtTimeToLand">Time to land</string>
-    <string name="txtNavigationDisplay">Navigation display</string>
+    <string name="txtNavigationDisplay">Navigation</string>
     <string name="txtFlightDisplay">Flight display</string>
     <string name="txtWaypoint">Waypoint</string>
     <string name="txtFuelRemaining">Fuel remain.</string>

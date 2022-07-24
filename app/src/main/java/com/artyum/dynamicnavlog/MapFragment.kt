@@ -29,12 +29,17 @@ class MapFragment : Fragment(R.layout.fragment_map) {
 
     private lateinit var map: GoogleMap
     private var mapReady: Boolean = false
-    private var followTimer: Int = 0
 
     private val trackMarkers = ArrayList<Marker>()
     private val trackLines = ArrayList<Polyline>()
     private val trackCircles = ArrayList<Circle>()
     private var traceLine: Polyline? = null
+
+    @Volatile
+    var timerTrace = 0
+
+    @Volatile
+    var timerFollow = 0
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         _binding = FragmentMapBinding.inflate(inflater, container, false)
@@ -85,6 +90,7 @@ class MapFragment : Fragment(R.layout.fragment_map) {
                             saveState()
                         }
                         drawFlightPlan()
+                        refreshBottomBar()
                     }
                 })
 
@@ -116,10 +122,12 @@ class MapFragment : Fragment(R.layout.fragment_map) {
 
                 // Draw trace
                 drawTrace()
+
+                autoRefreshMap = true
             }
 
             // Start home thread
-            CoroutineScope(CoroutineName("map")).launch { updateMapUIThread() }
+            CoroutineScope(CoroutineName("map")).launch { updateMapNavUIThread() }
         }
 
         setFragmentResultListener("requestKey") { _, _ ->
@@ -135,7 +143,7 @@ class MapFragment : Fragment(R.layout.fragment_map) {
             } else {
                 settings.mapFollow = true
                 bind.btnFollowToggle.setImageResource(R.drawable.ic_gps_lock)
-                followTimer = 0
+                timerFollow = 0
             }
             saveState()
         }
@@ -173,12 +181,12 @@ class MapFragment : Fragment(R.layout.fragment_map) {
         // Refresh bottom summary bar
         refreshBottomBar()
 
-        // Summary update thread
-        if (settings.gpsAssist) {
-            bind.txtNavGs.text = getString(R.string.txtGs) + " (" + getUnitsSpd() + ")"
-            bind.txtNavDist.text = getString(R.string.txtDist) + " (" + getUnitsDist() + ")"
-            lifecycleScope.launch { updateMapThread() }
-        }
+        // Display plan units
+        bind.txtNavGs.text = getString(R.string.txtGs) + " (" + getUnitsSpd() + ")"
+        bind.txtNavDist.text = getString(R.string.txtDist) + " (" + getUnitsDist() + ")"
+
+        // Run map update thread
+        lifecycleScope.launch { updateMapThread() }
     }
 
     private fun drawFlightPlan() {
@@ -259,8 +267,6 @@ class MapFragment : Fragment(R.layout.fragment_map) {
                 }
             }
         }
-
-        refreshBottomBar()
     }
 
     private fun drawTrace() {
@@ -498,67 +504,43 @@ class MapFragment : Fragment(R.layout.fragment_map) {
 
     private fun refreshBottomBar() {
         val strDist = formatDouble(totals.dist) + " " + getUnitsDist()
+        val strFuel = formatDouble(totals.fuel) + " " + getUnitsVolume()
+
         bind.txtTotalDist.text = strDist
         bind.txtTotalTime.text = formatSecondsToTime(totals.time)
-        val strFuel = formatDouble(totals.fuel) + " " + getUnitsVolume()
         bind.txtTotalFuel.text = strFuel
+
     }
 
     private suspend fun updateMapThread() {
-        var gps: GpsData
-        var current: Int = -1
-        var timer1 = 0
+        while (true) {
+            // Refresh the map
+            if (autoRefreshMap) {
+                autoRefreshMap = false
+                drawFlightPlan()
+                drawTrace()
+                zoomToTrack()
+            }
 
-        while (settings.gpsAssist) {
-            if (timer1 == 0) {
-                timer1 = 10
-                //Log.d(TAG, "Map Thread: $coroutineContext")
-
-                val a = activity as? MainActivity ?: break
-                val b = _binding ?: break
-
-                gpsMutex.withLock { gps = gpsData }
-
-                if (gps.isValid) {
-                    val lat = formatDouble(gps.coords?.latitude, C.COORDS_PRECISION)
-                    val lon = formatDouble(gps.coords?.longitude, C.COORDS_PRECISION)
-                    a.runOnUiThread { b.txtLat.text = lat }
-                    a.runOnUiThread { b.txtLng.text = lon }
-                } else {
-                    a.runOnUiThread { b.txtLat.text = "" }
-                    a.runOnUiThread { b.txtLng.text = "" }
-                }
-
-                // Check current and re-draw track on change
-                val item = getNavlogCurrentItemId()
-                if (item != current) {
-                    current = item
-                    drawFlightPlan()
-                }
-
-                // Refresh track on next-waypoint
-                if (autoRefreshMap) {
-                    drawFlightPlan()
-                    zoomToTrack()
-                    autoRefreshMap = false
-                }
-
-                // Refresh trace
+            // Refresh the trace
+            if (timerTrace == 0) {
+                timerTrace = 30
                 if (isFlightTraceEnabled() && isFlightInProgress()) drawTrace()
             }
 
-            if (followTimer == 0 && settings.mapFollow) {
-                followTimer = if (getFlightStage() == C.STAGE_3_FLIGHT_IN_PROGRESS) 5 else 50
-                followPosition()
+            // Map follow
+            if (timerFollow == 0) {
+                timerFollow = if (getFlightStage() == C.STAGE_3_FLIGHT_IN_PROGRESS) 5 else 50
+                if (settings.mapFollow) followPosition()
             }
 
-            if (timer1 > 0) timer1 -= 1
-            if (followTimer > 0) followTimer -= 1
+            if (timerTrace > 0) timerTrace -= 1
+            if (timerFollow > 0) timerFollow -= 1
             delay(100)
         }
     }
 
-    private fun updateMapUIThread() {
+    private fun updateMapNavUIThread() {
         var prevTime = 0L
 
         while (true) {

@@ -525,6 +525,7 @@ fun loadTrace(): Boolean {
                 if (lat != null && lng != null) tracePointsList.add(LatLng(lat, lng))
             }
         }
+        autoRefreshMap = true
         return true
     }
     return false

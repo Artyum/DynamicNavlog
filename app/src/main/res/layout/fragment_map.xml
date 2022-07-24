@@ -132,7 +132,7 @@
         android:name="com.google.android.gms.maps.SupportMapFragment"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        app:layout_constraintBottom_toTopOf="@id/summaryGps"
+        app:layout_constraintBottom_toTopOf="@id/summaryTotals"
         app:layout_constraintTop_toBottomOf="@id/topNavigation" />
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -140,7 +140,7 @@
         android:layout_height="wrap_content"
         android:layout_marginEnd="7dp"
         android:layout_marginBottom="110dp"
-        app:layout_constraintBottom_toTopOf="@id/summaryGps"
+        app:layout_constraintBottom_toTopOf="@id/summaryTotals"
         app:layout_constraintRight_toRightOf="parent">
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton
@@ -164,37 +164,6 @@
             app:srcCompat="@drawable/ic_layer"
             app:tint="@color/white2" />
     </androidx.constraintlayout.widget.ConstraintLayout>
-
-    <LinearLayout
-        android:id="@+id/summaryGps"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="1dp"
-        android:background="@color/colorPrimaryVariant"
-        android:clipToPadding="true"
-        android:padding="5dp"
-        android:visibility="gone"
-        app:layout_constraintBottom_toTopOf="@id/summaryTotals"
-        app:layout_constraintTop_toBottomOf="@id/mapFragment">
-
-        <TextView
-            style="@style/navlogSummary"
-            android:text="@string/txtLat" />
-
-        <TextView
-            android:id="@+id/txtLat"
-            style="@style/navlogSummary"
-            android:layout_marginEnd="20dp" />
-
-        <TextView
-            style="@style/navlogSummary"
-            android:text="@string/txtLng" />
-
-        <TextView
-            android:id="@+id/txtLng"
-            style="@style/navlogSummary"
-            android:layout_marginEnd="20dp" />
-    </LinearLayout>
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/summaryTotals"
