@@ -224,7 +224,11 @@ class MapFragment : Fragment(R.layout.fragment_map) {
                         if (i >= item) addMarker(p = navlogList[i].coords!!, title = navlogList[i].dest, tag = i, hue = hue)
 
                         // Auto-next circle
-                        if (isAutoNextEnabled() && i >= item) addCircle(navlogList[i].coords!!)
+                        if (isAutoNextEnabled() && i >= item) {
+                            if (isFlightInProgress()) {
+                                if (i == item) addCircle(navlogList[i].coords!!)
+                            } else addCircle(navlogList[i].coords!!)
+                        }
 
                         // Track color
                         var color: Int = R.color.trackdefault   // Default
@@ -271,6 +275,7 @@ class MapFragment : Fragment(R.layout.fragment_map) {
     }
 
     private fun drawTrace() {
+        if (!isDisplayFlightTrace()) return
         if (!mapReady || tracePointsList.size == 0) return
         Log.d(TAG, "drawTrace")
 
@@ -526,7 +531,7 @@ class MapFragment : Fragment(R.layout.fragment_map) {
             // Refresh the trace
             if (timerTrace == 0) {
                 timerTrace = 50
-                if (isDisplayFlightTrace() && isFlightInProgress()) drawTrace()
+                if (isFlightInProgress()) drawTrace()
             }
 
             // Map follow
