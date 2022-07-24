@@ -107,23 +107,6 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
                 // NAVIGATION DISPLAY
                 setItemsColor(h.stage)
 
-                //  PREV->CURR->NEXT
-                val (p, c, n) = h.getPrevCurrNext()
-                safeSetText(a, b.txtWptPrev, p)
-                safeSetText(a, b.txtWptCurr, c)
-                safeSetText(a, b.txtWptNext, n)
-
-                val color = if (c == "No Flight Plan") R.color.red else R.color.colorSecondary
-                safeTextColor(a, b.txtWptCurr, color)
-
-                if (p != "" && c != "" && n != "") {
-                    safeVisibility(a, b.arrow1, View.VISIBLE)
-                    safeVisibility(a, b.arrow2, View.VISIBLE)
-                } else {
-                    safeVisibility(a, b.arrow1, View.GONE)
-                    safeVisibility(a, b.arrow2, View.GONE)
-                }
-
                 // WPT
                 safeSetText(a, b.txtHomeDest, h.getWpt())
 

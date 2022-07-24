@@ -55,7 +55,7 @@ class MapFragment : Fragment(R.layout.fragment_map) {
         super.onViewCreated(view, savedInstanceState)
         bind.mapLayout.keepScreenOn = settings.keepScreenOn
         (activity as MainActivity).displayButtons()
-        
+
         val con = (activity as MainActivity).applicationContext
         val mapFragment = childFragmentManager.findFragmentById(R.id.mapFragment) as SupportMapFragment
 
