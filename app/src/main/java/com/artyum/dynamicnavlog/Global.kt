@@ -266,7 +266,7 @@ var gpsData = GpsData()
 var gpsMutex = Mutex()
 
 @Volatile
-var autoRefreshMap = false        // Refresh map on auto-next waypoint
+var refreshDisplay = false   // Refresh home, navlog and map pages on flight stage or waypoint change
 
 fun roundDouble(value: Double, precision: Int): Double = (value * 10.0.pow(precision)).roundToLong() / 10.0.pow(precision)
 

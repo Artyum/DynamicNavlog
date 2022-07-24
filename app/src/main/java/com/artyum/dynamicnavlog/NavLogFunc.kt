@@ -192,7 +192,7 @@ fun setNextWaypoint() {
     }
 
     // Refresh map on next-waypoint
-    autoRefreshMap = true
+    refreshDisplay = true
 }
 
 fun setPrevWaypoint() {
@@ -349,7 +349,7 @@ fun setStageOffBlock() {
     saveState()
     tracePointsList.clear()
     deleteTrace()
-    autoRefreshMap = true
+    refreshDisplay = true
 }
 
 fun setStageTakeoff() {
@@ -358,21 +358,21 @@ fun setStageTakeoff() {
     setFirstCurrent()
     calcNavlog()
     saveState()
-    autoRefreshMap = true
+    refreshDisplay = true
 }
 
 fun setStageBack() {
     setPrevWaypoint()
     calcNavlog()
     saveState()
-    autoRefreshMap = true
+    refreshDisplay = true
 }
 
 fun setStageNext() {
     setNextWaypoint()
     calcNavlog()
     saveState()
-    autoRefreshMap = true
+    refreshDisplay = true
 }
 
 fun setStageLanding() {
@@ -380,11 +380,11 @@ fun setStageLanding() {
     navlogList[getNavlogCurrentItemId()].ata = LocalDateTime.now()
     calcNavlog()
     saveState()
-    autoRefreshMap = true
+    refreshDisplay = true
 }
 
 fun setStageOnBLock() {
     timers.onblock = LocalDateTime.now()
     saveState()
-    autoRefreshMap = true
+    refreshDisplay = true
 }
