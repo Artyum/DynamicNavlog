@@ -44,6 +44,7 @@ class SettingsFragment : Fragment(R.layout.fragment_settings) {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         bind.settingLayout.keepScreenOn = settings.keepScreenOn
+        (activity as MainActivity).displayButtons()
 
         // Flight plan name
         bind.settingFlightPlanName.doOnTextChanged { text, _, _, _ ->

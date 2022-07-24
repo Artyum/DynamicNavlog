@@ -27,6 +27,7 @@ class CalcFuelFragment : Fragment(R.layout.fragment_calc_fuel) {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         bind.fuelLayout.keepScreenOn = settings.keepScreenOn
+        (activity as MainActivity).hideButtons()
 
         bind.btnCalculate.setOnClickListener {
             it.hideKeyboard()

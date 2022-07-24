@@ -31,6 +31,7 @@ class AirplaneListFragment : Fragment(R.layout.fragment_airplanelist), AirplaneL
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         bind.airplaneListLayout.keepScreenOn = settings.keepScreenOn
+        (activity as MainActivity).hideButtons()
 
         // Add airplane
         bind.addAirplane.setOnClickListener {

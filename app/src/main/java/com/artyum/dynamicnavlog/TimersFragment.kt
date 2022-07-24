@@ -37,6 +37,7 @@ class TimersFragment : Fragment(R.layout.fragment_timers) {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         bind.timersLayout.keepScreenOn = settings.keepScreenOn
+        (activity as MainActivity).hideButtons()
 
         tOffblock = roundToMinutes(timers.offblock)
         tTakeoff = roundToMinutes(timers.takeoff)

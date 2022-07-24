@@ -34,6 +34,7 @@ class NavlogFragment : Fragment(R.layout.fragment_navlog), NavlogAdapter.OnItemC
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         bind.navlogLayout.keepScreenOn = settings.keepScreenOn
+        (activity as MainActivity).displayButtons()
 
         // Current & Incrementally switch
         bind.btnDisplayToggle.setOnClickListener {
