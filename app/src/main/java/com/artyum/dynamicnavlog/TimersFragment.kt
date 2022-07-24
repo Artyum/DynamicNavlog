@@ -49,21 +49,20 @@ class TimersFragment : Fragment(R.layout.fragment_timers) {
     }
 
     private fun refreshView() {
-        var str: String
-        val z = if (settings.timeInUTC) "z" else ""
+        var str = ""
 
         bind.flightName.setText(settings.planName)
 
-        str = if (timers.offblock != null) formatDateTime(tOffblock, C.FORMAT_DATETIME) + z else ""
+        str = if (timers.offblock != null) formatDateTime(tOffblock, C.FORMAT_DATETIME) else ""
         bind.timeOffBlock.setText(str)
 
-        str = if (timers.takeoff != null) formatDateTime(tTakeoff, C.FORMAT_DATETIME) + z else ""
+        str = if (timers.takeoff != null) formatDateTime(tTakeoff, C.FORMAT_DATETIME) else ""
         bind.timeTakeoff.setText(str)
 
-        str = if (timers.landing != null) formatDateTime(tLanding, C.FORMAT_DATETIME) + z else ""
+        str = if (timers.landing != null) formatDateTime(tLanding, C.FORMAT_DATETIME) else ""
         bind.timeLanding.setText(str)
 
-        str = if (timers.onblock != null) formatDateTime(tOnblock, C.FORMAT_DATETIME) + z else ""
+        str = if (timers.onblock != null) formatDateTime(tOnblock, C.FORMAT_DATETIME) else ""
         bind.timeOnBlock.setText(str)
     }
 
@@ -109,7 +108,7 @@ fun formatDateTime(t: LocalDateTime?, pattern: String): String {
     val utcZoned: ZonedDateTime = ldtZoned.withZoneSameInstant(ZoneId.of("UTC"))
 
     return if (settings.timeInUTC)
-        utcZoned.format(DateTimeFormatter.ofPattern(pattern))
+        utcZoned.format(DateTimeFormatter.ofPattern(pattern)) + C.ZULU_SIGN
     else
         ldtZoned.format(DateTimeFormatter.ofPattern(pattern))
 }

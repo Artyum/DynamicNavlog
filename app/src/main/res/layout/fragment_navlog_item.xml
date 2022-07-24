@@ -62,53 +62,17 @@
             android:layout_width="90dp"
             android:text="@string/txtTime" />
 
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:id="@+id/txtNavlogEtaCell"
+        <TextView
+            android:id="@+id/txtNavlogEta"
             style="@style/navlogItem"
             android:layout_width="90dp"
-            android:layout_height="match_parent">
+            android:text="@string/txtEta" />
 
-            <TextView
-                android:id="@+id/txtNavlogEta"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/txtEta"
-                android:textSize="16sp"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintLeft_toLeftOf="parent"
-                app:layout_constraintRight_toRightOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
-
-            <TextView
-                android:id="@+id/txtNavlogEtaUnits"
-                style="@style/navlogUnits"
-                app:layout_constraintBaseline_toBaselineOf="@id/txtNavlogEta"
-                app:layout_constraintLeft_toRightOf="@id/txtNavlogEta" />
-        </androidx.constraintlayout.widget.ConstraintLayout>
-
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:id="@+id/txtNavlogAtaCell"
+        <TextView
+            android:id="@+id/txtNavlogAta"
             style="@style/navlogItem"
             android:layout_width="90dp"
-            android:layout_height="match_parent">
-
-            <TextView
-                android:id="@+id/txtNavlogAta"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/txtAta"
-                android:textSize="16sp"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintLeft_toLeftOf="parent"
-                app:layout_constraintRight_toRightOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
-
-            <TextView
-                android:id="@+id/txtNavlogAtaUnits"
-                style="@style/navlogUnits"
-                app:layout_constraintBaseline_toBaselineOf="@id/txtNavlogAta"
-                app:layout_constraintLeft_toRightOf="@id/txtNavlogAta" />
-        </androidx.constraintlayout.widget.ConstraintLayout>
+            android:text="@string/txtAta" />
 
         <TextView
             android:id="@+id/txtNavlogFuel"

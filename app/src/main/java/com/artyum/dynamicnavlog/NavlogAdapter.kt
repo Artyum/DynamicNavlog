@@ -48,11 +48,6 @@ class NavlogAdapter(
             holder.tvEta.text = formatDateTime(item.eta, C.FORMAT_TIME)
             holder.tvAta.text = formatDateTime(item.ata, C.FORMAT_TIME)
 
-            if (settings.timeInUTC) {
-                if (item.eta != null) holder.tvEtaUnits.text = C.ZULU_SIGN
-                if (item.ata != null) holder.tvAtaUnits.text = C.ZULU_SIGN
-            }
-
             // Fuel
             if (settings.tfDisplayToggle == C.TF_DISPLAY_CUR) {
                 holder.tvFuel.text = formatDouble(item.fuel, 1)
@@ -65,9 +60,7 @@ class NavlogAdapter(
             holder.tvGs.text = ""
             holder.tvTime.text = ""
             holder.tvEta.text = ""
-            holder.tvEtaUnits.text = ""
             holder.tvAta.text = ""
-            holder.tvAtaUnits.text = ""
             holder.tvFuel.text = ""
         }
 
@@ -97,9 +90,7 @@ class NavlogAdapter(
             setContextColor(holder.tvGs, col)
             setContextColor(holder.tvTime, col)
             setContextColor(holder.tvEta, col)
-            setContextColor(holder.tvEtaUnits, col)
             setContextColor(holder.tvAta, col)
-            setContextColor(holder.tvAtaUnits, col)
             setContextColor(holder.tvFuel, col)
         } else {
             val col = R.color.inactive
@@ -108,15 +99,7 @@ class NavlogAdapter(
             setContextColor(holder.tvDec, col)
             setContextColor(holder.tvMt, col)
             setContextColor(holder.tvDist, col)
-            //setContextColor(holder.tvWca, col)
-            //setContextColor(holder.tvHdg, col)
-            //setContextColor(holder.tvGs, col)
-            //setContextColor(holder.tvTime, col)
-            //setContextColor(holder.tvEto, col)
-            //setContextColor(holder.tvAto, col)
-            //setContextColor(holder.tvFuel, col)
         }
-
 
         setContextBackground(holder.tvDest, color)
         setContextBackground(holder.tvTt, color)
@@ -139,9 +122,7 @@ class NavlogAdapter(
             setContextColor(holder.tvGs, col)
             setContextColor(holder.tvTime, col)
             setContextColor(holder.tvEta, col)
-            setContextColor(holder.tvEtaUnits, col)
             setContextColor(holder.tvAta, col)
-            setContextColor(holder.tvAtaUnits, col)
             setContextColor(holder.tvFuel, col)
         } else {
             holder.tvHdg.setBackgroundColor(ContextCompat.getColor(holder.tvDest.context, R.color.hdg))
@@ -149,9 +130,8 @@ class NavlogAdapter(
 
         setContextBackground(holder.tvGs, color)
         setContextBackground(holder.tvTime, color)
-
-        holder.clEta.setBackgroundColor(ContextCompat.getColor(holder.clEta.context, color))
-        holder.clAta.setBackgroundColor(ContextCompat.getColor(holder.clAta.context, color))
+        setContextBackground(holder.tvEta, color)
+        setContextBackground(holder.tvAta, color)
 
         // if fuel < 0 -> warning background
         if (holder.tvFuel.text.contains("-")) setContextBackground(holder.tvFuel, R.color.warning)
@@ -181,12 +161,6 @@ class NavlogAdapter(
         val tvEta: TextView = itemView.findViewById(R.id.txtNavlogEta)
         val tvAta: TextView = itemView.findViewById(R.id.txtNavlogAta)
         val tvFuel: TextView = itemView.findViewById(R.id.txtNavlogFuel)
-
-        val clEta: ConstraintLayout = itemView.findViewById(R.id.txtNavlogEtaCell)
-        val clAta: ConstraintLayout = itemView.findViewById(R.id.txtNavlogAtaCell)
-
-        val tvEtaUnits: TextView = itemView.findViewById(R.id.txtNavlogEtaUnits)
-        val tvAtaUnits: TextView = itemView.findViewById(R.id.txtNavlogAtaUnits)
 
         init {
             itemView.setOnClickListener(this)
