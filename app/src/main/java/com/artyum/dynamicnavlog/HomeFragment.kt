@@ -55,7 +55,6 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
     private fun displayUnits() {
         bind.txtHomeDistUnits.text = getUnitsDist()
         bind.txtHomeGsUnits.text = getUnitsSpd()
-        if (settings.timeInUTC && (isFlightInProgress() || isFlightOver())) bind.txtHomeEtaUnits.text = C.ZULU_SIGN
     }
 
     private fun drawHomeWinStar() {

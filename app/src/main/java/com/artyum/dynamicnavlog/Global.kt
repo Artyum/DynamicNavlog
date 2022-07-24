@@ -151,7 +151,7 @@ object C {
     const val VOL_UKGAL = 1
     const val VOL_LITERS = 2
 
-    const val ZULU_SIGN = "z"
+    const val ZULU_SIGN = "ᶻ"
 
     const val PRESSURE_INHG = 0
     const val PRESSURE_HPA = 1

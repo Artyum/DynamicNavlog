@@ -345,12 +345,6 @@
                                     app:layout_constraintTop_toBottomOf="@+id/txtFlightTime" />
 
                                 <TextView
-                                    android:id="@+id/txtHomeEtaUnits"
-                                    style="@style/homeUnits"
-                                    app:layout_constraintBaseline_toBaselineOf="@id/txtHomeEta"
-                                    app:layout_constraintLeft_toRightOf="@id/txtHomeEta" />
-
-                                <TextView
                                     android:id="@+id/txtHomeTimeDeviation"
                                     style="@style/txtPct"
                                     app:layout_constraintBaseline_toBaselineOf="@id/txtHomeEta"
