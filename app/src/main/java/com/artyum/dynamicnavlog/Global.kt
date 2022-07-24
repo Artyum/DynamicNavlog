@@ -277,6 +277,28 @@ fun angleCalc(rad: Double): SinCosAngle {
     return SinCosAngle(sin(rad).toFloat(), cos(rad).toFloat())
 }
 
+fun generateStringId(): String {
+    var ok = false
+    var randomString = ""
+    val charPool: List<Char> = ('a'..'z') + ('A'..'Z') + ('0'..'9')
+
+    while (!ok) {
+        randomString = (1..10)
+            .map { _ -> kotlin.random.Random.nextInt(0, charPool.size) }
+            .map(charPool::get)
+            .joinToString("");
+
+        ok = true
+        for (i in airplaneList.indices) {
+            if (airplaneList[i].id == randomString) {
+                ok = false
+                break
+            }
+        }
+    }
+    return randomString
+}
+
 fun paintWindCircle(imgView: ImageView, resources: Resources, course: Double, windDir: Double, hdg: Double, speedRatio: Double) {
     val bitmap = Bitmap.createBitmap(400, 400, Bitmap.Config.ARGB_8888)
     val canvas = Canvas(bitmap)
