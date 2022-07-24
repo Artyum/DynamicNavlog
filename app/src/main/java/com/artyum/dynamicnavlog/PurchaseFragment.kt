@@ -26,6 +26,7 @@ class PurchaseFragment : Fragment(R.layout.fragment_purchase) {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         bind.purchaseLayout.keepScreenOn = settings.keepScreenOn
+        (activity as MainActivity).hideButtons()
 
         bind.btnPurchase.setOnClickListener {
             (activity as MainActivity).launchPurchase()

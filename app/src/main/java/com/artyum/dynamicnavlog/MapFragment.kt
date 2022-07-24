@@ -54,7 +54,8 @@ class MapFragment : Fragment(R.layout.fragment_map) {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         bind.mapLayout.keepScreenOn = settings.keepScreenOn
-
+        (activity as MainActivity).displayButtons()
+        
         val con = (activity as MainActivity).applicationContext
         val mapFragment = childFragmentManager.findFragmentById(R.id.mapFragment) as SupportMapFragment
 
@@ -524,7 +525,7 @@ class MapFragment : Fragment(R.layout.fragment_map) {
 
             // Refresh the trace
             if (timerTrace == 0) {
-                timerTrace = 30
+                timerTrace = 50
                 if (isDisplayFlightTrace() && isFlightInProgress()) drawTrace()
             }
 

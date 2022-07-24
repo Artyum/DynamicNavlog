@@ -31,6 +31,7 @@ class PlanListFragment : Fragment(R.layout.fragment_planlist), PlanListAdapter.O
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         bind.planListLayout.keepScreenOn = settings.keepScreenOn
+        (activity as MainActivity).hideButtons()
 
         // Search box
         bind.searchInput.doAfterTextChanged {

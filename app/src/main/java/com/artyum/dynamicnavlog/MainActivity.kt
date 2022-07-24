@@ -655,7 +655,7 @@ class MainActivity : AppCompatActivity() {
         val stage = getFlightStage()
 
         // Hide all buttons
-        hideAllButtons()
+        hideButtons()
 
         if (stage == C.STAGE_1_BEFORE_ENGINE_START) {
             if (isNavlogReady()) bind.btnOffBlock.visibility = View.VISIBLE
@@ -681,7 +681,7 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private fun hideAllButtons() {
+    fun hideButtons() {
         //bind.btnBox.visibility = View.VISIBLE
         bind.btnOffBlock.visibility = View.GONE
         bind.btnTakeoff.visibility = View.GONE
