@@ -38,7 +38,7 @@ fun saveState(fileName: String = "") {
     jSettings.put("gps", settings.gpsAssist)
     jSettings.put("autonext", settings.autoNext)
     jSettings.put("nextr", settings.nextRadius)
-    jSettings.put("trace", settings.recordTrace)
+    jSettings.put("trace", settings.displayTrace)
 
     jSettings.put("maptype", settings.mapType)
     jSettings.put("maporient", settings.mapOrientation)
@@ -171,7 +171,7 @@ fun loadStateDnl(fileName: String = C.stateFileName) {
                         if (str[0] == "maptype") newSettings.mapType = str[1].toIntOrNull() ?: GoogleMap.MAP_TYPE_NORMAL
                         if (str[0] == "mapfollow") newSettings.mapFollow = str[1].toBoolean()
                         if (str[0] == "nextr") newSettings.nextRadius = str[1].toIntOrNull() ?: C.DEFAULT_NEXT_RADIUS
-                        if (str[0] == "trace") newSettings.recordTrace = str[1].toBoolean()
+                        if (str[0] == "trace") newSettings.displayTrace = str[1].toBoolean()
                         if (str[0] == "screenorient") newSettings.screenOrientation = str[1].toIntOrNull() ?: C.SCREEN_PORTRAIT
                     }
 
@@ -333,7 +333,7 @@ fun loadState(fileName: String = C.stateFileName) {
     newSettings.mapType = if (jSettings.has("maptype")) jSettings["maptype"].toString().toIntOrNull() ?: GoogleMap.MAP_TYPE_NORMAL else GoogleMap.MAP_TYPE_NORMAL
     newSettings.mapFollow = jSettings["mapfollow"].toString().toBoolean()
     newSettings.nextRadius = if (jSettings.has("nextr")) jSettings["nextr"].toString().toIntOrNull() ?: C.DEFAULT_NEXT_RADIUS else C.DEFAULT_NEXT_RADIUS
-    newSettings.recordTrace = jSettings["trace"].toString().toBoolean()
+    newSettings.displayTrace = jSettings["trace"].toString().toBoolean()
     newSettings.screenOrientation = if (jSettings.has("screenorient")) jSettings["screenorient"].toString().toIntOrNull() ?: C.SCREEN_SENSOR else C.SCREEN_SENSOR
 
     // Timers

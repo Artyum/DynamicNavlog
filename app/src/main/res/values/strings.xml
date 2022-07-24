@@ -160,7 +160,7 @@
     <string name="txtWarningNoGPS">Warning! No GPS signal</string>
     <string name="txtGPSAssist">GPS assist</string>
     <string name="txtAutoNextWPT">Detect T/O, LND and WPT</string>
-    <string name="txtTrackRecording">Record flight trace</string>
+    <string name="txtDisplayFlightTrace">Display flight trace</string>
     <string name="txtKeepScreenOn">Keep the screen on</string>
     <string name="txtTotalDistance">Total distance</string>
     <string name="txtTotalTime">Total time</string>

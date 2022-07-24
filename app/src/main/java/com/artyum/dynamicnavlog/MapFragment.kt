@@ -525,7 +525,7 @@ class MapFragment : Fragment(R.layout.fragment_map) {
             // Refresh the trace
             if (timerTrace == 0) {
                 timerTrace = 30
-                if (isFlightTraceEnabled() && isFlightInProgress()) drawTrace()
+                if (isDisplayFlightTrace() && isFlightInProgress()) drawTrace()
             }
 
             // Map follow

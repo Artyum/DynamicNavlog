@@ -391,7 +391,7 @@
                     <com.google.android.material.switchmaterial.SwitchMaterial
                         android:id="@+id/settingTrace"
                         style="@style/settingsSwitch"
-                        android:text="@string/txtTrackRecording" />
+                        android:text="@string/txtDisplayFlightTrace" />
                 </LinearLayout>
 
                 <LinearLayout style="@style/dividerBox">

@@ -49,7 +49,7 @@ data class Settings(
     @Volatile var mapType: Int = GoogleMap.MAP_TYPE_NORMAL,
     @Volatile var mapOrientation: Int = C.MAP_ORIENTATION_NORTH,
     @Volatile var autoNext: Boolean = true,
-    @Volatile var recordTrace: Boolean = false,
+    @Volatile var displayTrace: Boolean = true,
     @Volatile var mapFollow: Boolean = true,
     @Volatile var tfDisplayToggle: Int = C.TF_DISPLAY_REM,
     @Volatile var nextRadius: Int = C.DEFAULT_NEXT_RADIUS,
@@ -218,6 +218,9 @@ object C {
     // Track line width
     const val TRACK_WIDTH = 20f
     const val TRACK_INACTIVE_WIDTH = 10f
+
+    //Trace
+    const val MINIMAL_TRACE_POINTS_DIST = 100.0    // Minimal distance between points to record trace in meters
 }
 
 @Volatile
