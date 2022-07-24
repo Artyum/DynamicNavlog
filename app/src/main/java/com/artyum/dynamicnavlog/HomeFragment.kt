@@ -24,9 +24,6 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
     private var _binding: FragmentHomeBinding? = null
     private val bind get() = _binding!!
 
-    @Volatile
-    var refreshUI = false
-
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         _binding = FragmentHomeBinding.inflate(inflater, container, false)
         return bind.root
@@ -99,9 +96,9 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
 
             // Loop every 1 sec
             val curTime = System.currentTimeMillis() / 1000L
-            if (curTime != prevTime || refreshUI) {
+            if (curTime != prevTime || refreshDisplay) {
                 prevTime = curTime
-                refreshUI = false
+                refreshDisplay = false
                 //println("Home Thread: $coroutineContext")
 
                 val h = HomeItem()

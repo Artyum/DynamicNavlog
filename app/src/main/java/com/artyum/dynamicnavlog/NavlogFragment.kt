@@ -6,10 +6,13 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.artyum.dynamicnavlog.databinding.FragmentNavlogBinding
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import java.util.*
 
 class NavlogFragment : Fragment(R.layout.fragment_navlog), NavlogAdapter.OnItemClickInterface, NavlogAdapter.OnItemLongClickInterface {
@@ -48,17 +51,14 @@ class NavlogFragment : Fragment(R.layout.fragment_navlog), NavlogAdapter.OnItemC
         recyclerView.adapter = adapter
         recyclerView.layoutManager = LinearLayoutManager(this.context)
 
-        //calcNavlog(adapter)
         refreshBottomBar()
-
-        if (isNavlogReady()) {
-            recyclerView.scrollToPosition(getNavlogCurrentItemId())
-            //optimizeLayout()
-        }
+        if (isNavlogReady()) recyclerView.scrollToPosition(getNavlogCurrentItemId())
 
         // Helper on end drag item
         val itemTouchHelper = ItemTouchHelper(simpleCallback)
         itemTouchHelper.attachToRecyclerView(recyclerView)
+
+        lifecycleScope.launch { updateNavlogPageThread() }
     }
 
     // Moving/drag&drop items in RecycleView
@@ -111,5 +111,12 @@ class NavlogFragment : Fragment(R.layout.fragment_navlog), NavlogAdapter.OnItemC
         bind.txtTotalFuel.text = strFuel
 
         if (navlogList.size == 0) bind.btnDisplayToggle.visibility = View.GONE else bind.btnDisplayToggle.visibility = View.VISIBLE
+    }
+
+    private suspend fun updateNavlogPageThread() {
+        while (true) {
+            if (refreshDisplay) adapter.notifyDataSetChanged()
+            delay(50)
+        }
     }
 }

@@ -123,7 +123,7 @@ class MapFragment : Fragment(R.layout.fragment_map) {
                 // Draw trace
                 drawTrace()
 
-                autoRefreshMap = true
+                refreshDisplay = true
             }
 
             // Start home thread
@@ -515,8 +515,8 @@ class MapFragment : Fragment(R.layout.fragment_map) {
     private suspend fun updateMapThread() {
         while (true) {
             // Refresh the map
-            if (autoRefreshMap) {
-                autoRefreshMap = false
+            if (refreshDisplay) {
+                refreshDisplay = false
                 drawFlightPlan()
                 drawTrace()
                 zoomToTrack()
