@@ -908,6 +908,7 @@ class MainActivity : AppCompatActivity() {
         var gps: GpsData
         var prevTime = 0L
         var prevDist = 0.0
+        var changeWptCircle = false
 
         while (isAutoNextEnabled()) {
             // Loop every 1 sec
@@ -938,12 +939,18 @@ class MainActivity : AppCompatActivity() {
                         if (navlogList[item].coords != null) {
                             val dist = m2nm(calcDistance(gps.coords!!, navlogList[item].coords!!))
                             if (dist <= nextRadiusList[settings.nextRadius]) {
+                                //One-time refresh map after entering WPT circle
+                                if (!changeWptCircle) {
+                                    changeWptCircle = true
+                                    isInsideCircle = true
+                                    refreshDisplay = true
+                                }
                                 if (item < last) {
                                     // Auto Next Waypoint
                                     // Detect passed waypoint when airplane is in the circle and the distance from waypoint is increasing
-                                    Log.d(TAG, "Auto next wpt")
                                     if (prevDist == 0.0) prevDist = dist
                                     else if (dist > prevDist) {
+                                        Log.d(TAG, "Auto next wpt")
                                         prevDist = 0.0
                                         setStageNext()
                                     } else prevDist = dist
@@ -957,6 +964,9 @@ class MainActivity : AppCompatActivity() {
                                         speedCnt = 0
                                     }
                                 }
+                            } else {
+                                changeWptCircle = false
+                                isInsideCircle = false
                             }
                         }
                     }
