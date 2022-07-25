@@ -314,12 +314,6 @@ class SettingsFragment : Fragment(R.layout.fragment_settings) {
 
         setupUI(view)
         restoreSettings()
-
-        // Disable edit during the flight
-        if (timers.offblock != null) {
-            bind.settingFlightPlanNameBox.isEnabled = false
-            bind.spinnerAirplane.isEnabled = false
-        }
     }
 
     override fun onStop() {
