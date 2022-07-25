@@ -21,79 +21,79 @@ data class PlanListItem(
 )
 
 data class Settings(
-    @Volatile var id: String = "",
-    @Volatile var planName: String = "",
-    @Volatile var departure: String = "",
-    @Volatile var destination: String = "",
+    var id: String = "",
+    var planName: String = "",
+    var departure: String = "",
+    var destination: String = "",
 
-    @Volatile var planeId: String = "",
-    @Volatile var fob: Double? = null, //Fuel on board at takeoff
-    @Volatile var planeType: String = "",
-    @Volatile var planeReg: String = "",
-    @Volatile var planeTas: Double = 0.0,
-    @Volatile var planeFph: Double? = null,
-    @Volatile var planeTank: Double? = null,
+    var planeId: String = "",
+    var fob: Double? = null, //Fuel on board at takeoff
+    var planeType: String = "",
+    var planeReg: String = "",
+    var planeTas: Double = 0.0,
+    var planeFph: Double? = null,
+    var planeTank: Double? = null,
 
-    @Volatile var windDir: Double = 0.0,
-    @Volatile var windSpd: Double = 0.0,
+    var windDir: Double = 0.0,
+    var windSpd: Double = 0.0,
 
-    @Volatile var timeInUTC: Boolean = false,
-    @Volatile var keepScreenOn: Boolean = false,
-    @Volatile var gpsAssist: Boolean = true,
-    @Volatile var takeoffCoords: LatLng? = null,
+    var timeInUTC: Boolean = false,
+    var keepScreenOn: Boolean = false,
+    var gpsAssist: Boolean = true,
+    var takeoffCoords: LatLng? = null,
 
-    @Volatile var spdUnits: Int = 0,
-    @Volatile var distUnits: Int = 0,
-    @Volatile var volUnits: Int = 0,
+    var spdUnits: Int = 0,
+    var distUnits: Int = 0,
+    var volUnits: Int = 0,
 
-    @Volatile var mapType: Int = GoogleMap.MAP_TYPE_NORMAL,
-    @Volatile var mapOrientation: Int = C.MAP_ORIENTATION_NORTH,
-    @Volatile var autoNext: Boolean = true,
-    @Volatile var displayTrace: Boolean = true,
-    @Volatile var mapFollow: Boolean = true,
-    @Volatile var tfDisplayToggle: Int = C.TF_DISPLAY_REM,
-    @Volatile var nextRadius: Int = C.DEFAULT_NEXT_RADIUS,
-    @Volatile var screenOrientation: Int = C.SCREEN_PORTRAIT
+    var mapType: Int = GoogleMap.MAP_TYPE_NORMAL,
+    var mapOrientation: Int = C.MAP_ORIENTATION_NORTH,
+    var autoNext: Boolean = true,
+    var displayTrace: Boolean = true,
+    var mapFollow: Boolean = true,
+    var tfDisplayToggle: Int = C.TF_DISPLAY_REM,
+    var nextRadius: Int = C.DEFAULT_NEXT_RADIUS,
+    var screenOrientation: Int = C.SCREEN_PORTRAIT
 )
 
 data class Timers(
-    @Volatile var offblock: LocalDateTime? = null,
-    @Volatile var takeoff: LocalDateTime? = null,
-    @Volatile var landing: LocalDateTime? = null,
-    @Volatile var onblock: LocalDateTime? = null,
-    @Volatile var flightTime: Long? = null,    // Seconds
-    @Volatile var blockTime: Long? = null,     // Seconds
-    @Volatile var groundTime: Long? = null     // Seconds
+    var offblock: LocalDateTime? = null,
+    var takeoff: LocalDateTime? = null,
+    var landing: LocalDateTime? = null,
+    var onblock: LocalDateTime? = null,
+    var flightTime: Long? = null,    // Seconds
+    var blockTime: Long? = null,     // Seconds
+    var groundTime: Long? = null     // Seconds
 )
 
 data class Airplane(
-    @Volatile var id: String = "",
-    @Volatile var type: String = "",
-    @Volatile var reg: String = "",
-    @Volatile var rmk: String = "",
-    @Volatile var tas: Double = 0.0,
-    @Volatile var fph: Double = 0.0,
-    @Volatile var tank: Double = 0.0,
-    @Volatile var spdUnits: Int = 0,
-    @Volatile var volUnits: Int = 0
+    var id: String = "",
+    var type: String = "",
+    var reg: String = "",
+    var rmk: String = "",
+    var tas: Double = 0.0,
+    var fph: Double = 0.0,
+    var tank: Double = 0.0,
+    var spdUnits: Int = 0,
+    var volUnits: Int = 0
 )
 
 data class GpsData(
-    @Volatile var coords: LatLng? = null,
-    @Volatile var time: Long = 0L,
-    @Volatile var rawSpeed: Double = 0.0,
-    @Volatile var speed: Double = 0.0,
-    @Volatile var altitude: Double = 0.0,
-    @Volatile var bearing: Float? = null,
-    @Volatile var hAccuracy: Double = 0.0,
-    @Volatile var heartbeat: Boolean = false,
-    @Volatile var isValid: Boolean = false
+    var coords: LatLng? = null,
+    var time: Long = 0L,
+    var rawSpeed: Double = 0.0,
+    var speed: Double = 0.0,
+    var altitude: Double = 0.0,
+    var bearing: Float? = null,
+    var hAccuracy: Double = 0.0,
+    var heartbeat: Boolean = false,
+    var isValid: Boolean = false
 )
 
 data class Totals(
-    @Volatile var dist: Double = 0.0,
-    @Volatile var time: Long = 0,
-    @Volatile var fuel: Double = 0.0
+    var dist: Double = 0.0,
+    var time: Long = 0,
+    var fuel: Double = 0.0
 )
 
 data class FlightCalc(
@@ -223,52 +223,37 @@ object C {
     const val MINIMAL_TRACE_POINTS_DIST = 100.0    // Minimal distance between points to record trace in meters
 }
 
-@Volatile
 var navlogList = ArrayList<NavlogItem>()
 
-@Volatile
 var planList = ArrayList<PlanListItem>()
 
-@Volatile
 var airplaneList = ArrayList<Airplane>()
 
-@Volatile
 var tracePointsList = ArrayList<LatLng>()
 
-@Volatile
 var settings = Settings()
 
-@Volatile
 var timers = Timers()
 
-@Volatile
 var totals = Totals()
 
-@Volatile
 var editAirplaneID: String? = null
 
 // Next circle radius in NM
 val nextRadiusList = arrayListOf(0.5, 1.0, 2.0)
 
-@Volatile
 var serviceRunning = false
 
-@Volatile
 var locationSubscribed = false
 
-@Volatile
 var autoNextRunning = false
 
-@Volatile
 var isAppPurchased = false
 
-@Volatile
 var gpsData = GpsData()
 
-@Volatile
 var gpsMutex = Mutex()
 
-@Volatile
 var refreshDisplay = false   // Refresh home, navlog and map pages on flight stage or waypoint change
 
 fun roundDouble(value: Double, precision: Int): Double = (value * 10.0.pow(precision)).roundToLong() / 10.0.pow(precision)
@@ -295,7 +280,7 @@ fun generateStringId(): String {
     // 15 -> 93 052 749 919 920
 
     while (!ok) {
-        randomString = (1..15)
+        randomString = (1..10)
             .map { _ -> kotlin.random.Random.nextInt(0, charPool.size) }
             .map(charPool::get)
             .joinToString("");

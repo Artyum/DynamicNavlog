@@ -17,9 +17,12 @@ fun saveState(fileName: String = "") {
     val jSettings = JSONObject()
     val jTimers = JSONObject()
     val jNavLog = JSONObject()
+    val id = settings.id
+
+    Log.d(tag, "saveState: $id")
 
     // Settings
-    jSettings.put("id", settings.id)
+    jSettings.put("id", id)
     jSettings.put("name", settings.planName)
     jSettings.put("from", settings.departure)
     jSettings.put("dest", settings.destination)
@@ -94,7 +97,7 @@ fun saveState(fileName: String = "") {
         val fn: String = if (fileName == "current_state" + C.DNL_EXTENSION) {
             fileName.replace(C.DNL_EXTENSION, C.JSON_EXTENSION, ignoreCase = true)
         } else {
-            settings.id + C.JSON_EXTENSION
+            id + C.JSON_EXTENSION
         }
         val file = File(externalAppDir, fn)
         file.writeText(json.toString())
@@ -105,9 +108,8 @@ fun saveState(fileName: String = "") {
 
         // Copy current state file to plan name file
         if (settings.planName != "") {
-            val fn = settings.id + C.JSON_EXTENSION
+            val fn = id + C.JSON_EXTENSION
             val planFile = File(externalAppDir, fn)
-            Log.d(tag, "saveState: $fn")
             planFile.writeText(json.toString())
         }
     }

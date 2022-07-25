@@ -323,7 +323,7 @@ class SettingsFragment : Fragment(R.layout.fragment_settings) {
     }
 
     override fun onStop() {
-        Log.d(tag, "onStop")
+        Log.d(TAG, "onStop")
         super.onStop()
         saveSettings()
     }
@@ -530,7 +530,7 @@ fun isMapFollow(): Boolean {
     return settings.gpsAssist && settings.mapFollow
 }
 
-fun resetSettings() {
+fun  resetSettings() {
     settings.id = generateStringId()
 
     settings.planName = ""
