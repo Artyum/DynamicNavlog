@@ -49,11 +49,9 @@ class TimersFragment : Fragment(R.layout.fragment_timers) {
     }
 
     private fun refreshView() {
-        var str = ""
-
         bind.flightName.setText(settings.planName)
 
-        str = if (timers.offblock != null) formatDateTime(tOffblock, C.FORMAT_DATETIME) else ""
+        var str = if (timers.offblock != null) formatDateTime(tOffblock, C.FORMAT_DATETIME) else ""
         bind.timeOffBlock.setText(str)
 
         str = if (timers.takeoff != null) formatDateTime(tTakeoff, C.FORMAT_DATETIME) else ""

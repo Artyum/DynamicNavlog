@@ -367,9 +367,7 @@
 
                     <androidx.constraintlayout.widget.ConstraintLayout
                         android:id="@+id/settingWptDetection"
-                        style="@style/settingsSwitch"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content">
+                        style="@style/settingsSwitch">
 
                         <TextView
                             android:id="@+id/txtNextRadius"
@@ -381,9 +379,7 @@
 
                         <Spinner
                             android:id="@+id/spinnerNextRadius"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:gravity="end"
+                            style="@style/settingsSpinner"
                             app:layout_constraintBaseline_toBaselineOf="@id/txtNextRadius"
                             app:layout_constraintRight_toRightOf="parent" />
                     </androidx.constraintlayout.widget.ConstraintLayout>
@@ -409,10 +405,7 @@
                         android:layout_weight="1" />
                 </LinearLayout>
 
-                <androidx.constraintlayout.widget.ConstraintLayout
-                    style="@style/settingsSwitch"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
+                <androidx.constraintlayout.widget.ConstraintLayout style="@style/settingsSwitch">
 
                     <TextView
                         android:id="@+id/txtUnitsSpd"
@@ -424,18 +417,13 @@
 
                     <Spinner
                         android:id="@+id/spinnerUnitsSpd"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:gravity="end"
+                        style="@style/settingsSpinner"
                         app:layout_constraintBaseline_toBaselineOf="@id/txtUnitsSpd"
                         app:layout_constraintRight_toRightOf="parent" />
 
                 </androidx.constraintlayout.widget.ConstraintLayout>
 
-                <androidx.constraintlayout.widget.ConstraintLayout
-                    style="@style/settingsSwitch"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
+                <androidx.constraintlayout.widget.ConstraintLayout style="@style/settingsSwitch">
 
                     <TextView
                         android:id="@+id/txtUnitsDist"
@@ -447,18 +435,13 @@
 
                     <Spinner
                         android:id="@+id/spinnerUnitsDist"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:gravity="end"
+                        style="@style/settingsSpinner"
                         app:layout_constraintBaseline_toBaselineOf="@id/txtUnitsDist"
                         app:layout_constraintRight_toRightOf="parent" />
 
                 </androidx.constraintlayout.widget.ConstraintLayout>
 
-                <androidx.constraintlayout.widget.ConstraintLayout
-                    style="@style/settingsSwitch"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
+                <androidx.constraintlayout.widget.ConstraintLayout style="@style/settingsSwitch">
 
                     <TextView
                         android:id="@+id/txtUnitsFuel"
@@ -470,9 +453,7 @@
 
                     <Spinner
                         android:id="@+id/spinnerUnitsVol"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:gravity="end"
+                        style="@style/settingsSpinner"
                         app:layout_constraintBaseline_toBaselineOf="@id/txtUnitsFuel"
                         app:layout_constraintRight_toRightOf="parent" />
 
@@ -493,10 +474,7 @@
                         android:layout_weight="1" />
                 </LinearLayout>
 
-                <androidx.constraintlayout.widget.ConstraintLayout
-                    style="@style/settingsSwitch"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
+                <androidx.constraintlayout.widget.ConstraintLayout style="@style/settingsSwitch">
 
                     <TextView
                         android:id="@+id/txtMapOrientation"
@@ -508,17 +486,12 @@
 
                     <Spinner
                         android:id="@+id/spinnerMapOrientation"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:gravity="end"
+                        style="@style/settingsSpinner"
                         app:layout_constraintBaseline_toBaselineOf="@id/txtMapOrientation"
                         app:layout_constraintRight_toRightOf="parent" />
                 </androidx.constraintlayout.widget.ConstraintLayout>
 
-                <androidx.constraintlayout.widget.ConstraintLayout
-                    style="@style/settingsSwitch"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
+                <androidx.constraintlayout.widget.ConstraintLayout style="@style/settingsSwitch">
 
                     <TextView
                         android:id="@+id/txtScreenOrientation"
@@ -530,9 +503,7 @@
 
                     <Spinner
                         android:id="@+id/spinnerScreenOrientation"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:gravity="end"
+                        style="@style/settingsSpinner"
                         app:layout_constraintBaseline_toBaselineOf="@id/txtScreenOrientation"
                         app:layout_constraintRight_toRightOf="parent" />
                 </androidx.constraintlayout.widget.ConstraintLayout>
