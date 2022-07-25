@@ -240,7 +240,7 @@ fun getAirplaneSettingsByID(id: String) {
 
     for (i in airplaneList.indices) {
         if (airplaneList[i].id == id) {
-            Log.d(TAG, "getAirplaneByID $id")
+            Log.d(TAG, "getAirplaneByID: $id")
             // Convert airplane units to flight plan units
 
             val airplane = airplaneList[i].copy()

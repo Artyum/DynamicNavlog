@@ -224,36 +224,23 @@ object C {
 }
 
 var navlogList = ArrayList<NavlogItem>()
-
 var planList = ArrayList<PlanListItem>()
-
 var airplaneList = ArrayList<Airplane>()
-
 var tracePointsList = ArrayList<LatLng>()
-
 var settings = Settings()
-
 var timers = Timers()
-
 var totals = Totals()
-
 var editAirplaneID: String? = null
 
 // Next circle radius in NM
 val nextRadiusList = arrayListOf(0.5, 1.0, 2.0)
 
 var serviceRunning = false
-
 var locationSubscribed = false
-
 var autoNextRunning = false
-
 var isAppPurchased = false
-
 var gpsData = GpsData()
-
 var gpsMutex = Mutex()
-
 var refreshDisplay = false   // Refresh home, navlog and map pages on flight stage or waypoint change
 
 fun roundDouble(value: Double, precision: Int): Double = (value * 10.0.pow(precision)).roundToLong() / 10.0.pow(precision)
@@ -525,10 +512,6 @@ fun isEngineRunning(): Boolean {
     return timers.offblock != null && timers.onblock == null
 }
 
-fun isFlightOver(): Boolean {
-    return timers.offblock != null && timers.takeoff != null && timers.landing != null
-}
-
 fun isSettingsReady(): Boolean {
     return settings.planeId != "" && settings.planeTas > settings.windSpd
 }
@@ -644,6 +627,5 @@ fun getDoubleOrNull(value: String): Double? {
 }
 
 fun clearString(str: String): String {
-    //return str.replace(";", " ").trim()
     return str.trim()
 }
