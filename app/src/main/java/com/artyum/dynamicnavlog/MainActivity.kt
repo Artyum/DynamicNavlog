@@ -253,9 +253,6 @@ class MainActivity : AppCompatActivity() {
         // Track recording thread
         CoroutineScope(CoroutineName("gpsCoroutine")).launch { recordTraceThread() }
 
-        // Refresh Stage Box
-        CoroutineScope(CoroutineName("main")).launch { setStageBoxThread() }
-
         // Display bottom Buttons
         displayButtons()
     }
@@ -879,31 +876,6 @@ class MainActivity : AppCompatActivity() {
             putExtra(Intent.EXTRA_STREAM, stream)
         }, null)
         startActivity(share)
-    }
-
-    private suspend fun setStageBoxThread() {
-        while (true) {
-            val stage = getFlightStage()
-
-            val str = if (stage == C.STAGE_1_BEFORE_ENGINE_START) {
-                if (isNavlogReady()) "Flight Plan Ready"
-                else "No Flight Plan"
-            } else if (stage == C.STAGE_2_ENGINE_RUNNING) {
-                "Taxi - Before takeoff"
-            } else if (stage == C.STAGE_3_FLIGHT_IN_PROGRESS) {
-                "Flight in progress"
-            } else if (stage == C.STAGE_4_AFTER_LANDING) {
-                "Taxi - After landing"
-            } else {
-                "On-Block"
-            }
-
-            runOnUiThread {
-                bind.boxFlightStageText.text = str
-            }
-
-            delay(500)
-        }
     }
 
     private suspend fun gpsHealthCheckThread() {
