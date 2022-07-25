@@ -225,7 +225,10 @@ class MapFragment : Fragment(R.layout.fragment_map) {
                         // Auto-next circle
                         if (isAutoNextEnabled() && i >= item) {
                             if (isFlightInProgress()) {
-                                if (i == item) addCircle(navlogList[i].coords!!)
+                                if (i == item) {
+                                    if (isInsideCircle) addCircle(navlogList[i].coords!!, R.color.greenTransparent)
+                                    else addCircle(navlogList[i].coords!!)
+                                }
                             } else addCircle(navlogList[i].coords!!)
                         }
 
@@ -444,14 +447,14 @@ class MapFragment : Fragment(R.layout.fragment_map) {
         trackLines.add(l)
     }
 
-    private fun addCircle(p: LatLng) {
+    private fun addCircle(p: LatLng, fillColor: Int = R.color.grayTransparent2) {
         val c = map.addCircle(
             CircleOptions()
                 .center(p)
                 .radius(nm2m(nextRadiusList[settings.nextRadius]))
                 .strokeColor(ContextCompat.getColor(this.requireContext(), R.color.gray))
                 .strokeWidth(3f)
-                .fillColor(ContextCompat.getColor(this.requireContext(), R.color.grayTransparent2))
+                .fillColor(ContextCompat.getColor(this.requireContext(), fillColor))
         )
         trackCircles.add(c)
     }

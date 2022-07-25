@@ -11,9 +11,10 @@
     <color name="white">#FFFFFF</color>
     <color name="white2">#E7E7E7</color>
     <color name="green">#01C501</color>
+    <color name="greenTransparent">#2711FF00</color>
     <color name="gray">#B5B5B5</color>
     <color name="grayTransparent">#92B5B5B5</color>
-    <color name="grayTransparent2">#4DB5B5B5</color>
+    <color name="grayTransparent2">#3BB5B5B5</color>
     <color name="grayTransparent3">#1BB5B5B5</color>
     <color name="blue">#3939D8</color>
     <color name="red">#C52F2F</color>
