@@ -99,9 +99,9 @@ class MainActivity : AppCompatActivity() {
                 builder.setMessage(R.string.txtWarningFlightInProgressDialog)
                     .setCancelable(false)
                     .setPositiveButton(R.string.txtYes) { _, _ ->
-                        navController.navigate(SettingsFragmentDirections.actionGlobalSettingsFragment())
-                        bind.drawerLayout.close()
                         newFlightPlan()
+                        bind.drawerLayout.close()
+                        navController.navigate(SettingsFragmentDirections.actionGlobalSettingsFragment())
                     }
                     .setNegativeButton(R.string.txtNo) { dialog, _ ->
                         dialog.dismiss()
@@ -110,67 +110,67 @@ class MainActivity : AppCompatActivity() {
                 val alert = builder.create()
                 alert.show()
             } else {
-                navController.navigate(SettingsFragmentDirections.actionGlobalSettingsFragment())
-                bind.drawerLayout.close()
                 newFlightPlan()
+                bind.drawerLayout.close()
+                navController.navigate(SettingsFragmentDirections.actionGlobalSettingsFragment())
             }
             true
         }
 
         // Flight plan list
         navView.menu.findItem(R.id.drawerItemOpen).setOnMenuItemClickListener {
-            navController.navigate(PlanListFragmentDirections.actionGlobalPlanListFragment())
             bind.drawerLayout.close()
+            navController.navigate(PlanListFragmentDirections.actionGlobalPlanListFragment())
             true
         }
 
         // Airplanes list
         navView.menu.findItem(R.id.drawerItemAirplanes).setOnMenuItemClickListener {
-            loadAirplaneList()
-            navController.navigate(AirplaneListFragmentDirections.actionGlobalAirplaneListFragment())
             bind.drawerLayout.close()
+            navController.navigate(AirplaneListFragmentDirections.actionGlobalAirplaneListFragment())
+            loadAirplaneList()
             true
         }
 
         // Wind calculator
         navView.menu.findItem(R.id.drawerWindCalc).setOnMenuItemClickListener {
-            navController.navigate(CalcWindFragmentDirections.actionGlobalCalcWindFragment())
             bind.drawerLayout.close()
+            navController.navigate(CalcWindFragmentDirections.actionGlobalCalcWindFragment())
             true
         }
 
         // Fuel calculator
         navView.menu.findItem(R.id.drawerFuelCalc).setOnMenuItemClickListener {
-            navController.navigate(CalcFuelFragmentDirections.actionGlobalCalcFuelFragment())
             bind.drawerLayout.close()
+            navController.navigate(CalcFuelFragmentDirections.actionGlobalCalcFuelFragment())
             true
         }
 
         // Time & Distance
         navView.menu.findItem(R.id.drawerTimeAndDistance).setOnMenuItemClickListener {
-            navController.navigate(CalcTimeDistFragmentDirections.actionGlobalCalcTimeDistFragment())
             bind.drawerLayout.close()
+            navController.navigate(CalcTimeDistFragmentDirections.actionGlobalCalcTimeDistFragment())
             true
         }
 
         // Density altitude
         navView.menu.findItem(R.id.drawerDensity2Calc).setOnMenuItemClickListener {
-            navController.navigate(CalcDensity2FragmentDirections.actionGlobalCalcDensity2Fragment())
             bind.drawerLayout.close()
+            navController.navigate(CalcDensity2FragmentDirections.actionGlobalCalcDensity2Fragment())
             true
         }
 
         // Units converter
         navView.menu.findItem(R.id.drawerUnitsCalc).setOnMenuItemClickListener {
-            navController.navigate(CalcUnitsFragmentDirections.actionGlobalCalcUnitsFragment())
             bind.drawerLayout.close()
+            navController.navigate(CalcUnitsFragmentDirections.actionGlobalCalcUnitsFragment())
             true
         }
 
         // About
         navView.menu.findItem(R.id.drawerItemAbout).setOnMenuItemClickListener {
-            navController.navigate(AboutFragmentDirections.actionGlobalAboutFragment())
             bind.drawerLayout.close()
+            navController.navigate(AboutFragmentDirections.actionGlobalAboutFragment())
             true
         }
 
@@ -623,6 +623,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun newFlightPlan() {
+        saveState()
         navlogList.clear()
         resetSettings()
         resetFlight()

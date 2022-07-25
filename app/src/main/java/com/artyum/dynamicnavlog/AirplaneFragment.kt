@@ -233,7 +233,10 @@ class AirplaneFragment : Fragment() {
 }
 
 fun getAirplaneSettingsByID(id: String) {
-    if (id == "") resetAirplaneSettings()
+    if (id == "") {
+        resetAirplaneSettings()
+        return
+    }
 
     for (i in airplaneList.indices) {
         if (airplaneList[i].id == id) {

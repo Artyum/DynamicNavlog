@@ -64,10 +64,9 @@ class MapFragment : Fragment(R.layout.fragment_map) {
         } else {
             mapFragment.getMapAsync {
                 map = it
-                if (settings.gpsAssist) {
-                    map.isMyLocationEnabled = true
-                    map.uiSettings.isMyLocationButtonEnabled = true
-                }
+
+                map.isMyLocationEnabled = true
+                map.uiSettings.isMyLocationButtonEnabled = true
                 map.uiSettings.isZoomControlsEnabled = true
                 map.uiSettings.isMapToolbarEnabled = false
                 map.uiSettings.isCompassEnabled = true
@@ -293,6 +292,8 @@ class MapFragment : Fragment(R.layout.fragment_map) {
     }
 
     private fun zoomToAll() {
+        if (!mapReady) return
+
         // Zoom to all waypoints and takeoff point
         var chkTO = false
         var chkItems = false
@@ -328,7 +329,6 @@ class MapFragment : Fragment(R.layout.fragment_map) {
 
     private fun zoomToTrack() {
         if (!mapReady) return
-        //Log.d(TAG, "zoomToTrack")
 
         // Get current GPS
         var gps: GpsData
@@ -400,7 +400,6 @@ class MapFragment : Fragment(R.layout.fragment_map) {
 
     private fun followPosition() {
         if (!mapReady) return
-        //Log.d(TAG, "followPosition")
 
         var gps: GpsData
         runBlocking { gpsMutex.withLock { gps = gpsData } }
