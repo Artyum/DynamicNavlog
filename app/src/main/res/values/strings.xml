@@ -16,7 +16,6 @@
     <string name="txtInvalidWindSpeed">Wind speed must be at least 0 and less than airplane TAS</string>
     <string name="txtInvalidTAS">TAS must be greater than Wind speed</string>
     <string name="txtInvalidFPH">Fuel per hour must be greater than 0</string>
-    <string name="txtInvalidFOB">Fuel for takeoff must be less than the tank capacity</string>
     <string name="txtInvalidTC">Fuel tank capacity must be greater than 0</string>
     <string name="txtDisplayCurrent">Display current Time and Fuel</string>
     <string name="txtDisplayIncremental">Display incremental Time and Fuel</string>
@@ -103,9 +102,9 @@
     <string name="txtDistance">Distance</string>
     <string name="txtDistanceUnits">Distance units</string>
     <string name="txtCourse">Course</string>
-    <string name="txtTrueTrack">True Course</string>
+    <string name="txtTrueTrack">True course</string>
     <string name="txtDeclination">Declination</string>
-    <string name="txtMagneticTrack">Magnetic Course</string>
+    <string name="txtMagneticTrack">Magnetic course</string>
     <string name="txtFuelForStart">Fuel at start</string>
     <string name="txtValue">Value</string>
     <string name="txtFuelAfterFlight">Fuel at end</string>
