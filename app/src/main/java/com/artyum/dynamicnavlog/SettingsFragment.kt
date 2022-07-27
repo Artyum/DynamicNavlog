@@ -18,7 +18,6 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.sync.withLock
-import kotlin.math.round
 
 class SettingsFragment : Fragment(R.layout.fragment_settings) {
     private val TAG = "SettingsFragment"
@@ -116,14 +115,13 @@ class SettingsFragment : Fragment(R.layout.fragment_settings) {
         bind.settingFuel.doOnTextChanged { text, _, _, _ ->
             var dFob = fromUnitsVol(getDoubleOrNull(text.toString()))
             if (dFob != null) {
-                if (dFob > 0.0) {
-                    if (dFob > airplane.tank) dFob = airplane.tank
-                    if (dFob < totals.fuel) dFob = totals.fuel
-                    settings.fob = dFob
-                    bind.settingsInfoBox.visibility = View.GONE
-                    change = true
-                    refreshSpareFuelBox()
-                } else showSettingsError(getString(R.string.txtInvalidFOB))
+                if (dFob < 0.0) dFob = 0.0
+                if (dFob > airplane.tank) dFob = airplane.tank
+                if (dFob < totals.fuel) dFob = totals.fuel
+                settings.fob = dFob
+                bind.settingsInfoBox.visibility = View.GONE
+                change = true
+                refreshSpareFuelBox()
             }
         }
         bind.settingFuel.setOnFocusChangeListener { _, hasFocus ->
