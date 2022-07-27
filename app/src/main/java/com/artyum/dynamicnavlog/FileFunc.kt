@@ -17,7 +17,7 @@ fun saveState(fileName: String = "") {
     val jSettings = JSONObject()
     val jTimers = JSONObject()
     val jNavLog = JSONObject()
-    val id = settings.id
+    val id = settings.planId
 
     Log.d(tag, "saveState: $id")
 
@@ -26,17 +26,13 @@ fun saveState(fileName: String = "") {
     jSettings.put("name", settings.planName)
     jSettings.put("from", settings.departure)
     jSettings.put("dest", settings.destination)
-    jSettings.put("planeId", settings.planeId)
+    jSettings.put("planeId", settings.airplaneId)
     jSettings.put("fob", settings.fob)
     jSettings.put("deplat", settings.takeoffCoords?.latitude)
     jSettings.put("deplng", settings.takeoffCoords?.longitude)
 
     jSettings.put("winddir", settings.windDir)
     jSettings.put("windspeed", settings.windSpd)
-
-    jSettings.put("spdunits", settings.spdUnits)
-    jSettings.put("distunits", settings.distUnits)
-    jSettings.put("volunits", settings.volUnits)
 
     jSettings.put("gps", settings.gpsAssist)
     jSettings.put("autonext", settings.autoNext)
@@ -45,11 +41,8 @@ fun saveState(fileName: String = "") {
 
     jSettings.put("maptype", settings.mapType)
     jSettings.put("maporient", settings.mapOrientation)
-    jSettings.put("screenon", settings.keepScreenOn)
-    jSettings.put("utc", settings.timeInUTC)
     jSettings.put("maptype", settings.mapType)
     jSettings.put("mapfollow", settings.mapFollow)
-    jSettings.put("screenorient", settings.screenOrientation)
 
     // Timers
     jTimers.put("offblock", formatDateTimeJson(timers.offblock))
@@ -103,7 +96,7 @@ fun saveState(fileName: String = "") {
         file.writeText(json.toString())
     } else {
         // Normal save
-        val file = File(externalAppDir, C.stateFileName)
+        val file = File(externalAppDir, C.stateFile)
         file.writeText(json.toString())
 
         // Copy current state file to plan name file
@@ -115,8 +108,59 @@ fun saveState(fileName: String = "") {
     }
 }
 
+fun saveOptions() {
+    val tag = "FileFunc"
+    Log.d(tag, "saveOptions")
+
+    val jOptions = JSONObject()
+    jOptions.put("spdunits", options.spdUnits)
+    jOptions.put("distunits", options.distUnits)
+    jOptions.put("volunits", options.volUnits)
+    jOptions.put("screenorient", options.screenOrientation)
+    jOptions.put("screenon", options.keepScreenOn)
+    jOptions.put("utc", options.timeInUTC)
+
+    val json = JSONObject()
+    json.put("options", jOptions)
+
+    val file = File(externalAppDir, C.optionsFile)
+    file.writeText(json.toString())
+}
+
+fun loadOptions() {
+    val tag = "FileFunc"
+    Log.d(tag, "loadOptions")
+    val file = File(externalAppDir, C.optionsFile)
+    if (file.exists()) {
+        val newOptions = Options()
+        val json: JSONObject
+
+        try {
+            json = JSONObject(file.readText())
+        } catch (e: Exception) {
+            Log.d(tag, e.toString())
+            resetOptions()
+            saveOptions()
+            return
+        }
+
+        val jOptions = JSONObject(json["options"].toString())
+        newOptions.spdUnits = if (jOptions.has("spdunits")) jOptions["spdunits"].toString().toIntOrNull() ?: 0 else 0
+        newOptions.distUnits = if (jOptions.has("distunits")) jOptions["distunits"].toString().toIntOrNull() ?: 0 else 0
+        newOptions.volUnits = if (jOptions.has("volunits")) jOptions["volunits"].toString().toIntOrNull() ?: 0 else 0
+        newOptions.screenOrientation = if (jOptions.has("screenorient")) jOptions["screenorient"].toString().toIntOrNull() ?: C.SCREEN_SENSOR else C.SCREEN_SENSOR
+        newOptions.timeInUTC = if (jOptions.has("utc")) jOptions["utc"].toString().toBoolean() else false
+        newOptions.keepScreenOn = if (jOptions.has("screenon")) jOptions["screenon"].toString().toBoolean() else false
+
+        options = newOptions
+    } else {
+        resetOptions()
+        saveOptions()
+    }
+}
+
 // TODO Delete this function after some time (v1.2.0 2022-06)
-fun loadStateDnl(fileName: String = C.stateFileName) {
+fun loadStateDnl(fileName: String = C.stateFile) {
     //Log.d("FileFunc", "loadStateDnl: $fileName")
     val file = File(externalAppDir, fileName)
 
@@ -145,8 +189,6 @@ fun loadStateDnl(fileName: String = C.stateFileName) {
                         if (str[0] == "name") newSettings.planName = str[1]
                         if (str[0] == "from") newSettings.departure = str[1]
                         if (str[0] == "dest") newSettings.destination = str[1]
-                        if (str[0] == "plane") newSettings.planeType = str[1]
-                        if (str[0] == "reg") newSettings.planeReg = str[1]
 
                         if (str[0] == "deplat") deplat = getDoubleOrNull(str[1])
                         if (str[0] == "deplng") deplng = getDoubleOrNull(str[1])
@@ -158,23 +200,16 @@ fun loadStateDnl(fileName: String = C.stateFileName) {
 
                         if (str[0] == "winddir") newSettings.windDir = getDoubleOrNull(str[1]) ?: 0.0
                         if (str[0] == "windspeed") newSettings.windSpd = getDoubleOrNull(str[1]) ?: 0.0
-                        if (str[0] == "tas") newSettings.planeTas = getDoubleOrNull(str[1]) ?: 0.0
-                        if (str[0] == "fph") newSettings.planeFph = getDoubleOrNull(str[1])
-                        if (str[0] == "fob") newSettings.fob = getDoubleOrNull(str[1])
-                        if (str[0] == "tank") newSettings.planeTank = getDoubleOrNull(str[1])
 
-                        if (str[0] == "units") newSettings.spdUnits = str[1].toIntOrNull() ?: 0
+                        //if (str[0] == "units") newSettings.spdUnits = str[1].toIntOrNull() ?: 0
                         if (str[0] == "gps") newSettings.gpsAssist = str[1].toBoolean()
                         if (str[0] == "maptype") newSettings.mapType = str[1].toIntOrNull() ?: 0
                         if (str[0] == "maporient") newSettings.mapOrientation = str[1].toIntOrNull() ?: 0
                         if (str[0] == "autonext") newSettings.autoNext = str[1].toBoolean()
-                        if (str[0] == "utc") newSettings.timeInUTC = str[1].toBoolean()
-                        if (str[0] == "screen_on") newSettings.keepScreenOn = str[1].toBoolean()
                         if (str[0] == "maptype") newSettings.mapType = str[1].toIntOrNull() ?: GoogleMap.MAP_TYPE_NORMAL
                         if (str[0] == "mapfollow") newSettings.mapFollow = str[1].toBoolean()
                         if (str[0] == "nextr") newSettings.nextRadius = str[1].toIntOrNull() ?: C.DEFAULT_NEXT_RADIUS
                         if (str[0] == "trace") newSettings.displayTrace = str[1].toBoolean()
-                        if (str[0] == "screenorient") newSettings.screenOrientation = str[1].toIntOrNull() ?: C.SCREEN_PORTRAIT
                     }
 
                     if (mode == C.INI_TIMERS && str.size == 2 && str[1] != "" && str[1] != "null") {
@@ -267,7 +302,7 @@ fun loadStateDnl(fileName: String = C.stateFileName) {
                 }
             }
         }
-        newSettings.id = generateStringId()
+        newSettings.planId = generateStringId()
 
         resetSettings()
         settings = newSettings
@@ -286,7 +321,7 @@ fun str2DateTimeJson(str: String?): LocalDateTime? {
     return dt
 }
 
-fun loadState(fileName: String = C.stateFileName) {
+fun loadState(fileName: String = C.stateFile) {
     val tag = "FileFunc"
 
     val file = File(externalAppDir, fileName)
@@ -309,12 +344,12 @@ fun loadState(fileName: String = C.stateFileName) {
     // Settings
     val jSettings = JSONObject(json["settings"].toString())
 
-    newSettings.id = if (jSettings.has("id")) jSettings["id"].toString() else generateStringId()
+    newSettings.planId = if (jSettings.has("id")) jSettings["id"].toString() else generateStringId()
     newSettings.planName = if (jSettings.has("name")) jSettings["name"].toString() else ""
     newSettings.departure = if (jSettings.has("from")) jSettings["from"].toString() else ""
     newSettings.destination = if (jSettings.has("dest")) jSettings["dest"].toString() else ""
 
-    newSettings.planeId = if (jSettings.has("planeId")) jSettings["planeId"].toString() else ""
+    newSettings.airplaneId = if (jSettings.has("planeId")) jSettings["planeId"].toString() else ""
 
     val deplat = if (jSettings.has("deplat")) jSettings["deplat"].toString().toDoubleOrNull() else null
     val deplng = if (jSettings.has("deplng")) jSettings["deplng"].toString().toDoubleOrNull() else null
@@ -322,21 +357,15 @@ fun loadState(fileName: String = C.stateFileName) {
 
     newSettings.windDir = if (jSettings.has("winddir")) jSettings["winddir"].toString().toDoubleOrNull() ?: 0.0 else 0.0
     newSettings.windSpd = if (jSettings.has("windspeed")) jSettings["windspeed"].toString().toDoubleOrNull() ?: 0.0 else 0.0
-    newSettings.fob = if (jSettings.has("fob")) jSettings["fob"].toString().toDoubleOrNull() else null
-    newSettings.spdUnits = if (jSettings.has("spdunits")) jSettings["spdunits"].toString().toIntOrNull() ?: 0 else 0
-    newSettings.distUnits = if (jSettings.has("distunits")) jSettings["distunits"].toString().toIntOrNull() ?: 0 else 0
-    newSettings.volUnits = if (jSettings.has("volunits")) jSettings["volunits"].toString().toIntOrNull() ?: 0 else 0
+    newSettings.fob = if (jSettings.has("fob")) jSettings["fob"].toString().toDoubleOrNull() ?: 0.0 else 0.0
     newSettings.gpsAssist = jSettings["gps"].toString().toBoolean()
     newSettings.mapType = if (jSettings.has("maptype")) jSettings["maptype"].toString().toIntOrNull() ?: 0 else 0
     newSettings.mapOrientation = if (jSettings.has("maporient")) jSettings["maporient"].toString().toIntOrNull() ?: 0 else 0
     newSettings.autoNext = jSettings["autonext"].toString().toBoolean()
-    newSettings.timeInUTC = jSettings["utc"].toString().toBoolean()
-    newSettings.keepScreenOn = jSettings["screenon"].toString().toBoolean()
     newSettings.mapType = if (jSettings.has("maptype")) jSettings["maptype"].toString().toIntOrNull() ?: GoogleMap.MAP_TYPE_NORMAL else GoogleMap.MAP_TYPE_NORMAL
     newSettings.mapFollow = jSettings["mapfollow"].toString().toBoolean()
     newSettings.nextRadius = if (jSettings.has("nextr")) jSettings["nextr"].toString().toIntOrNull() ?: C.DEFAULT_NEXT_RADIUS else C.DEFAULT_NEXT_RADIUS
     newSettings.displayTrace = jSettings["trace"].toString().toBoolean()
-    newSettings.screenOrientation = if (jSettings.has("screenorient")) jSettings["screenorient"].toString().toIntOrNull() ?: C.SCREEN_SENSOR else C.SCREEN_SENSOR
 
     // Timers
     val jTimers = JSONObject(json["timers"].toString())
@@ -401,12 +430,10 @@ fun loadState(fileName: String = C.stateFileName) {
     navlogList = newNavlogList
 
     // Load airplane
-    getAirplaneSettingsByID(settings.planeId)
+    getAirplaneByID(settings.airplaneId)
 
     // Load trace
-    if (isFlightInProgress()) {
-        loadTrace()
-    }
+    if (isFlightInProgress()) loadTrace()
 }
 
 fun deleteFile(fileName: String) {
@@ -430,7 +457,7 @@ fun loadFlightPlanList(search: String = "") {
 
     externalAppDir!!.walk().forEach {
         val fileName = it.name
-        if (fileName != "files" && fileName != C.stateFileName && fileName != C.airplanesFile && fileName.endsWith(C.JSON_EXTENSION)) {
+        if (fileName != "files" && fileName != C.optionsFile && fileName != C.stateFile && fileName != C.airplanesFile && fileName.endsWith(C.JSON_EXTENSION)) {
             if (search != "") {
                 // Search inside file
                 var addItem = false
@@ -507,14 +534,14 @@ fun saveTracePoint(p: LatLng) {
     str.put("date", getCurrentDate())
     str.put("time", getCurrentTime())
 
-    val fileName = settings.id + C.TRK_EXTENSION
+    val fileName = settings.planId + C.TRK_EXTENSION
     val file = File(externalAppDir, fileName)
     file.appendText(str.toString())
     file.appendText("\n")
 }
 
 fun loadTrace(): Boolean {
-    val fileName = settings.id + C.TRK_EXTENSION
+    val fileName = settings.planId + C.TRK_EXTENSION
     val file = File(externalAppDir, fileName)
     if (file.exists()) {
         tracePointsList.clear()
@@ -535,7 +562,7 @@ fun loadTrace(): Boolean {
 
 fun deleteTrace() {
     tracePointsList.clear()
-    deleteFile(settings.id + C.TRK_EXTENSION)
+    deleteFile(settings.planId + C.TRK_EXTENSION)
 }
 
 fun encodeFlightPlanName(): String {
@@ -555,11 +582,11 @@ fun savePlanAsCsv(): String {
         // Plan settings
         file.writeText("PLAN NAME;;" + settings.planName + "\n")
         file.appendText("DEP/DEST;;" + settings.departure + "/" + settings.destination + "\n")
-        file.appendText("PLANE;;" + settings.planeType + "/" + settings.planeReg + "\n")
+        file.appendText("PLANE;;" + airplane.type + "/" + airplane.reg + "\n")
         file.appendText("WIND DIR/SPD;;" + formatDouble(settings.windDir) + "/" + formatDouble(settings.windSpd) + getUnitsSpd() + "\n")
-        file.appendText("TAS;;" + formatDouble(settings.planeTas) + getUnitsSpd() + "\n")
-        file.appendText("FUEL/FPH;;" + formatDouble(settings.fob) + "/" + formatDouble(settings.planeFph) + "\n")
-        file.appendText("UNITS DIST/SPD/FUEL;;" + getUnitsSpd() + "/" + getUnitsDist() + "/" + getUnitsVolume() + "\n")
+        file.appendText("TAS;;" + formatDouble(airplane.tas) + getUnitsSpd() + "\n")
+        file.appendText("FUEL/FPH;;" + formatDouble(settings.fob) + "/" + formatDouble(airplane.fph) + "\n")
+        file.appendText("UNITS DIST/SPD/FUEL;;" + getUnitsSpd() + "/" + getUnitsDis() + "/" + getUnitsVol() + "\n")
 
         // Table header
         file.appendText("\n")
@@ -634,7 +661,7 @@ fun savePlanAsGpx(): String {
 
 fun saveTraceAsGpx(): String {
     //val tag = "saveTraceAsGpx"
-    val trkFile = settings.id + C.TRK_EXTENSION
+    val trkFile = settings.planId + C.TRK_EXTENSION
     val file = File(externalAppDir, trkFile)
 
     if (file.exists()) {
@@ -673,7 +700,7 @@ fun saveTraceAsGpx(): String {
 
 // Copy flight plan with new ID
 fun copyFlightPlan(postfix: String) {
-    settings.id = generateStringId()
+    settings.planId = generateStringId()
     settings.planName = settings.planName + " - $postfix"
     saveState()
 }

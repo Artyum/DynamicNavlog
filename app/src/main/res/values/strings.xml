@@ -13,13 +13,13 @@
     <string name="txtInvalidCourse">Course must be between 0 and 360</string>
     <string name="txtInvalidDistance">Distance must be greater than 0</string>
     <string name="txtInvalidWind">Wind Direction must be between 0 and 360</string>
-    <string name="txtInvalidWindSpeed">Wind speed must be at least 0 and less than TAS</string>
+    <string name="txtInvalidWindSpeed">Wind speed must be at least 0 and less than airplane TAS</string>
     <string name="txtInvalidTAS">TAS must be greater than Wind speed</string>
     <string name="txtInvalidFPH">Fuel per hour must be greater than 0</string>
-    <string name="txtInvalidFOB">Fuel for takeoff must be greater than 0 and less than the tank capacity</string>
+    <string name="txtInvalidFOB">Fuel for takeoff must be less than the tank capacity</string>
     <string name="txtInvalidTC">Fuel tank capacity must be greater than 0</string>
-    <string name="txtDisplayCurrent">Show current</string>
-    <string name="txtDisplayRemaining">Show incrementally</string>
+    <string name="txtDisplayCurrent">Display current Time and Fuel</string>
+    <string name="txtDisplayIncremental">Display incremental Time and Fuel</string>
     <string name="txtCalculate">Calculate</string>
     <string name="txtRefresh">Refresh</string>
     <string name="txtCalculator">Calculator</string>
@@ -29,11 +29,10 @@
     <string name="txtLeftxwind">Left Xwind</string>
     <string name="txtRightxwind">Right Xwind</string>
     <string name="txtClear">AC</string>
+    <string name="txtDisplayUnits">Display units</string>
     <string name="txtSettings">Settings</string>
-    <string name="txtFlightPlanUnits">Flight plan units</string>
-    <string name="txtGpsOptions">GPS options</string>
+    <string name="txtFlightPlanSettings">Flight plan settings</string>
     <string name="txtFlightSettings">Flight settings</string>
-    <string name="txtOptions">Options</string>
     <string name="txtFlightPlan">Flight Plan</string>
     <string name="txtFlightPlanName">Flight plan name</string>
     <string name="txtInvalidFlightPlanName">Cannot save: Invalid flight plan name</string>
@@ -70,6 +69,7 @@
     <string name="txtEnterValue">Enter the value to be converted</string>
     <string name="txtNewFlightPlan">New flight plan</string>
     <string name="txtRemoveAds">Donation</string>
+    <string name="txtOptions">Options</string>
     <string name="txtAirplaneSaved">Airplane saved</string>
     <string name="txtDestination">Destination</string>
     <string name="txtTimeAndDistance">Time &amp; distance</string>
@@ -88,7 +88,7 @@
     <string name="txtHdg">HDG</string>
     <string name="txtGs">GS</string>
     <string name="txtTime">Time</string>
-    <string name="txtRequiredFuel">Required fuel</string>
+    <string name="txtFuelRequired">Fuel required</string>
     <string name="txtEta">ETA</string>
     <string name="txtEte">ETE</string>
     <string name="txtAta">ATA</string>
@@ -136,7 +136,7 @@
     <string name="txtTankCapacity">Tank capacity</string>
     <string name="txtPerformance">Performance</string>
     <string name="txtApply">Apply</string>
-    <string name="txtSave">Save</string>
+    <string name="txtSaveAirplane">Save airplane</string>
     <string name="txtCancel">Cancel</string>
     <string name="txtAdd">Add</string>
     <string name="txtDelete">Delete</string>
@@ -163,8 +163,10 @@
     <string name="txtDisplayFlightTrace">Display flight trace</string>
     <string name="txtKeepScreenOn">Keep the screen on</string>
     <string name="txtTotalDistance">Total distance</string>
+    <string name="txtExtraDistance">Extra distance (no wind)</string>
     <string name="txtTotalTime">Total time</string>
     <string name="txtTotalFuel">Total fuel</string>
+    <string name="txtSpareFuel">Fuel: Required / Spare</string>
     <string name="txtWarningLongClick">Warning! Hold to overwrite</string>
     <string name="txtNavlogNotReady">Navigation log is not ready</string>
     <string name="txtHoldButtonToConfirm">Hold to confirm</string>
@@ -193,6 +195,7 @@
     <string name="txtWarningFlightInProgressDialog">Warning! Flight in progress. Are you sure?</string>
     <string name="txtWarningAreYouSure">Are you sure?</string>
     <string name="txtFlightTime">Flight time</string>
+    <string name="txtExtraFlightTime">Extra flight time</string>
     <string name="txtFuelToLand">Fuel to land</string>
     <string name="txtTimeToLand">Time to land</string>
     <string name="txtNavigationDisplay">Navigation</string>
@@ -227,4 +230,6 @@
     <string name="txtLocationMessage">The application will ask for access to device\'s location.\n\nDynamic NavLog collects location data to present position on maps and for proper functionality
         of features like automatic detection of takeoff, landing and waypoint arrival.\n\n\It is also strongly recommended to allow the app to collect location data while running in the background
         or while the screen is off.\n\nMore information: www.youtube.com/watch?v=98Y0nIItm38</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>

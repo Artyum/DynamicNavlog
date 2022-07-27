@@ -68,7 +68,7 @@ class MainActivity : AppCompatActivity() {
             setOf(
                 R.id.homeFragment, R.id.settingsFragment, R.id.navlogFragment, R.id.mapFragment,
                 R.id.purchaseFragment, R.id.calcWindFragment, R.id.calcFuelFragment, R.id.calcTimeDistFragment, R.id.calcDensity2Fragment, R.id.calcUnitsFragment,
-                R.id.airplaneListFragment, R.id.planListFragment, R.id.aboutFragment, R.id.timersFragment
+                R.id.airplaneListFragment, R.id.planListFragment, R.id.aboutFragment, R.id.timersFragment, R.id.optionsFragment
             ),
             bind.drawerLayout
         )
@@ -125,10 +125,17 @@ class MainActivity : AppCompatActivity() {
         }
 
         // Airplanes list
-        navView.menu.findItem(R.id.drawerItemAirplanes).setOnMenuItemClickListener {
+        navView.menu.findItem(R.id.drawerAirplanes).setOnMenuItemClickListener {
             bind.drawerLayout.close()
             navController.navigate(AirplaneListFragmentDirections.actionGlobalAirplaneListFragment())
             loadAirplaneList()
+            true
+        }
+
+        // Preferences
+        navView.menu.findItem(R.id.drawerPreferences).setOnMenuItemClickListener {
+            bind.drawerLayout.close()
+            navController.navigate(OptionsFragmentDirections.actionGlobalOptionsFragment())
             true
         }
 
@@ -230,6 +237,7 @@ class MainActivity : AppCompatActivity() {
         clearFiles(C.CSV_EXTENSION)
 
         // Load state
+        loadOptions()
         loadAirplaneList()
         loadState()
         calcNavlog()
@@ -736,7 +744,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     fun setScreenOrientation() {
-        when (settings.screenOrientation) {
+        when (options.screenOrientation) {
             C.SCREEN_PORTRAIT -> requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
             C.SCREEN_LANDSCAPE -> requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE
             C.SCREEN_SENSOR -> requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_FULL_SENSOR
@@ -826,32 +834,12 @@ class MainActivity : AppCompatActivity() {
             gpsData.time = loc.time
 
             gpsData.coords = (LatLng(roundDouble(loc.latitude, C.COORDS_PRECISION), roundDouble(loc.longitude, C.COORDS_PRECISION)))
-            gpsData.rawSpeed = loc.speed.toDouble()
-            gpsData.hAccuracy = loc.accuracy.toDouble()  // Get the estimated horizontal accuracy of this location, radial, in meters (68%)
-            gpsData.altitude = loc.altitude              // Altitude if available, in meters above the WGS 84 reference ellipsoid.
-            if (loc.hasBearing()) gpsData.bearing = loc.bearing else gpsData.bearing = null
+            gpsData.speedMps = loc.speed.toDouble()
+            gpsData.speedKt = mps2kt(gpsData.speedMps)
 
-            when (settings.spdUnits) {
-                C.SPD_KNOTS -> {
-                    gpsData.speed = mps2kt(gpsData.rawSpeed)
-                }
-                C.SPD_MPH -> {
-                    gpsData.speed = mps2mph(gpsData.rawSpeed)
-                }
-                C.SPD_KPH -> {
-                    gpsData.speed = mps2kph(gpsData.rawSpeed)
-                }
-            }
-            when (settings.distUnits) {
-                C.DIS_NM -> {
-                    gpsData.hAccuracy = m2ft(gpsData.hAccuracy)
-                    gpsData.altitude = m2ft(gpsData.altitude)
-                }
-                C.DIS_SM -> {
-                    gpsData.hAccuracy = m2ft(gpsData.hAccuracy)
-                    gpsData.altitude = m2ft(gpsData.altitude)
-                }
-            }
+            //gpsData.hAccuracy = loc.accuracy.toDouble()  // Get the estimated horizontal accuracy of this location, radial, in meters (68%)
+            //gpsData.altitude = loc.altitude              // Altitude if available, in meters above the WGS 84 reference ellipsoid.
+            if (loc.hasBearing()) gpsData.bearing = loc.bearing else gpsData.bearing = null
 
             gpsData.heartbeat = true
             //println("GPS time: ${gpsData.time}")
@@ -924,7 +912,7 @@ class MainActivity : AppCompatActivity() {
 
                     if (stage == C.STAGE_2_ENGINE_RUNNING) {
                         // Detect takeoff
-                        if (gps.rawSpeed > C.AUTO_TAKEOFF_SPEED_MPS) speedCnt += 1 else speedCnt = 0
+                        if (gps.speedMps > C.AUTO_TAKEOFF_SPEED_MPS) speedCnt += 1 else speedCnt = 0
                         if (speedCnt >= C.AUTO_NEXT_WAIT_SEC) {
                             // Auto Takeoff
                             Log.d(TAG, "Auto takeoff")
@@ -956,7 +944,7 @@ class MainActivity : AppCompatActivity() {
                                     } else prevDist = dist
                                 } else {
                                     // Auto Landing
-                                    if (gps.speed < C.AUTO_LANDING_SPEED_MPS) speedCnt += 1 else speedCnt = 0
+                                    if (gps.speedMps < C.AUTO_LANDING_SPEED_MPS) speedCnt += 1 else speedCnt = 0
                                     if (speedCnt >= C.AUTO_NEXT_WAIT_SEC) {
                                         Log.d(TAG, "Auto landing")
                                         setStageLanding()

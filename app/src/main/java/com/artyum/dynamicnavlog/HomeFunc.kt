@@ -54,23 +54,17 @@ class HomeItem() {
             engineTimeSec = Duration.between(timers.offblock, LocalDateTime.now()).toMillis() / 1000
         }
 
-        if (settings.planeFph != null) {
-            fuelUsed = engineTimeSec.toDouble() / 3600.0 * settings.planeFph!!
+        if (airplane.fph > 0.0) {
+            fuelUsed = engineTimeSec.toDouble() / 3600.0 * airplane.fph
 
-            if (settings.fob != null) {
-                fuelMaxTime = settings.fob!! / settings.planeFph!!
-                fuelRemaining = settings.fob!! - fuelUsed
-                fuelTimeRemaining = fuelMaxTime * 3600.0 - engineTimeSec.toDouble()
-            }
+            fuelMaxTime = settings.fob / airplane.fph
+            fuelRemaining = settings.fob - fuelUsed
+            fuelTimeRemaining = fuelMaxTime * 3600.0 - engineTimeSec.toDouble()
         }
 
         if (stage < C.STAGE_3_FLIGHT_IN_PROGRESS) {
             if (isNavlogReady()) estFlightTimeSec = totals.time
-
-            if (settings.planeFph != null) {
-                fuelToLand = settings.planeFph!! * totals.time.toDouble() / 3600.0
-            }
-
+            fuelToLand = airplane.fph * totals.time.toDouble() / 3600.0
         } else if (stage == C.STAGE_3_FLIGHT_IN_PROGRESS) {
             prevTime = if (item == first) timers.takeoff!! else navlogList[prev].ata!!
 
@@ -79,9 +73,9 @@ class HomeItem() {
 
             // ETE
             eteSec = if (gps.isValid && isNavlogItemGpsReady(item)) {
-                if (gps.rawSpeed > C.GPS_MINIMUM_RAWSPEED) {
+                if (gps.speedMps > C.GPS_MINIMUM_RAWSPEED) {
                     val dist = calcDistance(gps.coords!!, navlogList[item].coords!!)
-                    (dist / gps.rawSpeed).toLong()   // Time in seconds
+                    (dist / gps.speedMps).toLong()   // Time in seconds
                 } else 0L
             } else {
                 Duration.between(LocalDateTime.now(), eta2wpt).toMillis() / 1000
@@ -124,7 +118,7 @@ class HomeItem() {
             }
 
             // Fuel to land
-            if (settings.planeFph != null) fuelToLand = settings.planeFph!! * timeToLand.toDouble() / 3600.0
+            fuelToLand = airplane.fph * timeToLand.toDouble() / 3600.0
 
         } else if (stage >= C.STAGE_4_AFTER_LANDING) {
             estFlightTimeSec = Duration.between(timers.takeoff, timers.landing).toMillis() / 1000
@@ -155,7 +149,7 @@ class HomeItem() {
 
             if (gps.isValid) {
                 // Direct HDG (in HDG box)
-                val fc = flightCalculator(dmt, settings.windDir, settings.windSpd, settings.planeTas)
+                val fc = flightCalculator(dmt, settings.windDir, settings.windSpd, airplane.tas)
                 hdgDct = formatDouble(fc.hdg)
             }
         }
@@ -184,14 +178,14 @@ class HomeItem() {
         var gsDiff = ""
 
         if (gps.isValid) {
-            gs = formatDouble(gps.speed)
+            gs = formatDouble(toUnitsSpd(gps.speedKt))
             if (stage == C.STAGE_3_FLIGHT_IN_PROGRESS) {
-                val diff = gps.speed - navlogList[item].gs!!
+                val diff = toUnitsSpd(gps.speedKt - navlogList[item].gs!!)!!
                 gsDiff = if (diff > 0.0) ("+" + formatDouble(diff)) else formatDouble(diff)
             }
         } else {
-            if (stage < C.STAGE_3_FLIGHT_IN_PROGRESS && first >= 0) gs = formatDouble(navlogList[first].gs)
-            else if (stage == C.STAGE_3_FLIGHT_IN_PROGRESS) gs = formatDouble(navlogList[item].gs)
+            if (stage < C.STAGE_3_FLIGHT_IN_PROGRESS && first >= 0) gs = formatDouble(toUnitsSpd(navlogList[first].gs))
+            else if (stage == C.STAGE_3_FLIGHT_IN_PROGRESS) gs = formatDouble(toUnitsSpd(navlogList[item].gs))
         }
         return listOf(gs, gsDiff)
     }
@@ -243,15 +237,15 @@ class HomeItem() {
 
         if (stage < C.STAGE_3_FLIGHT_IN_PROGRESS) {
             if (first >= 0 && navlogList[first].distance != null) {
-                if (navlogList[first].distance!! > C.DIST_THRESHOLD) ret.dist = formatDouble(navlogList[first].distance!!)
-                else ret.dist = formatDouble(navlogList[first].distance!!, 1)
+                if (navlogList[first].distance!! > C.DIST_THRESHOLD) ret.dist = formatDouble(toUnitsDis(navlogList[first].distance!!))
+                else ret.dist = formatDouble(toUnitsDis(navlogList[first].distance!!), 1)
             }
             return ret
         } else if (stage > C.STAGE_3_FLIGHT_IN_PROGRESS) return ret
 
         // stage == C.STAGE_3_FLIGHT_IN_PROGRESS
-        ret.dist = if (abs(distRemaining) > C.DIST_THRESHOLD) formatDouble(abs(distRemaining)) else formatDouble(abs(distRemaining), 1)
-        ret.distTravelled = if (abs(distFromPrevWpt) > C.DIST_THRESHOLD) formatDouble(abs(distFromPrevWpt)) else formatDouble(abs(distFromPrevWpt), 1)
+        ret.dist = if (abs(distRemaining) > C.DIST_THRESHOLD) formatDouble(toUnitsDis(abs(distRemaining))) else formatDouble(toUnitsDis(abs(distRemaining)), 1)
+        ret.distTravelled = if (abs(distFromPrevWpt) > C.DIST_THRESHOLD) formatDouble(toUnitsDis(abs(distFromPrevWpt))) else formatDouble(toUnitsDis(abs(distFromPrevWpt)), 1)
         ret.pct = formatDouble(distPct) + "%"
         if (distRemaining < 0.0) ret.sign = true
 
@@ -311,16 +305,15 @@ class HomeItem() {
     fun getFuel(): HomeFuelTime {
         val ret = HomeFuelTime()
 
-        if (stage < C.STAGE_5_AFTER_ENGINE_SHUTDOWN && fuelToLand > 0.0) ret.ftl = formatDouble(fuelToLand)
+        if (stage < C.STAGE_5_AFTER_ENGINE_SHUTDOWN && fuelToLand > 0.0) ret.ftl = formatDouble(toUnitsVol(fuelToLand))
         if (distRemaining < 0.0) ret.ftlmark = "?"
         if (engineTimeSec > 0.0) ret.engineTime = formatSecondsToTime(engineTimeSec) else ret.engineTime = "-"
-        if (settings.fob != null && settings.planeFph != null) {
-            ret.fuelTime = formatSecondsToTime(fuelTimeRemaining.toLong())
-            ret.fuelRemaining = formatDouble(fuelRemaining)
-        }
 
-        if (settings.planeTank != null && settings.planeTank!! > 0.0) {
-            val pct = fuelRemaining / settings.planeTank!! * 100.0
+        ret.fuelTime = formatSecondsToTime(fuelTimeRemaining.toLong())
+        ret.fuelRemaining = formatDouble(toUnitsVol(fuelRemaining))
+
+        if (airplane.tank > 0.0) {
+            val pct = fuelRemaining / airplane.tank * 100.0
             ret.fuelPct = formatDouble(pct) + '%'
             ret.fuelPctBar = pct.roundToInt()
         }

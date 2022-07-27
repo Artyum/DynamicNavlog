@@ -11,14 +11,13 @@ import androidx.fragment.app.Fragment
 import com.artyum.dynamicnavlog.R.layout
 import com.artyum.dynamicnavlog.R.string
 import com.artyum.dynamicnavlog.databinding.FragmentCalcWindBinding
+import kotlin.math.abs
 import kotlin.math.cos
 import kotlin.math.sin
 
 class CalcWindFragment : Fragment(layout.fragment_calc_wind) {
     private var _binding: FragmentCalcWindBinding? = null
     private val bind get() = _binding!!
-
-    val state = ArrayList<String>()
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         _binding = FragmentCalcWindBinding.inflate(inflater, container, false)
@@ -32,7 +31,7 @@ class CalcWindFragment : Fragment(layout.fragment_calc_wind) {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        bind.calcWindLayout.keepScreenOn = settings.keepScreenOn
+        bind.calcWindLayout.keepScreenOn = options.keepScreenOn
         (activity as MainActivity).hideButtons()
 
         bind.btnCalculate.setOnClickListener {
@@ -46,34 +45,8 @@ class CalcWindFragment : Fragment(layout.fragment_calc_wind) {
             paintWindCircle(bind.imgView, resources, course = 0.0, windDir = 180.0, hdg = 0.0, speedRatio = 1.0)
         }
 
-        restoreState()
+        setupUI()
         paintWindCircle(bind.imgView, resources, course = 0.0, windDir = 180.0, hdg = 0.0, speedRatio = 1.0)
-    }
-
-    private fun saveState() {
-        state.clear()
-        state.add(bind.edtCourse.text.toString())
-        state.add(bind.edtDistance.text.toString())
-        state.add(bind.edtWindDir.text.toString())
-        state.add(bind.edtWindSpd.text.toString())
-        state.add(bind.edtTas.text.toString())
-        state.add(bind.edtFph.text.toString())
-    }
-
-    private fun restoreState() {
-        if (state.size > 0) {
-            bind.edtCourse.setText(state[0])
-            bind.edtDistance.setText(state[1])
-            if (state[2] != "") bind.edtWindDir.setText(state[2]) else bind.edtWindDir.setText(formatDouble(settings.windDir))
-            if (state[3] != "") bind.edtWindSpd.setText(state[3]) else bind.edtWindSpd.setText(formatDouble(settings.windSpd))
-            if (state[3] != "") bind.edtTas.setText(state[4]) else bind.edtTas.setText(formatDouble(settings.planeTas))
-            if (state[4] != "") bind.edtFph.setText(state[5]) else bind.edtFph.setText(formatDouble(settings.planeFph))
-        } else {
-            bind.edtWindDir.setText(formatDouble(settings.windDir))
-            bind.edtWindSpd.setText(formatDouble(settings.windSpd))
-            bind.edtTas.setText(formatDouble(settings.planeTas))
-            bind.edtFph.setText(formatDouble(settings.planeFph))
-        }
     }
 
     private fun allClear() {
@@ -90,19 +63,15 @@ class CalcWindFragment : Fragment(layout.fragment_calc_wind) {
         bind.outHeadwind.setText("")
         bind.outCrosswind.setText("")
         bind.outFuel.setText("")
-
-        saveState()
     }
 
     private fun calculate(view: View) {
-        saveState()
-
         val dCourse = getDoubleOrNull(bind.edtCourse.text.toString())
-        val dDist = getDoubleOrNull(bind.edtDistance.text.toString())
+        val dDist = fromUnitsDis(getDoubleOrNull(bind.edtDistance.text.toString()))
         val dWindDir = getDoubleOrNull(bind.edtWindDir.text.toString())
-        val dWindSpd = getDoubleOrNull(bind.edtWindSpd.text.toString())
-        val dTas = getDoubleOrNull(bind.edtTas.text.toString())
-        val dFph = getDoubleOrNull(bind.edtFph.text.toString())
+        val dWindSpd = fromUnitsSpd(getDoubleOrNull(bind.edtWindSpd.text.toString()))
+        val dTas = fromUnitsSpd(getDoubleOrNull(bind.edtTas.text.toString()))
+        val dFph = fromUnitsVol(getDoubleOrNull(bind.edtFph.text.toString()))
 
         if (dCourse != null && dWindDir != null && dWindSpd != null && dTas != null) {
             // Validate
@@ -120,28 +89,22 @@ class CalcWindFragment : Fragment(layout.fragment_calc_wind) {
 
             bind.outWca.setText(formatDouble(wca))
             bind.outHdg.setText(formatDouble(hdg))
-            bind.outGs.setText(formatDouble(gs))
+            bind.outGs.setText(formatDouble(toUnitsSpd(gs)))
             bind.outFlightTime.setText(formatSecondsToTime(timeSec))
-            bind.outFuel.setText(formatDouble(fuel))
+            bind.outFuel.setText(formatDouble(toUnitsVol(fuel)))
 
             // Headwind / Crosswind
             val angle = deg2rad(dCourse - dWindDir + 360.0)
             val hw = dWindSpd * cos(angle)
             val cw = dWindSpd * sin(angle)
-            if (hw >= 0) {
-                bind.labelHeadwind.hint = getString(string.txtHeadwind)
-                bind.outHeadwind.setText(formatDouble(hw))
-            } else {
-                bind.labelHeadwind.hint = getString(string.txtTailwind)
-                bind.outHeadwind.setText(formatDouble(-hw))
-            }
-            if (cw >= 0) {
-                bind.labelCrosswind.hint = getString(string.txtLeftxwind)
-                bind.outCrosswind.setText(formatDouble(cw))
-            } else {
-                bind.labelCrosswind.hint = getString(string.txtRightxwind)
-                bind.outCrosswind.setText(formatDouble(-cw))
-            }
+
+            if (hw >= 0) bind.labelHeadwind.hint = getString(string.txtHeadwind) + " (" + getUnitsSpd() + ")"
+            else bind.labelHeadwind.hint = getString(string.txtTailwind) + " (" + getUnitsSpd() + ")"
+            bind.outHeadwind.setText(formatDouble(toUnitsSpd(abs(hw))))
+
+            if (cw >= 0) bind.labelCrosswind.hint = getString(string.txtLeftxwind) + " (" + getUnitsSpd() + ")"
+            else bind.labelCrosswind.hint = getString(string.txtRightxwind) + " (" + getUnitsSpd() + ")"
+            bind.outCrosswind.setText(formatDouble(toUnitsSpd(abs(cw))))
 
             // Image
             paintWindCircle(bind.imgView, resources, course = dCourse, windDir = dWindDir, hdg = hdg, speedRatio = gs / dTas)
@@ -149,6 +112,17 @@ class CalcWindFragment : Fragment(layout.fragment_calc_wind) {
         } else {
             Toast.makeText(view.context, getString(string.txtInvalidFlightParams), Toast.LENGTH_SHORT).show()
         }
+    }
+
+    private fun setupUI() {
+        bind.boxTas.hint = getString(string.txtTAS) + " (" + getUnitsSpd() + ")"
+        bind.boxGs.hint = getString(string.txtGs) + " (" + getUnitsSpd() + ")"
+        bind.boxWindSpd.hint = getString(string.txtWindSpeed) + " (" + getUnitsSpd() + ")"
+        bind.boxDist.hint = getString(string.txtDistance) + " (" + getUnitsDis() + ")"
+        bind.boxFuel1.hint = getString(string.txtFuelPerHour) + " (" + getUnitsVol() + ")"
+        bind.boxFuel2.hint = getString(string.txtFuelRequired) + " (" + getUnitsVol() + ")"
+        bind.labelHeadwind.hint = getString(string.txtHeadwind) + " (" + getUnitsSpd() + ")"
+        bind.labelCrosswind.hint = getString(string.txtCrosswind) + " (" + getUnitsSpd() + ")"
     }
 
     private fun View.hideKeyboard() {

@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/optionsLayout"
+    style="@style/globalMainframe"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.artyum.dynamicnavlog.OptionsFragment">
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            style="@style/globalFragmentFrame"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <LinearLayout
+                style="@style/dividerBox"
+                android:layout_marginTop="0dp">
+
+                <View
+                    style="@style/dividerLine"
+                    android:layout_weight="1" />
+
+                <TextView
+                    style="@style/dividerText"
+                    android:text="@string/txtOptions" />
+
+                <View
+                    style="@style/dividerLine"
+                    android:layout_weight="1" />
+            </LinearLayout>
+
+            <androidx.constraintlayout.widget.ConstraintLayout style="@style/settingsSwitch">
+
+                <TextView
+                    android:id="@+id/txtScreenOrientation"
+                    style="@style/settingsSwitch"
+                    android:layout_width="wrap_content"
+                    android:text="@string/txtScreenOrientation"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <Spinner
+                    android:id="@+id/spinnerScreenOrientation"
+                    style="@style/settingsSpinner"
+                    app:layout_constraintBaseline_toBaselineOf="@id/txtScreenOrientation"
+                    app:layout_constraintRight_toRightOf="parent" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <com.google.android.material.switchmaterial.SwitchMaterial
+                android:id="@+id/settingTimeUTC"
+                style="@style/settingsSwitch"
+                android:text="@string/txtTimeUTC" />
+
+            <com.google.android.material.switchmaterial.SwitchMaterial
+                android:id="@+id/settingsScreenOn"
+                style="@style/settingsSwitch"
+                android:text="@string/txtKeepScreenOn" />
+
+            <LinearLayout style="@style/dividerBox">
+
+                <View
+                    style="@style/dividerLine"
+                    android:layout_weight="1" />
+
+                <TextView
+                    style="@style/dividerText"
+                    android:text="@string/txtDisplayUnits" />
+
+                <View
+                    style="@style/dividerLine"
+                    android:layout_weight="1" />
+            </LinearLayout>
+
+            <androidx.constraintlayout.widget.ConstraintLayout style="@style/settingsSwitch">
+
+                <TextView
+                    android:id="@+id/txtUnitsSpd"
+                    style="@style/settingsSwitch"
+                    android:layout_width="wrap_content"
+                    android:text="@string/txtSpeedUnits"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <Spinner
+                    android:id="@+id/spinnerUnitsSpd"
+                    style="@style/settingsSpinner"
+                    app:layout_constraintBaseline_toBaselineOf="@id/txtUnitsSpd"
+                    app:layout_constraintRight_toRightOf="parent" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <androidx.constraintlayout.widget.ConstraintLayout style="@style/settingsSwitch">
+
+                <TextView
+                    android:id="@+id/txtUnitsDist"
+                    style="@style/settingsSwitch"
+                    android:layout_width="wrap_content"
+                    android:text="@string/txtDistanceUnits"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <Spinner
+                    android:id="@+id/spinnerUnitsDist"
+                    style="@style/settingsSpinner"
+                    app:layout_constraintBaseline_toBaselineOf="@id/txtUnitsDist"
+                    app:layout_constraintRight_toRightOf="parent" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <androidx.constraintlayout.widget.ConstraintLayout style="@style/settingsSwitch">
+
+                <TextView
+                    android:id="@+id/txtUnitsFuel"
+                    style="@style/settingsSwitch"
+                    android:layout_width="wrap_content"
+                    android:text="@string/txtFuelUnits"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <Spinner
+                    android:id="@+id/spinnerUnitsVol"
+                    style="@style/settingsSpinner"
+                    app:layout_constraintBaseline_toBaselineOf="@id/txtUnitsFuel"
+                    app:layout_constraintRight_toRightOf="parent" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+        </LinearLayout>
+    </ScrollView>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -53,7 +53,7 @@ class MapFragment : Fragment(R.layout.fragment_map) {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        bind.mapLayout.keepScreenOn = settings.keepScreenOn
+        bind.mapLayout.keepScreenOn = options.keepScreenOn
         (activity as MainActivity).displayButtons()
 
         val con = (activity as MainActivity).applicationContext
@@ -183,7 +183,7 @@ class MapFragment : Fragment(R.layout.fragment_map) {
 
         // Display plan units
         bind.txtNavGs.text = getString(R.string.txtGs) + " (" + getUnitsSpd() + ")"
-        bind.txtNavDist.text = getString(R.string.txtDist) + " (" + getUnitsDist() + ")"
+        bind.txtNavDist.text = getString(R.string.txtDist) + " (" + getUnitsDis() + ")"
 
         // Run map update thread
         lifecycleScope.launch { updateMapThread() }
@@ -511,13 +511,12 @@ class MapFragment : Fragment(R.layout.fragment_map) {
     }
 
     private fun refreshBottomBar() {
-        val strDist = formatDouble(totals.dist) + " " + getUnitsDist()
-        val strFuel = formatDouble(totals.fuel) + " " + getUnitsVolume()
+        val strDist = formatDouble(toUnitsDis(totals.dist)) + " " + getUnitsDis()
+        val strFuel = formatDouble(toUnitsVol(totals.fuel)) + " " + getUnitsVol()
 
         bind.txtTotalDist.text = strDist
         bind.txtTotalTime.text = formatSecondsToTime(totals.time)
         bind.txtTotalFuel.text = strFuel
-
     }
 
     private suspend fun updateMapThread() {

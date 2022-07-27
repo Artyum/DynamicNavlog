@@ -24,12 +24,14 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="30dp"
+        android:layout_marginStart="20dp"
         android:layout_marginEnd="15dp">
 
         <TextView
             android:id="@+id/txtAirReg"
             style="@style/airplaneListItem"
+            android:layout_width="100dp"
+            android:layout_marginEnd="10dp"
             android:textAllCaps="true" />
 
         <TextView

@@ -19,7 +19,6 @@ class AirplaneFragment : Fragment() {
     private var _binding: FragmentAirplaneBinding? = null
     private val bind get() = _binding!!
 
-    private var airplane = Airplane()
     private var spdUnits = 0
     private var volUnits = 0
 
@@ -35,7 +34,7 @@ class AirplaneFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        bind.airplaneLayout.keepScreenOn = settings.keepScreenOn
+        bind.airplaneLayout.keepScreenOn = options.keepScreenOn
         (activity as MainActivity).hideButtons()
 
         // Speed units
@@ -81,8 +80,7 @@ class AirplaneFragment : Fragment() {
 
     private fun onChange() {
         calcPerformance()
-        (bind.btnApply as MaterialButton).background.setTint(bind.btnApply.context.getColor(R.color.colorPrimary))
-
+        //(bind.btnApply as MaterialButton).background.setTint(bind.btnApply.context.getColor(R.color.red))
     }
 
     private fun calcPerformance() {
@@ -232,7 +230,7 @@ class AirplaneFragment : Fragment() {
     }
 }
 
-fun getAirplaneSettingsByID(id: String) {
+fun getAirplaneByID(id: String) {
     if (id == "") {
         resetAirplaneSettings()
         return
@@ -243,59 +241,32 @@ fun getAirplaneSettingsByID(id: String) {
             Log.d(TAG, "getAirplaneByID: $id")
             // Convert airplane units to flight plan units
 
-            val airplane = airplaneList[i].copy()
+            airplane = airplaneList[i].copy()
 
-            // Convert all to kt and litres
-            if (airplane.spdUnits == C.SPD_MPH) airplane.tas = mph2kt(airplane.tas)
-            if (airplane.spdUnits == C.SPD_KPH) airplane.tas = kph2kt(airplane.tas)
-            if (airplane.volUnits == C.VOL_USGAL) {
-                airplane.tank = usgal2l(airplane.tank)
-                airplane.fph = usgal2l(airplane.fph)
+            // Convert to kt and litres
+            when (airplane.spdUnits) {
+                C.SPD_MPH -> airplane.tas = mph2kt(airplane.tas)
+                C.SPD_KPH -> airplane.tas = kph2kt(airplane.tas)
             }
-            if (airplane.volUnits == C.VOL_UKGAL) {
-                airplane.tank = ukgal2l(airplane.tank)
-                airplane.fph = ukgal2l(airplane.fph)
-            }
-
-            //Convert from kt and litres to plan units
-            if (settings.spdUnits == C.SPD_MPH) airplane.tas = kt2mph(airplane.tas)
-            if (settings.spdUnits == C.SPD_KPH) airplane.tas = kt2kph(airplane.tas)
-            if (settings.volUnits == C.VOL_USGAL) {
-                airplane.tank = l2usgal(airplane.tank)
-                airplane.fph = l2usgal(airplane.fph)
-            }
-            if (settings.volUnits == C.VOL_UKGAL) {
-                airplane.tank = l2ukgal(airplane.tank)
-                airplane.fph = l2ukgal(airplane.fph)
+            when (airplane.volUnits) {
+                C.VOL_USGAL -> {
+                    airplane.tank = usgal2l(airplane.tank)
+                    airplane.fph = usgal2l(airplane.fph)
+                }
+                C.VOL_UKGAL -> {
+                    airplane.tank = ukgal2l(airplane.tank)
+                    airplane.fph = ukgal2l(airplane.fph)
+                }
             }
 
-            settings.planeId = id
-            settings.planeType = airplane.type
-            settings.planeReg = airplane.reg
-            settings.planeTas = airplane.tas
-            settings.planeTank = airplane.tank
-            settings.planeFph = airplane.fph
+            settings.airplaneId = id
             return
         }
     }
     resetAirplaneSettings()
 }
 
-fun getAirplaneListPosition(id: String): Int {
-    // Index 0 -> "Select an airplane"
-    if (id == "") return 0
-    for (i in airplaneList.indices) {
-        if (airplaneList[i].id == id) return i + 1
-    }
-    return 0
-}
-
 fun resetAirplaneSettings() {
-    //Log.d(TAG, "resetAirplaneSettings")
-    settings.planeId = ""
-    settings.planeType = ""
-    settings.planeReg = ""
-    settings.planeTas = 0.0
-    settings.planeFph = null
-    settings.planeTank = null
+    settings.airplaneId = ""
+    airplane = Airplane()
 }

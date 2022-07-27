@@ -36,7 +36,7 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        bind.homeLayout.keepScreenOn = settings.keepScreenOn
+        bind.homeLayout.keepScreenOn = options.keepScreenOn
         (activity as MainActivity).displayButtons()
 
         // GPS indicator
@@ -53,11 +53,13 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
     }
 
     private fun displayUnits() {
-        bind.txtHomeDistUnits.text = getUnitsDist()
+        bind.txtHomeDistUnits.text = getUnitsDis()
         bind.txtHomeGsUnits.text = getUnitsSpd()
     }
 
     private fun drawHomeWinStar() {
+        if (airplane.tas == 0.0) return
+
         if (getFlightStage() == C.STAGE_3_FLIGHT_IN_PROGRESS) {
             val i = getNavlogCurrentItemId()
             paintWindCircle(
@@ -65,7 +67,7 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
                 course = navlogList[i].magneticTrack!!,
                 windDir = settings.windDir,
                 hdg = navlogList[i].hdg!!,
-                speedRatio = navlogList[i].gs!! / settings.planeTas
+                speedRatio = navlogList[i].gs!! / airplane.tas
             )
         } else if (isNavlogReady() && timers.takeoff == null) {
             val first = getNavlogFirstActiveItemId()
@@ -74,7 +76,7 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
                 course = navlogList[first].magneticTrack!!,
                 windDir = settings.windDir,
                 hdg = navlogList[first].hdg!!,
-                speedRatio = navlogList[first].gs!! / settings.planeTas
+                speedRatio = navlogList[first].gs!! / airplane.tas
             )
         } else {
             paintWindCircle(

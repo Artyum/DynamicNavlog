@@ -74,6 +74,10 @@
 
                 <TextView
                     style="@style/navLogHeaderItem"
+                    android:text="@string/txtFuel" />
+
+                <TextView
+                    style="@style/navLogHeaderItem"
                     android:layout_width="90dp"
                     android:text="@string/txtEta" />
 
@@ -81,10 +85,6 @@
                     style="@style/navLogHeaderItem"
                     android:layout_width="90dp"
                     android:text="@string/txtAta" />
-
-                <TextView
-                    style="@style/navLogHeaderItem"
-                    android:text="@string/txtFuel" />
             </LinearLayout>
 
             <androidx.recyclerview.widget.RecyclerView

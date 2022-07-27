@@ -30,7 +30,7 @@ class AirplaneListFragment : Fragment(R.layout.fragment_airplanelist), AirplaneL
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        bind.airplaneListLayout.keepScreenOn = settings.keepScreenOn
+        bind.airplaneListLayout.keepScreenOn = options.keepScreenOn
         (activity as MainActivity).hideButtons()
 
         // Add airplane
@@ -65,6 +65,8 @@ class AirplaneListFragment : Fragment(R.layout.fragment_airplanelist), AirplaneL
             val pos = viewHolder.absoluteAdapterPosition
             val id = adapterList[pos].id
             deleteAirplane(id)
+            adapterList.removeAt(pos)
+            adapter.notifyItemRemoved(pos)
         }
     }
 
@@ -96,6 +98,5 @@ class AirplaneListFragment : Fragment(R.layout.fragment_airplanelist), AirplaneL
             }
         }
         saveAirplaneList()
-        refreshList()
     }
 }
