@@ -13,512 +13,369 @@
         android:layout_height="match_parent">
 
         <LinearLayout
+            style="@style/globalFragmentFrame"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
             <LinearLayout
-                style="@style/globalFragmentFrame"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical">
 
-                <TableLayout
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/settingFlightPlanNameBox"
+                    style="@style/inputLayout"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
+                    android:hint="@string/txtFlightPlanName">
 
-                    <TableRow>
-
-                        <com.google.android.material.textfield.TextInputLayout
-                            android:id="@+id/settingFlightPlanNameBox"
-                            style="@style/inputLayout"
-                            android:layout_width="match_parent"
-                            android:hint="@string/txtFlightPlanName">
-
-                            <com.google.android.material.textfield.TextInputEditText
-                                android:id="@+id/settingFlightPlanName"
-                                style="@style/layoutText"
-                                android:gravity="center|start" />
-                        </com.google.android.material.textfield.TextInputLayout>
-                    </TableRow>
-
-                    <TableRow android:layout_marginVertical="@dimen/tableMargin">
-
-                        <com.google.android.material.textfield.TextInputLayout
-                            style="@style/inputLayout"
-                            android:hint="@string/txtDeparture">
-
-                            <com.google.android.material.textfield.TextInputEditText
-                                android:id="@+id/settingFrom"
-                                style="@style/layoutTextCaps" />
-                        </com.google.android.material.textfield.TextInputLayout>
-
-                        <TextView style="@style/spacer" />
-
-                        <com.google.android.material.textfield.TextInputLayout
-                            style="@style/inputLayout"
-                            android:hint="@string/txtDestination">
-
-                            <com.google.android.material.textfield.TextInputEditText
-                                android:id="@+id/settingDestination"
-                                style="@style/layoutTextCaps" />
-                        </com.google.android.material.textfield.TextInputLayout>
-
-                    </TableRow>
-
-                </TableLayout>
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/settingFlightPlanName"
+                        style="@style/layoutText"
+                        android:gravity="center|start" />
+                </com.google.android.material.textfield.TextInputLayout>
 
                 <LinearLayout
-                    style="@style/dividerBox"
-                    android:layout_marginBottom="5dp">
-
-                    <View
-                        style="@style/dividerLine"
-                        android:layout_weight="1" />
-
-                    <TextView
-                        style="@style/dividerText"
-                        android:text="@string/txtAirplane" />
-
-                    <View
-                        style="@style/dividerLine"
-                        android:layout_weight="1" />
-                </LinearLayout>
-
-                <TextView
-                    android:id="@+id/settingsSelectAirplaneMsg"
-                    style="@style/errorMessage"
-                    android:layout_marginVertical="5dp"
-                    android:text="@string/txtNoAirplaneInSettings" />
-
-                <Spinner
-                    android:id="@+id/spinnerAirplane"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="5dp" />
+                    android:layout_marginVertical="@dimen/tableMargin"
+                    android:orientation="horizontal">
 
-                <androidx.constraintlayout.widget.ConstraintLayout
-                    android:id="@+id/airplaneDetailsBox"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
+                    <com.google.android.material.textfield.TextInputLayout
+                        style="@style/inputLayout"
+                        android:hint="@string/txtDeparture">
 
-                    <LinearLayout
-                        android:id="@+id/plane1"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        app:layout_constraintLeft_toLeftOf="parent"
-                        app:layout_constraintTop_toTopOf="parent">
+                        <com.google.android.material.textfield.TextInputEditText
+                            android:id="@+id/settingFrom"
+                            style="@style/layoutTextCaps" />
+                    </com.google.android.material.textfield.TextInputLayout>
 
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="@string/txtTAS" />
+                    <TextView style="@style/spacer" />
 
-                        <TextView
-                            android:id="@+id/airplaneDetailsTas"
-                            style="@style/airplaneDetails"
-                            android:layout_marginHorizontal="@dimen/unitsMargin" />
+                    <com.google.android.material.textfield.TextInputLayout
+                        style="@style/inputLayout"
+                        android:hint="@string/txtDestination">
 
-                        <TextView
-                            android:id="@+id/airplaneSpdUnits"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content" />
-                    </LinearLayout>
+                        <com.google.android.material.textfield.TextInputEditText
+                            android:id="@+id/settingDestination"
+                            style="@style/layoutTextCaps" />
+                    </com.google.android.material.textfield.TextInputLayout>
 
-                    <LinearLayout
-                        android:id="@+id/plane2"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        app:layout_constraintLeft_toRightOf="@id/plane1"
-                        app:layout_constraintRight_toLeftOf="@id/plane3"
-                        app:layout_constraintTop_toTopOf="parent">
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="@string/txtTankCapacity" />
-
-                        <TextView
-                            android:id="@+id/airplaneDetailsTank"
-                            style="@style/airplaneDetails"
-                            android:layout_marginHorizontal="@dimen/unitsMargin" />
-
-                        <TextView
-                            android:id="@+id/airplaneFuelUnits1"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content" />
-                    </LinearLayout>
-
-                    <LinearLayout
-                        android:id="@+id/plane3"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        app:layout_constraintRight_toRightOf="parent"
-                        app:layout_constraintTop_toTopOf="parent">
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="@string/txtFph" />
-
-                        <TextView
-                            android:id="@+id/airplaneDetailsFph"
-                            style="@style/airplaneDetails"
-                            android:layout_marginHorizontal="@dimen/unitsMargin" />
-
-                        <TextView
-                            android:id="@+id/airplaneFuelUnits2"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content" />
-                    </LinearLayout>
-                </androidx.constraintlayout.widget.ConstraintLayout>
-
-                <LinearLayout style="@style/dividerBox">
-
-                    <View
-                        style="@style/dividerLine"
-                        android:layout_weight="1" />
-
-                    <TextView
-                        style="@style/dividerText"
-                        android:text="@string/txtWindAndFuel" />
-
-                    <View
-                        style="@style/dividerLine"
-                        android:layout_weight="1" />
                 </LinearLayout>
 
-                <TableLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
-
-                    <TableRow>
-
-                        <TextView
-                            android:id="@+id/settingsInfoBox"
-                            style="@style/errorMessage"
-                            android:layout_marginBottom="10dp" />
-                    </TableRow>
-
-                    <TableRow>
-
-                        <com.google.android.material.textfield.TextInputLayout
-                            android:id="@+id/hintTakeoffFuel"
-                            style="@style/inputLayout"
-                            android:hint="@string/txtTakeoffFuel">
-
-                            <com.google.android.material.textfield.TextInputEditText
-                                android:id="@+id/settingFuel"
-                                style="@style/layoutTextDecimal" />
-                        </com.google.android.material.textfield.TextInputLayout>
-
-                        <TextView style="@style/spacer" />
-
-                        <com.google.android.material.textfield.TextInputLayout
-                            style="@style/inputLayout"
-                            android:hint="@string/txtWindDirection">
-
-                            <com.google.android.material.textfield.TextInputEditText
-                                android:id="@+id/settingWindDir"
-                                style="@style/layoutTextDecimal" />
-                        </com.google.android.material.textfield.TextInputLayout>
-
-                        <TextView style="@style/spacer" />
-
-                        <com.google.android.material.textfield.TextInputLayout
-                            android:id="@+id/hintWindSpd"
-                            style="@style/inputLayout"
-                            android:hint="@string/txtWindSpeed">
-
-                            <com.google.android.material.textfield.TextInputEditText
-                                android:id="@+id/settingWindSpd"
-                                style="@style/layoutTextDecimal" />
-                        </com.google.android.material.textfield.TextInputLayout>
-                    </TableRow>
-                </TableLayout>
-
-                <androidx.constraintlayout.widget.ConstraintLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="15dp">
-
-                    <LinearLayout
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        app:layout_constraintLeft_toLeftOf="parent"
-                        app:layout_constraintTop_toTopOf="parent">
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="Required fuel" />
-
-                        <TextView
-                            android:id="@+id/requiredFuel"
-                            style="@style/airplaneDetails"
-                            android:layout_marginHorizontal="@dimen/unitsMargin" />
-
-                        <TextView
-                            android:id="@+id/requiredFuelUnits"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content" />
-                    </LinearLayout>
-
-                    <LinearLayout
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        app:layout_constraintRight_toRightOf="parent"
-                        app:layout_constraintTop_toTopOf="parent">
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="Extra distance (no wind)" />
-
-                        <TextView
-                            android:id="@+id/extraDistance"
-                            style="@style/airplaneDetails"
-                            android:layout_marginHorizontal="@dimen/unitsMargin" />
-
-                        <TextView
-                            android:id="@+id/extraDistanceUnits"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content" />
-                    </LinearLayout>
-
-                </androidx.constraintlayout.widget.ConstraintLayout>
-
-                <androidx.constraintlayout.widget.ConstraintLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="5dp">
-
-                    <LinearLayout
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        app:layout_constraintLeft_toLeftOf="parent"
-                        app:layout_constraintTop_toTopOf="parent">
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="Spare fuel" />
-
-                        <TextView
-                            android:id="@+id/spareFuel"
-                            style="@style/airplaneDetails"
-                            android:layout_marginHorizontal="@dimen/unitsMargin" />
-
-                        <TextView
-                            android:id="@+id/spareFuelUnits"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content" />
-                    </LinearLayout>
-
-                    <LinearLayout
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        app:layout_constraintRight_toRightOf="parent"
-                        app:layout_constraintTop_toTopOf="parent">
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="Additional flight time" />
-
-                        <TextView
-                            android:id="@+id/additionalTime"
-                            style="@style/airplaneDetails"
-                            android:layout_marginStart="@dimen/unitsMargin" />
-                    </LinearLayout>
-                </androidx.constraintlayout.widget.ConstraintLayout>
-
-                <LinearLayout style="@style/dividerBox">
-
-                    <View
-                        style="@style/dividerLine"
-                        android:layout_weight="1" />
-
-                    <TextView
-                        style="@style/dividerText"
-                        android:text="@string/txtGpsOptions" />
-
-                    <View
-                        style="@style/dividerLine"
-                        android:layout_weight="1" />
-                </LinearLayout>
-
-                <com.google.android.material.switchmaterial.SwitchMaterial
-                    android:id="@+id/settingGpsAssist"
-                    style="@style/settingsSwitch"
-                    android:text="@string/txtGPSAssist" />
-
-                <LinearLayout
-                    android:id="@+id/gpsGroup"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical">
-
-
-                    <com.google.android.material.switchmaterial.SwitchMaterial
-                        android:id="@+id/settingAutoNext"
-                        style="@style/settingsSwitch"
-                        android:text="@string/txtAutoNextWPT" />
-
-                    <androidx.constraintlayout.widget.ConstraintLayout
-                        android:id="@+id/settingWptDetection"
-                        style="@style/settingsSwitch">
-
-                        <TextView
-                            android:id="@+id/txtNextRadius"
-                            style="@style/settingsSwitch"
-                            android:layout_width="wrap_content"
-                            android:text="@string/txtNextRadius"
-                            app:layout_constraintLeft_toLeftOf="parent"
-                            app:layout_constraintTop_toTopOf="parent" />
-
-                        <Spinner
-                            android:id="@+id/spinnerNextRadius"
-                            style="@style/settingsSpinner"
-                            app:layout_constraintBaseline_toBaselineOf="@id/txtNextRadius"
-                            app:layout_constraintRight_toRightOf="parent" />
-                    </androidx.constraintlayout.widget.ConstraintLayout>
-
-                    <com.google.android.material.switchmaterial.SwitchMaterial
-                        android:id="@+id/settingTrace"
-                        style="@style/settingsSwitch"
-                        android:text="@string/txtDisplayFlightTrace" />
-                </LinearLayout>
-
-                <LinearLayout style="@style/dividerBox">
-
-                    <View
-                        style="@style/dividerLine"
-                        android:layout_weight="1" />
-
-                    <TextView
-                        style="@style/dividerText"
-                        android:text="@string/txtFlightPlanUnits" />
-
-                    <View
-                        style="@style/dividerLine"
-                        android:layout_weight="1" />
-                </LinearLayout>
-
-                <androidx.constraintlayout.widget.ConstraintLayout style="@style/settingsSwitch">
-
-                    <TextView
-                        android:id="@+id/txtUnitsSpd"
-                        style="@style/settingsSwitch"
-                        android:layout_width="wrap_content"
-                        android:text="@string/txtSpeedUnits"
-                        app:layout_constraintLeft_toLeftOf="parent"
-                        app:layout_constraintTop_toTopOf="parent" />
-
-                    <Spinner
-                        android:id="@+id/spinnerUnitsSpd"
-                        style="@style/settingsSpinner"
-                        app:layout_constraintBaseline_toBaselineOf="@id/txtUnitsSpd"
-                        app:layout_constraintRight_toRightOf="parent" />
-
-                </androidx.constraintlayout.widget.ConstraintLayout>
-
-                <androidx.constraintlayout.widget.ConstraintLayout style="@style/settingsSwitch">
-
-                    <TextView
-                        android:id="@+id/txtUnitsDist"
-                        style="@style/settingsSwitch"
-                        android:layout_width="wrap_content"
-                        android:text="@string/txtDistanceUnits"
-                        app:layout_constraintLeft_toLeftOf="parent"
-                        app:layout_constraintTop_toTopOf="parent" />
-
-                    <Spinner
-                        android:id="@+id/spinnerUnitsDist"
-                        style="@style/settingsSpinner"
-                        app:layout_constraintBaseline_toBaselineOf="@id/txtUnitsDist"
-                        app:layout_constraintRight_toRightOf="parent" />
-
-                </androidx.constraintlayout.widget.ConstraintLayout>
-
-                <androidx.constraintlayout.widget.ConstraintLayout style="@style/settingsSwitch">
-
-                    <TextView
-                        android:id="@+id/txtUnitsFuel"
-                        style="@style/settingsSwitch"
-                        android:layout_width="wrap_content"
-                        android:text="@string/txtFuelUnits"
-                        app:layout_constraintLeft_toLeftOf="parent"
-                        app:layout_constraintTop_toTopOf="parent" />
-
-                    <Spinner
-                        android:id="@+id/spinnerUnitsVol"
-                        style="@style/settingsSpinner"
-                        app:layout_constraintBaseline_toBaselineOf="@id/txtUnitsFuel"
-                        app:layout_constraintRight_toRightOf="parent" />
-
-                </androidx.constraintlayout.widget.ConstraintLayout>
-
-                <LinearLayout style="@style/dividerBox">
-
-                    <View
-                        style="@style/dividerLine"
-                        android:layout_weight="1" />
-
-                    <TextView
-                        style="@style/dividerText"
-                        android:text="@string/txtSettings" />
-
-                    <View
-                        style="@style/dividerLine"
-                        android:layout_weight="1" />
-                </LinearLayout>
-
-                <androidx.constraintlayout.widget.ConstraintLayout style="@style/settingsSwitch">
-
-                    <TextView
-                        android:id="@+id/txtMapOrientation"
-                        style="@style/settingsSwitch"
-                        android:layout_width="wrap_content"
-                        android:text="@string/txtMapOrientation"
-                        app:layout_constraintLeft_toLeftOf="parent"
-                        app:layout_constraintTop_toTopOf="parent" />
-
-                    <Spinner
-                        android:id="@+id/spinnerMapOrientation"
-                        style="@style/settingsSpinner"
-                        app:layout_constraintBaseline_toBaselineOf="@id/txtMapOrientation"
-                        app:layout_constraintRight_toRightOf="parent" />
-                </androidx.constraintlayout.widget.ConstraintLayout>
-
-                <androidx.constraintlayout.widget.ConstraintLayout style="@style/settingsSwitch">
-
-                    <TextView
-                        android:id="@+id/txtScreenOrientation"
-                        style="@style/settingsSwitch"
-                        android:layout_width="wrap_content"
-                        android:text="@string/txtScreenOrientation"
-                        app:layout_constraintLeft_toLeftOf="parent"
-                        app:layout_constraintTop_toTopOf="parent" />
-
-                    <Spinner
-                        android:id="@+id/spinnerScreenOrientation"
-                        style="@style/settingsSpinner"
-                        app:layout_constraintBaseline_toBaselineOf="@id/txtScreenOrientation"
-                        app:layout_constraintRight_toRightOf="parent" />
-                </androidx.constraintlayout.widget.ConstraintLayout>
-
-                <com.google.android.material.switchmaterial.SwitchMaterial
-                    android:id="@+id/settingTimeUTC"
-                    style="@style/settingsSwitch"
-                    android:text="@string/txtTimeUTC" />
-
-                <com.google.android.material.switchmaterial.SwitchMaterial
-                    android:id="@+id/settingsScreenOn"
-                    style="@style/settingsSwitch"
-                    android:text="@string/txtKeepScreenOn" />
             </LinearLayout>
 
+            <LinearLayout
+                style="@style/dividerBox"
+                android:layout_marginBottom="5dp">
+
+                <View
+                    style="@style/dividerLine"
+                    android:layout_weight="1" />
+
+                <TextView
+                    style="@style/dividerText"
+                    android:text="@string/txtAirplane" />
+
+                <View
+                    style="@style/dividerLine"
+                    android:layout_weight="1" />
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/settingsSelectAirplaneMsg"
+                style="@style/errorMessage"
+                android:layout_marginVertical="5dp"
+                android:text="@string/txtNoAirplaneInSettings" />
+
+            <Spinner
+                android:id="@+id/spinnerAirplane"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="5dp" />
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/airplaneDetailsBox"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <LinearLayout
+                    android:id="@+id/plane1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintTop_toTopOf="parent">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/txtTAS" />
+
+                    <TextView
+                        android:id="@+id/airplaneDetailsTas"
+                        style="@style/airplaneDetails"
+                        android:layout_marginHorizontal="@dimen/unitsMargin" />
+
+                    <TextView
+                        android:id="@+id/airplaneSpdUnits"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/plane2"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:layout_constraintLeft_toRightOf="@id/plane1"
+                    app:layout_constraintRight_toLeftOf="@id/plane3"
+                    app:layout_constraintTop_toTopOf="parent">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/txtTankCapacity" />
+
+                    <TextView
+                        android:id="@+id/airplaneDetailsTank"
+                        style="@style/airplaneDetails"
+                        android:layout_marginHorizontal="@dimen/unitsMargin" />
+
+                    <TextView
+                        android:id="@+id/airplaneFuelUnits1"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/plane3"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:layout_constraintRight_toRightOf="parent"
+                    app:layout_constraintTop_toTopOf="parent">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/txtFph" />
+
+                    <TextView
+                        android:id="@+id/airplaneDetailsFph"
+                        style="@style/airplaneDetails"
+                        android:layout_marginHorizontal="@dimen/unitsMargin" />
+
+                    <TextView
+                        android:id="@+id/airplaneFuelUnits2"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content" />
+                </LinearLayout>
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <LinearLayout style="@style/dividerBox">
+
+                <View
+                    style="@style/dividerLine"
+                    android:layout_weight="1" />
+
+                <TextView
+                    style="@style/dividerText"
+                    android:text="@string/txtWindAndFuel" />
+
+                <View
+                    style="@style/dividerLine"
+                    android:layout_weight="1" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+
+                <TextView
+                    android:id="@+id/settingsInfoBox"
+                    style="@style/errorMessage"
+                    android:layout_marginBottom="10dp" />
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/hintTakeoffFuel"
+                    style="@style/inputLayout"
+                    android:hint="@string/txtTakeoffFuel">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/settingFuel"
+                        style="@style/layoutTextDecimal" />
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <TextView style="@style/spacer" />
+
+                <com.google.android.material.textfield.TextInputLayout
+                    style="@style/inputLayout"
+                    android:hint="@string/txtWindDirection">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/settingWindDir"
+                        style="@style/layoutTextDecimal" />
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <TextView style="@style/spacer" />
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/hintWindSpd"
+                    style="@style/inputLayout"
+                    android:hint="@string/txtWindSpeed">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/settingWindSpd"
+                        style="@style/layoutTextDecimal" />
+                </com.google.android.material.textfield.TextInputLayout>
+
+            </LinearLayout>
+
+            <TableLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="15dp">
+
+                <TableRow>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_column="0"
+                        android:layout_marginEnd="5dp"
+                        android:text="@string/txtSpareFuel" />
+
+                    <TextView
+                        android:id="@+id/spareFuel"
+                        style="@style/airplaneDetails"
+                        android:layout_column="1"
+                        android:layout_marginHorizontal="@dimen/unitsMargin" />
+
+                    <TextView
+                        android:id="@+id/spareFuelUnits"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_column="2" />
+                </TableRow>
+
+                <TableRow android:layout_marginVertical="3dp">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_column="0"
+                        android:layout_marginEnd="5dp"
+                        android:text="@string/txtExtraDistance" />
+
+                    <TextView
+                        android:id="@+id/extraDistance"
+                        style="@style/airplaneDetails"
+                        android:layout_column="1"
+                        android:layout_marginHorizontal="@dimen/unitsMargin" />
+
+                    <TextView
+                        android:id="@+id/extraDistanceUnits"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_column="2" />
+                </TableRow>
+
+                <TableRow>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_column="0"
+                        android:layout_marginEnd="5dp"
+                        android:text="@string/txtExtraFlightTime" />
+
+                    <TextView
+                        android:id="@+id/additionalTime"
+                        style="@style/airplaneDetails"
+                        android:layout_column="1"
+                        android:layout_marginHorizontal="@dimen/unitsMargin" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_column="2" />
+                </TableRow>
+            </TableLayout>
+
+            <LinearLayout style="@style/dividerBox">
+
+                <View
+                    style="@style/dividerLine"
+                    android:layout_weight="1" />
+
+                <TextView
+                    style="@style/dividerText"
+                    android:text="@string/txtFlightPlanSettings" />
+
+                <View
+                    style="@style/dividerLine"
+                    android:layout_weight="1" />
+            </LinearLayout>
+
+            <com.google.android.material.switchmaterial.SwitchMaterial
+                android:id="@+id/settingGpsAssist"
+                style="@style/settingsSwitch"
+                android:text="@string/txtGPSAssist" />
+
+            <LinearLayout
+                android:id="@+id/gpsGroup"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+
+                <com.google.android.material.switchmaterial.SwitchMaterial
+                    android:id="@+id/settingAutoNext"
+                    style="@style/settingsSwitch"
+                    android:text="@string/txtAutoNextWPT" />
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/settingWptDetection"
+                    style="@style/settingsSwitch">
+
+                    <TextView
+                        android:id="@+id/txtNextRadius"
+                        style="@style/settingsSwitch"
+                        android:layout_width="wrap_content"
+                        android:text="@string/txtNextRadius"
+                        app:layout_constraintLeft_toLeftOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <Spinner
+                        android:id="@+id/spinnerNextRadius"
+                        style="@style/settingsSpinner"
+                        app:layout_constraintBaseline_toBaselineOf="@id/txtNextRadius"
+                        app:layout_constraintRight_toRightOf="parent" />
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+                <com.google.android.material.switchmaterial.SwitchMaterial
+                    android:id="@+id/settingTrace"
+                    style="@style/settingsSwitch"
+                    android:text="@string/txtDisplayFlightTrace" />
+            </LinearLayout>
+
+            <androidx.constraintlayout.widget.ConstraintLayout style="@style/settingsSwitch">
+
+                <TextView
+                    android:id="@+id/txtMapOrientation"
+                    style="@style/settingsSwitch"
+                    android:layout_width="wrap_content"
+                    android:text="@string/txtMapOrientation"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <Spinner
+                    android:id="@+id/spinnerMapOrientation"
+                    style="@style/settingsSpinner"
+                    app:layout_constraintBaseline_toBaselineOf="@id/txtMapOrientation"
+                    app:layout_constraintRight_toRightOf="parent" />
+            </androidx.constraintlayout.widget.ConstraintLayout>
         </LinearLayout>
+
     </ScrollView>
 </androidx.constraintlayout.widget.ConstraintLayout>

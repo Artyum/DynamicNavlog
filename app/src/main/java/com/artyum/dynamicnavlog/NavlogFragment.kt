@@ -33,14 +33,14 @@ class NavlogFragment : Fragment(R.layout.fragment_navlog), NavlogAdapter.OnItemC
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        bind.navlogLayout.keepScreenOn = settings.keepScreenOn
+        bind.navlogLayout.keepScreenOn = options.keepScreenOn
         (activity as MainActivity).displayButtons()
 
         // Current & Incrementally switch
         bind.btnDisplayToggle.setOnClickListener {
             if (settings.tfDisplayToggle == C.TF_DISPLAY_CUR) {
                 settings.tfDisplayToggle = C.TF_DISPLAY_REM
-                Toast.makeText(view.context, R.string.txtDisplayRemaining, Toast.LENGTH_SHORT).show()
+                Toast.makeText(view.context, R.string.txtDisplayIncremental, Toast.LENGTH_SHORT).show()
             } else {
                 settings.tfDisplayToggle = C.TF_DISPLAY_CUR
                 Toast.makeText(view.context, R.string.txtDisplayCurrent, Toast.LENGTH_SHORT).show()
@@ -105,10 +105,10 @@ class NavlogFragment : Fragment(R.layout.fragment_navlog), NavlogAdapter.OnItemC
     override fun onItemLongClick(position: Int) {}
 
     private fun refreshBottomBar() {
-        val strDist = formatDouble(totals.dist) + " " + getUnitsDist()
+        val strDist = formatDouble(toUnitsDis(totals.dist)) + " " + getUnitsDis()
         bind.txtTotalDist.text = strDist
         bind.txtTotalTime.text = formatSecondsToTime(totals.time)
-        val strFuel = formatDouble(totals.fuel) + " " + getUnitsVolume()
+        val strFuel = formatDouble(toUnitsVol(totals.fuel)) + " " + getUnitsVol()
         bind.txtTotalFuel.text = strFuel
 
         if (navlogList.size == 0) bind.btnDisplayToggle.visibility = View.GONE else bind.btnDisplayToggle.visibility = View.VISIBLE
@@ -117,7 +117,7 @@ class NavlogFragment : Fragment(R.layout.fragment_navlog), NavlogAdapter.OnItemC
     private suspend fun updateNavlogPageThread() {
         while (true) {
             if (refreshDisplay) adapter.notifyDataSetChanged()
-            delay(50)
+            delay(100)
         }
     }
 }

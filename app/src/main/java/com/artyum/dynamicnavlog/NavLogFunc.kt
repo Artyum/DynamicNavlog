@@ -273,13 +273,13 @@ fun recalculateFlight(adapter: NavlogAdapter?) {
             if (navlogList[item].active && isNavlogItemValid(item)) {
                 resetNavlogItem(item)
 
-                val fc: FlightCalc = flightCalculator(
+                val fc: FlightCalculator = flightCalculator(
                     course = navlogList[item].magneticTrack!!,
                     windDir = settings.windDir,
                     windSpd = settings.windSpd,
-                    tas = settings.planeTas,
+                    tas = airplane.tas,
                     dist = navlogList[item].distance,
-                    fph = settings.planeFph
+                    fph = airplane.fph
                 )
 
                 navlogList[item].wca = fc.wca
@@ -319,7 +319,7 @@ fun recalculateTotals() {
             totals.time += navlogList[i].time ?: 0L
         }
     }
-    if (settings.planeFph != null) totals.fuel = settings.planeFph!! * totals.time / 3600.0
+    totals.fuel = airplane.fph * totals.time / 3600.0
 }
 
 fun recalculateWaypoints() {

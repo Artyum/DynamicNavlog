@@ -5,7 +5,6 @@ import android.graphics.Bitmap
 import android.graphics.Canvas
 import android.graphics.Paint
 import android.graphics.Rect
-import android.util.Log
 import android.view.View
 import android.widget.ImageView
 import androidx.core.content.res.ResourcesCompat
@@ -15,36 +14,20 @@ import kotlinx.coroutines.sync.Mutex
 import java.time.LocalDateTime
 import kotlin.math.*
 
-data class PlanListItem(
-    var id: String,
-    var planName: String
-)
-
 data class Settings(
-    var id: String = "",
+    var planId: String = "",
     var planName: String = "",
     var departure: String = "",
     var destination: String = "",
 
-    var planeId: String = "",
-    var fob: Double? = null, //Fuel on board at takeoff
-    var planeType: String = "",
-    var planeReg: String = "",
-    var planeTas: Double = 0.0,
-    var planeFph: Double? = null,
-    var planeTank: Double? = null,
+    var airplaneId: String = "",
 
+    var fob: Double = 0.0,    //Fuel on board for takeoff
     var windDir: Double = 0.0,
     var windSpd: Double = 0.0,
 
-    var timeInUTC: Boolean = false,
-    var keepScreenOn: Boolean = false,
     var gpsAssist: Boolean = true,
     var takeoffCoords: LatLng? = null,
-
-    var spdUnits: Int = 0,
-    var distUnits: Int = 0,
-    var volUnits: Int = 0,
 
     var mapType: Int = GoogleMap.MAP_TYPE_NORMAL,
     var mapOrientation: Int = C.MAP_ORIENTATION_NORTH,
@@ -53,17 +36,6 @@ data class Settings(
     var mapFollow: Boolean = true,
     var tfDisplayToggle: Int = C.TF_DISPLAY_REM,
     var nextRadius: Int = C.DEFAULT_NEXT_RADIUS,
-    var screenOrientation: Int = C.SCREEN_PORTRAIT
-)
-
-data class Timers(
-    var offblock: LocalDateTime? = null,
-    var takeoff: LocalDateTime? = null,
-    var landing: LocalDateTime? = null,
-    var onblock: LocalDateTime? = null,
-    var flightTime: Long? = null,    // Seconds
-    var blockTime: Long? = null,     // Seconds
-    var groundTime: Long? = null     // Seconds
 )
 
 data class Airplane(
@@ -78,14 +50,33 @@ data class Airplane(
     var volUnits: Int = 0
 )
 
+data class Options(
+    var spdUnits: Int = 0,
+    var distUnits: Int = 0,
+    var volUnits: Int = 0,
+    var screenOrientation: Int = C.SCREEN_PORTRAIT,
+    var timeInUTC: Boolean = false,
+    var keepScreenOn: Boolean = false
+)
+
+data class Timers(
+    var offblock: LocalDateTime? = null,
+    var takeoff: LocalDateTime? = null,
+    var landing: LocalDateTime? = null,
+    var onblock: LocalDateTime? = null,
+    var flightTime: Long? = null,    // Seconds
+    var blockTime: Long? = null,     // Seconds
+    var groundTime: Long? = null     // Seconds
+)
+
 data class GpsData(
     var coords: LatLng? = null,
     var time: Long = 0L,
-    var rawSpeed: Double = 0.0,
-    var speed: Double = 0.0,
-    var altitude: Double = 0.0,
+    var speedMps: Double = 0.0,
+    var speedKt: Double = 0.0,
     var bearing: Float? = null,
-    var hAccuracy: Double = 0.0,
+    //var altitude: Double = 0.0,
+    //var hAccuracy: Double = 0.0,
     var heartbeat: Boolean = false,
     var isValid: Boolean = false
 )
@@ -96,7 +87,12 @@ data class Totals(
     var fuel: Double = 0.0
 )
 
-data class FlightCalc(
+data class PlanListItem(
+    var id: String,
+    var planName: String
+)
+
+data class FlightCalculator(
     val wca: Double,
     val hdg: Double,
     val gs: Double,
@@ -133,8 +129,9 @@ object C {
     const val INI_TIME_PATTERN = "yyyy-MM-dd HH:mm:ss"
     const val JSON_TIME_PATTERN = "yyyy-MM-dd HH:mm:ss"
 
-    const val stateFileName = "current_state$JSON_EXTENSION"
+    const val stateFile = "current_state$JSON_EXTENSION"
     const val airplanesFile = "airplanes$JSON_EXTENSION"
+    const val optionsFile = "options$JSON_EXTENSION"
 
     // Speed units
     const val SPD_KNOTS = 0
@@ -162,8 +159,10 @@ object C {
     const val ELEV_FT = 0
     const val ELEV_M = 1
 
+    // Threshold for precision digits
     const val DIST_THRESHOLD = 10
     const val TIME_THRESHOLD = 10
+    const val VOL_THRESHOLD = 10
 
     const val H_DELIMITER = ":"
     const val M_DELIMITER = "\'"
@@ -202,7 +201,7 @@ object C {
     //Screen orientation
     const val SCREEN_PORTRAIT = 0
     const val SCREEN_LANDSCAPE = 1
-    const val SCREEN_SENSOR = 2
+    const val SCREEN_SENSOR = 2              // Auto
 
     // Limit in free version
     const val FREE_PURCHASE_DELAY_SEC = 10   // Time this time the purchase message is hidden
@@ -227,13 +226,15 @@ var navlogList = ArrayList<NavlogItem>()
 var planList = ArrayList<PlanListItem>()
 var airplaneList = ArrayList<Airplane>()
 var tracePointsList = ArrayList<LatLng>()
-var settings = Settings()
-var timers = Timers()
-var totals = Totals()
-var editAirplaneID: String? = null
 
-// Next circle radius in NM
-val nextRadiusList = arrayListOf(0.5, 1.0, 2.0)
+var settings = Settings()
+var airplane = Airplane()
+var options = Options()
+var timers = Timers()
+
+var totals = Totals()
+var editAirplaneID: String? = null               // Airplane ID for "edit airplan"  page
+val nextRadiusList = arrayListOf(0.5, 1.0, 2.0)  // Next circle radius in NM
 
 var serviceRunning = false
 var locationSubscribed = false
@@ -459,50 +460,25 @@ fun paintWindCircle(imgView: ImageView, resources: Resources, course: Double, wi
     imgView.visibility = View.VISIBLE
 }
 
-fun flightCalculator(course: Double, windDir: Double, windSpd: Double, tas: Double, dist: Double? = null, fph: Double? = null): FlightCalc {
-    var windSpdL = windSpd
-    var tasL = tas
-    var distL = dist
-
-    // Convert to Knots
-    if (settings.spdUnits != C.SPD_KNOTS) {
-        if (settings.spdUnits == C.SPD_KPH) {
-            windSpdL = kph2kt(windSpdL)
-            tasL = kph2kt(tasL)
-        }
-        if (settings.spdUnits == C.SPD_MPH) {
-            windSpdL = mph2kt(windSpdL)
-            tasL = mph2kt(tasL)
-        }
-    }
-    // Convert to Nautical miles
-    if (dist != null && settings.distUnits != C.DIS_NM) {
-        if (settings.distUnits == C.DIS_SM) distL = sm2nm(dist)
-        if (settings.distUnits == C.DIS_KM) distL = km2nm(dist)
-    }
-
+fun flightCalculator(course: Double, windDir: Double, windSpd: Double, tas: Double, dist: Double? = null, fph: Double? = null): FlightCalculator {
     val wtAngle = deg2rad(course - windDir + 180f)
-    val sinWca = windSpdL * sin(wtAngle) / tasL
+    val sinWca = windSpd * sin(wtAngle) / tas
     var wca = asin(sinWca)
-    var gs = tasL * cos(wca) + windSpdL * cos(wtAngle)
+    val gs = tas * cos(wca) + windSpd * cos(wtAngle)
     wca = rad2deg(wca)
     val hdg = normalizeBearing(course + wca)
 
     var time: Long? = null
     var fuel: Double? = null
 
-    if (distL != null) {
-        time = (distL / gs * 60f * 60f).toLong()
-        if (fph != null) {
-            fuel = distL / gs * fph
+    if (dist != null) {
+        time = (dist / gs * 60f * 60f).toLong()
+        if (fph != null && fph > 0.0) {
+            fuel = dist / gs * fph
         }
     }
 
-    // Convert back to plan units
-    if (settings.spdUnits == C.SPD_KPH) gs = kt2kph(gs)
-    if (settings.spdUnits == C.SPD_MPH) gs = kt2mph(gs)
-
-    return FlightCalc(wca = wca, hdg = hdg, gs = gs, time = time, fuel = fuel)
+    return FlightCalculator(wca = wca, hdg = hdg, gs = gs, time = time, fuel = fuel)
 }
 
 fun isFlightInProgress(): Boolean {
@@ -514,54 +490,7 @@ fun isEngineRunning(): Boolean {
 }
 
 fun isSettingsReady(): Boolean {
-    return settings.planeId != "" && settings.planeTas > settings.windSpd
-}
-
-fun convertSettingsSpdUnits(old: Int, new: Int) {
-    Log.d("Global.kt", "convertSettingsSpdUnits")
-    var ratio = 1.0
-    if (old == C.SPD_KNOTS && new == C.SPD_KPH) ratio = kt2kph(1.0)
-    if (old == C.SPD_KNOTS && new == C.SPD_MPH) ratio = kt2mph(1.0)
-
-    if (old == C.SPD_MPH && new == C.SPD_KPH) ratio = mph2kph(1.0)
-    if (old == C.SPD_MPH && new == C.SPD_KNOTS) ratio = mph2kt(1.0)
-
-    if (old == C.SPD_KPH && new == C.SPD_KNOTS) ratio = kph2kt(1.0)
-    if (old == C.SPD_KPH && new == C.SPD_MPH) ratio = kph2mph(1.0)
-
-    settings.windSpd = settings.windSpd * ratio
-    getAirplaneSettingsByID(settings.planeId)
-}
-
-fun convertSettingsDistUnits(old: Int, new: Int) {
-    Log.d("Global.kt", "convertSettingsDistUnits")
-    var ratio = 1.0
-    if (old == C.DIS_NM && new == C.DIS_KM) ratio = nm2km(1.0)
-    if (old == C.DIS_NM && new == C.DIS_SM) ratio = nm2sm(1.0)
-
-    if (old == C.DIS_SM && new == C.DIS_NM) ratio = sm2nm(1.0)
-    if (old == C.DIS_SM && new == C.DIS_KM) ratio = sm2km(1.0)
-
-    if (old == C.DIS_KM && new == C.DIS_NM) ratio = km2nm(1.0)
-    if (old == C.DIS_KM && new == C.DIS_SM) ratio = km2sm(1.0)
-
-    for (i in navlogList.indices) navlogList[i].distance = navlogList[i].distance!! * ratio
-}
-
-fun convertSettingsVolUnits(old: Int, new: Int) {
-    Log.d("Global.kt", "convertSettingsVolUnits")
-    var ratio = 1.0
-    if (old == C.VOL_LITERS && new == C.VOL_USGAL) ratio = l2usgal(1.0)
-    if (old == C.VOL_LITERS && new == C.VOL_UKGAL) ratio = l2ukgal(1.0)
-
-    if (old == C.VOL_USGAL && new == C.VOL_LITERS) ratio = usgal2l(1.0)
-    if (old == C.VOL_USGAL && new == C.VOL_UKGAL) ratio = usgal2ukgal(1.0)
-
-    if (old == C.VOL_UKGAL && new == C.VOL_LITERS) ratio = ukgal2l(1.0)
-    if (old == C.VOL_UKGAL && new == C.VOL_USGAL) ratio = ukgal2usgal(1.0)
-
-    if (settings.fob != null) settings.fob = settings.fob!! * ratio
-    getAirplaneSettingsByID(settings.planeId)
+    return settings.airplaneId != "" && airplane.tas > settings.windSpd
 }
 
 fun formatDouble(value: Double?, precision: Int = 0): String {
@@ -571,53 +500,8 @@ fun formatDouble(value: Double?, precision: Int = 0): String {
     return tmp
 }
 
-fun getUnitsSpd(): String {
-    when (settings.spdUnits) {
-        C.SPD_KNOTS -> return "kt"
-        C.SPD_MPH -> return "mph"
-        C.SPD_KPH -> return "kph"
-    }
-    return ""
-}
-
-fun getUnitsDist(): String {
-    when (settings.distUnits) {
-        C.DIS_NM -> return "nm"
-        C.DIS_SM -> return "sm"
-        C.DIS_KM -> return "km"
-    }
-    return ""
-}
-
-fun getUnitsVolume(): String {
-    when (settings.volUnits) {
-        C.VOL_USGAL -> return "gal"
-        C.VOL_UKGAL -> return "gal"
-        C.VOL_LITERS -> return "l"
-    }
-    return ""
-}
-
 fun getNextRadiusUnits(i: Int): String {
     return formatDouble(nextRadiusList[i], 1) + " nm"
-}
-
-fun distUnits2meters(d: Double): Double {
-    when (settings.distUnits) {
-        C.DIS_NM -> return nm2m(d)
-        C.DIS_SM -> return sm2m(d)
-        C.DIS_KM -> return km2m(d)
-    }
-    return 0.0
-}
-
-fun meters2distUnits(d: Double): Double {
-    when (settings.distUnits) {
-        C.DIS_NM -> return m2nm(d)
-        C.DIS_SM -> return m2sm(d)
-        C.DIS_KM -> return m2km(d)
-    }
-    return 0.0
 }
 
 fun getDoubleOrNull(value: String): Double? {

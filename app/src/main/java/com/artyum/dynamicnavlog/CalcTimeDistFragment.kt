@@ -33,7 +33,7 @@ class CalcTimeDistFragment : Fragment(R.layout.fragment_calc_timedist) {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        bind.timeDistLayout.keepScreenOn = settings.keepScreenOn
+        bind.timeDistLayout.keepScreenOn = options.keepScreenOn
         (activity as MainActivity).hideButtons()
 
         val con = view.context

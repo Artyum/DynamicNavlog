@@ -63,6 +63,11 @@
             android:text="@string/txtTime" />
 
         <TextView
+            android:id="@+id/txtNavlogFuel"
+            style="@style/navlogItem"
+            android:text="@string/txtFuel" />
+
+        <TextView
             android:id="@+id/txtNavlogEta"
             style="@style/navlogItem"
             android:layout_width="90dp"
@@ -73,11 +78,5 @@
             style="@style/navlogItem"
             android:layout_width="90dp"
             android:text="@string/txtAta" />
-
-        <TextView
-            android:id="@+id/txtNavlogFuel"
-            style="@style/navlogItem"
-            android:text="@string/txtFuel" />
-
     </LinearLayout>
 </androidx.cardview.widget.CardView>

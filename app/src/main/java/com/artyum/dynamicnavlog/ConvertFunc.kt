@@ -69,3 +69,106 @@ fun l2usgal(v: Double): Double = v * 0.26417205124156
 fun l2ukgal(v: Double): Double = v * 0.21996924829908776
 fun usgal2ukgal(v: Double): Double = v * 0.8326741881485
 fun ukgal2usgal(v: Double): Double = v * 1.2009499204287
+
+fun distUnits2meters(d: Double): Double {
+    when (options.distUnits) {
+        C.DIS_NM -> return nm2m(d)
+        C.DIS_SM -> return sm2m(d)
+        C.DIS_KM -> return km2m(d)
+    }
+    return 0.0
+}
+
+fun meters2distUnits(d: Double): Double {
+    when (options.distUnits) {
+        C.DIS_NM -> return m2nm(d)
+        C.DIS_SM -> return m2sm(d)
+        C.DIS_KM -> return m2km(d)
+    }
+    return 0.0
+}
+
+fun getUnitsSpd(): String {
+    when (options.spdUnits) {
+        C.SPD_KNOTS -> return "kt"
+        C.SPD_MPH -> return "mph"
+        C.SPD_KPH -> return "kph"
+    }
+    return ""
+}
+
+fun getUnitsDis(): String {
+    when (options.distUnits) {
+        C.DIS_NM -> return "nm"
+        C.DIS_SM -> return "sm"
+        C.DIS_KM -> return "km"
+    }
+    return ""
+}
+
+fun getUnitsVol(): String {
+    when (options.volUnits) {
+        C.VOL_USGAL -> return "gal"
+        C.VOL_UKGAL -> return "gal"
+        C.VOL_LITERS -> return "l"
+    }
+    return ""
+}
+
+// Convert to display units / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / /
+
+fun toUnitsSpd(v: Double?): Double? {
+    if (v == null) return null
+    return when (options.spdUnits) {
+        C.SPD_MPH -> kt2mph(v)
+        C.SPD_KPH -> kt2kph(v)
+        else -> v
+    }
+}
+
+fun toUnitsDis(v: Double?): Double? {
+    if (v == null) return null
+    return when (options.distUnits) {
+        C.DIS_SM -> nm2sm(v)
+        C.DIS_KM -> nm2km(v)
+        else -> v
+    }
+}
+
+fun toUnitsVol(v: Double?): Double? {
+    if (v == null) return null
+    return when (options.volUnits) {
+        C.VOL_USGAL -> l2usgal(v)
+        C.VOL_UKGAL -> l2ukgal(v)
+        else -> v
+    }
+}
+
+// Convert from user to internal units -> kt / nm / l / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / /
+
+fun fromUnitsSpd(v: Double?): Double? {
+    if (v == null) return null
+    return when (options.spdUnits) {
+        C.SPD_MPH -> mph2kt(v)
+        C.SPD_KPH -> kph2kt(v)
+        else -> v
+    }
+}
+
+fun fromUnitsDis(v: Double?): Double? {
+    if (v == null) return null
+    return when (options.distUnits) {
+        C.DIS_SM -> sm2nm(v)
+        C.DIS_KM -> km2nm(v)
+        else -> v
+    }
+}
+
+fun fromUnitsVol(v: Double?): Double? {
+    if (v == null) return null
+    return when (options.volUnits) {
+        C.VOL_USGAL -> usgal2l(v)
+        C.VOL_UKGAL -> ukgal2l(v)
+        else -> v
+    }
+}

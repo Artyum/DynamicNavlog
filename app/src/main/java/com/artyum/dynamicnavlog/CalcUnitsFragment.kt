@@ -33,7 +33,7 @@ class CalcUnitsFragment : Fragment(R.layout.fragment_calc_units) {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        bind.unitsLayout.keepScreenOn = settings.keepScreenOn
+        bind.unitsLayout.keepScreenOn = options.keepScreenOn
         (activity as MainActivity).hideButtons()
 
         val con = view.context

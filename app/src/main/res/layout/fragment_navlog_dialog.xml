@@ -82,6 +82,7 @@
         <TextView style="@style/spacer" />
 
         <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/boxDistance"
             style="@style/navDialog"
             android:hint="@string/txtDistance">
 

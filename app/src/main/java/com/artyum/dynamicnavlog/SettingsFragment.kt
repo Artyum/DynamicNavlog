@@ -22,10 +22,8 @@ import kotlin.math.round
 
 class SettingsFragment : Fragment(R.layout.fragment_settings) {
     private val TAG = "SettingsFragment"
-
     private var _binding: FragmentSettingsBinding? = null
     private val bind get() = _binding!!
-    private val precision = 1
 
     private var change = false
     private var refresh = false
@@ -36,14 +34,13 @@ class SettingsFragment : Fragment(R.layout.fragment_settings) {
     }
 
     override fun onDestroyView() {
-        //println("onDestroyView")
         super.onDestroyView()
         _binding = null
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        bind.settingLayout.keepScreenOn = settings.keepScreenOn
+        bind.settingLayout.keepScreenOn = options.keepScreenOn
         (activity as MainActivity).displayButtons()
 
         // Flight plan name
@@ -56,7 +53,7 @@ class SettingsFragment : Fragment(R.layout.fragment_settings) {
             }
         }
         bind.settingFlightPlanName.setOnFocusChangeListener { _, hasFocus ->
-            if (!hasFocus) saveSettings()
+            if (!hasFocus) saveForm()
         }
 
         // Departure
@@ -69,7 +66,7 @@ class SettingsFragment : Fragment(R.layout.fragment_settings) {
             }
         }
         bind.settingFrom.setOnFocusChangeListener { _, hasFocus ->
-            if (!hasFocus) saveSettings()
+            if (!hasFocus) saveForm()
         }
 
         // Destination
@@ -82,15 +79,15 @@ class SettingsFragment : Fragment(R.layout.fragment_settings) {
             }
         }
         bind.settingDestination.setOnFocusChangeListener { _, hasFocus ->
-            if (!hasFocus) saveSettings()
+            if (!hasFocus) saveForm()
         }
 
         // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // //
 
-        // Wind dir
+        // Wind direction
         bind.settingWindDir.doOnTextChanged { text, _, _, _ ->
             val dWindDir = getDoubleOrNull(text.toString())
-            if (!validWinDir(dWindDir)) showSettingsError(getString(R.string.txtInvalidWind))
+            if (!isValidWindDir(dWindDir)) showSettingsError(getString(R.string.txtInvalidWind))
             else if (settings.windDir != dWindDir) {
                 settings.windDir = dWindDir!!
                 bind.settingsInfoBox.visibility = View.GONE
@@ -98,13 +95,13 @@ class SettingsFragment : Fragment(R.layout.fragment_settings) {
             }
         }
         bind.settingWindDir.setOnFocusChangeListener { _, hasFocus ->
-            if (!hasFocus) saveSettings()
+            if (!hasFocus) saveForm()
         }
 
         // Wind speed
         bind.settingWindSpd.doOnTextChanged { text, _, _, _ ->
-            val dWindSpd = getDoubleOrNull(text.toString())
-            if (!validWinSpeed(dWindSpd)) showSettingsError(getString(R.string.txtInvalidWindSpeed))
+            val dWindSpd = fromUnitsSpd(getDoubleOrNull(text.toString()))
+            if (!isValidWindSpeed(dWindSpd)) showSettingsError(getString(R.string.txtInvalidWindSpeed))
             else if (settings.windSpd != dWindSpd) {
                 settings.windSpd = dWindSpd!!
                 bind.settingsInfoBox.visibility = View.GONE
@@ -112,15 +109,16 @@ class SettingsFragment : Fragment(R.layout.fragment_settings) {
             }
         }
         bind.settingWindSpd.setOnFocusChangeListener { _, hasFocus ->
-            if (!hasFocus) saveSettings()
+            if (!hasFocus) saveForm()
         }
 
         // Fuel on board / Takeoff fuel
         bind.settingFuel.doOnTextChanged { text, _, _, _ ->
-            var dFob = getDoubleOrNull(text.toString())
+            var dFob = fromUnitsVol(getDoubleOrNull(text.toString()))
             if (dFob != null) {
                 if (dFob > 0.0) {
-                    if (settings.planeTank != null && dFob > settings.planeTank!!) dFob = settings.planeTank
+                    if (dFob > airplane.tank) dFob = airplane.tank
+                    if (dFob < totals.fuel) dFob = totals.fuel
                     settings.fob = dFob
                     bind.settingsInfoBox.visibility = View.GONE
                     change = true
@@ -129,11 +127,7 @@ class SettingsFragment : Fragment(R.layout.fragment_settings) {
             }
         }
         bind.settingFuel.setOnFocusChangeListener { _, hasFocus ->
-            if (!hasFocus) {
-                if (settings.fob == null) bind.settingFuel.setText("")
-                else bind.settingsInfoBox.visibility = View.GONE
-                saveSettings()
-            }
+            if (!hasFocus) saveForm()
         }
 
         // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // //
@@ -148,61 +142,7 @@ class SettingsFragment : Fragment(R.layout.fragment_settings) {
                         getAirplaneSettings(-1)
                     }
                     change = true
-                    saveSettings()
-                }
-
-                override fun onNothingSelected(parent: AdapterView<*>?) {
-                    return
-                }
-            }
-
-        // Spinner - Speed units
-        bind.spinnerUnitsSpd.onItemSelectedListener =
-            object : AdapterView.OnItemSelectedListener {
-                override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
-                    if (position != settings.spdUnits) {
-                        val oldUnits = settings.spdUnits
-                        settings.spdUnits = position
-                        convertSettingsSpdUnits(oldUnits, position)
-                        change = true
-                        saveSettings()
-                    }
-                }
-
-                override fun onNothingSelected(parent: AdapterView<*>?) {
-                    return
-                }
-            }
-
-        // Spinner - Distance units
-        bind.spinnerUnitsDist.onItemSelectedListener =
-            object : AdapterView.OnItemSelectedListener {
-                override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
-                    if (position != settings.distUnits) {
-                        val oldUnits = settings.distUnits
-                        settings.distUnits = position
-                        convertSettingsDistUnits(oldUnits, position)
-                        change = true
-                        saveSettings()
-                    }
-                }
-
-                override fun onNothingSelected(parent: AdapterView<*>?) {
-                    return
-                }
-            }
-
-        // Spinner - Volume units
-        bind.spinnerUnitsVol.onItemSelectedListener =
-            object : AdapterView.OnItemSelectedListener {
-                override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
-                    if (position != settings.volUnits) {
-                        val oldUnits = settings.volUnits
-                        settings.volUnits = position
-                        convertSettingsVolUnits(oldUnits, position)
-                        change = true
-                        saveSettings()
-                    }
+                    saveForm()
                 }
 
                 override fun onNothingSelected(parent: AdapterView<*>?) {
@@ -229,7 +169,7 @@ class SettingsFragment : Fragment(R.layout.fragment_settings) {
             }
             change = true
             (activity as MainActivity).displayButtons()
-            saveSettings()
+            saveForm()
         }
 
         // Switch - Auto-detect Waypoint
@@ -238,7 +178,7 @@ class SettingsFragment : Fragment(R.layout.fragment_settings) {
             setWptDetectVisibility(settings.autoNext)
             change = true
             (activity as MainActivity).displayButtons()
-            saveSettings()
+            saveForm()
             if (isAutoNextEnabled()) CoroutineScope(CoroutineName("gpsCoroutine")).launch { (activity as MainActivity).detectFlightStageThread() }
         }
 
@@ -246,7 +186,7 @@ class SettingsFragment : Fragment(R.layout.fragment_settings) {
         bind.settingTrace.setOnCheckedChangeListener { _, isChecked ->
             settings.displayTrace = isChecked
             change = true
-            saveSettings()
+            saveForm()
         }
 
         // Switch - Auto-next radius
@@ -256,7 +196,7 @@ class SettingsFragment : Fragment(R.layout.fragment_settings) {
                     if (position != settings.nextRadius) {
                         settings.nextRadius = position
                         change = true
-                        saveSettings()
+                        saveForm()
                     }
                 }
 
@@ -264,20 +204,6 @@ class SettingsFragment : Fragment(R.layout.fragment_settings) {
                     return
                 }
             }
-
-        // Switch - Time UTC
-        bind.settingTimeUTC.setOnCheckedChangeListener { _, isChecked ->
-            settings.timeInUTC = isChecked
-            change = true
-            saveSettings()
-        }
-
-        // Switch - Keep screen ON
-        bind.settingsScreenOn.setOnCheckedChangeListener { _, isChecked ->
-            settings.keepScreenOn = isChecked
-            change = true
-            saveSettings()
-        }
 
         // Spinner - Map orientation
         bind.spinnerMapOrientation.onItemSelectedListener =
@@ -286,24 +212,7 @@ class SettingsFragment : Fragment(R.layout.fragment_settings) {
                     if (position != settings.mapOrientation) {
                         settings.mapOrientation = position
                         change = true
-                        saveSettings()
-                    }
-                }
-
-                override fun onNothingSelected(parent: AdapterView<*>?) {
-                    return
-                }
-            }
-
-        // Spinner - Screen orientation
-        bind.spinnerScreenOrientation.onItemSelectedListener =
-            object : AdapterView.OnItemSelectedListener {
-                override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
-                    if (position != settings.screenOrientation) {
-                        settings.screenOrientation = position
-                        change = true
-                        (activity as MainActivity).setScreenOrientation()
-                        saveSettings()
+                        saveForm()
                     }
                 }
 
@@ -319,10 +228,10 @@ class SettingsFragment : Fragment(R.layout.fragment_settings) {
     override fun onStop() {
         Log.d(TAG, "onStop")
         super.onStop()
-        saveSettings()
+        saveForm()
     }
 
-    private fun saveSettings() {
+    private fun saveForm() {
         if (refresh) return
         if (!change) return
         change = false
@@ -348,27 +257,6 @@ class SettingsFragment : Fragment(R.layout.fragment_settings) {
         }
         bind.spinnerAirplane.adapter = ArrayAdapter(view.context, R.layout.support_simple_spinner_dropdown_item, planeList)
 
-        // Spinner - Speed units
-        val unitsSpdList = ArrayList<String>()
-        unitsSpdList.add("Knots (kt)")          // 0
-        unitsSpdList.add("Miles/h (mph)")       // 1
-        unitsSpdList.add("Kilometers/h (kph)")  // 2
-        bind.spinnerUnitsSpd.adapter = ArrayAdapter(view.context, R.layout.support_simple_spinner_dropdown_item, unitsSpdList)
-
-        // Spinner - Speed units
-        val unitsDistList = ArrayList<String>()
-        unitsDistList.add("Nautical miles (nm)")    // 0
-        unitsDistList.add("Statute miles (sm)")     // 1
-        unitsDistList.add("Kilometers (km)")        // 2
-        bind.spinnerUnitsDist.adapter = ArrayAdapter(view.context, R.layout.support_simple_spinner_dropdown_item, unitsDistList)
-
-        // Spinner - Volume units
-        val unitsFuelList = ArrayList<String>()
-        unitsFuelList.add("US Gal (gal)")    // 0
-        unitsFuelList.add("UK Gal (gal)")    // 1
-        unitsFuelList.add("Liters (l)")      // 2
-        bind.spinnerUnitsVol.adapter = ArrayAdapter(view.context, R.layout.support_simple_spinner_dropdown_item, unitsFuelList)
-
         // Spinner - Map orientation
         val mapOrientationList = ArrayList<String>()
         mapOrientationList.add("North Up")     // 0
@@ -380,13 +268,6 @@ class SettingsFragment : Fragment(R.layout.fragment_settings) {
         val nextRadiusOptions = ArrayList<String>()
         for (i in nextRadiusList.indices) nextRadiusOptions.add(getNextRadiusUnits(i))
         bind.spinnerNextRadius.adapter = ArrayAdapter(view.context, R.layout.support_simple_spinner_dropdown_item, nextRadiusOptions)
-
-        // Spinner - Screen orientation
-        val screenOrientationList = ArrayList<String>()
-        screenOrientationList.add("Portrait")    // 0
-        screenOrientationList.add("Landscape")   // 1
-        screenOrientationList.add("Auto")        // 2
-        bind.spinnerScreenOrientation.adapter = ArrayAdapter(view.context, R.layout.support_simple_spinner_dropdown_item, screenOrientationList)
     }
 
     private fun restoreSettings() {
@@ -397,16 +278,17 @@ class SettingsFragment : Fragment(R.layout.fragment_settings) {
         bind.settingDestination.setText(settings.destination)
 
         // Takeoff fuel
-        bind.settingFuel.setText(formatDouble(settings.fob, precision))
-        bind.hintTakeoffFuel.hint = getString(R.string.txtTakeoffFuel) + " (" + getUnitsVolume() + ")"
+        val p = if (settings.fob < C.VOL_THRESHOLD) 1 else 0
+        bind.settingFuel.setText(formatDouble(toUnitsVol(settings.fob), p))
+        bind.hintTakeoffFuel.hint = getString(R.string.txtTakeoffFuel) + " (" + getUnitsVol() + ")"
 
         // Airplane
-        val id = getAirplaneListPosition(settings.planeId)
+        val id = getAirplaneListPosition(settings.airplaneId)
         if (id > 0) {
             bind.spinnerAirplane.setSelection(id)
-            bind.airplaneDetailsTas.text = formatDouble(settings.planeTas)
-            bind.airplaneDetailsTank.text = formatDouble(settings.planeTank)
-            bind.airplaneDetailsFph.text = formatDouble(settings.planeFph, 1)
+            bind.airplaneDetailsTas.text = formatDouble(toUnitsSpd(airplane.tas))
+            bind.airplaneDetailsTank.text = formatDouble(toUnitsVol(airplane.tank))
+            bind.airplaneDetailsFph.text = formatDouble(toUnitsVol(airplane.fph), 1)
             bind.airplaneDetailsBox.visibility = View.VISIBLE
             bind.settingsSelectAirplaneMsg.visibility = View.GONE
         } else {
@@ -414,18 +296,13 @@ class SettingsFragment : Fragment(R.layout.fragment_settings) {
             bind.settingsSelectAirplaneMsg.visibility = View.VISIBLE
         }
         bind.airplaneSpdUnits.text = getUnitsSpd()
-        bind.airplaneFuelUnits1.text = getUnitsVolume()
-        bind.airplaneFuelUnits2.text = getUnitsVolume()
+        bind.airplaneFuelUnits1.text = getUnitsVol()
+        bind.airplaneFuelUnits2.text = getUnitsVol()
 
         // Wind conditions
-        bind.settingWindDir.setText(formatDouble(settings.windDir, precision))
-        bind.settingWindSpd.setText(formatDouble(settings.windSpd, precision))
+        bind.settingWindDir.setText(formatDouble(settings.windDir, 1))
+        bind.settingWindSpd.setText(formatDouble(toUnitsSpd(settings.windSpd), 1))
         bind.hintWindSpd.hint = getString(R.string.txtWindSpeed) + " (" + getUnitsSpd() + ")"
-
-        // Units
-        bind.spinnerUnitsSpd.setSelection(settings.spdUnits)
-        bind.spinnerUnitsDist.setSelection(settings.distUnits)
-        bind.spinnerUnitsVol.setSelection(settings.volUnits)
 
         // GPS settings
         bind.settingGpsAssist.isChecked = settings.gpsAssist
@@ -433,11 +310,6 @@ class SettingsFragment : Fragment(R.layout.fragment_settings) {
         bind.spinnerNextRadius.setSelection(settings.nextRadius)
         bind.settingAutoNext.isChecked = settings.autoNext
         bind.settingTrace.isChecked = settings.displayTrace
-
-        // Misc
-        bind.settingTimeUTC.isChecked = settings.timeInUTC
-        bind.settingsScreenOn.isChecked = settings.keepScreenOn
-        bind.spinnerScreenOrientation.setSelection(settings.screenOrientation)
 
         setGpsGroupVisibility(settings.gpsAssist)
         setWptDetectVisibility(settings.autoNext)
@@ -447,36 +319,25 @@ class SettingsFragment : Fragment(R.layout.fragment_settings) {
     }
 
     private fun refreshSpareFuelBox() {
-        if (settings.planeId != "" && settings.fob != null && settings.planeFph != null && settings.planeFph!! > 0.0 && totals.fuel > 0) {
-            val spareFuel = settings.fob!! - totals.fuel
+        if (settings.airplaneId != "" && airplane.fph > 0.0) {
+            val spareFuel = settings.fob - totals.fuel
+            val h = spareFuel / airplane.fph
+            val extraDist = airplane.tas * h
 
-            //Time
-            val h = spareFuel / settings.planeFph!!
+            //  Extra fuel
+            bind.spareFuel.text = formatDouble(toUnitsVol(totals.fuel)) + "/" + formatDouble(toUnitsVol(spareFuel))
+            bind.spareFuelUnits.text = getUnitsVol()
 
-            //Distance
-            val tas = if (settings.spdUnits == C.SPD_KPH) kph2kt(settings.planeTas)
-            else if (settings.spdUnits == C.SPD_MPH) mph2kt(settings.planeTas)
-            else settings.planeTas
-            var extraDist = tas * h
-            if (settings.distUnits == C.DIS_KM) extraDist = nm2km(extraDist)
-            if (settings.distUnits == C.DIS_SM) extraDist = nm2sm(extraDist)
+            // Extra distance
+            bind.extraDistance.text = formatDouble(toUnitsDis(extraDist))
+            bind.extraDistanceUnits.text = getUnitsDis()
 
-            bind.requiredFuel.text = formatDouble(totals.fuel)
-            bind.requiredFuelUnits.text = getUnitsVolume()
-
-            bind.spareFuel.text = formatDouble(spareFuel)
-            bind.spareFuelUnits.text = getUnitsVolume()
-
-            bind.extraDistance.text = formatDouble(extraDist)
-            bind.extraDistanceUnits.text = getUnitsDist()
-
+            // Extra time
             bind.additionalTime.text = formatSecondsToTime((h * 3600.0).toLong())
         } else {
-            bind.requiredFuel.text = ""
             bind.spareFuel.text = ""
             bind.extraDistance.text = ""
             bind.additionalTime.text = "-"
-            bind.requiredFuelUnits.text = "-"
             bind.spareFuelUnits.text = "-"
             bind.extraDistanceUnits.text = "-"
         }
@@ -490,23 +351,28 @@ class SettingsFragment : Fragment(R.layout.fragment_settings) {
         bind.settingWptDetection.isVisible = visible
     }
 
-    private fun validWinDir(v: Double?): Boolean {
+    private fun isValidWindDir(v: Double?): Boolean {
         return v != null && v in 0.0..360.0
     }
 
-    private fun validWinSpeed(v: Double?): Boolean {
-        return v != null && v >= 0.0 && v < settings.planeTas
+    private fun isValidWindSpeed(v: Double?): Boolean {
+        return v != null && v >= 0.0 && v < airplane.tas
     }
 
-    private fun validTas(v: Double?): Boolean {
-        return v != null && v > settings.windSpd
+    private fun getAirplaneListPosition(id: String): Int {
+        // Index 0 -> "Select an airplane"
+        if (id == "") return 0
+        for (i in airplaneList.indices) {
+            if (airplaneList[i].id == id) return i + 1
+        }
+        return 0
     }
 
     private fun getAirplaneSettings(i: Int = -1) {
         if (i < 0) {
             resetAirplaneSettings()
         } else {
-            getAirplaneSettingsByID(airplaneList[i].id)
+            getAirplaneByID(airplaneList[i].id)
         }
         restoreSettings()
     }
@@ -524,8 +390,8 @@ fun isMapFollow(): Boolean {
     return settings.gpsAssist && settings.mapFollow
 }
 
-fun  resetSettings() {
-    settings.id = generateStringId()
+fun resetSettings() {
+    settings.planId = generateStringId()
 
     settings.planName = ""
     settings.departure = ""
@@ -533,14 +399,7 @@ fun  resetSettings() {
 
     settings.windDir = 0.0
     settings.windSpd = 0.0
-    settings.fob = null
-
-    settings.spdUnits = 0
-    settings.distUnits = 0
-    settings.volUnits = 0
-
-    settings.timeInUTC = false
-    settings.keepScreenOn = true
+    settings.fob = 0.0
 
     settings.gpsAssist = true
     settings.autoNext = true
@@ -552,7 +411,7 @@ fun  resetSettings() {
     settings.mapOrientation = C.MAP_ORIENTATION_NORTH
     settings.tfDisplayToggle = C.TF_DISPLAY_REM
     settings.nextRadius = C.DEFAULT_NEXT_RADIUS
-    settings.screenOrientation = C.SCREEN_SENSOR
 
     resetAirplaneSettings()
+    loadOptions()
 }

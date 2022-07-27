@@ -71,7 +71,7 @@ class NavlogDialogFragment(private val item: Int, private val adapter: NavlogAda
 
             if (dest != "" && mt != "" && dist != "") {
                 val dMagneticTrack = getDoubleOrNull(mt)
-                val dDist = getDoubleOrNull(dist)
+                val dDist = fromUnitsDis(getDoubleOrNull(dist))
                 var dTrueTrack = getDoubleOrNull(tt)
                 val dDeclination = getDoubleOrNull(declination)
                 val dLat = getDoubleOrNull(lat)
@@ -157,7 +157,8 @@ class NavlogDialogFragment(private val item: Int, private val adapter: NavlogAda
             if (navlogList[item].magneticTrack != null) bind.dialogMt.setText(formatDouble(navlogList[item].magneticTrack, 1))
 
             // Distance
-            bind.dialogDist.setText(formatDouble(navlogList[item].distance, 1))
+            bind.dialogDist.setText(formatDouble(toUnitsDis(navlogList[item].distance), 1))
+            bind.boxDistance.hint = getString(R.string.txtDistance) + " (" + getUnitsDis() + ")"
 
             // Latitude
             if (navlogList[item].coords != null) {

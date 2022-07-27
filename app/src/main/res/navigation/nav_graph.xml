@@ -228,5 +228,19 @@
         android:name="com.artyum.dynamicnavlog.AirplaneFragment"
         android:label="@string/txtEditAirplane"
         tools:layout="@layout/fragment_airplane" />
+    <fragment
+        android:id="@+id/optionsFragment"
+        android:name="com.artyum.dynamicnavlog.OptionsFragment"
+        android:label="@string/txtOptions"
+        tools:layout="@layout/fragment_options" />
+    <action
+        android:id="@+id/action_global_optionsFragment"
+        app:destination="@id/optionsFragment"
+        app:enterAnim="@anim/nav_default_enter_anim"
+        app:exitAnim="@anim/nav_default_exit_anim"
+        app:popEnterAnim="@anim/nav_default_pop_enter_anim"
+        app:popExitAnim="@anim/nav_default_pop_exit_anim"
+        app:popUpTo="@id/homeFragment"
+        app:popUpToInclusive="true" />
 
 </navigation>

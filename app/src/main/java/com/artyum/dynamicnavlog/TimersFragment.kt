@@ -36,7 +36,7 @@ class TimersFragment : Fragment(R.layout.fragment_timers) {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        bind.timersLayout.keepScreenOn = settings.keepScreenOn
+        bind.timersLayout.keepScreenOn = options.keepScreenOn
         (activity as MainActivity).hideButtons()
 
         tOffblock = roundToMinutes(timers.offblock)
@@ -105,7 +105,7 @@ fun formatDateTime(t: LocalDateTime?, pattern: String): String {
     val ldtZoned: ZonedDateTime = t.atZone(ZoneId.systemDefault())
     val utcZoned: ZonedDateTime = ldtZoned.withZoneSameInstant(ZoneId.of("UTC"))
 
-    return if (settings.timeInUTC)
+    return if (options.timeInUTC)
         utcZoned.format(DateTimeFormatter.ofPattern(pattern)) + C.ZULU_SIGN
     else
         ldtZoned.format(DateTimeFormatter.ofPattern(pattern))

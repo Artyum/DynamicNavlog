@@ -30,7 +30,7 @@ class PlanListFragment : Fragment(R.layout.fragment_planlist), PlanListAdapter.O
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        bind.planListLayout.keepScreenOn = settings.keepScreenOn
+        bind.planListLayout.keepScreenOn = options.keepScreenOn
         (activity as MainActivity).hideButtons()
 
         // Search box
@@ -93,7 +93,7 @@ class PlanListFragment : Fragment(R.layout.fragment_planlist), PlanListAdapter.O
     private fun loadFLightPlan(i: Int) {
         val fpn = planList[i].id
 
-        if (fpn != settings.id) {
+        if (fpn != settings.planId) {
             loadState(planList[i].id)
             calcNavlog()
         }
