@@ -34,7 +34,7 @@ data class Settings(
     var autoNext: Boolean = true,
     var displayTrace: Boolean = true,
     var mapFollow: Boolean = true,
-    var tfDisplayToggle: Int = C.TF_DISPLAY_REM,
+    var tfDisplayToggle: Int = C.TF_DISPLAY_REM,  // Switch to display time and fuel on the Navlog screen
     var nextRadius: Int = C.DEFAULT_NEXT_RADIUS,
 )
 
@@ -56,7 +56,9 @@ data class Options(
     var volUnits: Int = 0,
     var screenOrientation: Int = C.SCREEN_PORTRAIT,
     var timeInUTC: Boolean = false,
-    var keepScreenOn: Boolean = false
+    var keepScreenOn: Boolean = false,
+    var autoTakeoffSpd: Double = kt2mps(40.0),   // Minimum speed for takeoff detection in m/s
+    var autoLandingSpd: Double = kt2mps(40.0)    // Maximum speed for landing detection in m/s
 )
 
 data class Timers(
@@ -180,7 +182,7 @@ object C {
     const val EARTH_RADIUS_LONG_M = 6378137.0
 
     const val GPS_ALIVE_SEC = 30
-    const val GPS_MINIMUM_RAWSPEED = 5      // 5m/s = ~10kt
+
     const val MAX_ANGLE_INDICATOR = 10
     const val COORDS_PRECISION = 6
     const val LOCATION_PERMISSION_REQ_CODE = 99
@@ -188,9 +190,10 @@ object C {
     const val TF_DISPLAY_CUR = 0
     const val TF_DISPLAY_REM = 1
 
-    const val AUTO_TAKEOFF_SPEED_MPS = 20
-    const val AUTO_LANDING_SPEED_MPS = 20   // 15=~30kt / 20=~40kt / 25=~50kt
-    const val AUTO_NEXT_WAIT_SEC = 3        // Takeoff if speed is AUTO_TAKEOFF_SPEED_MPS for AUTO_NEXT_WAIT_SEC seconds
+    const val GPS_MINIMUM_RAWSPEED = 3           // 3m/s = ~6kt = ~10kph
+    const val AUTO_TAKEOFF_MIN_SPEED_KT = 20.0   // 10kt = 19kph  15kt = 28kph  20kt = 37kph
+    const val AUTO_LANDING_MIN_SPEED_KT = 20.0   // 30kt = 55kph  40kt = 74kph  50kt = 92kph
+    const val AUTO_NEXT_WAIT_SEC = 3             // Takeoff if speed is AUTO_TAKEOFF_SPEED_MPS for AUTO_NEXT_WAIT_SEC seconds
 
     const val DEFAULT_NEXT_RADIUS = 0       // Index in nextRadiusList array
 
