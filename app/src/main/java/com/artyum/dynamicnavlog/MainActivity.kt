@@ -912,7 +912,7 @@ class MainActivity : AppCompatActivity() {
 
                     if (stage == C.STAGE_2_ENGINE_RUNNING) {
                         // Detect takeoff
-                        if (gps.speedMps > C.AUTO_TAKEOFF_SPEED_MPS) speedCnt += 1 else speedCnt = 0
+                        if (gps.speedMps > options.autoTakeoffSpd) speedCnt += 1 else speedCnt = 0
                         if (speedCnt >= C.AUTO_NEXT_WAIT_SEC) {
                             // Auto Takeoff
                             Log.d(TAG, "Auto takeoff")
@@ -944,7 +944,7 @@ class MainActivity : AppCompatActivity() {
                                     } else prevDist = dist
                                 } else {
                                     // Auto Landing
-                                    if (gps.speedMps < C.AUTO_LANDING_SPEED_MPS) speedCnt += 1 else speedCnt = 0
+                                    if (gps.speedMps < options.autoLandingSpd) speedCnt += 1 else speedCnt = 0
                                     if (speedCnt >= C.AUTO_NEXT_WAIT_SEC) {
                                         Log.d(TAG, "Auto landing")
                                         setStageLanding()

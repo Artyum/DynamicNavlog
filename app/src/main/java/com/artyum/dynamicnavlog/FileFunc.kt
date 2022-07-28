@@ -119,6 +119,8 @@ fun saveOptions() {
     jOptions.put("screenorient", options.screenOrientation)
     jOptions.put("screenon", options.keepScreenOn)
     jOptions.put("utc", options.timeInUTC)
+    jOptions.put("takeoffspd", options.autoTakeoffSpd)
+    jOptions.put("landingspd", options.autoLandingSpd)
 
     val json = JSONObject()
     json.put("options", jOptions)
@@ -139,8 +141,6 @@ fun loadOptions() {
             json = JSONObject(file.readText())
         } catch (e: Exception) {
             Log.d(tag, e.toString())
-            resetOptions()
-            saveOptions()
             return
         }
 
@@ -151,10 +151,12 @@ fun loadOptions() {
         newOptions.screenOrientation = if (jOptions.has("screenorient")) jOptions["screenorient"].toString().toIntOrNull() ?: C.SCREEN_SENSOR else C.SCREEN_SENSOR
         newOptions.timeInUTC = if (jOptions.has("utc")) jOptions["utc"].toString().toBoolean() else false
         newOptions.keepScreenOn = if (jOptions.has("screenon")) jOptions["screenon"].toString().toBoolean() else false
+        newOptions.autoTakeoffSpd = if (jOptions.has("takeoffspd")) jOptions["takeoffspd"].toString().toDoubleOrNull() ?: C.AUTO_TAKEOFF_MIN_SPEED_KT else C.AUTO_TAKEOFF_MIN_SPEED_KT
+        newOptions.autoLandingSpd = if (jOptions.has("landingspd")) jOptions["landingspd"].toString().toDoubleOrNull() ?: C.AUTO_LANDING_MIN_SPEED_KT else C.AUTO_LANDING_MIN_SPEED_KT
 
         options = newOptions
     } else {
-        resetOptions()
+        options = Options()
         saveOptions()
     }
 }

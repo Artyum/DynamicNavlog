@@ -29,6 +29,7 @@
     <string name="txtRightxwind">Right Xwind</string>
     <string name="txtClear">AC</string>
     <string name="txtUnits">Units</string>
+    <string name="txtDisplayUnits">Display units</string>
     <string name="txtSettings">Settings</string>
     <string name="txtFlightPlanSettings">Flight plan settings</string>
     <string name="txtFlightSettings">Flight settings</string>
@@ -132,6 +133,9 @@
     <string name="txtFuelPerHour">Fuel per hour</string>
     <string name="txtTakeoffFuel">T/O fuel</string>
     <string name="txtTank">Tank</string>
+    <string name="txtAutoDetect">Takeoff and landing detection</string>
+    <string name="txtTakeoffDetect">T/O detect spd (kt)</string>
+    <string name="txtLandingDetect">LND detect spd (kt)</string>
     <string name="txtTankCapacity">Tank capacity</string>
     <string name="txtPerformance">Performance</string>
     <string name="txtApply">Apply</string>

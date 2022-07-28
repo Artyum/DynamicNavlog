@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
+import androidx.core.widget.doOnTextChanged
 import androidx.fragment.app.Fragment
 import com.artyum.dynamicnavlog.databinding.FragmentOptionsBinding
 
@@ -16,7 +17,7 @@ class OptionsFragment : Fragment(R.layout.fragment_options) {
     private val bind get() = _binding!!
 
     private var save = false
-    private var refresh = false
+    private var restore = false
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         _binding = FragmentOptionsBinding.inflate(inflater, container, false)
@@ -112,6 +113,28 @@ class OptionsFragment : Fragment(R.layout.fragment_options) {
             saveForm()
         }
 
+        // Takeoff detect speed
+        bind.takeoffSpd.doOnTextChanged { text, _, _, _ ->
+            var dToSpd = getDoubleOrNull(text.toString())
+            if (dToSpd != null) {
+                if (dToSpd < C.AUTO_TAKEOFF_MIN_SPEED_KT) dToSpd = C.AUTO_TAKEOFF_MIN_SPEED_KT
+                options.autoTakeoffSpd = kt2mps(dToSpd)
+                save = true
+            }
+        }
+        bind.takeoffSpd.setOnFocusChangeListener { _, hasFocus -> if (!hasFocus) saveForm() }
+
+        // Landing detect speed
+        bind.landingSpd.doOnTextChanged { text, _, _, _ ->
+            var dLndSpd = getDoubleOrNull(text.toString())
+            if (dLndSpd != null) {
+                if (dLndSpd < C.AUTO_LANDING_MIN_SPEED_KT) dLndSpd = C.AUTO_LANDING_MIN_SPEED_KT
+                options.autoLandingSpd = kt2mps(dLndSpd)
+                save = true
+            }
+        }
+        bind.landingSpd.setOnFocusChangeListener { _, hasFocus -> if (!hasFocus) saveForm() }
+
         setupUI(view)
         restoreOptions()
     }
@@ -122,10 +145,11 @@ class OptionsFragment : Fragment(R.layout.fragment_options) {
     }
 
     private fun saveForm() {
-        if (refresh) return
+        if (restore) return
         if (!save) return
         save = false
         saveOptions()
+        restoreOptions()
     }
 
     private fun setupUI(view: View) {
@@ -159,23 +183,20 @@ class OptionsFragment : Fragment(R.layout.fragment_options) {
     }
 
     private fun restoreOptions() {
+        restore = true
+
         // Options
         bind.spinnerScreenOrientation.setSelection(options.screenOrientation)
         bind.settingTimeUTC.isChecked = options.timeInUTC
         bind.settingsScreenOn.isChecked = options.keepScreenOn
+        bind.takeoffSpd.setText(formatDouble(mps2kt(options.autoTakeoffSpd)))
+        bind.landingSpd.setText(formatDouble(mps2kt(options.autoLandingSpd)))
 
         // Units
         bind.spinnerUnitsSpd.setSelection(options.spdUnits)
         bind.spinnerUnitsDist.setSelection(options.distUnits)
         bind.spinnerUnitsVol.setSelection(options.volUnits)
-    }
-}
 
-fun resetOptions() {
-    options.spdUnits = 0
-    options.distUnits = 0
-    options.volUnits = 0
-    options.screenOrientation = C.SCREEN_SENSOR
-    options.timeInUTC = false
-    options.keepScreenOn = false
+        restore = false
+    }
 }

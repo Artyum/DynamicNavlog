@@ -25,7 +25,7 @@ class SettingsFragment : Fragment(R.layout.fragment_settings) {
     private val bind get() = _binding!!
 
     private var change = false
-    private var refresh = false
+    private var restore = false
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         _binding = FragmentSettingsBinding.inflate(inflater, container, false)
@@ -222,13 +222,12 @@ class SettingsFragment : Fragment(R.layout.fragment_settings) {
     }
 
     override fun onStop() {
-        Log.d(TAG, "onStop")
         super.onStop()
         saveForm()
     }
 
     private fun saveForm() {
-        if (refresh) return
+        if (restore) return
         if (!change) return
         change = false
         Log.d(TAG, "saveSettings")
@@ -267,7 +266,7 @@ class SettingsFragment : Fragment(R.layout.fragment_settings) {
     }
 
     private fun restoreSettings() {
-        refresh = true
+        restore = true
 
         bind.settingFlightPlanName.setText(settings.planName)
         bind.settingFrom.setText(settings.departure)
@@ -311,7 +310,7 @@ class SettingsFragment : Fragment(R.layout.fragment_settings) {
         setWptDetectVisibility(settings.autoNext)
         refreshSpareFuelBox()
 
-        refresh = false
+        restore = false
     }
 
     private fun refreshSpareFuelBox() {
@@ -387,27 +386,8 @@ fun isMapFollow(): Boolean {
 }
 
 fun resetSettings() {
+    settings = Settings()
     settings.planId = generateStringId()
-
-    settings.planName = ""
-    settings.departure = ""
-    settings.destination = ""
-
-    settings.windDir = 0.0
-    settings.windSpd = 0.0
-    settings.fob = 0.0
-
-    settings.gpsAssist = true
-    settings.autoNext = true
-    settings.mapFollow = false
-    settings.displayTrace = true
-
-    settings.takeoffCoords = null
-    settings.mapType = GoogleMap.MAP_TYPE_NORMAL
-    settings.mapOrientation = C.MAP_ORIENTATION_NORTH
-    settings.tfDisplayToggle = C.TF_DISPLAY_REM
-    settings.nextRadius = C.DEFAULT_NEXT_RADIUS
-
     resetAirplaneSettings()
     loadOptions()
 }
