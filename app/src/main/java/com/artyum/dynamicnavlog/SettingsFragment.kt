@@ -40,7 +40,7 @@ class SettingsFragment : Fragment(R.layout.fragment_settings) {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         bind.settingLayout.keepScreenOn = options.keepScreenOn
-        (activity as MainActivity).displayButtons()
+        (activity as MainActivity).hideButtons()
 
         // Flight plan name
         bind.settingFlightPlanName.doOnTextChanged { text, _, _, _ ->
@@ -116,8 +116,8 @@ class SettingsFragment : Fragment(R.layout.fragment_settings) {
             var dFob = fromUnitsVol(getDoubleOrNull(text.toString()))
             if (dFob != null) {
                 if (dFob < 0.0) dFob = 0.0
-                if (dFob > airplane.tank) dFob = airplane.tank
                 if (dFob < totals.fuel) dFob = totals.fuel
+                if (dFob > airplane.tank) dFob = airplane.tank
                 settings.fob = dFob
                 bind.settingsInfoBox.visibility = View.GONE
                 change = true
@@ -166,7 +166,6 @@ class SettingsFragment : Fragment(R.layout.fragment_settings) {
                 Toast.makeText(view.context, R.string.txtNotAllTrueTrackSet, Toast.LENGTH_LONG).show()
             }
             change = true
-            (activity as MainActivity).displayButtons()
             saveForm()
         }
 
@@ -175,7 +174,6 @@ class SettingsFragment : Fragment(R.layout.fragment_settings) {
             settings.autoNext = isChecked
             setWptDetectVisibility(settings.autoNext)
             change = true
-            (activity as MainActivity).displayButtons()
             saveForm()
             if (isAutoNextEnabled()) CoroutineScope(CoroutineName("gpsCoroutine")).launch { (activity as MainActivity).detectFlightStageThread() }
         }
