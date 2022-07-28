@@ -71,7 +71,7 @@
 
                 <TextView
                     style="@style/dividerText"
-                    android:text="@string/txtDisplayUnits" />
+                    android:text="@string/txtUnits" />
 
                 <View
                     style="@style/dividerLine"

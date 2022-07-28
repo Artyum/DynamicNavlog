@@ -67,11 +67,11 @@ class CalcWindFragment : Fragment(layout.fragment_calc_wind) {
 
     private fun calculate(view: View) {
         val dCourse = getDoubleOrNull(bind.edtCourse.text.toString())
-        val dDist = fromUnitsDis(getDoubleOrNull(bind.edtDistance.text.toString()))
+        val dDist = fromUserUnitsDis(getDoubleOrNull(bind.edtDistance.text.toString()))
         val dWindDir = getDoubleOrNull(bind.edtWindDir.text.toString())
-        val dWindSpd = fromUnitsSpd(getDoubleOrNull(bind.edtWindSpd.text.toString()))
-        val dTas = fromUnitsSpd(getDoubleOrNull(bind.edtTas.text.toString()))
-        val dFph = fromUnitsVol(getDoubleOrNull(bind.edtFph.text.toString()))
+        val dWindSpd = fromUserUnitsSpd(getDoubleOrNull(bind.edtWindSpd.text.toString()))
+        val dTas = fromUserUnitsSpd(getDoubleOrNull(bind.edtTas.text.toString()))
+        val dFph = fromUserUnitsVol(getDoubleOrNull(bind.edtFph.text.toString()))
 
         if (dCourse != null && dWindDir != null && dWindSpd != null && dTas != null) {
             // Validate
@@ -89,9 +89,9 @@ class CalcWindFragment : Fragment(layout.fragment_calc_wind) {
 
             bind.outWca.setText(formatDouble(wca))
             bind.outHdg.setText(formatDouble(hdg))
-            bind.outGs.setText(formatDouble(toUnitsSpd(gs)))
+            bind.outGs.setText(formatDouble(toUserUnitsSpd(gs)))
             bind.outFlightTime.setText(formatSecondsToTime(timeSec))
-            bind.outFuel.setText(formatDouble(toUnitsVol(fuel)))
+            bind.outFuel.setText(formatDouble(toUserUnitsVol(fuel)))
 
             // Headwind / Crosswind
             val angle = deg2rad(dCourse - dWindDir + 360.0)
@@ -100,11 +100,11 @@ class CalcWindFragment : Fragment(layout.fragment_calc_wind) {
 
             if (hw >= 0) bind.labelHeadwind.hint = getString(string.txtHeadwind) + " (" + getUnitsSpd() + ")"
             else bind.labelHeadwind.hint = getString(string.txtTailwind) + " (" + getUnitsSpd() + ")"
-            bind.outHeadwind.setText(formatDouble(toUnitsSpd(abs(hw))))
+            bind.outHeadwind.setText(formatDouble(toUserUnitsSpd(abs(hw))))
 
             if (cw >= 0) bind.labelCrosswind.hint = getString(string.txtLeftxwind) + " (" + getUnitsSpd() + ")"
             else bind.labelCrosswind.hint = getString(string.txtRightxwind) + " (" + getUnitsSpd() + ")"
-            bind.outCrosswind.setText(formatDouble(toUnitsSpd(abs(cw))))
+            bind.outCrosswind.setText(formatDouble(toUserUnitsSpd(abs(cw))))
 
             // Image
             paintWindCircle(bind.imgView, resources, course = dCourse, windDir = dWindDir, hdg = hdg, speedRatio = gs / dTas)

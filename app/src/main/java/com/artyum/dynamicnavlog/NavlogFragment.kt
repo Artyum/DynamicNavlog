@@ -107,8 +107,8 @@ class NavlogFragment : Fragment(R.layout.fragment_navlog), NavlogAdapter.OnItemC
     private fun refreshBottomBar() {
         val p1 = if (totals.dist < C.DIST_THRESHOLD) 1 else 0
         val p2 = if (totals.fuel < C.VOL_THRESHOLD) 1 else 0
-        val strDist = formatDouble(toUnitsDis(totals.dist), p1) + " " + getUnitsDis()
-        val strFuel = formatDouble(toUnitsVol(totals.fuel), p2) + " " + getUnitsVol()
+        val strDist = formatDouble(toUserUnitsDis(totals.dist), p1) + " " + getUnitsDis()
+        val strFuel = formatDouble(toUserUnitsVol(totals.fuel), p2) + " " + getUnitsVol()
         bind.txtTotalDist.text = strDist
         bind.txtTotalTime.text = formatSecondsToTime(totals.time)
         bind.txtTotalFuel.text = strFuel

@@ -178,14 +178,14 @@ class HomeItem() {
         var gsDiff = ""
 
         if (gps.isValid) {
-            gs = formatDouble(toUnitsSpd(gps.speedKt))
+            gs = formatDouble(toUserUnitsSpd(gps.speedKt))
             if (stage == C.STAGE_3_FLIGHT_IN_PROGRESS) {
-                val diff = toUnitsSpd(gps.speedKt - navlogList[item].gs!!)!!
+                val diff = toUserUnitsSpd(gps.speedKt - navlogList[item].gs!!)!!
                 gsDiff = if (diff > 0.0) ("+" + formatDouble(diff)) else formatDouble(diff)
             }
         } else {
-            if (stage < C.STAGE_3_FLIGHT_IN_PROGRESS && first >= 0) gs = formatDouble(toUnitsSpd(navlogList[first].gs))
-            else if (stage == C.STAGE_3_FLIGHT_IN_PROGRESS) gs = formatDouble(toUnitsSpd(navlogList[item].gs))
+            if (stage < C.STAGE_3_FLIGHT_IN_PROGRESS && first >= 0) gs = formatDouble(toUserUnitsSpd(navlogList[first].gs))
+            else if (stage == C.STAGE_3_FLIGHT_IN_PROGRESS) gs = formatDouble(toUserUnitsSpd(navlogList[item].gs))
         }
         return listOf(gs, gsDiff)
     }
@@ -237,15 +237,15 @@ class HomeItem() {
 
         if (stage < C.STAGE_3_FLIGHT_IN_PROGRESS) {
             if (first >= 0 && navlogList[first].distance != null) {
-                if (navlogList[first].distance!! > C.DIST_THRESHOLD) ret.dist = formatDouble(toUnitsDis(navlogList[first].distance!!))
-                else ret.dist = formatDouble(toUnitsDis(navlogList[first].distance!!), 1)
+                if (navlogList[first].distance!! > C.DIST_THRESHOLD) ret.dist = formatDouble(toUserUnitsDis(navlogList[first].distance!!))
+                else ret.dist = formatDouble(toUserUnitsDis(navlogList[first].distance!!), 1)
             }
             return ret
         } else if (stage > C.STAGE_3_FLIGHT_IN_PROGRESS) return ret
 
         // stage == C.STAGE_3_FLIGHT_IN_PROGRESS
-        ret.dist = if (abs(distRemaining) > C.DIST_THRESHOLD) formatDouble(toUnitsDis(abs(distRemaining))) else formatDouble(toUnitsDis(abs(distRemaining)), 1)
-        ret.distTravelled = if (abs(distFromPrevWpt) > C.DIST_THRESHOLD) formatDouble(toUnitsDis(abs(distFromPrevWpt))) else formatDouble(toUnitsDis(abs(distFromPrevWpt)), 1)
+        ret.dist = if (abs(distRemaining) > C.DIST_THRESHOLD) formatDouble(toUserUnitsDis(abs(distRemaining))) else formatDouble(toUserUnitsDis(abs(distRemaining)), 1)
+        ret.distTravelled = if (abs(distFromPrevWpt) > C.DIST_THRESHOLD) formatDouble(toUserUnitsDis(abs(distFromPrevWpt))) else formatDouble(toUserUnitsDis(abs(distFromPrevWpt)), 1)
         ret.pct = formatDouble(distPct) + "%"
         if (distRemaining < 0.0) ret.sign = true
 
@@ -305,12 +305,12 @@ class HomeItem() {
     fun getFuel(): HomeFuelTime {
         val ret = HomeFuelTime()
 
-        if (stage < C.STAGE_5_AFTER_ENGINE_SHUTDOWN && fuelToLand > 0.0) ret.ftl = formatDouble(toUnitsVol(fuelToLand))
+        if (stage < C.STAGE_5_AFTER_ENGINE_SHUTDOWN && fuelToLand > 0.0) ret.ftl = formatDouble(toUserUnitsVol(fuelToLand))
         if (distRemaining < 0.0) ret.ftlmark = "?"
         if (engineTimeSec > 0.0) ret.engineTime = formatSecondsToTime(engineTimeSec) else ret.engineTime = "-"
 
         ret.fuelTime = formatSecondsToTime(fuelTimeRemaining.toLong())
-        ret.fuelRemaining = formatDouble(toUnitsVol(fuelRemaining))
+        ret.fuelRemaining = formatDouble(toUserUnitsVol(fuelRemaining))
 
         if (airplane.tank > 0.0) {
             val pct = fuelRemaining / airplane.tank * 100.0
