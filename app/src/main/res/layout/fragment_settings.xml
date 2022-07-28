@@ -241,42 +241,50 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_column="0"
-                        android:layout_marginEnd="5dp"
                         android:text="@string/txtSpareFuel" />
 
-                    <TextView
-                        android:id="@+id/spareFuel"
-                        style="@style/airplaneDetails"
-                        android:layout_column="1"
-                        android:layout_marginHorizontal="@dimen/unitsMargin" />
-
-                    <TextView
-                        android:id="@+id/spareFuelUnits"
+                    <LinearLayout
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_column="2" />
+                        android:layout_column="1"
+                        android:layout_marginStart="10dp">
+
+                        <TextView
+                            android:id="@+id/spareFuel"
+                            style="@style/airplaneDetails"
+                            android:layout_marginEnd="@dimen/unitsMargin" />
+
+                        <TextView
+                            android:id="@+id/spareFuelUnits"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content" />
+                    </LinearLayout>
                 </TableRow>
 
-                <TableRow android:layout_marginVertical="3dp">
+                <TableRow android:layout_marginVertical="4dp">
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_column="0"
-                        android:layout_marginEnd="5dp"
                         android:text="@string/txtExtraDistance" />
 
-                    <TextView
-                        android:id="@+id/extraDistance"
-                        style="@style/airplaneDetails"
-                        android:layout_column="1"
-                        android:layout_marginHorizontal="@dimen/unitsMargin" />
-
-                    <TextView
-                        android:id="@+id/extraDistanceUnits"
+                    <LinearLayout
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_column="2" />
+                        android:layout_column="1"
+                        android:layout_marginStart="10dp">
+
+                        <TextView
+                            android:id="@+id/extraDistance"
+                            style="@style/airplaneDetails"
+                            android:layout_marginEnd="@dimen/unitsMargin" />
+
+                        <TextView
+                            android:id="@+id/extraDistanceUnits"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content" />
+                    </LinearLayout>
                 </TableRow>
 
                 <TableRow>
@@ -285,19 +293,19 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_column="0"
-                        android:layout_marginEnd="5dp"
                         android:text="@string/txtExtraFlightTime" />
 
-                    <TextView
-                        android:id="@+id/additionalTime"
-                        style="@style/airplaneDetails"
-                        android:layout_column="1"
-                        android:layout_marginHorizontal="@dimen/unitsMargin" />
-
-                    <TextView
+                    <LinearLayout
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_column="2" />
+                        android:layout_column="1"
+                        android:layout_marginStart="10dp">
+
+                        <TextView
+                            android:id="@+id/additionalTime"
+                            style="@style/airplaneDetails" />
+
+                    </LinearLayout>
                 </TableRow>
             </TableLayout>
 

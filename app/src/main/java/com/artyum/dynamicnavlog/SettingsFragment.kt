@@ -99,7 +99,7 @@ class SettingsFragment : Fragment(R.layout.fragment_settings) {
 
         // Wind speed
         bind.settingWindSpd.doOnTextChanged { text, _, _, _ ->
-            val dWindSpd = fromUnitsSpd(getDoubleOrNull(text.toString()))
+            val dWindSpd = fromUserUnitsSpd(getDoubleOrNull(text.toString()))
             if (!isValidWindSpeed(dWindSpd)) showSettingsError(getString(R.string.txtInvalidWindSpeed))
             else if (settings.windSpd != dWindSpd) {
                 settings.windSpd = dWindSpd!!
@@ -113,7 +113,7 @@ class SettingsFragment : Fragment(R.layout.fragment_settings) {
 
         // Fuel on board / Takeoff fuel
         bind.settingFuel.doOnTextChanged { text, _, _, _ ->
-            var dFob = fromUnitsVol(getDoubleOrNull(text.toString()))
+            var dFob = fromUserUnitsVol(getDoubleOrNull(text.toString()))
             if (dFob != null) {
                 if (dFob < 0.0) dFob = 0.0
                 if (dFob < totals.fuel) dFob = totals.fuel
@@ -275,16 +275,16 @@ class SettingsFragment : Fragment(R.layout.fragment_settings) {
 
         // Takeoff fuel
         val p = if (settings.fob < C.VOL_THRESHOLD) 1 else 0
-        bind.settingFuel.setText(formatDouble(toUnitsVol(settings.fob), p))
+        bind.settingFuel.setText(formatDouble(toUserUnitsVol(settings.fob), p))
         bind.hintTakeoffFuel.hint = getString(R.string.txtTakeoffFuel) + " (" + getUnitsVol() + ")"
 
         // Airplane
         val id = getAirplaneListPosition(settings.airplaneId)
         if (id > 0) {
             bind.spinnerAirplane.setSelection(id)
-            bind.airplaneDetailsTas.text = formatDouble(toUnitsSpd(airplane.tas))
-            bind.airplaneDetailsTank.text = formatDouble(toUnitsVol(airplane.tank))
-            bind.airplaneDetailsFph.text = formatDouble(toUnitsVol(airplane.fph), 1)
+            bind.airplaneDetailsTas.text = formatDouble(toUserUnitsSpd(airplane.tas))
+            bind.airplaneDetailsTank.text = formatDouble(toUserUnitsVol(airplane.tank))
+            bind.airplaneDetailsFph.text = formatDouble(toUserUnitsVol(airplane.fph), 1)
             bind.airplaneDetailsBox.visibility = View.VISIBLE
             bind.settingsSelectAirplaneMsg.visibility = View.GONE
         } else {
@@ -297,7 +297,7 @@ class SettingsFragment : Fragment(R.layout.fragment_settings) {
 
         // Wind conditions
         bind.settingWindDir.setText(formatDouble(settings.windDir, 1))
-        bind.settingWindSpd.setText(formatDouble(toUnitsSpd(settings.windSpd), 1))
+        bind.settingWindSpd.setText(formatDouble(toUserUnitsSpd(settings.windSpd), 1))
         bind.hintWindSpd.hint = getString(R.string.txtWindSpeed) + " (" + getUnitsSpd() + ")"
 
         // GPS settings
@@ -321,11 +321,11 @@ class SettingsFragment : Fragment(R.layout.fragment_settings) {
             val extraDist = airplane.tas * h
 
             //  Extra fuel
-            bind.spareFuel.text = formatDouble(toUnitsVol(totals.fuel)) + "/" + formatDouble(toUnitsVol(spareFuel))
+            bind.spareFuel.text = formatDouble(toUserUnitsVol(totals.fuel)) + "/" + formatDouble(toUserUnitsVol(spareFuel))
             bind.spareFuelUnits.text = getUnitsVol()
 
             // Extra distance
-            bind.extraDistance.text = formatDouble(toUnitsDis(extraDist))
+            bind.extraDistance.text = formatDouble(toUserUnitsDis(extraDist))
             bind.extraDistanceUnits.text = getUnitsDis()
 
             // Extra time

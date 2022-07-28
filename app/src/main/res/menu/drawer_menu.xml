@@ -30,14 +30,6 @@
             android:title="@string/txtAirplanes" />
     </group>
     <group
-        android:id="@+id/groupPreferences"
-        android:checkableBehavior="none">
-        <item
-            android:id="@+id/drawerPreferences"
-            android:icon="@drawable/ic_options"
-            android:title="@string/txtOptions" />
-    </group>
-    <group
         android:id="@+id/calculators"
         android:checkableBehavior="none">
         <item
@@ -64,6 +56,10 @@
     <group
         android:id="@+id/groupManual"
         android:checkableBehavior="none">
+        <item
+            android:id="@+id/drawerOptions"
+            android:icon="@drawable/ic_options"
+            android:title="@string/txtOptions" />
         <item
             android:id="@+id/drawerItemAbout"
             android:icon="@drawable/ic_about"

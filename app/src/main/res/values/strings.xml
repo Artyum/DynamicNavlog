@@ -28,7 +28,7 @@
     <string name="txtLeftxwind">Left Xwind</string>
     <string name="txtRightxwind">Right Xwind</string>
     <string name="txtClear">AC</string>
-    <string name="txtDisplayUnits">Display units</string>
+    <string name="txtUnits">Units</string>
     <string name="txtSettings">Settings</string>
     <string name="txtFlightPlanSettings">Flight plan settings</string>
     <string name="txtFlightSettings">Flight settings</string>

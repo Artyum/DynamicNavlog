@@ -33,12 +33,12 @@ class NavlogAdapter(
         holder.tvDec.text = tmp
 
         holder.tvMt.text = formatDouble(item.magneticTrack)
-        holder.tvDist.text = formatDouble(toUnitsDis(item.distance), 1)
+        holder.tvDist.text = formatDouble(toUserUnitsDis(item.distance), 1)
 
         if (item.active) {
             holder.tvWca.text = formatDouble(item.wca)
             holder.tvHdg.text = formatDouble(item.hdg)
-            holder.tvGs.text = formatDouble(toUnitsSpd(item.gs))
+            holder.tvGs.text = formatDouble(toUserUnitsSpd(item.gs))
 
             // TIME
             if (settings.tfDisplayToggle == C.TF_DISPLAY_CUR) holder.tvTime.text = formatSecondsToTime(item.time)
@@ -51,8 +51,8 @@ class NavlogAdapter(
             // Fuel
             val p1 = if (item.fuel!! < C.VOL_THRESHOLD) 1 else 0
             val p2 = if (item.fuelRemaining!! < C.VOL_THRESHOLD) 1 else 0
-            if (settings.tfDisplayToggle == C.TF_DISPLAY_CUR) holder.tvFuel.text = formatDouble(toUnitsVol(item.fuel), p1)
-            else holder.tvFuel.text = formatDouble(toUnitsVol(item.fuelRemaining), p2)
+            if (settings.tfDisplayToggle == C.TF_DISPLAY_CUR) holder.tvFuel.text = formatDouble(toUserUnitsVol(item.fuel), p1)
+            else holder.tvFuel.text = formatDouble(toUserUnitsVol(item.fuelRemaining), p2)
         } else {
             holder.tvWca.text = ""
             holder.tvHdg.text = ""

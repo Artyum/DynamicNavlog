@@ -133,7 +133,7 @@ class MainActivity : AppCompatActivity() {
         }
 
         // Preferences
-        navView.menu.findItem(R.id.drawerPreferences).setOnMenuItemClickListener {
+        navView.menu.findItem(R.id.drawerOptions).setOnMenuItemClickListener {
             bind.drawerLayout.close()
             navController.navigate(OptionsFragmentDirections.actionGlobalOptionsFragment())
             true

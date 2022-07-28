@@ -99,7 +99,7 @@ fun getUnitsVol(): String {
 
 // Convert to display units / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / /
 
-fun toUnitsSpd(v: Double?): Double? {
+fun toUserUnitsSpd(v: Double?): Double? {
     if (v == null) return null
     return when (options.spdUnits) {
         C.SPD_MPH -> kt2mph(v)
@@ -108,7 +108,7 @@ fun toUnitsSpd(v: Double?): Double? {
     }
 }
 
-fun toUnitsDis(v: Double?): Double? {
+fun toUserUnitsDis(v: Double?): Double? {
     if (v == null) return null
     return when (options.distUnits) {
         C.DIS_SM -> nm2sm(v)
@@ -117,7 +117,7 @@ fun toUnitsDis(v: Double?): Double? {
     }
 }
 
-fun toUnitsVol(v: Double?): Double? {
+fun toUserUnitsVol(v: Double?): Double? {
     if (v == null) return null
     return when (options.volUnits) {
         C.VOL_USGAL -> l2usgal(v)
@@ -128,7 +128,7 @@ fun toUnitsVol(v: Double?): Double? {
 
 // Convert from user to internal units -> kt / nm / l / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / /
 
-fun fromUnitsSpd(v: Double?): Double? {
+fun fromUserUnitsSpd(v: Double?): Double? {
     if (v == null) return null
     return when (options.spdUnits) {
         C.SPD_MPH -> mph2kt(v)
@@ -137,7 +137,7 @@ fun fromUnitsSpd(v: Double?): Double? {
     }
 }
 
-fun fromUnitsDis(v: Double?): Double? {
+fun fromUserUnitsDis(v: Double?): Double? {
     if (v == null) return null
     return when (options.distUnits) {
         C.DIS_SM -> sm2nm(v)
@@ -146,7 +146,7 @@ fun fromUnitsDis(v: Double?): Double? {
     }
 }
 
-fun fromUnitsVol(v: Double?): Double? {
+fun fromUserUnitsVol(v: Double?): Double? {
     if (v == null) return null
     return when (options.volUnits) {
         C.VOL_USGAL -> usgal2l(v)
