@@ -164,6 +164,7 @@ object C {
     const val TIME_THRESHOLD = 10
     const val VOL_THRESHOLD = 10
 
+    // Time delimiters
     const val H_DELIMITER = ":"
     const val M_DELIMITER = "\'"
     const val S_DELIMITER = "\""

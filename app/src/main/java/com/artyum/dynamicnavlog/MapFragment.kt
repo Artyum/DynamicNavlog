@@ -502,7 +502,7 @@ class MapFragment : Fragment(R.layout.fragment_map) {
         val d = getDeclination(coords)
 
         // Distance
-        val dist = meters2distUnits(calcDistance(prevCoords, coords))
+        val dist = m2nm(calcDistance(prevCoords, coords))
 
         // Add item
         navlogList.add(position, NavlogItem(dest = "", coords = coords, trueTrack = tt, declination = d, distance = dist))
@@ -511,9 +511,10 @@ class MapFragment : Fragment(R.layout.fragment_map) {
     }
 
     private fun refreshBottomBar() {
-        val strDist = formatDouble(toUnitsDis(totals.dist)) + " " + getUnitsDis()
-        val strFuel = formatDouble(toUnitsVol(totals.fuel)) + " " + getUnitsVol()
-
+        val p1 = if (totals.dist < C.DIST_THRESHOLD) 1 else 0
+        val p2 = if (totals.fuel < C.VOL_THRESHOLD) 1 else 0
+        val strDist = formatDouble(toUnitsDis(totals.dist), p1) + " " + getUnitsDis()
+        val strFuel = formatDouble(toUnitsVol(totals.fuel), p2) + " " + getUnitsVol()
         bind.txtTotalDist.text = strDist
         bind.txtTotalTime.text = formatSecondsToTime(totals.time)
         bind.txtTotalFuel.text = strFuel
