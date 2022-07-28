@@ -90,8 +90,8 @@ class HomeItem() {
                 val distTotal = distFromPrevWpt + distRemaining
                 distPct = distFromPrevWpt / distTotal * 100.0
 
-                distRemaining = meters2distUnits(distRemaining)
-                distFromPrevWpt = meters2distUnits(distFromPrevWpt)
+                distRemaining = m2nm(distRemaining)
+                distFromPrevWpt = m2nm(distFromPrevWpt)
 
             } else {
                 val legTime = Duration.between(prevTime, eta2wpt).toMillis() / 1000
@@ -224,7 +224,7 @@ class HomeItem() {
 
         // Check hit waypoint circle
         if (stage == C.STAGE_3_FLIGHT_IN_PROGRESS && distRemaining > 0 && gps.isValid && gps.bearing != null && item >= 0) {
-            val p = calcDestinationCoords(gps.coords!!, gps.bearing!!.toDouble(), distUnits2meters(distRemaining))
+            val p = calcDestinationCoords(gps.coords!!, gps.bearing!!.toDouble(), nm2m(distRemaining))
             val d = calcDistance(p, navlogList[item].coords!!)
             if (m2nm(d) > nextRadiusList[settings.nextRadius]) hit = false
         }

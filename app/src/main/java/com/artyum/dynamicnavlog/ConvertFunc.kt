@@ -70,24 +70,6 @@ fun l2ukgal(v: Double): Double = v * 0.21996924829908776
 fun usgal2ukgal(v: Double): Double = v * 0.8326741881485
 fun ukgal2usgal(v: Double): Double = v * 1.2009499204287
 
-fun distUnits2meters(d: Double): Double {
-    when (options.distUnits) {
-        C.DIS_NM -> return nm2m(d)
-        C.DIS_SM -> return sm2m(d)
-        C.DIS_KM -> return km2m(d)
-    }
-    return 0.0
-}
-
-fun meters2distUnits(d: Double): Double {
-    when (options.distUnits) {
-        C.DIS_NM -> return m2nm(d)
-        C.DIS_SM -> return m2sm(d)
-        C.DIS_KM -> return m2km(d)
-    }
-    return 0.0
-}
-
 fun getUnitsSpd(): String {
     when (options.spdUnits) {
         C.SPD_KNOTS -> return "kt"

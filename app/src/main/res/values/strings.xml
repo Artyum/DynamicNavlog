@@ -170,7 +170,7 @@
     <string name="txtNavlogNotReady">Navigation log is not ready</string>
     <string name="txtHoldButtonToConfirm">Hold to confirm</string>
     <string name="txtBackgroundServiceIsRunning">Dynamic NavLog is running</string>
-    <string name="txtRestartFlightPlan">Restart plan</string>
+    <string name="txtRestartFlightPlan">Restart flight plan</string>
     <string name="txtCopyFlightPlan">Copy plan (as is)</string>
     <string name="txtCopyInvertTrack">Copy plan (inverted)</string>
     <string name="txtExportCSV">Export plan as CSV</string>

@@ -333,7 +333,7 @@ fun recalculateWaypoints() {
                 val tt = calcBearing(prevCoords, navlogList[i].coords!!)
                 val d = getDeclination(navlogList[i].coords!!)
                 val mt = normalizeBearing(tt + d)
-                val dist = meters2distUnits(calcDistance(prevCoords, navlogList[i].coords!!))
+                val dist = m2nm(calcDistance(prevCoords, navlogList[i].coords!!))
 
                 navlogList[i].trueTrack = tt
                 navlogList[i].declination = d
