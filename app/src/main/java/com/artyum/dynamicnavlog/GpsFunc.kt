@@ -67,7 +67,7 @@ fun calcBearingAngle(destination: LatLng, current: LatLng, from: LatLng): Double
     return normalizeLongitude(b1 - b2)
 }
 
-// Returns magnetic declinatioin at coordinates
+// Returns magnetic declination at coordinates
 // -E / +W
 fun getDeclination(c: LatLng): Double {
     val gf = GeomagneticField(c.latitude.toFloat(), c.longitude.toFloat(), 0f, System.currentTimeMillis())

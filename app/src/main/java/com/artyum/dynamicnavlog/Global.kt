@@ -27,7 +27,7 @@ data class Settings(
     var windSpd: Double = 0.0,
 
     var gpsAssist: Boolean = true,
-    var takeoffCoords: LatLng? = null,
+    var takeoffPos: LatLng? = null,
 
     var mapType: Int = GoogleMap.MAP_TYPE_NORMAL,
     var mapOrientation: Int = C.MAP_ORIENTATION_NORTH,
@@ -36,6 +36,7 @@ data class Settings(
     var mapFollow: Boolean = true,
     var tfDisplayToggle: Int = C.TF_DISPLAY_REM,  // Switch to display time and fuel on the Navlog screen
     var nextRadius: Int = C.DEFAULT_NEXT_RADIUS,
+    var drawWindArrow: Boolean = true
 )
 
 data class Airplane(
@@ -289,7 +290,7 @@ fun generateStringId(): String {
     return randomString
 }
 
-fun paintWindCircle(imgView: ImageView, resources: Resources, course: Double, windDir: Double, hdg: Double, speedRatio: Double) {
+fun generateWindCircle(imgView: ImageView, resources: Resources, course: Double, windDir: Double, hdg: Double, speedRatio: Double) {
     val bitmap = Bitmap.createBitmap(400, 400, Bitmap.Config.ARGB_8888)
     val canvas = Canvas(bitmap)
     val paint = Paint()
@@ -423,7 +424,7 @@ fun paintWindCircle(imgView: ImageView, resources: Resources, course: Double, wi
     y1 = y2 - sc.sina * radiusArrow
     canvas.drawLine(x1, y1, x2, y2, paint)
 
-    //Heading
+    // Heading
     paint.color = ResourcesCompat.getColor(resources, R.color.cyan, null)
     sc = angleCalc(deg2rad(hdg - 90.0))
     x2 = x + sc.cosa * radiusHdg

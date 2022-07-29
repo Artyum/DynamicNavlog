@@ -136,7 +136,7 @@ fun isNavlogItemGpsReady(i: Int): Boolean {
 }
 
 fun isNavlogGpsReady(): Boolean {
-    if (settings.takeoffCoords == null || navlogList.size == 0) return false
+    if (settings.takeoffPos == null || navlogList.size == 0) return false
     for (i in navlogList.indices) {
         if (!isNavlogItemGpsReady(i)) return false
     }
@@ -207,10 +207,10 @@ fun setPrevWaypoint() {
 }
 
 fun getPrevCoords(i: Int): LatLng? {
-    return if (i < 0) settings.takeoffCoords
+    return if (i < 0) settings.takeoffPos
     else {
         val prev = getNavlogPrevItemId(i)
-        if (prev < 0) settings.takeoffCoords
+        if (prev < 0) settings.takeoffPos
         else navlogList[prev].coords
     }
 }
@@ -231,8 +231,8 @@ fun invertNavlog() {
     settings.destination = tmp
 
     // Save takeoff coords as new last coords
-    val newLastCoords = settings.takeoffCoords!!
-    settings.takeoffCoords = navlogList[last].coords
+    val newLastCoords = settings.takeoffPos!!
+    settings.takeoffPos = navlogList[last].coords
 
     val newNavlogList = ArrayList<NavlogItem>()
     for (i in last - 1 downTo first) {
@@ -323,7 +323,7 @@ fun recalculateTotals() {
 }
 
 fun recalculateWaypoints() {
-    if (settings.takeoffCoords == null) return
+    if (settings.takeoffPos == null) return
     //Log.d("NavLogFunc", "recalculateWaypoints")
 
     for (i in navlogList.indices) {
