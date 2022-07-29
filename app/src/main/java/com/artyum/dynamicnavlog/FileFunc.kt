@@ -2,9 +2,11 @@ package com.artyum.dynamicnavlog
 
 import android.util.Log
 import com.google.android.gms.maps.GoogleMap
+import com.google.android.gms.maps.model.JointType
 import com.google.android.gms.maps.model.LatLng
 import org.json.JSONObject
 import java.io.File
+import java.lang.reflect.Type
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 
@@ -28,8 +30,8 @@ fun saveState(fileName: String = "") {
     jSettings.put("dest", settings.destination)
     jSettings.put("planeId", settings.airplaneId)
     jSettings.put("fob", settings.fob)
-    jSettings.put("deplat", settings.takeoffCoords?.latitude)
-    jSettings.put("deplng", settings.takeoffCoords?.longitude)
+    jSettings.put("deplat", settings.takeoffPos?.latitude)
+    jSettings.put("deplng", settings.takeoffPos?.longitude)
 
     jSettings.put("winddir", settings.windDir)
     jSettings.put("windspeed", settings.windSpd)
@@ -43,6 +45,7 @@ fun saveState(fileName: String = "") {
     jSettings.put("maporient", settings.mapOrientation)
     jSettings.put("maptype", settings.mapType)
     jSettings.put("mapfollow", settings.mapFollow)
+    jSettings.put("maparrow", settings.drawWindArrow)
 
     // Timers
     jTimers.put("offblock", formatDateTimeJson(timers.offblock))
@@ -84,7 +87,7 @@ fun saveState(fileName: String = "") {
     json.put("timers", jTimers)
     json.put("navlog", jNavLog)
 
-    // Todo delete conversion after some time
+    // TODO delete conversion after some time
     if (fileName != "") {
         // DNL to JSON conversion
         val fn: String = if (fileName == "current_state" + C.DNL_EXTENSION) {
@@ -144,17 +147,18 @@ fun loadOptions() {
             return
         }
 
-        val jOptions = JSONObject(json["options"].toString())
-        newOptions.spdUnits = if (jOptions.has("spdunits")) jOptions["spdunits"].toString().toIntOrNull() ?: 0 else 0
-        newOptions.distUnits = if (jOptions.has("distunits")) jOptions["distunits"].toString().toIntOrNull() ?: 0 else 0
-        newOptions.volUnits = if (jOptions.has("volunits")) jOptions["volunits"].toString().toIntOrNull() ?: 0 else 0
-        newOptions.screenOrientation = if (jOptions.has("screenorient")) jOptions["screenorient"].toString().toIntOrNull() ?: C.SCREEN_SENSOR else C.SCREEN_SENSOR
-        newOptions.timeInUTC = if (jOptions.has("utc")) jOptions["utc"].toString().toBoolean() else false
-        newOptions.keepScreenOn = if (jOptions.has("screenon")) jOptions["screenon"].toString().toBoolean() else false
-        newOptions.autoTakeoffSpd = if (jOptions.has("takeoffspd")) jOptions["takeoffspd"].toString().toDoubleOrNull() ?: C.AUTO_TAKEOFF_MIN_SPEED_KT else C.AUTO_TAKEOFF_MIN_SPEED_KT
-        newOptions.autoLandingSpd = if (jOptions.has("landingspd")) jOptions["landingspd"].toString().toDoubleOrNull() ?: C.AUTO_LANDING_MIN_SPEED_KT else C.AUTO_LANDING_MIN_SPEED_KT
-
-        options = newOptions
+        val jOptions = JSONObject(getItem(json, "options") ?: "{}")
+        if (jOptions.length() > 0) {
+            newOptions.spdUnits = getItem(jOptions, "spdunits")?.toIntOrNull() ?: 0
+            newOptions.distUnits = getItem(jOptions, "distunits")?.toIntOrNull() ?: 0
+            newOptions.volUnits = getItem(jOptions, "volunits")?.toIntOrNull() ?: 0
+            newOptions.screenOrientation = getItem(jOptions, "screenorient")?.toIntOrNull() ?: C.SCREEN_SENSOR
+            newOptions.timeInUTC = getItem(jOptions, "utc")?.toBoolean() ?: false
+            newOptions.keepScreenOn = getItem(jOptions, "screenon")?.toBoolean() ?: false
+            newOptions.autoTakeoffSpd = getItem(jOptions, "takeoffspd")?.toDoubleOrNull() ?: C.AUTO_TAKEOFF_MIN_SPEED_KT
+            newOptions.autoLandingSpd = getItem(jOptions, "landingspd")?.toDoubleOrNull() ?: C.AUTO_LANDING_MIN_SPEED_KT
+            options = newOptions
+        }
     } else {
         options = Options()
         saveOptions()
@@ -195,7 +199,7 @@ fun loadStateDnl(fileName: String = C.stateFile) {
                         if (str[0] == "deplat") deplat = getDoubleOrNull(str[1])
                         if (str[0] == "deplng") deplng = getDoubleOrNull(str[1])
                         if (deplat != null && deplng != null) {
-                            newSettings.takeoffCoords = LatLng(deplat, deplng)
+                            newSettings.takeoffPos = LatLng(deplat, deplng)
                             deplat = null
                             deplng = null
                         }
@@ -323,6 +327,10 @@ fun str2DateTimeJson(str: String?): LocalDateTime? {
     return dt
 }
 
+fun getItem(json: JSONObject, item: String): String? {
+    return if (json.has(item)) json[item].toString() else null
+}
+
 fun loadState(fileName: String = C.stateFile) {
     val tag = "FileFunc"
 
@@ -344,86 +352,93 @@ fun loadState(fileName: String = C.stateFile) {
     }
 
     // Settings
-    val jSettings = JSONObject(json["settings"].toString())
+    val jSettings = JSONObject(getItem(json, "settings") ?: "{}")
+    if (jSettings.length() > 0) {
+        newSettings.planId = getItem(jSettings, "id") ?: generateStringId()
+        newSettings.planName = getItem(jSettings, "name") ?: ""
+        newSettings.departure = getItem(jSettings, "from") ?: ""
+        newSettings.destination = getItem(jSettings, "dest") ?: ""
+        newSettings.airplaneId = getItem(jSettings, "planeId") ?: ""
 
-    newSettings.planId = if (jSettings.has("id")) jSettings["id"].toString() else generateStringId()
-    newSettings.planName = if (jSettings.has("name")) jSettings["name"].toString() else ""
-    newSettings.departure = if (jSettings.has("from")) jSettings["from"].toString() else ""
-    newSettings.destination = if (jSettings.has("dest")) jSettings["dest"].toString() else ""
+        val depLat = getItem(jSettings, "deplat")?.toDoubleOrNull()
+        val depLng = getItem(jSettings, "deplng")?.toDoubleOrNull()
+        if (depLat != null && depLng != null) newSettings.takeoffPos = LatLng(depLat, depLng)
 
-    newSettings.airplaneId = if (jSettings.has("planeId")) jSettings["planeId"].toString() else ""
-
-    val deplat = if (jSettings.has("deplat")) jSettings["deplat"].toString().toDoubleOrNull() else null
-    val deplng = if (jSettings.has("deplng")) jSettings["deplng"].toString().toDoubleOrNull() else null
-    if (deplat != null && deplng != null) newSettings.takeoffCoords = LatLng(deplat, deplng)
-
-    newSettings.windDir = if (jSettings.has("winddir")) jSettings["winddir"].toString().toDoubleOrNull() ?: 0.0 else 0.0
-    newSettings.windSpd = if (jSettings.has("windspeed")) jSettings["windspeed"].toString().toDoubleOrNull() ?: 0.0 else 0.0
-    newSettings.fob = if (jSettings.has("fob")) jSettings["fob"].toString().toDoubleOrNull() ?: 0.0 else 0.0
-    newSettings.gpsAssist = jSettings["gps"].toString().toBoolean()
-    newSettings.mapType = if (jSettings.has("maptype")) jSettings["maptype"].toString().toIntOrNull() ?: 0 else 0
-    newSettings.mapOrientation = if (jSettings.has("maporient")) jSettings["maporient"].toString().toIntOrNull() ?: 0 else 0
-    newSettings.autoNext = jSettings["autonext"].toString().toBoolean()
-    newSettings.mapType = if (jSettings.has("maptype")) jSettings["maptype"].toString().toIntOrNull() ?: GoogleMap.MAP_TYPE_NORMAL else GoogleMap.MAP_TYPE_NORMAL
-    newSettings.mapFollow = jSettings["mapfollow"].toString().toBoolean()
-    newSettings.nextRadius = if (jSettings.has("nextr")) jSettings["nextr"].toString().toIntOrNull() ?: C.DEFAULT_NEXT_RADIUS else C.DEFAULT_NEXT_RADIUS
-    newSettings.displayTrace = jSettings["trace"].toString().toBoolean()
+        newSettings.windDir = getItem(jSettings, "winddir")?.toDoubleOrNull() ?: 0.0
+        newSettings.windSpd = getItem(jSettings, "windspeed")?.toDoubleOrNull() ?: 0.0
+        newSettings.fob = getItem(jSettings, "fob")?.toDoubleOrNull() ?: 0.0
+        newSettings.gpsAssist = getItem(jSettings, "gps")?.toBoolean() ?: true
+        newSettings.mapType = getItem(jSettings, "maptype")?.toIntOrNull() ?: 0
+        newSettings.mapOrientation = getItem(jSettings, "maporient")?.toIntOrNull() ?: 0
+        newSettings.autoNext = getItem(jSettings, "autonext")?.toBoolean() ?: true
+        newSettings.mapType = getItem(jSettings, "maptype")?.toIntOrNull() ?: GoogleMap.MAP_TYPE_NORMAL
+        newSettings.mapFollow = getItem(jSettings, "mapfollow")?.toBoolean() ?: true
+        newSettings.nextRadius = getItem(jSettings, "nextr")?.toIntOrNull() ?: C.DEFAULT_NEXT_RADIUS
+        newSettings.displayTrace = getItem(jSettings, "trace")?.toBoolean() ?: true
+        newSettings.drawWindArrow = getItem(jSettings, "maparrow")?.toBoolean() ?: true
+    }
 
     // Timers
-    val jTimers = JSONObject(json["timers"].toString())
-    newTimers.offblock = str2DateTimeJson(jTimers["offblock"].toString())
-    newTimers.takeoff = str2DateTimeJson(jTimers["takeoff"].toString())
-    newTimers.landing = str2DateTimeJson(jTimers["landing"].toString())
-    newTimers.onblock = str2DateTimeJson(jTimers["onblock"].toString())
+    val jTimers = JSONObject(getItem(json, "timers") ?: "{}")
+    if (jTimers.length() > 0) {
+        newTimers.offblock = str2DateTimeJson(getItem(jTimers, "offblock"))
+        newTimers.takeoff = str2DateTimeJson(getItem(jTimers, "takeoff"))
+        newTimers.landing = str2DateTimeJson(getItem(jTimers, "landing"))
+        newTimers.onblock = str2DateTimeJson(getItem(jTimers, "onblock"))
+    }
 
     // NavLog
-    val jNavLog = JSONObject(json["navlog"].toString())
+    val jNavLog = JSONObject(getItem(json, "navlog") ?: "{}")
     (0 until jNavLog.length()).forEach {
-        val wpt = JSONObject(jNavLog["wpt_$it"].toString())
+        val key = "wpt_$it"
 
-        val dest = wpt["dest"].toString().uppercase()
-        val tt = if (wpt.has("tt")) wpt["tt"].toString().toDoubleOrNull() else null
-        val d = if (wpt.has("d")) wpt["d"].toString().toDoubleOrNull() else null
-        val mt = if (wpt.has("mt")) wpt["mt"].toString().toDoubleOrNull() else null
-        val dist = if (wpt.has("dist")) wpt["dist"].toString().toDoubleOrNull() else null
-        val wca = if (wpt.has("wca")) wpt["wca"].toString().toDoubleOrNull() else null
-        val hdg = if (wpt.has("hdg")) wpt["hdg"].toString().toDoubleOrNull() else null
-        val gs = if (wpt.has("gs")) wpt["gs"].toString().toDoubleOrNull() else null
-        val time = if (wpt.has("time")) wpt["time"].toString().toLongOrNull() else null
-        val timeInc = if (wpt.has("timei")) wpt["timei"].toString().toLongOrNull() else null
-        val eta = str2DateTimeJson(wpt["eta"].toString())
-        val ata = str2DateTimeJson(wpt["ata"].toString())
-        val fuel = if (wpt.has("fuel")) wpt["fuel"].toString().toDoubleOrNull() else null
-        val fuelR = if (wpt.has("fuelr")) wpt["fuelr"].toString().toDoubleOrNull() else null
-        val remarks = wpt["rmk"].toString()
-        val active = wpt["act"].toString().toBoolean()
-        val current = wpt["cur"].toString().toBoolean()
-        val lat = if (wpt.has("lat")) wpt["lat"].toString().toDoubleOrNull() else null
-        val lng = if (wpt.has("lng")) wpt["lng"].toString().toDoubleOrNull() else null
-        val coords: LatLng? = if (lat != null && lng != null) LatLng(lat, lng) else null
+        val wpt = JSONObject(getItem(jNavLog, key) ?: "{}")
+        if (wpt.length() > 0) {
+            val dest = getItem(wpt, "dest")?.uppercase() ?: ""
+            val tt = getItem(wpt, "tt")?.toDoubleOrNull()
+            val d = getItem(wpt, "d")?.toDoubleOrNull()
+            val mt = getItem(wpt, "mt")?.toDoubleOrNull()
+            val dist = getItem(wpt, "dist")?.toDoubleOrNull()
+            val wca = getItem(wpt, "wca")?.toDoubleOrNull()
+            val hdg = getItem(wpt, "hdg")?.toDoubleOrNull()
+            val gs = getItem(wpt, "gs")?.toDoubleOrNull()
+            val time = getItem(wpt, "time")?.toLongOrNull()
+            val timeInc = getItem(wpt, "timei")?.toLongOrNull()
+            val eta = str2DateTimeJson(getItem(wpt, "eta"))
+            val ata = str2DateTimeJson(getItem(wpt, "ata"))
+            val fuel = getItem(wpt, "fuel")?.toDoubleOrNull()
+            val fuelR = getItem(wpt, "fuelr")?.toDoubleOrNull()
+            val remarks = getItem(wpt, "rmk") ?: ""
+            val active = getItem(wpt, "act")?.toBoolean() ?: true
+            val current = getItem(wpt, "cur")?.toBoolean() ?: false
 
-        if (dest.isNotEmpty() && mt != null && dist != null) newNavlogList.add(
-            NavlogItem(
-                dest = dest,
-                trueTrack = tt,
-                declination = d,
-                magneticTrack = mt,
-                distance = dist,
-                wca = wca,
-                hdg = hdg,
-                gs = gs,
-                time = time,
-                timeIncrement = timeInc,
-                eta = eta,
-                ata = ata,
-                fuel = fuel,
-                fuelRemaining = fuelR,
-                remarks = remarks,
-                active = active,
-                current = current,
-                coords = coords
+            val lat = getItem(wpt, "lat")?.toDoubleOrNull()
+            val lng = getItem(wpt, "lng")?.toDoubleOrNull()
+            val coords: LatLng? = if (lat != null && lng != null) LatLng(lat, lng) else null
+
+            if (dest.isNotEmpty() && mt != null && dist != null) newNavlogList.add(
+                NavlogItem(
+                    dest = dest,
+                    trueTrack = tt,
+                    declination = d,
+                    magneticTrack = mt,
+                    distance = dist,
+                    wca = wca,
+                    hdg = hdg,
+                    gs = gs,
+                    time = time,
+                    timeIncrement = timeInc,
+                    eta = eta,
+                    ata = ata,
+                    fuel = fuel,
+                    fuelRemaining = fuelR,
+                    remarks = remarks,
+                    active = active,
+                    current = current,
+                    coords = coords
+                )
             )
-        )
+        }
     }
 
     resetSettings()
@@ -493,7 +508,7 @@ fun loadFlightPlanList(search: String = "") {
 }
 
 // Fun converts all dnl files to json files
-// Todo delete this function with loadStateDnl
+// TODO delete this function with loadStateDnl
 fun convertAllDnlToJson() {
     if (externalAppDir == null) return
     var deleteTrk = false
@@ -556,8 +571,10 @@ fun loadTrace(): Boolean {
                 if (lat != null && lng != null) tracePointsList.add(LatLng(lat, lng))
             }
         }
-        refreshDisplay = true
-        return true
+        if (tracePointsList.size > 1) {
+            refreshDisplay = true
+            return true
+        } else tracePointsList.clear()
     }
     return false
 }
@@ -626,10 +643,10 @@ fun savePlanAsGpx(): String {
     var wpt = ""
     var trkpt = ""
 
-    if (navlogList.size > 0 && settings.takeoffCoords != null) {
+    if (navlogList.size > 0 && settings.takeoffPos != null) {
         var name = "Start"
-        var lat = formatDouble(settings.takeoffCoords?.latitude, C.COORDS_PRECISION)
-        var lng = formatDouble(settings.takeoffCoords?.longitude, C.COORDS_PRECISION)
+        var lat = formatDouble(settings.takeoffPos?.latitude, C.COORDS_PRECISION)
+        var lng = formatDouble(settings.takeoffPos?.longitude, C.COORDS_PRECISION)
         wpt += ("\t<wpt lat=\"$lat\" lon=\"$lng\"><name>$name</name></wpt>\n")
         trkpt += ("\t<trkpt lat=\"$lat\" lon=\"$lng\"></trkpt>\n")
 
@@ -735,28 +752,30 @@ fun loadAirplaneList() {
     val file = File(externalAppDir, C.airplanesFile)
     if (!file.exists()) return
 
+    val json: JSONObject
     airplaneList.clear()
-    val json = JSONObject(file.readText())
+
+    try {
+        json = JSONObject(file.readText())
+    } catch (e: Exception) {
+        Log.d(tag, e.toString())
+        return
+    }
 
     (0 until json.length()).forEach {
-        val a: JSONObject
-        try {
-            a = JSONObject(json["airplane_$it"].toString())
-        } catch (e: Exception) {
-            Log.d(tag, e.toString())
-            return
-        }
+        val key = "airplane_$it"
+        val jItem = JSONObject(getItem(json, key) ?: "{}")
+        if (jItem.length() == 0) return
 
-        val id = if (a.has("id")) a["id"].toString() else null
-        val type = if (a.has("type")) a["type"].toString() else ""
-        val reg = if (a.has("reg")) a["reg"].toString() else ""
-        val rmk = if (a.has("rmk")) a["rmk"].toString() else ""
-
-        val tas = if (a.has("tas")) a["tas"].toString().toDoubleOrNull() ?: 0.0 else 0.0
-        val tank = if (a.has("tank")) a["tank"].toString().toDoubleOrNull() ?: 0.0 else 0.0
-        val fph = if (a.has("fph")) a["fph"].toString().toDoubleOrNull() ?: 0.0 else 0.0
-        val su = if (a.has("su")) a["su"].toString().toIntOrNull() ?: 0 else 0
-        val vu = if (a.has("vu")) a["vu"].toString().toIntOrNull() ?: 0 else 0
+        val id = getItem(jItem, "id")
+        val type = getItem(jItem, "type") ?: ""
+        val reg = getItem(jItem, "reg") ?: ""
+        val rmk = getItem(jItem, "rmk") ?: ""
+        val tas = getItem(jItem, "tas")?.toDoubleOrNull() ?: 0.0
+        val tank = getItem(jItem, "tank")?.toDoubleOrNull() ?: 0.0
+        val fph = getItem(jItem, "fph")?.toDoubleOrNull() ?: 0.0
+        val su = getItem(jItem, "su")?.toIntOrNull() ?: 0
+        val vu = getItem(jItem, "vu")?.toIntOrNull() ?: 0
 
         if (id != null) {
             airplaneList.add(
