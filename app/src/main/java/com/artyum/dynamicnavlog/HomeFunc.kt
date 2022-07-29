@@ -224,7 +224,7 @@ class HomeItem() {
 
         // Check hit waypoint circle
         if (stage == C.STAGE_3_FLIGHT_IN_PROGRESS && distRemaining > 0 && gps.isValid && gps.bearing != null && item >= 0) {
-            val p = calcDestinationCoords(gps.coords!!, gps.bearing!!.toDouble(), nm2m(distRemaining))
+            val p = calcDestinationPos(gps.coords!!, gps.bearing!!.toDouble(), nm2m(distRemaining))
             val d = calcDistance(p, navlogList[item].coords!!)
             if (m2nm(d) > nextRadiusList[settings.nextRadius]) hit = false
         }

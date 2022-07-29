@@ -20,7 +20,7 @@ fun calcDistance(c1: LatLng, c2: LatLng): Double {
 }
 
 // Calculate destination point given distance and bearing from start point (distance in meters)
-fun calcDestinationCoords(from: LatLng, bearing: Double, distance: Double): LatLng {
+fun calcDestinationPos(from: LatLng, bearing: Double, distance: Double): LatLng {
     val lat1 = deg2rad(from.latitude)
     val lon1 = deg2rad(from.longitude)
     val brg = deg2rad(bearing)
