@@ -13,7 +13,6 @@ import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import com.artyum.dynamicnavlog.databinding.FragmentHomeBinding
-import com.google.android.material.button.MaterialButton
 import com.google.android.material.progressindicator.LinearProgressIndicator
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -58,27 +57,30 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
     }
 
     private fun drawHomeWinStar() {
-        if (airplane.tas == 0.0) return
+        val sr = if (airplane.tas == 0.0) 1.0 else airplane.tas
 
         if (getFlightStage() == C.STAGE_3_FLIGHT_IN_PROGRESS) {
+            // Flight in progress
             val i = getNavlogCurrentItemId()
             paintWindCircle(
                 bind.imgHomeView, resources,
                 course = navlogList[i].magneticTrack!!,
                 windDir = settings.windDir,
                 hdg = navlogList[i].hdg!!,
-                speedRatio = navlogList[i].gs!! / airplane.tas
+                speedRatio = navlogList[i].gs!! / sr
             )
         } else if (isNavlogReady() && timers.takeoff == null) {
+            // Stage OffBlock
             val first = getNavlogFirstActiveItemId()
             paintWindCircle(
                 bind.imgHomeView, resources,
                 course = navlogList[first].magneticTrack!!,
                 windDir = settings.windDir,
                 hdg = navlogList[first].hdg!!,
-                speedRatio = navlogList[first].gs!! / airplane.tas
+                speedRatio = navlogList[first].gs!! / sr
             )
         } else {
+            // Plan not ready
             paintWindCircle(
                 bind.imgHomeView, resources,
                 course = 0.0,
