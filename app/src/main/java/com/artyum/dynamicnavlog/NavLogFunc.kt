@@ -4,27 +4,6 @@ import android.util.Log
 import com.google.android.gms.maps.model.LatLng
 import java.time.LocalDateTime
 
-data class NavlogItem(
-    var dest: String,                     // Waypoint name
-    var trueTrack: Double? = null,
-    var declination: Double? = null,
-    var magneticTrack: Double? = null,
-    var distance: Double? = null,         // Leg length
-    var wca: Double? = null,              // Wind Correction Angle
-    var hdg: Double? = null,              // Heading
-    var gs: Double? = null,               // Ground speed
-    var time: Long? = null,               // Leg time in seconds
-    var timeIncrement: Long? = null,      // Leg time in seconds
-    var eta: LocalDateTime? = null,
-    var ata: LocalDateTime? = null,
-    var fuel: Double? = null,             // Fuel required for leg
-    var fuelRemaining: Double? = null,    // Total fuel remaining
-    var remarks: String = "",             // Waypoint notes
-    var active: Boolean = true,           // Is waypoint active
-    var current: Boolean = false,         // Is waypoint current
-    var coords: LatLng? = null            // Waypoint coordinates
-)
-
 fun calcNavlog(adapter: NavlogAdapter? = null) {
     Log.d("NavLogFunc", "calcNavlog")
 

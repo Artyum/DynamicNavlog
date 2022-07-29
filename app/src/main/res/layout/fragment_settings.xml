@@ -380,14 +380,19 @@
             </androidx.constraintlayout.widget.ConstraintLayout>
 
             <com.google.android.material.switchmaterial.SwitchMaterial
+                android:id="@+id/settingTrace"
+                style="@style/settingsSwitch"
+                android:text="@string/txtDisplayFlightTrace" />
+
+            <com.google.android.material.switchmaterial.SwitchMaterial
                 android:id="@+id/settingWindArrow"
                 style="@style/settingsSwitch"
                 android:text="@string/txtDisplayWindArrow" />
 
             <com.google.android.material.switchmaterial.SwitchMaterial
-                android:id="@+id/settingTrace"
+                android:id="@+id/settingRadials"
                 style="@style/settingsSwitch"
-                android:text="@string/txtDisplayFlightTrace" />
+                android:text="@string/txtDisplayRadials" />
         </LinearLayout>
 
     </ScrollView>

@@ -12,6 +12,7 @@ import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.model.LatLng
 import kotlinx.coroutines.sync.Mutex
 import java.time.LocalDateTime
+import java.util.function.DoubleUnaryOperator
 import kotlin.math.*
 
 data class Settings(
@@ -36,7 +37,35 @@ data class Settings(
     var mapFollow: Boolean = true,
     var tfDisplayToggle: Int = C.TF_DISPLAY_REM,  // Switch to display time and fuel on the Navlog screen
     var nextRadius: Int = C.DEFAULT_NEXT_RADIUS,
-    var drawWindArrow: Boolean = true
+    var drawWindArrow: Boolean = true,
+    var drawRadials: Boolean = true
+)
+
+data class NavlogItem(
+    var dest: String,                     // Waypoint name
+    var trueTrack: Double? = null,
+    var declination: Double? = null,
+    var magneticTrack: Double? = null,
+    var distance: Double? = null,         // Leg length
+    var wca: Double? = null,              // Wind Correction Angle
+    var hdg: Double? = null,              // Heading
+    var gs: Double? = null,               // Ground speed
+    var time: Long? = null,               // Leg time in seconds
+    var timeIncrement: Long? = null,      // Leg time in seconds
+    var eta: LocalDateTime? = null,
+    var ata: LocalDateTime? = null,
+    var fuel: Double? = null,             // Fuel required for leg
+    var fuelRemaining: Double? = null,    // Total fuel remaining
+    var remarks: String = "",             // Waypoint notes
+    var active: Boolean = true,           // Is waypoint active
+    var current: Boolean = false,         // Is waypoint current
+    var coords: LatLng? = null            // Waypoint coordinates
+)
+
+data class Radial(
+    var angle: Double,
+    var dist: Double,
+    var pos: LatLng
 )
 
 data class Airplane(
@@ -187,7 +216,6 @@ object C {
     const val MAX_ANGLE_INDICATOR = 10
     const val COORDS_PRECISION = 6
     const val LOCATION_PERMISSION_REQ_CODE = 99
-    const val DEPARTURE_MARKER_TITLE = "Departure"
     const val TF_DISPLAY_CUR = 0
     const val TF_DISPLAY_REM = 1
 
@@ -225,9 +253,15 @@ object C {
 
     //Trace
     const val MINIMAL_TRACE_POINTS_DIST = 100.0    // Minimal distance between points to record trace in meters
+
+    // Marker line and circle types
+    const val MAP_ITEM_TRACK = 0
+    const val MAP_ITEM_RADIAL = 1
+    const val MAX_RADIAL_RADIUS_M = 5000.0
 }
 
 var navlogList = ArrayList<NavlogItem>()
+var radialList = ArrayList<Radial>()
 var planList = ArrayList<PlanListItem>()
 var airplaneList = ArrayList<Airplane>()
 var tracePointsList = ArrayList<LatLng>()
@@ -516,6 +550,6 @@ fun getDoubleOrNull(value: String): Double? {
     return str.replace(",", ".").toDoubleOrNull()
 }
 
-fun clearString(str: String): String {
-    return str.trim()
+fun clearString(str: String?): String {
+    return str?.trim() ?: ""
 }

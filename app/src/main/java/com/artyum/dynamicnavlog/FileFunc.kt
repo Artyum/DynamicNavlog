@@ -9,6 +9,7 @@ import java.io.File
 import java.lang.reflect.Type
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
+import kotlin.math.ln
 
 var externalAppDir: File? = null
 //var internalAppDir: File? = null
@@ -19,6 +20,7 @@ fun saveState(fileName: String = "") {
     val jSettings = JSONObject()
     val jTimers = JSONObject()
     val jNavLog = JSONObject()
+    val jRadials = JSONObject()
     val id = settings.planId
 
     Log.d(tag, "saveState: $id")
@@ -46,6 +48,7 @@ fun saveState(fileName: String = "") {
     jSettings.put("maptype", settings.mapType)
     jSettings.put("mapfollow", settings.mapFollow)
     jSettings.put("maparrow", settings.drawWindArrow)
+    jSettings.put("radials", settings.drawRadials)
 
     // Timers
     jTimers.put("offblock", formatDateTimeJson(timers.offblock))
@@ -81,11 +84,23 @@ fun saveState(fileName: String = "") {
         }
     }
 
+    // Radials
+    for (i in radialList.indices) {
+        val r = JSONObject()
+        r.put("angle", radialList[i].angle)
+        r.put("dist", radialList[i].dist)
+        r.put("lat", radialList[i].pos.latitude)
+        r.put("lng", radialList[i].pos.longitude)
+
+        jRadials.put("radial_$i", r)
+    }
+
     // Save
     val json = JSONObject()
     json.put("settings", jSettings)
     json.put("timers", jTimers)
     json.put("navlog", jNavLog)
+    json.put("radials", jRadials)
 
     // TODO delete conversion after some time
     if (fileName != "") {
@@ -318,19 +333,6 @@ fun loadStateDnl(fileName: String = C.stateFile) {
     }
 }
 
-fun str2DateTimeJson(str: String?): LocalDateTime? {
-    val dt: LocalDateTime? = try {
-        LocalDateTime.parse(str, DateTimeFormatter.ofPattern(C.JSON_TIME_PATTERN))
-    } catch (e: Exception) {
-        null
-    }
-    return dt
-}
-
-fun getItem(json: JSONObject, item: String): String? {
-    return if (json.has(item)) json[item].toString() else null
-}
-
 fun loadState(fileName: String = C.stateFile) {
     val tag = "FileFunc"
 
@@ -341,6 +343,7 @@ fun loadState(fileName: String = C.stateFile) {
     val newSettings = Settings()
     val newTimers = Timers()
     val newNavlogList = ArrayList<NavlogItem>()
+    val newRadialList = ArrayList<Radial>()
 
     val json: JSONObject
 
@@ -376,6 +379,7 @@ fun loadState(fileName: String = C.stateFile) {
         newSettings.nextRadius = getItem(jSettings, "nextr")?.toIntOrNull() ?: C.DEFAULT_NEXT_RADIUS
         newSettings.displayTrace = getItem(jSettings, "trace")?.toBoolean() ?: true
         newSettings.drawWindArrow = getItem(jSettings, "maparrow")?.toBoolean() ?: true
+        newSettings.drawRadials = getItem(jSettings, "radials")?.toBoolean() ?: true
     }
 
     // Timers
@@ -441,10 +445,25 @@ fun loadState(fileName: String = C.stateFile) {
         }
     }
 
+    // Radials
+    val jRadials = JSONObject(getItem(json, "radials") ?: "{}")
+    (0 until jRadials.length()).forEach {
+        val key = "radial_$it"
+        val r = JSONObject(getItem(jRadials, key) ?: "{}")
+        if (r.length() > 0) {
+            val angle = getItem(r, "angle")?.toDoubleOrNull()
+            val dist = getItem(r, "dist")?.toDoubleOrNull()
+            val lat = getItem(r, "lat")?.toDoubleOrNull()
+            val lng = getItem(r, "lng")?.toDoubleOrNull()
+            if (angle != null && dist != null && lat != null && lng != null) newRadialList.add(Radial(angle, dist, LatLng(lat, lng)))
+        }
+    }
+
     resetSettings()
     settings = newSettings
     timers = newTimers
     navlogList = newNavlogList
+    radialList = newRadialList
 
     // Load airplane
     getAirplaneByID(settings.airplaneId)
@@ -794,4 +813,17 @@ fun loadAirplaneList() {
         }
     }
     airplaneList.sortBy { it.reg }
+}
+
+fun str2DateTimeJson(str: String?): LocalDateTime? {
+    val dt: LocalDateTime? = try {
+        LocalDateTime.parse(str, DateTimeFormatter.ofPattern(C.JSON_TIME_PATTERN))
+    } catch (e: Exception) {
+        null
+    }
+    return dt
+}
+
+fun getItem(json: JSONObject, item: String): String? {
+    return if (json.has(item)) json[item].toString() else null
 }

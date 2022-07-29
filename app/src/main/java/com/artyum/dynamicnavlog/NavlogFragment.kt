@@ -19,7 +19,7 @@ class NavlogFragment : Fragment(R.layout.fragment_navlog), NavlogAdapter.OnItemC
     private var _binding: FragmentNavlogBinding? = null
     private val bind get() = _binding!!
     private val adapter = NavlogAdapter(navlogList, this, this)
-    private var isNavlogCahnged: Boolean = false
+    private var isNavlogChanged: Boolean = false
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         _binding = FragmentNavlogBinding.inflate(inflater, container, false)
@@ -72,7 +72,7 @@ class NavlogFragment : Fragment(R.layout.fragment_navlog), NavlogAdapter.OnItemC
             if (startPosition > i && endPosition > i && startPosition != endPosition) {
                 Collections.swap(navlogList, startPosition, endPosition)
                 recyclerView.adapter?.notifyItemMoved(startPosition, endPosition)
-                isNavlogCahnged = true
+                isNavlogChanged = true
                 return true
             }
             return false
@@ -86,10 +86,10 @@ class NavlogFragment : Fragment(R.layout.fragment_navlog), NavlogAdapter.OnItemC
             super.onSelectedChanged(viewHolder, actionState)
             when (actionState) {
                 ItemTouchHelper.ACTION_STATE_IDLE -> {
-                    if (isNavlogCahnged) {
+                    if (isNavlogChanged) {
                         calcNavlog(adapter)
                         saveState()
-                        isNavlogCahnged = false
+                        isNavlogChanged = false
                     }
                 }
             }

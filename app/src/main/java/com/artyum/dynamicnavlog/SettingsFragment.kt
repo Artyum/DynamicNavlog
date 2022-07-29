@@ -192,6 +192,13 @@ class SettingsFragment : Fragment(R.layout.fragment_settings) {
             saveForm()
         }
 
+        // Switch - Display radials
+        bind.settingRadials.setOnCheckedChangeListener { _, isChecked ->
+            settings.drawRadials = isChecked
+            change = true
+            saveForm()
+        }
+
         // Switch - Auto-next radius
         bind.spinnerNextRadius.onItemSelectedListener =
             object : AdapterView.OnItemSelectedListener {
@@ -313,6 +320,7 @@ class SettingsFragment : Fragment(R.layout.fragment_settings) {
         bind.settingAutoNext.isChecked = settings.autoNext
         bind.settingTrace.isChecked = settings.displayTrace
         bind.settingWindArrow.isChecked = settings.drawWindArrow
+        bind.settingRadials.isChecked = settings.drawRadials
 
         setGpsGroupVisibility(settings.gpsAssist)
         setWptDetectVisibility(settings.autoNext)
