@@ -180,6 +180,10 @@ class AirplaneFragment : Fragment() {
             airplane.volUnits = volUnits
             addAirplane()
 
+            // Refresh airplane settings
+            getAirplaneByID(settings.airplaneId)
+            calcNavlog()
+
             findNavController().popBackStack()
             //Toast.makeText(context, getString(R.string.txtAirplaneSaved), Toast.LENGTH_SHORT).show()
             //(bind.btnApply as MaterialButton).background.setTint(bind.btnApply.context.getColor(R.color.gray))

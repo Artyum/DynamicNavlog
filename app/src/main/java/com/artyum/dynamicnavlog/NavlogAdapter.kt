@@ -22,9 +22,13 @@ class NavlogAdapter(
     override fun onBindViewHolder(holder: NavlogViewHolder, position: Int) {
         val item = navlogList[position]
 
+        // DEST
         holder.tvDest.text = item.dest
+
+        // TT
         holder.tvTt.text = formatDouble(item.trueTrack)
 
+        // d
         var tmp = ""
         if (item.declination != null) {
             tmp = if (item.declination!! < 0.0) formatDouble(-item.declination!!) + "ᴱ"
@@ -32,12 +36,25 @@ class NavlogAdapter(
         }
         holder.tvDec.text = tmp
 
+        // MT
         holder.tvMt.text = formatDouble(item.magneticTrack)
-        holder.tvDist.text = formatDouble(toUserUnitsDis(item.distance), 1)
+
+        // DIST
+        tmp = ""
+        if (item.distance != null) {
+            val p = if (item.distance!! < C.DIST_THRESHOLD) 1 else 0
+            tmp = formatDouble(toUserUnitsDis(item.distance), p)
+        }
+        holder.tvDist.text = tmp
 
         if (item.active) {
+            //WCA
             holder.tvWca.text = formatDouble(item.wca)
+
+            //HDG
             holder.tvHdg.text = formatDouble(item.hdg)
+
+            //GS
             holder.tvGs.text = formatDouble(toUserUnitsSpd(item.gs))
 
             // TIME

@@ -162,14 +162,15 @@
     <string name="txtGPS">GPS</string>
     <string name="txtWarningNoGPS">Warning! No GPS signal</string>
     <string name="txtGPSAssist">GPS assist</string>
-    <string name="txtAutoNextWPT">Detect T/O, LND and WPT</string>
+    <string name="txtAutoNextWPT">Detect T/O, LND, WPT</string>
     <string name="txtDisplayFlightTrace">Display flight trace</string>
+    <string name="txtDisplayWindArrow">Display wind arrow</string>
     <string name="txtKeepScreenOn">Keep the screen on</string>
     <string name="txtTotalDistance">Total distance</string>
     <string name="txtExtraDistance">Extra distance (no wind)</string>
     <string name="txtTotalTime">Total time</string>
     <string name="txtTotalFuel">Total fuel</string>
-    <string name="txtSpareFuel">Fuel: Required / Spare</string>
+    <string name="txtSpareFuel">Fuel: required/spare</string>
     <string name="txtWarningLongClick">Warning! Hold to overwrite</string>
     <string name="txtNavlogNotReady">Navigation log is not ready</string>
     <string name="txtHoldButtonToConfirm">Hold to confirm</string>
@@ -233,6 +234,4 @@
     <string name="txtLocationMessage">The application will ask for access to device\'s location.\n\nDynamic NavLog collects location data to present position on maps and for proper functionality
         of features like automatic detection of takeoff, landing and waypoint arrival.\n\n\It is also strongly recommended to allow the app to collect location data while running in the background
         or while the screen is off.\n\nMore information: www.youtube.com/watch?v=98Y0nIItm38</string>
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>

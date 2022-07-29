@@ -62,7 +62,7 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
         if (getFlightStage() == C.STAGE_3_FLIGHT_IN_PROGRESS) {
             // Flight in progress
             val i = getNavlogCurrentItemId()
-            paintWindCircle(
+            generateWindCircle(
                 bind.imgHomeView, resources,
                 course = navlogList[i].magneticTrack!!,
                 windDir = settings.windDir,
@@ -72,7 +72,7 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
         } else if (isNavlogReady() && timers.takeoff == null) {
             // Stage OffBlock
             val first = getNavlogFirstActiveItemId()
-            paintWindCircle(
+            generateWindCircle(
                 bind.imgHomeView, resources,
                 course = navlogList[first].magneticTrack!!,
                 windDir = settings.windDir,
@@ -81,7 +81,7 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
             )
         } else {
             // Plan not ready
-            paintWindCircle(
+            generateWindCircle(
                 bind.imgHomeView, resources,
                 course = 0.0,
                 windDir = 180.0,

@@ -360,10 +360,6 @@
                         app:layout_constraintRight_toRightOf="parent" />
                 </androidx.constraintlayout.widget.ConstraintLayout>
 
-                <com.google.android.material.switchmaterial.SwitchMaterial
-                    android:id="@+id/settingTrace"
-                    style="@style/settingsSwitch"
-                    android:text="@string/txtDisplayFlightTrace" />
             </LinearLayout>
 
             <androidx.constraintlayout.widget.ConstraintLayout style="@style/settingsSwitch">
@@ -382,6 +378,16 @@
                     app:layout_constraintBaseline_toBaselineOf="@id/txtMapOrientation"
                     app:layout_constraintRight_toRightOf="parent" />
             </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <com.google.android.material.switchmaterial.SwitchMaterial
+                android:id="@+id/settingWindArrow"
+                style="@style/settingsSwitch"
+                android:text="@string/txtDisplayWindArrow" />
+
+            <com.google.android.material.switchmaterial.SwitchMaterial
+                android:id="@+id/settingTrace"
+                style="@style/settingsSwitch"
+                android:text="@string/txtDisplayFlightTrace" />
         </LinearLayout>
 
     </ScrollView>

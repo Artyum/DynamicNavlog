@@ -229,7 +229,7 @@ class MainActivity : AppCompatActivity() {
         if (releaseOptions.startBillingClient) startBillingClient() else disableAds()
 
         // Convert all saves to xml
-        //todo delete this after some time v1.2.0 2022-06
+        //TODO delete this after some time v1.2.0 2022-06
         convertAllDnlToJson()
 
         // Clear unused files

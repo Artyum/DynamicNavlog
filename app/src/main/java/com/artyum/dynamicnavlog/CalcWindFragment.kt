@@ -42,11 +42,11 @@ class CalcWindFragment : Fragment(layout.fragment_calc_wind) {
         bind.btnClear.setOnClickListener {
             it.hideKeyboard()
             allClear()
-            paintWindCircle(bind.imgView, resources, course = 0.0, windDir = 180.0, hdg = 0.0, speedRatio = 1.0)
+            generateWindCircle(bind.imgView, resources, course = 0.0, windDir = 180.0, hdg = 0.0, speedRatio = 1.0)
         }
 
         setupUI()
-        paintWindCircle(bind.imgView, resources, course = 0.0, windDir = 180.0, hdg = 0.0, speedRatio = 1.0)
+        generateWindCircle(bind.imgView, resources, course = 0.0, windDir = 180.0, hdg = 0.0, speedRatio = 1.0)
     }
 
     private fun allClear() {
@@ -107,7 +107,7 @@ class CalcWindFragment : Fragment(layout.fragment_calc_wind) {
             bind.outCrosswind.setText(formatDouble(toUserUnitsSpd(abs(cw))))
 
             // Image
-            paintWindCircle(bind.imgView, resources, course = dCourse, windDir = dWindDir, hdg = hdg, speedRatio = gs / dTas)
+            generateWindCircle(bind.imgView, resources, course = dCourse, windDir = dWindDir, hdg = hdg, speedRatio = gs / dTas)
 
         } else {
             Toast.makeText(view.context, getString(string.txtInvalidFlightParams), Toast.LENGTH_SHORT).show()
