@@ -12,7 +12,6 @@ import androidx.core.view.isVisible
 import androidx.core.widget.doOnTextChanged
 import androidx.fragment.app.Fragment
 import com.artyum.dynamicnavlog.databinding.FragmentSettingsBinding
-import com.google.android.gms.maps.GoogleMap
 import kotlinx.coroutines.CoroutineName
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
@@ -195,6 +194,14 @@ class SettingsFragment : Fragment(R.layout.fragment_settings) {
         // Switch - Display radials
         bind.settingRadials.setOnCheckedChangeListener { _, isChecked ->
             settings.drawRadials = isChecked
+            setDisplayRadialsMarkersVisibility(settings.drawRadials)
+            change = true
+            saveForm()
+        }
+
+        // Switch - Display radial's markers
+        bind.settingRadialsMarkers.setOnCheckedChangeListener { _, isChecked ->
+            settings.drawRadialsMarkers = isChecked
             change = true
             saveForm()
         }
@@ -321,9 +328,11 @@ class SettingsFragment : Fragment(R.layout.fragment_settings) {
         bind.settingTrace.isChecked = settings.displayTrace
         bind.settingWindArrow.isChecked = settings.drawWindArrow
         bind.settingRadials.isChecked = settings.drawRadials
+        bind.settingRadialsMarkers.isChecked = settings.drawRadialsMarkers
 
         setGpsGroupVisibility(settings.gpsAssist)
         setWptDetectVisibility(settings.autoNext)
+        setDisplayRadialsMarkersVisibility(settings.drawRadials)
         refreshSpareFuelBox()
 
         restore = false
@@ -360,6 +369,10 @@ class SettingsFragment : Fragment(R.layout.fragment_settings) {
 
     private fun setWptDetectVisibility(visible: Boolean) {
         bind.settingWptDetection.isVisible = visible
+    }
+
+    private fun setDisplayRadialsMarkersVisibility(visible: Boolean) {
+        bind.settingRadialsMarkers.isVisible = visible
     }
 
     private fun isValidWindDir(v: Double?): Boolean {

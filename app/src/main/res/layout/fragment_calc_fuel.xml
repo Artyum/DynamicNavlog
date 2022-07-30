@@ -34,7 +34,7 @@
 
                     <com.google.android.material.textfield.TextInputLayout
                         style="@style/inputLayout"
-                        android:hint="@string/txtFuelForStart">
+                        android:hint="@string/txtFuelAtrStart">
 
                         <com.google.android.material.textfield.TextInputEditText
                             android:id="@+id/edtFuelStart"
@@ -45,7 +45,7 @@
 
                     <com.google.android.material.textfield.TextInputLayout
                         style="@style/inputLayout"
-                        android:hint="@string/txtFuelAfterFlight">
+                        android:hint="@string/txtFuelAtEnd">
 
                         <com.google.android.material.textfield.TextInputEditText
                             android:id="@+id/edtFuelEnd"

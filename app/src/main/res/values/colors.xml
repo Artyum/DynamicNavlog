@@ -32,6 +32,6 @@
     <color name="trackpassed">#74436ED8</color>
     <color name="trackcurrent">#A6FF00FF</color>
     <color name="trackinactive">#B26B5088</color>
-    <color name="radial">#AE9F89</color>
+    <color name="radial">#A5AA8C</color>
     <color name="transparent">#00000000</color>
 </resources>

@@ -2,14 +2,11 @@ package com.artyum.dynamicnavlog
 
 import android.util.Log
 import com.google.android.gms.maps.GoogleMap
-import com.google.android.gms.maps.model.JointType
 import com.google.android.gms.maps.model.LatLng
 import org.json.JSONObject
 import java.io.File
-import java.lang.reflect.Type
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
-import kotlin.math.ln
 
 var externalAppDir: File? = null
 //var internalAppDir: File? = null
@@ -49,6 +46,7 @@ fun saveState(fileName: String = "") {
     jSettings.put("mapfollow", settings.mapFollow)
     jSettings.put("maparrow", settings.drawWindArrow)
     jSettings.put("radials", settings.drawRadials)
+    jSettings.put("radialsm", settings.drawRadialsMarkers)
 
     // Timers
     jTimers.put("offblock", formatDateTimeJson(timers.offblock))
@@ -89,8 +87,10 @@ fun saveState(fileName: String = "") {
         val r = JSONObject()
         r.put("angle", radialList[i].angle)
         r.put("dist", radialList[i].dist)
-        r.put("lat", radialList[i].pos.latitude)
-        r.put("lng", radialList[i].pos.longitude)
+        r.put("lat1", radialList[i].pos1.latitude)
+        r.put("lng1", radialList[i].pos1.longitude)
+        r.put("lat2", radialList[i].pos2.latitude)
+        r.put("lng2", radialList[i].pos2.longitude)
 
         jRadials.put("radial_$i", r)
     }
@@ -170,8 +170,8 @@ fun loadOptions() {
             newOptions.screenOrientation = getItem(jOptions, "screenorient")?.toIntOrNull() ?: C.SCREEN_SENSOR
             newOptions.timeInUTC = getItem(jOptions, "utc")?.toBoolean() ?: false
             newOptions.keepScreenOn = getItem(jOptions, "screenon")?.toBoolean() ?: false
-            newOptions.autoTakeoffSpd = getItem(jOptions, "takeoffspd")?.toDoubleOrNull() ?: C.AUTO_TAKEOFF_MIN_SPEED_KT
-            newOptions.autoLandingSpd = getItem(jOptions, "landingspd")?.toDoubleOrNull() ?: C.AUTO_LANDING_MIN_SPEED_KT
+            newOptions.autoTakeoffSpd = getDoubleOrNull(getItem(jOptions, "takeoffspd")) ?: C.AUTO_TAKEOFF_MIN_SPEED_KT
+            newOptions.autoLandingSpd = getDoubleOrNull(getItem(jOptions, "landingspd")) ?: C.AUTO_LANDING_MIN_SPEED_KT
             options = newOptions
         }
     } else {
@@ -363,13 +363,13 @@ fun loadState(fileName: String = C.stateFile) {
         newSettings.destination = getItem(jSettings, "dest") ?: ""
         newSettings.airplaneId = getItem(jSettings, "planeId") ?: ""
 
-        val depLat = getItem(jSettings, "deplat")?.toDoubleOrNull()
-        val depLng = getItem(jSettings, "deplng")?.toDoubleOrNull()
+        val depLat = getDoubleOrNull(getItem(jSettings, "deplat"))
+        val depLng = getDoubleOrNull(getItem(jSettings, "deplng"))
         if (depLat != null && depLng != null) newSettings.takeoffPos = LatLng(depLat, depLng)
 
-        newSettings.windDir = getItem(jSettings, "winddir")?.toDoubleOrNull() ?: 0.0
-        newSettings.windSpd = getItem(jSettings, "windspeed")?.toDoubleOrNull() ?: 0.0
-        newSettings.fob = getItem(jSettings, "fob")?.toDoubleOrNull() ?: 0.0
+        newSettings.windDir = getDoubleOrNull(getItem(jSettings, "winddir")) ?: 0.0
+        newSettings.windSpd = getDoubleOrNull(getItem(jSettings, "windspeed")) ?: 0.0
+        newSettings.fob = getDoubleOrNull(getItem(jSettings, "fob")) ?: 0.0
         newSettings.gpsAssist = getItem(jSettings, "gps")?.toBoolean() ?: true
         newSettings.mapType = getItem(jSettings, "maptype")?.toIntOrNull() ?: 0
         newSettings.mapOrientation = getItem(jSettings, "maporient")?.toIntOrNull() ?: 0
@@ -380,6 +380,7 @@ fun loadState(fileName: String = C.stateFile) {
         newSettings.displayTrace = getItem(jSettings, "trace")?.toBoolean() ?: true
         newSettings.drawWindArrow = getItem(jSettings, "maparrow")?.toBoolean() ?: true
         newSettings.drawRadials = getItem(jSettings, "radials")?.toBoolean() ?: true
+        newSettings.drawRadialsMarkers = getItem(jSettings, "radialsm")?.toBoolean() ?: true
     }
 
     // Timers
@@ -399,25 +400,25 @@ fun loadState(fileName: String = C.stateFile) {
         val wpt = JSONObject(getItem(jNavLog, key) ?: "{}")
         if (wpt.length() > 0) {
             val dest = getItem(wpt, "dest")?.uppercase() ?: ""
-            val tt = getItem(wpt, "tt")?.toDoubleOrNull()
-            val d = getItem(wpt, "d")?.toDoubleOrNull()
-            val mt = getItem(wpt, "mt")?.toDoubleOrNull()
-            val dist = getItem(wpt, "dist")?.toDoubleOrNull()
-            val wca = getItem(wpt, "wca")?.toDoubleOrNull()
-            val hdg = getItem(wpt, "hdg")?.toDoubleOrNull()
-            val gs = getItem(wpt, "gs")?.toDoubleOrNull()
+            val tt = getDoubleOrNull(getItem(wpt, "tt"))
+            val d = getDoubleOrNull(getItem(wpt, "d"))
+            val mt = getDoubleOrNull(getItem(wpt, "mt"))
+            val dist = getDoubleOrNull(getItem(wpt, "dist"))
+            val wca = getDoubleOrNull(getItem(wpt, "wca"))
+            val hdg = getDoubleOrNull(getItem(wpt, "hdg"))
+            val gs = getDoubleOrNull(getItem(wpt, "gs"))
             val time = getItem(wpt, "time")?.toLongOrNull()
             val timeInc = getItem(wpt, "timei")?.toLongOrNull()
             val eta = str2DateTimeJson(getItem(wpt, "eta"))
             val ata = str2DateTimeJson(getItem(wpt, "ata"))
-            val fuel = getItem(wpt, "fuel")?.toDoubleOrNull()
-            val fuelR = getItem(wpt, "fuelr")?.toDoubleOrNull()
+            val fuel = getDoubleOrNull(getItem(wpt, "fuel"))
+            val fuelR = getDoubleOrNull(getItem(wpt, "fuelr"))
             val remarks = getItem(wpt, "rmk") ?: ""
             val active = getItem(wpt, "act")?.toBoolean() ?: true
             val current = getItem(wpt, "cur")?.toBoolean() ?: false
 
-            val lat = getItem(wpt, "lat")?.toDoubleOrNull()
-            val lng = getItem(wpt, "lng")?.toDoubleOrNull()
+            val lat = getDoubleOrNull(getItem(wpt, "lat"))
+            val lng = getDoubleOrNull(getItem(wpt, "lng"))
             val coords: LatLng? = if (lat != null && lng != null) LatLng(lat, lng) else null
 
             if (dest.isNotEmpty() && mt != null && dist != null) newNavlogList.add(
@@ -451,11 +452,16 @@ fun loadState(fileName: String = C.stateFile) {
         val key = "radial_$it"
         val r = JSONObject(getItem(jRadials, key) ?: "{}")
         if (r.length() > 0) {
-            val angle = getItem(r, "angle")?.toDoubleOrNull()
-            val dist = getItem(r, "dist")?.toDoubleOrNull()
-            val lat = getItem(r, "lat")?.toDoubleOrNull()
-            val lng = getItem(r, "lng")?.toDoubleOrNull()
-            if (angle != null && dist != null && lat != null && lng != null) newRadialList.add(Radial(angle, dist, LatLng(lat, lng)))
+            val angle = getDoubleOrNull(getItem(r, "angle"))
+            val dist = getDoubleOrNull(getItem(r, "dist"))
+            val lat1 = getDoubleOrNull(getItem(r, "lat1"))
+            val lng1 = getDoubleOrNull(getItem(r, "lng1"))
+            val lat2 = getDoubleOrNull(getItem(r, "lat2"))
+            val lng2 = getDoubleOrNull(getItem(r, "lng2"))
+
+            if (angle != null && dist != null && lat1 != null && lng1 != null && lat2 !== null && lng2 != null) {
+                newRadialList.add(Radial(angle = angle, dist = dist, pos1 = LatLng(lat1, lng1), pos2 = LatLng(lat2, lng2)))
+            }
         }
     }
 
@@ -585,8 +591,8 @@ fun loadTrace(): Boolean {
         for (line in lines) {
             if (line != "") {
                 val json = JSONObject(line)
-                val lat = json["lat"].toString().toDoubleOrNull()
-                val lng = json["lng"].toString().toDoubleOrNull()
+                val lat = getDoubleOrNull(getItem(json, "lat"))
+                val lng = getDoubleOrNull(getItem(json, "lng"))
                 if (lat != null && lng != null) tracePointsList.add(LatLng(lat, lng))
             }
         }
@@ -790,9 +796,9 @@ fun loadAirplaneList() {
         val type = getItem(jItem, "type") ?: ""
         val reg = getItem(jItem, "reg") ?: ""
         val rmk = getItem(jItem, "rmk") ?: ""
-        val tas = getItem(jItem, "tas")?.toDoubleOrNull() ?: 0.0
-        val tank = getItem(jItem, "tank")?.toDoubleOrNull() ?: 0.0
-        val fph = getItem(jItem, "fph")?.toDoubleOrNull() ?: 0.0
+        val tas = getDoubleOrNull(getItem(jItem, "tas")) ?: 0.0
+        val tank = getDoubleOrNull(getItem(jItem, "tank")) ?: 0.0
+        val fph = getDoubleOrNull(getItem(jItem, "fph")) ?: 0.0
         val su = getItem(jItem, "su")?.toIntOrNull() ?: 0
         val vu = getItem(jItem, "vu")?.toIntOrNull() ?: 0
 

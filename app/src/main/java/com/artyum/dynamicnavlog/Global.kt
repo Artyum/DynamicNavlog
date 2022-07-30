@@ -12,7 +12,6 @@ import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.model.LatLng
 import kotlinx.coroutines.sync.Mutex
 import java.time.LocalDateTime
-import java.util.function.DoubleUnaryOperator
 import kotlin.math.*
 
 data class Settings(
@@ -38,7 +37,9 @@ data class Settings(
     var tfDisplayToggle: Int = C.TF_DISPLAY_REM,  // Switch to display time and fuel on the Navlog screen
     var nextRadius: Int = C.DEFAULT_NEXT_RADIUS,
     var drawWindArrow: Boolean = true,
-    var drawRadials: Boolean = true
+
+    var drawRadials: Boolean = true,
+    var drawRadialsMarkers: Boolean = true
 )
 
 data class NavlogItem(
@@ -65,7 +66,8 @@ data class NavlogItem(
 data class Radial(
     var angle: Double,
     var dist: Double,
-    var pos: LatLng
+    var pos1: LatLng,
+    var pos2: LatLng
 )
 
 data class Airplane(
@@ -257,7 +259,7 @@ object C {
     // Marker line and circle types
     const val MAP_ITEM_TRACK = 0
     const val MAP_ITEM_RADIAL = 1
-    const val MAX_RADIAL_RADIUS_M = 5000.0
+    const val RADIAL_RADIUS_M = 3000.0
 }
 
 var navlogList = ArrayList<NavlogItem>()
@@ -543,7 +545,8 @@ fun getNextRadiusUnits(i: Int): String {
     return formatDouble(nextRadiusList[i], 1) + " nm"
 }
 
-fun getDoubleOrNull(value: String): Double? {
+fun getDoubleOrNull(value: String?): Double? {
+    if (value == null) return null
     var str = value.trim()
     val regex = Regex("[^0-9.,-]")
     str = regex.replace(str, "")
@@ -552,4 +555,8 @@ fun getDoubleOrNull(value: String): Double? {
 
 fun clearString(str: String?): String {
     return str?.trim() ?: ""
+}
+
+fun resetRadials() {
+    radialList.clear()
 }

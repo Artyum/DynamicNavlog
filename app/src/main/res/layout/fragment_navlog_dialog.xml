@@ -7,7 +7,23 @@
     android:orientation="vertical"
     android:paddingHorizontal="10dp"
     android:paddingVertical="5dp">
+    <LinearLayout
+        style="@style/dividerBox"
+        android:layout_marginTop="0dp"
+        android:layout_marginBottom="10dp">
 
+        <View
+            style="@style/dividerLine"
+            android:layout_weight="1" />
+
+        <TextView
+            style="@style/dividerText"
+            android:text="@string/txtWaypoint" />
+
+        <View
+            style="@style/dividerLine"
+            android:layout_weight="1" />
+    </LinearLayout>
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
