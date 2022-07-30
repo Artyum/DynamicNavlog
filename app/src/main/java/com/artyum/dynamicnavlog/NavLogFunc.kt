@@ -133,7 +133,6 @@ fun resetCurrent() {
 }
 
 fun resetNavlog() {
-    // Reset navlog
     for (i in navlogList.indices) {
         navlogList[i].eta = null
         navlogList[i].ata = null

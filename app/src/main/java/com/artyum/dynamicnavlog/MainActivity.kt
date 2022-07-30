@@ -642,6 +642,7 @@ class MainActivity : AppCompatActivity() {
         tracePointsList.clear()
         resetTimers()
         resetNavlog()
+        resetRadials()
         stopNavlogService()
         calcNavlog()
         saveState()

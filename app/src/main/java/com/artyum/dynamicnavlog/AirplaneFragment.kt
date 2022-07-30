@@ -11,7 +11,6 @@ import androidx.core.widget.doAfterTextChanged
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import com.artyum.dynamicnavlog.databinding.FragmentAirplaneBinding
-import com.google.android.material.button.MaterialButton
 
 val TAG = "AirplaneFragment"
 
@@ -84,9 +83,9 @@ class AirplaneFragment : Fragment() {
     }
 
     private fun calcPerformance() {
-        val tas = bind.airplaneTas.text.toString().toDoubleOrNull()
-        val tank = bind.airplaneTank.text.toString().toDoubleOrNull()
-        val fph = bind.airplaneFph.text.toString().toDoubleOrNull()
+        val tas = getDoubleOrNull(bind.airplaneTas.text.toString())
+        val tank = getDoubleOrNull(bind.airplaneTank.text.toString())
+        val fph = getDoubleOrNull(bind.airplaneFph.text.toString())
 
         if (tas != null && tank != null && fph != null) {
             val time = tank / fph   // time in h
@@ -138,9 +137,9 @@ class AirplaneFragment : Fragment() {
         val type = clearString(bind.airplaneType.text.toString())
         val reg = clearString(bind.airplaneReg.text.toString())
         val rmk = clearString(bind.airplaneRmk.text.toString())
-        val tas = bind.airplaneTas.text.toString().toDoubleOrNull()
-        val tank = bind.airplaneTank.text.toString().toDoubleOrNull()
-        val fph = bind.airplaneFph.text.toString().toDoubleOrNull()
+        val tas = getDoubleOrNull(bind.airplaneTas.text.toString())
+        val tank = getDoubleOrNull(bind.airplaneTank.text.toString())
+        val fph = getDoubleOrNull(bind.airplaneFph.text.toString())
 
         // Validation
         var ok = true

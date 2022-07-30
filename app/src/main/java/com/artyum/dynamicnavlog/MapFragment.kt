@@ -41,6 +41,8 @@ class MapFragment : Fragment(R.layout.fragment_map) {
     private var windArrowLine: Polyline? = null
     private var traceLine: Polyline? = null
 
+    private var radialPoint1: LatLng? = null
+
     @Volatile
     var timerTrace = 0
 
@@ -64,7 +66,6 @@ class MapFragment : Fragment(R.layout.fragment_map) {
 
         val con = (activity as MainActivity).applicationContext
         val mapFragment = childFragmentManager.findFragmentById(R.id.mapFragment) as SupportMapFragment
-        var prevZoom = 0f
 
         if (ActivityCompat.checkSelfPermission(con, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions((activity as MainActivity), arrayOf(Manifest.permission.ACCESS_FINE_LOCATION), C.LOCATION_PERMISSION_REQ_CODE)
@@ -80,13 +81,20 @@ class MapFragment : Fragment(R.layout.fragment_map) {
 
                 // Click on map listener - add waypoint
                 map.setOnMapClickListener { pos: LatLng ->
-                    if (settings.takeoffPos == null) setTakeoffPoint(pos)
-                    else addWaypoint(pos)
+                    if (radialPoint1 == null) {
+                        if (settings.takeoffPos == null) setTakeoffPoint(pos)
+                        else addWaypoint(pos)
+                    } else {
+                        // Radial second click
+                        addRadial(radialPoint1!!, pos)
+                        radialPoint1 = null
+                    }
                 }
 
-                // Long click on map - add radial
+                // Long click on map - Start new radial
                 map.setOnMapLongClickListener { pos: LatLng ->
-                    addRadial(pos)
+                    radialPoint1 = pos
+                    Toast.makeText(view.context, getString(R.string.txtAddRadial), Toast.LENGTH_SHORT).show()
                 }
 
                 // Drag a marker
@@ -105,8 +113,15 @@ class MapFragment : Fragment(R.layout.fragment_map) {
                             drawFlightPlan()
                             refreshBottomBar()
                         } else {
-                            // Drag a radial
-                            radialList[i].pos = m.position
+                            if (i % 2 == 0) {
+                                // Drag radial start point
+                                radialList[i / 2].pos1 = m.position
+                                recalculateRadial(i / 2)
+                            } else {
+                                // Drag radial endpoint
+                                radialList[(i - 1) / 2].pos2 = m.position
+                                recalculateRadial((i - 1) / 2)
+                            }
                             drawRadials()
                         }
                     }
@@ -122,9 +137,10 @@ class MapFragment : Fragment(R.layout.fragment_map) {
                             dialog.show(parentFragmentManager, "NavlogDialogFragment")
                         }
                     } else {
-                        //Click on a radial
-                        if (i >= 0 && i < radialList.size) {
-                            val dialog = RadialDialogFragment(it.position, i)
+                        //Click on a radial start ot end point
+                        val r = if (i % 2 == 0) i / 2 else (i - 1) / 2
+                        if (r >= 0 && r < radialList.size) {
+                            val dialog = RadialDialogFragment(null, null, r)
                             dialog.show(parentFragmentManager, "RadialDialogFragment")
                         }
                     }
@@ -139,24 +155,15 @@ class MapFragment : Fragment(R.layout.fragment_map) {
                     }
                 }
 
-                map.setOnCameraMoveListener {
-                    drawWindArrow()
-                    // On zoom change
-                    if (prevZoom != map.cameraPosition.zoom) {
-                        prevZoom = map.cameraPosition.zoom
-                        drawRadials()
-                    }
-                }
+                // Draw wind arrow on map move
+                map.setOnCameraMoveListener { drawWindArrow() }
 
                 mapReady = true
-
                 drawRadials()
+                drawTrace()
                 drawFlightPlan()
                 zoomToTrack()
-                drawTrace()
                 drawWindArrow()
-
-                refreshDisplay = true
             }
 
             // Start home thread
@@ -164,8 +171,9 @@ class MapFragment : Fragment(R.layout.fragment_map) {
         }
 
         setFragmentResultListener("requestKey") { _, _ ->
-            saveState()
+            drawRadials()
             drawFlightPlan()
+            saveState()
         }
 
         // Button Follow
@@ -314,41 +322,6 @@ class MapFragment : Fragment(R.layout.fragment_map) {
         }
     }
 
-    private fun drawRadials() {
-        if (!mapReady) return
-        if (!settings.drawRadials) return
-        //Log.d(TAG, "drawRadials")
-
-        radialMarkers.forEach { it.remove() }
-        radialMarkers.clear()
-        radialCircles.forEach { it.remove() }
-        radialCircles.clear()
-        radialLines.forEach { it.remove() }
-        radialLines.clear()
-
-        val visibleRegion: VisibleRegion = map.projection.visibleRegion
-        val center = visibleRegion.latLngBounds.center
-        var radius = calcDistance(center, visibleRegion.latLngBounds.southwest) / 6.0
-        if (radius > C.MAX_RADIAL_RADIUS_M) radius = C.MAX_RADIAL_RADIUS_M
-
-        for (i in radialList.indices) {
-            val item = radialList[i]
-            val d = getDeclination(item.pos)
-            addMarker(pos = item.pos, type = C.MAP_ITEM_RADIAL, id = i, hue = BitmapDescriptorFactory.HUE_BLUE)
-            addCircle(pos = item.pos, radius = radius, strokeColor = R.color.radial, fillColor = R.color.transparent, strokeWidth = 5f, type = C.MAP_ITEM_RADIAL)
-
-            for (i in 0..4) {
-                val a = i * 90.0 - d
-                val p1 = calcDestinationPos(item.pos, a, radius)
-                val p2 = calcDestinationPos(item.pos, a, radius * 0.8)
-                addLine(p1, p2, R.color.radial, 5f, C.MAP_ITEM_RADIAL)
-            }
-
-            val p = calcDestinationPos(item.pos, item.angle - d, nm2m(item.dist))
-            addLine(item.pos, p, R.color.radial, 5f, C.MAP_ITEM_RADIAL)
-        }
-    }
-
     private fun drawTrace() {
         if (!isDisplayFlightTrace()) return
         if (!mapReady || tracePointsList.size == 0) return
@@ -382,19 +355,64 @@ class MapFragment : Fragment(R.layout.fragment_map) {
 
         val visibleRegion: VisibleRegion = map.projection.visibleRegion
         val center = visibleRegion.latLngBounds.center
-        val angle = settings.windDir - getDeclination(center)
+        val angle = normalizeBearing(settings.windDir - getDeclination(center))
         val len1 = calcDistance(center, visibleRegion.latLngBounds.southwest) / 4.0
         val len2 = len1 / 2.8
 
-        val startPoint = calcDestinationPos(center, normalizeBearing(angle + 180), len1 / 2.0)
-        val endPoint = calcDestinationPos(startPoint, angle, len1)
-        val q1 = calcDestinationPos(endPoint, angle - 170.0, len2)
-        val q2 = calcDestinationPos(endPoint, angle + 170.0, len2)
+        val startPoint = calcDestinationPos(center, angle, len1 / 2.0)
+        val endPoint = calcDestinationPos(startPoint, normalizeBearing(angle + 180.0), len1)
+        val q1 = calcDestinationPos(endPoint, normalizeBearing(angle + 10.0), len2)
+        val q2 = calcDestinationPos(endPoint, normalizeBearing(angle - 10.0), len2)
 
-        line.add(startPoint, endPoint)
-        line.add(endPoint, q1)
-        line.add(endPoint, q2)
+        line.add(startPoint, endPoint, q1, q2)
+        //line.add(endPoint, q1)
+        //line.add(endPoint, q2)
         windArrowLine = map.addPolyline(line)
+    }
+
+    private fun drawRadials() {
+        if (!mapReady) return
+        if (!settings.drawRadials) return
+        //Log.d(TAG, "drawRadials")
+
+        radialMarkers.forEach { it.remove() }
+        radialMarkers.clear()
+        radialCircles.forEach { it.remove() }
+        radialCircles.clear()
+        radialLines.forEach { it.remove() }
+        radialLines.clear()
+
+        val width = 6f
+
+        for (i in radialList.indices) {
+            val radial = radialList[i]
+            val d = getDeclination(radial.pos1)
+            if (settings.drawRadialsMarkers) {
+                addMarker(pos = radial.pos1, type = C.MAP_ITEM_RADIAL, id = 2 * i, hue = BitmapDescriptorFactory.HUE_BLUE)
+                addMarker(pos = radial.pos2, type = C.MAP_ITEM_RADIAL, id = 2 * i + 1, hue = BitmapDescriptorFactory.HUE_BLUE)
+            }
+            addCircle(pos = radial.pos1, radius = C.RADIAL_RADIUS_M, strokeColor = R.color.radial, fillColor = R.color.transparent, strokeWidth = width, type = C.MAP_ITEM_RADIAL)
+
+            // Radial circle scale
+            for (j in 0..11) {
+                val a = j * 30.0 - d
+                val r = if (j % 3 == 0) 0.8 else 0.9
+                if (j == 0) {
+                    val pc = calcDestinationPos(radial.pos1, a, C.RADIAL_RADIUS_M * r)
+                    val p1 = calcDestinationPos(radial.pos1, a - 3.0, C.RADIAL_RADIUS_M)
+                    val p2 = calcDestinationPos(radial.pos1, a + 3.0, C.RADIAL_RADIUS_M)
+                    addLine(pc, p1, R.color.radial, width, C.MAP_ITEM_RADIAL)
+                    addLine(pc, p2, R.color.radial, width, C.MAP_ITEM_RADIAL)
+                } else {
+                    val p1 = calcDestinationPos(radial.pos1, a, C.RADIAL_RADIUS_M)
+                    val p2 = calcDestinationPos(radial.pos1, a, C.RADIAL_RADIUS_M * r)
+                    addLine(p1, p2, R.color.radial, width, C.MAP_ITEM_RADIAL)
+                }
+            }
+
+            // Radial line
+            addLine(radial.pos1, radial.pos2, R.color.radial, width + 2f, C.MAP_ITEM_RADIAL)
+        }
     }
 
     private fun zoomToAll() {
@@ -622,8 +640,8 @@ class MapFragment : Fragment(R.layout.fragment_map) {
         dialog.show(parentFragmentManager, "NavlogDialogFragment")
     }
 
-    private fun addRadial(pos: LatLng) {
-        val dialog = RadialDialogFragment(pos)
+    private fun addRadial(pos1: LatLng, pos2: LatLng) {
+        val dialog = RadialDialogFragment(pos1, pos2)
         dialog.show(parentFragmentManager, "RadialDialogFragment")
     }
 
@@ -643,8 +661,8 @@ class MapFragment : Fragment(R.layout.fragment_map) {
             if (refreshDisplay) {
                 refreshDisplay = false
                 drawRadials()
-                drawFlightPlan()
                 drawTrace()
+                drawFlightPlan()
                 zoomToTrack()
                 drawWindArrow()
             }

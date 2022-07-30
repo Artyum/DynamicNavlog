@@ -393,6 +393,11 @@
                 android:id="@+id/settingRadials"
                 style="@style/settingsSwitch"
                 android:text="@string/txtDisplayRadials" />
+
+            <com.google.android.material.switchmaterial.SwitchMaterial
+                android:id="@+id/settingRadialsMarkers"
+                style="@style/settingsSwitch"
+                android:text="@string/txtDisplayRadialsMarkers" />
         </LinearLayout>
 
     </ScrollView>
