@@ -43,10 +43,7 @@ class MapFragment : Fragment(R.layout.fragment_map) {
 
     private var radialPoint1: LatLng? = null
 
-    @Volatile
     var timerTrace = 0
-
-    @Volatile
     var timerFollow = 0
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
@@ -79,7 +76,7 @@ class MapFragment : Fragment(R.layout.fragment_map) {
                 map.uiSettings.isCompassEnabled = true
                 map.mapType = settings.mapType
 
-                // Click on map listener - add waypoint
+                // Click on map listener - add waypoint or radial
                 map.setOnMapClickListener { pos: LatLng ->
                     if (radialPoint1 == null) {
                         if (settings.takeoffPos == null) setTakeoffPoint(pos)
@@ -171,6 +168,7 @@ class MapFragment : Fragment(R.layout.fragment_map) {
         }
 
         setFragmentResultListener("requestKey") { _, _ ->
+            refreshBottomBar()
             drawRadials()
             drawFlightPlan()
             saveState()
@@ -349,7 +347,7 @@ class MapFragment : Fragment(R.layout.fragment_map) {
 
         val line = PolylineOptions()
             .clickable(false)
-            .color(ContextCompat.getColor(this.requireContext(), R.color.blue))
+            .color(ContextCompat.getColor(this.requireContext(), R.color.windArrow))
             .geodesic(false)
             .width(7f)
 
@@ -365,8 +363,6 @@ class MapFragment : Fragment(R.layout.fragment_map) {
         val q2 = calcDestinationPos(endPoint, normalizeBearing(angle - 10.0), len2)
 
         line.add(startPoint, endPoint, q1, q2)
-        //line.add(endPoint, q1)
-        //line.add(endPoint, q2)
         windArrowLine = map.addPolyline(line)
     }
 

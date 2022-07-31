@@ -633,8 +633,9 @@ class MainActivity : AppCompatActivity() {
     private fun newFlightPlan() {
         saveState()
         navlogList.clear()
-        resetSettings()
+        resetAllSettings()
         resetFlight()
+        resetRadials()
         if (settings.gpsAssist) locationSubscribe() else locationUnsubscribe()
     }
 
@@ -642,7 +643,6 @@ class MainActivity : AppCompatActivity() {
         tracePointsList.clear()
         resetTimers()
         resetNavlog()
-        resetRadials()
         stopNavlogService()
         calcNavlog()
         saveState()

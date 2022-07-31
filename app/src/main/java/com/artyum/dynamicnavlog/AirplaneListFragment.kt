@@ -4,8 +4,10 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.os.bundleOf
 import androidx.core.widget.doAfterTextChanged
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.setFragmentResult
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -35,7 +37,7 @@ class AirplaneListFragment : Fragment(R.layout.fragment_airplanelist), AirplaneL
 
         // Add airplane
         bind.addAirplane.setOnClickListener {
-            editAirplaneID = null
+            setFragmentResult("requestKey", bundleOf("airplaneId" to ""))
             findNavController().navigate(AirplaneListFragmentDirections.actionAirplaneListFragmentToAirplaneFragment())
         }
 
@@ -71,7 +73,7 @@ class AirplaneListFragment : Fragment(R.layout.fragment_airplanelist), AirplaneL
     }
 
     override fun onItemClick(position: Int) {
-        editAirplaneID = airplaneList[position].id
+        setFragmentResult("requestKey", bundleOf("airplaneId" to airplaneList[position].id))
         findNavController().navigate(AirplaneListFragmentDirections.actionAirplaneListFragmentToAirplaneFragment())
     }
 

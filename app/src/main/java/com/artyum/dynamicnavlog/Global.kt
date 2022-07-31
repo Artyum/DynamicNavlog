@@ -36,7 +36,7 @@ data class Settings(
     var mapFollow: Boolean = true,
     var tfDisplayToggle: Int = C.TF_DISPLAY_REM,  // Switch to display time and fuel on the Navlog screen
     var nextRadius: Int = C.DEFAULT_NEXT_RADIUS,
-    var drawWindArrow: Boolean = true,
+    var drawWindArrow: Boolean = false,
 
     var drawRadials: Boolean = true,
     var drawRadialsMarkers: Boolean = true
@@ -274,7 +274,6 @@ var options = Options()
 var timers = Timers()
 
 var totals = Totals()
-var editAirplaneID: String? = null               // Airplane ID for "edit airplan"  page
 val nextRadiusList = arrayListOf(0.5, 1.0, 2.0)  // Next circle radius in NM
 
 var serviceRunning = false

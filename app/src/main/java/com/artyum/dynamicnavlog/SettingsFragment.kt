@@ -414,7 +414,7 @@ fun isMapFollow(): Boolean {
     return settings.gpsAssist && settings.mapFollow
 }
 
-fun resetSettings() {
+fun resetAllSettings() {
     settings = Settings()
     settings.planId = generateStringId()
     resetAirplaneSettings()

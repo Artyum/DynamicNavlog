@@ -28,16 +28,14 @@ class RadialDialogFragment(private val pos1: LatLng? = null, private val pos2: L
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        bind.dialogRadial.doAfterTextChanged {
-            calcPoint2()
-        }
-        bind.dialogDistance.doAfterTextChanged {
-            calcPoint2()
-        }
+        bind.dialogRadial.doAfterTextChanged { calculateEndPoint() }
+        bind.dialogDistance.doAfterTextChanged { calculateEndPoint() }
+        bind.dialogLat1.doAfterTextChanged { calculateEndPoint() }
+        bind.dialogLng1.doAfterTextChanged { calculateEndPoint() }
 
         // Button Apply
         bind.btnDialogSubmit.setOnClickListener {
-            val angle = getDoubleOrNull(bind.dialogRadial.text.toString())
+            var angle = getDoubleOrNull(bind.dialogRadial.text.toString())
             val dist = getDoubleOrNull(bind.dialogDistance.text.toString())
             val lat1 = getDoubleOrNull(bind.dialogLat1.text.toString())
             val lng1 = getDoubleOrNull(bind.dialogLng1.text.toString())
@@ -113,7 +111,7 @@ class RadialDialogFragment(private val pos1: LatLng? = null, private val pos2: L
         }
     }
 
-    private fun calcPoint2() {
+    private fun calculateEndPoint() {
         var angle = getDoubleOrNull(bind.dialogRadial.text.toString())
         var dist = getDoubleOrNull(bind.dialogDistance.text.toString())
         val lat1 = getDoubleOrNull(bind.dialogLat1.text.toString())
@@ -122,7 +120,6 @@ class RadialDialogFragment(private val pos1: LatLng? = null, private val pos2: L
             dist = nm2m(fromUserUnitsDis(dist)!!)
             angle = normalizeBearing(angle - getDeclination(LatLng(lat1, lng1)))
             val pos2 = calcDestinationPos(LatLng(lat1, lng1), angle, dist)
-
             bind.dialogLat2.setText(formatDouble(pos2.latitude, C.COORDS_PRECISION))
             bind.dialogLng2.setText(formatDouble(pos2.longitude, C.COORDS_PRECISION))
         }

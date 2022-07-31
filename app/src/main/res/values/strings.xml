@@ -74,7 +74,7 @@
     <string name="txtOptions">Options</string>
     <string name="txtPoint1">Start point</string>
     <string name="txtPoint2">End point</string>
-    <string name="txtAddRadial">Radial started. Click on map to finish.</string>
+    <string name="txtAddRadial">Radial started. Click on the map to complete the radial.</string>
     <string name="txtAirplaneSaved">Airplane saved</string>
     <string name="txtDestination">Destination</string>
     <string name="txtRadial">Radial</string>
