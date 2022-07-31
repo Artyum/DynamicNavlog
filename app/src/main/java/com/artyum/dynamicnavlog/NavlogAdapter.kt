@@ -4,7 +4,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
-import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 
@@ -31,8 +30,8 @@ class NavlogAdapter(
         // d
         var tmp = ""
         if (item.declination != null) {
-            tmp = if (item.declination!! < 0.0) formatDouble(-item.declination!!) + "ᴱ"
-            else formatDouble(item.declination) + "ᵂ"
+            tmp = if (item.declination!! < 0.0) formatDouble(-item.declination!!) + C.SIGN_EAST
+            else formatDouble(item.declination) + C.SIGN_WEST
         }
         holder.tvDec.text = tmp
 

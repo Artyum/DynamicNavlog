@@ -29,7 +29,7 @@ fun calcDestinationPos(from: LatLng, bearing: Double, distance: Double): LatLng 
     val lat2 = asin(sin(lat1) * cos(dR) + cos(lat1) * sin(dR) * cos(brg))
     val lon2 = lon1 + atan2(sin(brg) * sin(dR) * cos(lat1), cos(dR) - sin(lat1) * sin(lat2))
 
-    return LatLng(roundDouble(rad2deg(lat2), C.COORDS_PRECISION), roundDouble(normalizeLongitude(rad2deg(lon2)), C.COORDS_PRECISION))
+    return LatLng(roundDouble(rad2deg(lat2), C.POS_PRECISION), roundDouble(normalizeLongitude(rad2deg(lon2)), C.POS_PRECISION))
 }
 
 // Calculate the radius of the Earth on a given latitude

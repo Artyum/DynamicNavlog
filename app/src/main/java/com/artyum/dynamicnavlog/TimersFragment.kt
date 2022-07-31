@@ -106,7 +106,7 @@ fun formatDateTime(t: LocalDateTime?, pattern: String): String {
     val utcZoned: ZonedDateTime = ldtZoned.withZoneSameInstant(ZoneId.of("UTC"))
 
     return if (options.timeInUTC)
-        utcZoned.format(DateTimeFormatter.ofPattern(pattern)) + C.ZULU_SIGN
+        utcZoned.format(DateTimeFormatter.ofPattern(pattern)) + C.SIGN_ZULU
     else
         ldtZoned.format(DateTimeFormatter.ofPattern(pattern))
 }

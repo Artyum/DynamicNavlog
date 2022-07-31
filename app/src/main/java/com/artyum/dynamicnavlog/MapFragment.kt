@@ -353,7 +353,7 @@ class MapFragment : Fragment(R.layout.fragment_map) {
 
         val visibleRegion: VisibleRegion = map.projection.visibleRegion
         val center = visibleRegion.latLngBounds.center
-        val angle = normalizeBearing(settings.windDir - getDeclination(center))
+        val angle = normalizeBearing(settings.windDir - getDeclination(center))  // Get declination from the center of the screen
         val len1 = calcDistance(center, visibleRegion.latLngBounds.southwest) / 4.0
         val len2 = len1 / 2.8
 
@@ -382,7 +382,7 @@ class MapFragment : Fragment(R.layout.fragment_map) {
 
         for (i in radialList.indices) {
             val radial = radialList[i]
-            val d = getDeclination(radial.pos1)
+            val declination = getDeclination(radial.pos1)
             if (settings.drawRadialsMarkers) {
                 addMarker(pos = radial.pos1, type = C.MAP_ITEM_RADIAL, id = 2 * i, hue = BitmapDescriptorFactory.HUE_BLUE)
                 addMarker(pos = radial.pos2, type = C.MAP_ITEM_RADIAL, id = 2 * i + 1, hue = BitmapDescriptorFactory.HUE_BLUE)
@@ -391,7 +391,7 @@ class MapFragment : Fragment(R.layout.fragment_map) {
 
             // Radial circle scale
             for (j in 0..11) {
-                val a = j * 30.0 - d
+                val a = normalizeBearing(j * 30.0 - declination)
                 val r = if (j % 3 == 0) 0.8 else 0.9
                 if (j == 0) {
                     val pc = calcDestinationPos(radial.pos1, a, C.RADIAL_RADIUS_M * r)
@@ -586,7 +586,7 @@ class MapFragment : Fragment(R.layout.fragment_map) {
     }
 
     private fun setTakeoffPoint(pos: LatLng) {
-        settings.takeoffPos = LatLng(roundDouble(pos.latitude, C.COORDS_PRECISION), roundDouble(pos.longitude, C.COORDS_PRECISION))
+        settings.takeoffPos = LatLng(roundDouble(pos.latitude, C.POS_PRECISION), roundDouble(pos.longitude, C.POS_PRECISION))
         saveState()
         drawFlightPlan()
     }
@@ -624,14 +624,11 @@ class MapFragment : Fragment(R.layout.fragment_map) {
         // True track
         val tt = calcBearing(prevCoords, pos)
 
-        // Magnetic declination
-        val d = getDeclination(pos)
-
         // Distance
         val dist = m2nm(calcDistance(prevCoords, pos))
 
         // Add item
-        navlogList.add(position, NavlogItem(dest = "", coords = pos, trueTrack = tt, declination = d, distance = dist))
+        navlogList.add(position, NavlogItem(dest = "", coords = pos, trueTrack = tt, declination = getDeclination(pos), distance = dist))
         val dialog = NavlogDialogFragment(position)
         dialog.show(parentFragmentManager, "NavlogDialogFragment")
     }
