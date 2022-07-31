@@ -35,18 +35,9 @@ fun saveState(fileName: String = "") {
     jSettings.put("winddir", settings.windDir)
     jSettings.put("windspeed", settings.windSpd)
 
-    jSettings.put("gps", settings.gpsAssist)
-    jSettings.put("autonext", settings.autoNext)
-    jSettings.put("nextr", settings.nextRadius)
-    jSettings.put("trace", settings.displayTrace)
-
     jSettings.put("maptype", settings.mapType)
-    jSettings.put("maporient", settings.mapOrientation)
     jSettings.put("maptype", settings.mapType)
     jSettings.put("mapfollow", settings.mapFollow)
-    jSettings.put("maparrow", settings.drawWindArrow)
-    jSettings.put("radials", settings.drawRadials)
-    jSettings.put("radialsm", settings.drawRadialsMarkers)
 
     // Timers
     jTimers.put("offblock", formatDateTimeJson(timers.offblock))
@@ -126,213 +117,6 @@ fun saveState(fileName: String = "") {
     }
 }
 
-fun saveOptions() {
-    val tag = "FileFunc"
-    Log.d(tag, "saveOptions")
-
-    val jOptions = JSONObject()
-    jOptions.put("spdunits", options.spdUnits)
-    jOptions.put("distunits", options.distUnits)
-    jOptions.put("volunits", options.volUnits)
-    jOptions.put("screenorient", options.screenOrientation)
-    jOptions.put("screenon", options.keepScreenOn)
-    jOptions.put("utc", options.timeInUTC)
-    jOptions.put("takeoffspd", options.autoTakeoffSpd)
-    jOptions.put("landingspd", options.autoLandingSpd)
-
-    val json = JSONObject()
-    json.put("options", jOptions)
-
-    val file = File(externalAppDir, C.optionsFile)
-    file.writeText(json.toString())
-}
-
-fun loadOptions() {
-    val tag = "FileFunc"
-    Log.d(tag, "loadOptions")
-    val file = File(externalAppDir, C.optionsFile)
-    if (file.exists()) {
-        val newOptions = Options()
-        val json: JSONObject
-
-        try {
-            json = JSONObject(file.readText())
-        } catch (e: Exception) {
-            Log.d(tag, e.toString())
-            return
-        }
-
-        val jOptions = JSONObject(getItem(json, "options") ?: "{}")
-        if (jOptions.length() > 0) {
-            newOptions.spdUnits = getItem(jOptions, "spdunits")?.toIntOrNull() ?: 0
-            newOptions.distUnits = getItem(jOptions, "distunits")?.toIntOrNull() ?: 0
-            newOptions.volUnits = getItem(jOptions, "volunits")?.toIntOrNull() ?: 0
-            newOptions.screenOrientation = getItem(jOptions, "screenorient")?.toIntOrNull() ?: C.SCREEN_SENSOR
-            newOptions.timeInUTC = getItem(jOptions, "utc")?.toBoolean() ?: false
-            newOptions.keepScreenOn = getItem(jOptions, "screenon")?.toBoolean() ?: false
-            newOptions.autoTakeoffSpd = getDoubleOrNull(getItem(jOptions, "takeoffspd")) ?: C.AUTO_TAKEOFF_MIN_SPEED_KT
-            newOptions.autoLandingSpd = getDoubleOrNull(getItem(jOptions, "landingspd")) ?: C.AUTO_LANDING_MIN_SPEED_KT
-            options = newOptions
-        }
-    } else {
-        options = Options()
-        saveOptions()
-    }
-}
-
-// TODO Delete this function after some time (v1.2.0 2022-06)
-fun loadStateDnl(fileName: String = C.stateFile) {
-    //Log.d("FileFunc", "loadStateDnl: $fileName")
-    val file = File(externalAppDir, fileName)
-
-    if (file.exists()) {
-        val newSettings = Settings()
-        val newTimers = Timers()
-        val newNavlogList = ArrayList<NavlogItem>()
-
-        var mode = 0
-        var deplat: Double? = null
-        var deplng: Double? = null
-
-        val lines = file.readLines()
-        for (line in lines) {
-            if (line != "") {
-                if (line == C.INI_SETTINGS_STR || line == C.INI_TIMERS_STR || line == C.INI_NAVLOG_STR) {
-                    when (line) {
-                        C.INI_SETTINGS_STR -> mode = C.INI_SETTINGS
-                        C.INI_TIMERS_STR -> mode = C.INI_TIMERS
-                        C.INI_NAVLOG_STR -> mode = C.INI_NAVLOG
-                    }
-                } else {
-                    val str = line.split(";")
-
-                    if (mode == C.INI_SETTINGS && str.size == 2 && str[1] != "") {
-                        if (str[0] == "name") newSettings.planName = str[1]
-                        if (str[0] == "from") newSettings.departure = str[1]
-                        if (str[0] == "dest") newSettings.destination = str[1]
-
-                        if (str[0] == "deplat") deplat = getDoubleOrNull(str[1])
-                        if (str[0] == "deplng") deplng = getDoubleOrNull(str[1])
-                        if (deplat != null && deplng != null) {
-                            newSettings.takeoffPos = LatLng(deplat, deplng)
-                            deplat = null
-                            deplng = null
-                        }
-
-                        if (str[0] == "winddir") newSettings.windDir = getDoubleOrNull(str[1]) ?: 0.0
-                        if (str[0] == "windspeed") newSettings.windSpd = getDoubleOrNull(str[1]) ?: 0.0
-
-                        //if (str[0] == "units") newSettings.spdUnits = str[1].toIntOrNull() ?: 0
-                        if (str[0] == "gps") newSettings.gpsAssist = str[1].toBoolean()
-                        if (str[0] == "maptype") newSettings.mapType = str[1].toIntOrNull() ?: 0
-                        if (str[0] == "maporient") newSettings.mapOrientation = str[1].toIntOrNull() ?: 0
-                        if (str[0] == "autonext") newSettings.autoNext = str[1].toBoolean()
-                        if (str[0] == "maptype") newSettings.mapType = str[1].toIntOrNull() ?: GoogleMap.MAP_TYPE_NORMAL
-                        if (str[0] == "mapfollow") newSettings.mapFollow = str[1].toBoolean()
-                        if (str[0] == "nextr") newSettings.nextRadius = str[1].toIntOrNull() ?: C.DEFAULT_NEXT_RADIUS
-                        if (str[0] == "trace") newSettings.displayTrace = str[1].toBoolean()
-                    }
-
-                    if (mode == C.INI_TIMERS && str.size == 2 && str[1] != "" && str[1] != "null") {
-                        val ldt = LocalDateTime.parse(str[1], DateTimeFormatter.ofPattern(C.INI_TIME_PATTERN))
-                        if (str[0] == "offblock") newTimers.offblock = ldt
-                        if (str[0] == "takeoff") newTimers.takeoff = ldt
-                        if (str[0] == "landing") newTimers.landing = ldt
-                        if (str[0] == "onblock") newTimers.onblock = ldt
-                    }
-
-                    if (mode == C.INI_NAVLOG && str.size == 19) {
-                        // Indexes
-                        val iDest = 0
-                        val iTrueTrack = 1
-                        val iDeclination = 2
-                        val iMagneticTrack = 3
-                        val iDistance = 4
-                        val iWca = 5
-                        val iHdg = 6
-                        val iGs = 7
-                        val iTime = 8
-                        val iTimeR = 9
-                        val iETA = 10
-                        val iATA = 11
-                        val iFuel = 12
-                        val iFuelR = 13
-                        val iRemarks = 14
-                        val iActive = 15
-                        val iCurrent = 16
-                        val iLat = 17
-                        val iLon = 18
-
-                        var chk = true
-
-                        if (str[iDest] == "") chk = false
-
-                        val tt = getDoubleOrNull(str[iTrueTrack])
-                        val d = getDoubleOrNull(str[iDeclination])
-
-                        val mt = getDoubleOrNull(str[iMagneticTrack])
-                        if (mt == null) chk = false
-
-                        val dist = getDoubleOrNull(str[iDistance])
-                        if (dist == null) chk = false
-
-                        val wca = getDoubleOrNull(str[iWca])
-                        val hdg = getDoubleOrNull(str[iHdg])
-                        val gs = getDoubleOrNull(str[iGs])
-                        val time = str[iTime].toLongOrNull()
-                        val timeInc = str[iTimeR].toLongOrNull()
-
-                        var eta: LocalDateTime? = null
-                        if (str[iETA] != "null" && str[iETA] != "") eta = LocalDateTime.parse(str[iETA], DateTimeFormatter.ofPattern(C.INI_TIME_PATTERN))
-
-                        var ata: LocalDateTime? = null
-                        if (str[iATA] != "null" && str[iATA] != "") ata = LocalDateTime.parse(str[iATA], DateTimeFormatter.ofPattern(C.INI_TIME_PATTERN))
-
-                        val fuel = getDoubleOrNull(str[iFuel])
-                        val fuelR = getDoubleOrNull(str[iFuelR])
-                        val remarks = str[iRemarks].replace("\\n", "\n")
-
-                        val lat = getDoubleOrNull(str[iLat])
-                        val lon = getDoubleOrNull(str[iLon])
-                        var coords: LatLng? = null
-                        if (lat != null && lon != null) coords = LatLng(lat, lon)
-
-                        if (chk) newNavlogList.add(
-                            NavlogItem(
-                                dest = str[iDest].uppercase(),
-                                trueTrack = tt,
-                                declination = d,
-                                magneticTrack = mt!!,
-                                distance = dist!!,
-                                wca = wca,
-                                hdg = hdg,
-                                gs = gs,
-                                time = time,
-                                timeIncrement = timeInc,
-                                eta = eta,
-                                ata = ata,
-                                fuel = fuel,
-                                fuelRemaining = fuelR,
-                                remarks = remarks,
-                                active = str[iActive].toBoolean(),
-                                current = str[iCurrent].toBoolean(),
-                                coords = coords
-                            )
-                        )
-                    }
-                }
-            }
-        }
-        newSettings.planId = generateStringId()
-
-        resetAllSettings()
-        settings = newSettings
-        timers = newTimers
-        navlogList = newNavlogList
-        // loadTrace()
-    }
-}
-
 fun loadState(fileName: String = C.stateFile) {
     val tag = "FileFunc"
 
@@ -370,17 +154,9 @@ fun loadState(fileName: String = C.stateFile) {
         newSettings.windDir = getDoubleOrNull(getItem(jSettings, "winddir")) ?: 0.0
         newSettings.windSpd = getDoubleOrNull(getItem(jSettings, "windspeed")) ?: 0.0
         newSettings.fob = getDoubleOrNull(getItem(jSettings, "fob")) ?: 0.0
-        newSettings.gpsAssist = getItem(jSettings, "gps")?.toBoolean() ?: true
         newSettings.mapType = getItem(jSettings, "maptype")?.toIntOrNull() ?: 0
-        newSettings.mapOrientation = getItem(jSettings, "maporient")?.toIntOrNull() ?: 0
-        newSettings.autoNext = getItem(jSettings, "autonext")?.toBoolean() ?: true
         newSettings.mapType = getItem(jSettings, "maptype")?.toIntOrNull() ?: GoogleMap.MAP_TYPE_NORMAL
         newSettings.mapFollow = getItem(jSettings, "mapfollow")?.toBoolean() ?: true
-        newSettings.nextRadius = getItem(jSettings, "nextr")?.toIntOrNull() ?: C.DEFAULT_NEXT_RADIUS
-        newSettings.displayTrace = getItem(jSettings, "trace")?.toBoolean() ?: true
-        newSettings.drawWindArrow = getItem(jSettings, "maparrow")?.toBoolean() ?: true
-        newSettings.drawRadials = getItem(jSettings, "radials")?.toBoolean() ?: true
-        newSettings.drawRadialsMarkers = getItem(jSettings, "radialsm")?.toBoolean() ?: true
     }
 
     // Timers
@@ -481,6 +257,226 @@ fun loadState(fileName: String = C.stateFile) {
 fun deleteFile(fileName: String) {
     val file = File(externalAppDir, fileName)
     if (file.exists()) file.delete()
+}
+
+fun saveOptions() {
+    val tag = "FileFunc"
+    Log.d(tag, "saveOptions")
+
+    val jOptions = JSONObject()
+    jOptions.put("spdunits", options.spdUnits)
+    jOptions.put("distunits", options.distUnits)
+    jOptions.put("volunits", options.volUnits)
+    jOptions.put("screenorient", options.screenOrientation)
+    jOptions.put("screenon", options.keepScreenOn)
+    jOptions.put("utc", options.timeInUTC)
+    jOptions.put("takeoffspd", options.autoTakeoffSpd)
+    jOptions.put("landingspd", options.autoLandingSpd)
+    jOptions.put("maporient", options.mapOrientation)
+    jOptions.put("trace", options.displayTrace)
+    jOptions.put("maparrow", options.drawWindArrow)
+    jOptions.put("radials", options.drawRadials)
+    jOptions.put("radialsm", options.drawRadialsMarkers)
+    jOptions.put("hints", options.showHints)
+    jOptions.put("gps", options.gpsAssist)
+    jOptions.put("autonext", options.autoNext)
+    jOptions.put("nextr", options.nextRadius)
+
+    val json = JSONObject()
+    json.put("options", jOptions)
+
+    val file = File(externalAppDir, C.optionsFile)
+    file.writeText(json.toString())
+}
+
+fun loadOptions() {
+    val tag = "FileFunc"
+    Log.d(tag, "loadOptions")
+    val file = File(externalAppDir, C.optionsFile)
+    if (file.exists()) {
+        val newOptions = Options()
+        val json: JSONObject
+
+        try {
+            json = JSONObject(file.readText())
+        } catch (e: Exception) {
+            Log.d(tag, e.toString())
+            return
+        }
+
+        val jOptions = JSONObject(getItem(json, "options") ?: "{}")
+        if (jOptions.length() > 0) {
+            newOptions.spdUnits = getItem(jOptions, "spdunits")?.toIntOrNull() ?: 0
+            newOptions.distUnits = getItem(jOptions, "distunits")?.toIntOrNull() ?: 0
+            newOptions.volUnits = getItem(jOptions, "volunits")?.toIntOrNull() ?: 0
+            newOptions.screenOrientation = getItem(jOptions, "screenorient")?.toIntOrNull() ?: C.SCREEN_SENSOR
+            newOptions.timeInUTC = getItem(jOptions, "utc")?.toBoolean() ?: false
+            newOptions.keepScreenOn = getItem(jOptions, "screenon")?.toBoolean() ?: false
+            newOptions.autoTakeoffSpd = getDoubleOrNull(getItem(jOptions, "takeoffspd")) ?: C.AUTO_TAKEOFF_MIN_SPEED_KT
+            newOptions.autoLandingSpd = getDoubleOrNull(getItem(jOptions, "landingspd")) ?: C.AUTO_LANDING_MIN_SPEED_KT
+            newOptions.mapOrientation = getItem(jOptions, "maporient")?.toIntOrNull() ?: C.MAP_ORIENTATION_NORTH
+            newOptions.displayTrace = getItem(jOptions, "trace")?.toBoolean() ?: true
+            newOptions.drawWindArrow = getItem(jOptions, "maparrow")?.toBoolean() ?: true
+            newOptions.drawRadials = getItem(jOptions, "radials")?.toBoolean() ?: true
+            newOptions.drawRadialsMarkers = getItem(jOptions, "radialsm")?.toBoolean() ?: true
+            newOptions.showHints = getItem(jOptions, "hints")?.toBoolean() ?: true
+            newOptions.gpsAssist = getItem(jOptions, "gps")?.toBoolean() ?: true
+            newOptions.autoNext = getItem(jOptions, "autonext")?.toBoolean() ?: true
+            newOptions.nextRadius = getItem(jOptions, "nextr")?.toIntOrNull() ?: C.DEFAULT_NEXT_RADIUS
+            options = newOptions
+        }
+    } else {
+        options = Options()
+        saveOptions()
+    }
+}
+
+// TODO Delete this function after some time (v1.2.0 2022-06)
+fun loadStateDnl(fileName: String = C.stateFile) {
+    //Log.d("FileFunc", "loadStateDnl: $fileName")
+    val file = File(externalAppDir, fileName)
+
+    if (file.exists()) {
+        val newSettings = Settings()
+        val newTimers = Timers()
+        val newNavlogList = ArrayList<NavlogItem>()
+
+        var mode = 0
+        var deplat: Double? = null
+        var deplng: Double? = null
+
+        val lines = file.readLines()
+        for (line in lines) {
+            if (line != "") {
+                if (line == C.INI_SETTINGS_STR || line == C.INI_TIMERS_STR || line == C.INI_NAVLOG_STR) {
+                    when (line) {
+                        C.INI_SETTINGS_STR -> mode = C.INI_SETTINGS
+                        C.INI_TIMERS_STR -> mode = C.INI_TIMERS
+                        C.INI_NAVLOG_STR -> mode = C.INI_NAVLOG
+                    }
+                } else {
+                    val str = line.split(";")
+
+                    if (mode == C.INI_SETTINGS && str.size == 2 && str[1] != "") {
+                        if (str[0] == "name") newSettings.planName = str[1]
+                        if (str[0] == "from") newSettings.departure = str[1]
+                        if (str[0] == "dest") newSettings.destination = str[1]
+
+                        if (str[0] == "deplat") deplat = getDoubleOrNull(str[1])
+                        if (str[0] == "deplng") deplng = getDoubleOrNull(str[1])
+                        if (deplat != null && deplng != null) {
+                            newSettings.takeoffPos = LatLng(deplat, deplng)
+                            deplat = null
+                            deplng = null
+                        }
+
+                        if (str[0] == "winddir") newSettings.windDir = getDoubleOrNull(str[1]) ?: 0.0
+                        if (str[0] == "windspeed") newSettings.windSpd = getDoubleOrNull(str[1]) ?: 0.0
+
+                        //if (str[0] == "units") newSettings.spdUnits = str[1].toIntOrNull() ?: 0
+                        if (str[0] == "maptype") newSettings.mapType = str[1].toIntOrNull() ?: 0
+                        if (str[0] == "maptype") newSettings.mapType = str[1].toIntOrNull() ?: GoogleMap.MAP_TYPE_NORMAL
+                        if (str[0] == "mapfollow") newSettings.mapFollow = str[1].toBoolean()
+                    }
+
+                    if (mode == C.INI_TIMERS && str.size == 2 && str[1] != "" && str[1] != "null") {
+                        val ldt = LocalDateTime.parse(str[1], DateTimeFormatter.ofPattern(C.INI_TIME_PATTERN))
+                        if (str[0] == "offblock") newTimers.offblock = ldt
+                        if (str[0] == "takeoff") newTimers.takeoff = ldt
+                        if (str[0] == "landing") newTimers.landing = ldt
+                        if (str[0] == "onblock") newTimers.onblock = ldt
+                    }
+
+                    if (mode == C.INI_NAVLOG && str.size == 19) {
+                        // Indexes
+                        val iDest = 0
+                        val iTrueTrack = 1
+                        val iDeclination = 2
+                        val iMagneticTrack = 3
+                        val iDistance = 4
+                        val iWca = 5
+                        val iHdg = 6
+                        val iGs = 7
+                        val iTime = 8
+                        val iTimeR = 9
+                        val iETA = 10
+                        val iATA = 11
+                        val iFuel = 12
+                        val iFuelR = 13
+                        val iRemarks = 14
+                        val iActive = 15
+                        val iCurrent = 16
+                        val iLat = 17
+                        val iLon = 18
+
+                        var chk = true
+
+                        if (str[iDest] == "") chk = false
+
+                        val tt = getDoubleOrNull(str[iTrueTrack])
+                        val d = getDoubleOrNull(str[iDeclination])
+
+                        val mt = getDoubleOrNull(str[iMagneticTrack])
+                        if (mt == null) chk = false
+
+                        val dist = getDoubleOrNull(str[iDistance])
+                        if (dist == null) chk = false
+
+                        val wca = getDoubleOrNull(str[iWca])
+                        val hdg = getDoubleOrNull(str[iHdg])
+                        val gs = getDoubleOrNull(str[iGs])
+                        val time = str[iTime].toLongOrNull()
+                        val timeInc = str[iTimeR].toLongOrNull()
+
+                        var eta: LocalDateTime? = null
+                        if (str[iETA] != "null" && str[iETA] != "") eta = LocalDateTime.parse(str[iETA], DateTimeFormatter.ofPattern(C.INI_TIME_PATTERN))
+
+                        var ata: LocalDateTime? = null
+                        if (str[iATA] != "null" && str[iATA] != "") ata = LocalDateTime.parse(str[iATA], DateTimeFormatter.ofPattern(C.INI_TIME_PATTERN))
+
+                        val fuel = getDoubleOrNull(str[iFuel])
+                        val fuelR = getDoubleOrNull(str[iFuelR])
+                        val remarks = str[iRemarks].replace("\\n", "\n")
+
+                        val lat = getDoubleOrNull(str[iLat])
+                        val lon = getDoubleOrNull(str[iLon])
+                        var coords: LatLng? = null
+                        if (lat != null && lon != null) coords = LatLng(lat, lon)
+
+                        if (chk) newNavlogList.add(
+                            NavlogItem(
+                                dest = str[iDest].uppercase(),
+                                trueTrack = tt,
+                                declination = d,
+                                magneticTrack = mt!!,
+                                distance = dist!!,
+                                wca = wca,
+                                hdg = hdg,
+                                gs = gs,
+                                time = time,
+                                timeIncrement = timeInc,
+                                eta = eta,
+                                ata = ata,
+                                fuel = fuel,
+                                fuelRemaining = fuelR,
+                                remarks = remarks,
+                                active = str[iActive].toBoolean(),
+                                current = str[iCurrent].toBoolean(),
+                                coords = coords
+                            )
+                        )
+                    }
+                }
+            }
+        }
+        newSettings.planId = generateStringId()
+
+        resetAllSettings()
+        settings = newSettings
+        timers = newTimers
+        navlogList = newNavlogList
+        // loadTrace()
+    }
 }
 
 fun getPlanNameFromJson(fileName: String): String {

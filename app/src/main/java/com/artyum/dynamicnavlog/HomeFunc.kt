@@ -40,7 +40,7 @@ class HomeItem() {
     var distPct: Double = 0.0           // Distance travelled between WPTs in %
 
     init {
-        if (settings.gpsAssist) runBlocking { gpsMutex.withLock { gps = gpsData } }
+        if (options.gpsAssist) runBlocking { gpsMutex.withLock { gps = gpsData } }
         stage = getFlightStage()
         item = getNavlogCurrentItemId()
         prev = getNavlogPrevItemId(item)
@@ -226,7 +226,7 @@ class HomeItem() {
         if (stage == C.STAGE_3_FLIGHT_IN_PROGRESS && distRemaining > 0 && gps.isValid && gps.bearing != null && item >= 0) {
             val p = calcDestinationPos(gps.coords!!, gps.bearing!!.toDouble(), nm2m(distRemaining))
             val d = calcDistance(p, navlogList[item].coords!!)
-            if (m2nm(d) > nextRadiusList[settings.nextRadius]) hit = false
+            if (m2nm(d) > nextRadiusList[options.nextRadius]) hit = false
         }
 
         return HomeDtkAngleBar(left, right, hit)

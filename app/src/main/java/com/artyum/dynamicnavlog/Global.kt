@@ -19,27 +19,14 @@ data class Settings(
     var planName: String = "",
     var departure: String = "",
     var destination: String = "",
-
     var airplaneId: String = "",
-
-    var fob: Double = 0.0,    //Fuel on board for takeoff
+    var fob: Double = 0.0,                // Fuel-On-Board / Fuel for takeoff
     var windDir: Double = 0.0,
     var windSpd: Double = 0.0,
-
-    var gpsAssist: Boolean = true,
     var takeoffPos: LatLng? = null,
-
     var mapType: Int = GoogleMap.MAP_TYPE_NORMAL,
-    var mapOrientation: Int = C.MAP_ORIENTATION_NORTH,
-    var autoNext: Boolean = true,
-    var displayTrace: Boolean = true,
     var mapFollow: Boolean = true,
     var tfDisplayToggle: Int = C.TF_DISPLAY_REM,  // Switch to display time and fuel on the Navlog screen
-    var nextRadius: Int = C.DEFAULT_NEXT_RADIUS,
-    var drawWindArrow: Boolean = false,
-
-    var drawRadials: Boolean = true,
-    var drawRadialsMarkers: Boolean = true
 )
 
 data class NavlogItem(
@@ -90,7 +77,16 @@ data class Options(
     var timeInUTC: Boolean = false,
     var keepScreenOn: Boolean = false,
     var autoTakeoffSpd: Double = kt2mps(40.0),   // Minimum speed for takeoff detection in m/s
-    var autoLandingSpd: Double = kt2mps(40.0)    // Maximum speed for landing detection in m/s
+    var autoLandingSpd: Double = kt2mps(30.0),   // Maximum speed for landing detection in m/s
+    var mapOrientation: Int = C.MAP_ORIENTATION_NORTH,
+    var displayTrace: Boolean = true,
+    var drawWindArrow: Boolean = false,
+    var drawRadials: Boolean = true,
+    var drawRadialsMarkers: Boolean = true,
+    var showHints: Boolean = true,
+    var gpsAssist: Boolean = true,
+    var autoNext: Boolean = true,
+    var nextRadius: Int = C.DEFAULT_NEXT_RADIUS
 )
 
 data class Timers(

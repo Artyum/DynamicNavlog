@@ -100,8 +100,8 @@ class MainActivity : AppCompatActivity() {
                     .setCancelable(false)
                     .setPositiveButton(R.string.txtYes) { _, _ ->
                         newFlightPlan()
-                        bind.drawerLayout.close()
                         navController.navigate(SettingsFragmentDirections.actionGlobalSettingsFragment())
+                        bind.drawerLayout.close()
                     }
                     .setNegativeButton(R.string.txtNo) { dialog, _ ->
                         dialog.dismiss()
@@ -111,73 +111,73 @@ class MainActivity : AppCompatActivity() {
                 alert.show()
             } else {
                 newFlightPlan()
-                bind.drawerLayout.close()
                 navController.navigate(SettingsFragmentDirections.actionGlobalSettingsFragment())
+                bind.drawerLayout.close()
             }
             true
         }
 
         // Flight plan list
         navView.menu.findItem(R.id.drawerItemOpen).setOnMenuItemClickListener {
-            bind.drawerLayout.close()
             navController.navigate(PlanListFragmentDirections.actionGlobalPlanListFragment())
+            bind.drawerLayout.close()
             true
         }
 
         // Airplanes list
         navView.menu.findItem(R.id.drawerAirplanes).setOnMenuItemClickListener {
-            bind.drawerLayout.close()
-            navController.navigate(AirplaneListFragmentDirections.actionGlobalAirplaneListFragment())
             loadAirplaneList()
+            navController.navigate(AirplaneListFragmentDirections.actionGlobalAirplaneListFragment())
+            bind.drawerLayout.close()
             true
         }
 
         // Preferences
         navView.menu.findItem(R.id.drawerOptions).setOnMenuItemClickListener {
-            bind.drawerLayout.close()
             navController.navigate(OptionsFragmentDirections.actionGlobalOptionsFragment())
+            bind.drawerLayout.close()
             true
         }
 
         // Wind calculator
         navView.menu.findItem(R.id.drawerWindCalc).setOnMenuItemClickListener {
-            bind.drawerLayout.close()
             navController.navigate(CalcWindFragmentDirections.actionGlobalCalcWindFragment())
+            bind.drawerLayout.close()
             true
         }
 
         // Fuel calculator
         navView.menu.findItem(R.id.drawerFuelCalc).setOnMenuItemClickListener {
-            bind.drawerLayout.close()
             navController.navigate(CalcFuelFragmentDirections.actionGlobalCalcFuelFragment())
+            bind.drawerLayout.close()
             true
         }
 
         // Time & Distance
         navView.menu.findItem(R.id.drawerTimeAndDistance).setOnMenuItemClickListener {
-            bind.drawerLayout.close()
             navController.navigate(CalcTimeDistFragmentDirections.actionGlobalCalcTimeDistFragment())
+            bind.drawerLayout.close()
             true
         }
 
         // Density altitude
         navView.menu.findItem(R.id.drawerDensity2Calc).setOnMenuItemClickListener {
-            bind.drawerLayout.close()
             navController.navigate(CalcDensity2FragmentDirections.actionGlobalCalcDensity2Fragment())
+            bind.drawerLayout.close()
             true
         }
 
         // Units converter
         navView.menu.findItem(R.id.drawerUnitsCalc).setOnMenuItemClickListener {
-            bind.drawerLayout.close()
             navController.navigate(CalcUnitsFragmentDirections.actionGlobalCalcUnitsFragment())
+            bind.drawerLayout.close()
             true
         }
 
         // About
         navView.menu.findItem(R.id.drawerItemAbout).setOnMenuItemClickListener {
-            bind.drawerLayout.close()
             navController.navigate(AboutFragmentDirections.actionGlobalAboutFragment())
+            bind.drawerLayout.close()
             true
         }
 
@@ -306,8 +306,8 @@ class MainActivity : AppCompatActivity() {
                     .setCancelable(false)
                     .setPositiveButton(R.string.txtYes) { _, _ ->
                         resetFlight()
-                        navController.navigate(R.id.homeFragment)
-                        Toast.makeText(this, getString(R.string.txtResetDone), Toast.LENGTH_SHORT).show()
+                        //Toast.makeText(this, getString(R.string.txtResetDone), Toast.LENGTH_SHORT).show()
+                        //navController.navigate(R.id.homeFragment)
                     }
                     .setNegativeButton(R.string.txtNo) { dialog, _ ->
                         dialog.dismiss()
@@ -324,8 +324,8 @@ class MainActivity : AppCompatActivity() {
                     .setPositiveButton(R.string.txtYes) { _, _ ->
                         copyFlightPlan("Copy")
                         resetFlight()
-                        navController.navigate(R.id.settingsFragment)
                         Toast.makeText(this, getString(R.string.txtCopyDone), Toast.LENGTH_SHORT).show()
+                        navController.navigate(R.id.settingsFragment)
                     }
                     .setNegativeButton(R.string.txtNo) { dialog, _ ->
                         dialog.dismiss()
@@ -345,8 +345,8 @@ class MainActivity : AppCompatActivity() {
                                 copyFlightPlan("Inverted")
                                 invertNavlog()
                                 resetFlight()
-                                navController.navigate(R.id.settingsFragment)
                                 Toast.makeText(this, getString(R.string.txtReverseDone), Toast.LENGTH_SHORT).show()
+                                navController.navigate(R.id.settingsFragment)
                             } else Toast.makeText(this, getString(R.string.txtReverseOnlyGPS), Toast.LENGTH_SHORT).show()
                         } else Toast.makeText(this, getString(R.string.txtReverseNotReady), Toast.LENGTH_SHORT).show()
                     }
@@ -636,7 +636,7 @@ class MainActivity : AppCompatActivity() {
         resetAllSettings()
         resetFlight()
         resetRadials()
-        if (settings.gpsAssist) locationSubscribe() else locationUnsubscribe()
+        if (options.gpsAssist) locationSubscribe() else locationUnsubscribe()
     }
 
     fun resetFlight() {
@@ -647,6 +647,7 @@ class MainActivity : AppCompatActivity() {
         calcNavlog()
         saveState()
         displayButtons()
+        refreshDisplay = true
     }
 
     fun displayButtons() {
@@ -752,23 +753,22 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    fun startNavlogService() {
+    private fun startNavlogService() {
         if (!serviceRunning) {
             serviceRunning = true
             val serviceIntent = Intent(this, Service::class.java)
-            //serviceIntent.putExtra("inputExtra", input)
             startService(serviceIntent)
         }
     }
 
-    fun stopNavlogService() {
+    private fun stopNavlogService() {
         serviceRunning = false
         val serviceIntent = Intent(this, Service::class.java)
         stopService(serviceIntent)
     }
 
     // GPS features
-    fun locationSetup() {
+    private fun locationSetup() {
         Log.d(TAG, "locationSetup")
         fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this)
 
@@ -789,7 +789,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     fun locationSubscribe() {
-        if (settings.gpsAssist && !locationSubscribed) {
+        if (options.gpsAssist && !locationSubscribed) {
             if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
                 val builder = AlertDialog.Builder(this@MainActivity)
                 builder.setMessage(R.string.txtLocationMessage)
@@ -873,18 +873,25 @@ class MainActivity : AppCompatActivity() {
 
         while (true) {
             //Log.d(TAG, "gpsHealthCheckThread: $gpsFailCnt")
-            if (settings.gpsAssist) {
+            if (options.gpsAssist) {
                 gpsMutex.withLock {
                     if (!gpsData.heartbeat) {
-                        if (gpsFailCnt >= C.GPS_ALIVE_SEC) gpsData.isValid = false
-                        else gpsFailCnt += 1
+                        if (gpsFailCnt >= C.GPS_ALIVE_SEC) {
+                            // GPS lost
+                            gpsData.isValid = false
+                            runOnUiThread { bind.gpsLostBox.visibility = View.VISIBLE }
+                        } else gpsFailCnt += 1
                     } else {
                         gpsFailCnt = 0
                         gpsData.heartbeat = false
                         gpsData.isValid = true
+                        runOnUiThread { bind.gpsLostBox.visibility = View.GONE }
                     }
                 }
-            } else gpsData.isValid = false
+            } else {
+                gpsData.isValid = false
+                runOnUiThread { bind.gpsLostBox.visibility = View.GONE }
+            }
             delay(1000)
         }
     }
@@ -927,7 +934,7 @@ class MainActivity : AppCompatActivity() {
 
                         if (navlogList[item].coords != null) {
                             val dist = m2nm(calcDistance(gps.coords!!, navlogList[item].coords!!))
-                            if (dist <= nextRadiusList[settings.nextRadius]) {
+                            if (dist <= nextRadiusList[options.nextRadius]) {
                                 //One-time refresh map after entering WPT circle
                                 if (!changeWptCircle) {
                                     changeWptCircle = true

@@ -32,7 +32,7 @@
                         android:id="@+id/caption1"
                         style="@style/globalCaption"
                         android:layout_marginBottom="7dp"
-                        android:text="@string/txtNavigationDisplay" />
+                        android:text="@string/txtNavigation" />
 
                     <TableLayout
                         android:layout_width="match_parent"

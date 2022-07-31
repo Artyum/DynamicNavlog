@@ -170,7 +170,9 @@
                 </LinearLayout>
             </androidx.constraintlayout.widget.ConstraintLayout>
 
-            <LinearLayout style="@style/dividerBox">
+            <LinearLayout
+                style="@style/dividerBox"
+                android:layout_marginVertical="15dp">
 
                 <View
                     style="@style/dividerLine"
@@ -309,95 +311,6 @@
                 </TableRow>
             </TableLayout>
 
-            <LinearLayout style="@style/dividerBox">
-
-                <View
-                    style="@style/dividerLine"
-                    android:layout_weight="1" />
-
-                <TextView
-                    style="@style/dividerText"
-                    android:text="@string/txtFlightPlanSettings" />
-
-                <View
-                    style="@style/dividerLine"
-                    android:layout_weight="1" />
-            </LinearLayout>
-
-            <com.google.android.material.switchmaterial.SwitchMaterial
-                android:id="@+id/settingGpsAssist"
-                style="@style/settingsSwitch"
-                android:text="@string/txtGPSAssist" />
-
-            <LinearLayout
-                android:id="@+id/gpsGroup"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical">
-
-
-                <com.google.android.material.switchmaterial.SwitchMaterial
-                    android:id="@+id/settingAutoNext"
-                    style="@style/settingsSwitch"
-                    android:text="@string/txtAutoNextWPT" />
-
-                <androidx.constraintlayout.widget.ConstraintLayout
-                    android:id="@+id/settingWptDetection"
-                    style="@style/settingsSwitch">
-
-                    <TextView
-                        android:id="@+id/txtNextRadius"
-                        style="@style/settingsSwitch"
-                        android:layout_width="wrap_content"
-                        android:text="@string/txtNextRadius"
-                        app:layout_constraintLeft_toLeftOf="parent"
-                        app:layout_constraintTop_toTopOf="parent" />
-
-                    <Spinner
-                        android:id="@+id/spinnerNextRadius"
-                        style="@style/settingsSpinner"
-                        app:layout_constraintBaseline_toBaselineOf="@id/txtNextRadius"
-                        app:layout_constraintRight_toRightOf="parent" />
-                </androidx.constraintlayout.widget.ConstraintLayout>
-
-            </LinearLayout>
-
-            <androidx.constraintlayout.widget.ConstraintLayout style="@style/settingsSwitch">
-
-                <TextView
-                    android:id="@+id/txtMapOrientation"
-                    style="@style/settingsSwitch"
-                    android:layout_width="wrap_content"
-                    android:text="@string/txtMapOrientation"
-                    app:layout_constraintLeft_toLeftOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
-
-                <Spinner
-                    android:id="@+id/spinnerMapOrientation"
-                    style="@style/settingsSpinner"
-                    app:layout_constraintBaseline_toBaselineOf="@id/txtMapOrientation"
-                    app:layout_constraintRight_toRightOf="parent" />
-            </androidx.constraintlayout.widget.ConstraintLayout>
-
-            <com.google.android.material.switchmaterial.SwitchMaterial
-                android:id="@+id/settingTrace"
-                style="@style/settingsSwitch"
-                android:text="@string/txtDisplayFlightTrace" />
-
-            <com.google.android.material.switchmaterial.SwitchMaterial
-                android:id="@+id/settingWindArrow"
-                style="@style/settingsSwitch"
-                android:text="@string/txtDisplayWindArrow" />
-
-            <com.google.android.material.switchmaterial.SwitchMaterial
-                android:id="@+id/settingRadials"
-                style="@style/settingsSwitch"
-                android:text="@string/txtDisplayRadials" />
-
-            <com.google.android.material.switchmaterial.SwitchMaterial
-                android:id="@+id/settingRadialsMarkers"
-                style="@style/settingsSwitch"
-                android:text="@string/txtDisplayRadialsMarkers" />
         </LinearLayout>
 
     </ScrollView>

@@ -28,68 +28,65 @@
 
                 <TextView
                     style="@style/dividerText"
-                    android:text="@string/txtOptions" />
+                    android:text="@string/txtNavigationOptions" />
 
                 <View
                     style="@style/dividerLine"
                     android:layout_weight="1" />
             </LinearLayout>
 
-            <androidx.constraintlayout.widget.ConstraintLayout style="@style/settingsSwitch">
+            <com.google.android.material.switchmaterial.SwitchMaterial
+                android:id="@+id/settingGpsAssist"
+                style="@style/settingsSwitch"
+                android:text="@string/txtGPSAssist" />
+
+            <TextView
+                style="@style/hintBox"
+                android:layout_marginBottom="10dp"
+                android:text="If GPS is disabled or is not available, the app will calculate navigation data according to time elapsed since last arrival to waypoints marked by the user." />
+
+            <com.google.android.material.switchmaterial.SwitchMaterial
+                android:id="@+id/settingAutoNext"
+                style="@style/settingsSwitch"
+                android:text="@string/txtAutoNextWPT" />
+
+            <TextView
+                style="@style/hintBox"
+                android:layout_marginBottom="10dp"
+                android:text="Automatic detection of takeoff, landing and arrival at waypoints. If disabled, the user has to manually set the flight stage by clicking on the buttons." />
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/settingWptDetection"
+                style="@style/settingsSwitch">
 
                 <TextView
-                    android:id="@+id/txtScreenOrientation"
+                    android:id="@+id/txtNextRadius"
                     style="@style/settingsSwitch"
                     android:layout_width="wrap_content"
-                    android:text="@string/txtScreenOrientation"
+                    android:text="@string/txtWaypointArrivalRadius"
                     app:layout_constraintLeft_toLeftOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
 
                 <Spinner
-                    android:id="@+id/spinnerScreenOrientation"
+                    android:id="@+id/spinnerNextRadius"
                     style="@style/settingsSpinner"
-                    app:layout_constraintBaseline_toBaselineOf="@id/txtScreenOrientation"
+                    app:layout_constraintBaseline_toBaselineOf="@id/txtNextRadius"
                     app:layout_constraintRight_toRightOf="parent" />
-
             </androidx.constraintlayout.widget.ConstraintLayout>
 
-            <com.google.android.material.switchmaterial.SwitchMaterial
-                android:id="@+id/settingTimeUTC"
-                style="@style/settingsSwitch"
-                android:text="@string/txtTimeUTC" />
-
-            <com.google.android.material.switchmaterial.SwitchMaterial
-                android:id="@+id/settingsScreenOn"
-                style="@style/settingsSwitch"
-                android:text="@string/txtKeepScreenOn" />
-
-            <LinearLayout style="@style/dividerBox">
-
-                <View
-                    style="@style/dividerLine"
-                    android:layout_weight="1" />
-
-                <TextView
-                    style="@style/dividerText"
-                    android:text="@string/txtAutoDetect" />
-
-                <View
-                    style="@style/dividerLine"
-                    android:layout_weight="1" />
-            </LinearLayout>
-
             <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                style="@style/hintBox"
                 android:layout_marginBottom="10dp"
-                android:text="Take-off and landing detection occurs when the GPS speed is respectively higher and lower than the specified speeds (in knots)." />
+                android:text="The radius of a circle around a waypoint where the airplane needs to enter in order to detect arrival and switch to the next waypoint." />
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="5dp"
                 android:orientation="horizontal">
 
                 <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/takeOffBox"
                     style="@style/inputLayout"
                     android:hint="@string/txtTakeoffDetect">
 
@@ -101,6 +98,7 @@
                 <TextView style="@style/spacer" />
 
                 <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/lndBox"
                     style="@style/inputLayout"
                     android:hint="@string/txtLandingDetect">
 
@@ -109,6 +107,11 @@
                         style="@style/layoutTextDecimal" />
                 </com.google.android.material.textfield.TextInputLayout>
             </LinearLayout>
+
+            <TextView
+                style="@style/hintBox"
+                android:layout_marginTop="10dp"
+                android:text="Take-off and landing detection occurs when the GPS speed is respectively higher and lower than the specified speeds (in knots)." />
 
             <LinearLayout style="@style/dividerBox">
 
@@ -124,6 +127,10 @@
                     style="@style/dividerLine"
                     android:layout_weight="1" />
             </LinearLayout>
+
+            <TextView
+                style="@style/hintBox"
+                android:text="Global units used to display and enter values." />
 
             <androidx.constraintlayout.widget.ConstraintLayout style="@style/settingsSwitch">
 
@@ -178,6 +185,150 @@
                     app:layout_constraintRight_toRightOf="parent" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <LinearLayout style="@style/dividerBox">
+
+                <View
+                    style="@style/dividerLine"
+                    android:layout_weight="1" />
+
+                <TextView
+                    style="@style/dividerText"
+                    android:text="@string/txtMapOptions" />
+
+                <View
+                    style="@style/dividerLine"
+                    android:layout_weight="1" />
+            </LinearLayout>
+
+            <androidx.constraintlayout.widget.ConstraintLayout style="@style/settingsSwitch">
+
+                <TextView
+                    android:id="@+id/txtMapOrientation"
+                    style="@style/settingsSwitch"
+                    android:layout_width="wrap_content"
+                    android:text="@string/txtMapOrientation"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <Spinner
+                    android:id="@+id/spinnerMapOrientation"
+                    style="@style/settingsSpinner"
+                    app:layout_constraintBaseline_toBaselineOf="@id/txtMapOrientation"
+                    app:layout_constraintRight_toRightOf="parent" />
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <TextView
+                style="@style/hintBox"
+                android:layout_marginBottom="10dp"
+                android:text="The map will rotate during the flight regarding this option" />
+
+            <com.google.android.material.switchmaterial.SwitchMaterial
+                android:id="@+id/settingTrace"
+                style="@style/settingsSwitch"
+                android:text="@string/txtDisplayFlightTrace" />
+
+            <TextView
+                style="@style/hintBox"
+                android:layout_marginBottom="10dp"
+                android:text="Display the flight trace on the map (if available)." />
+
+            <com.google.android.material.switchmaterial.SwitchMaterial
+                android:id="@+id/settingWindArrow"
+                style="@style/settingsSwitch"
+                android:text="@string/txtDisplayWindArrow" />
+
+            <TextView
+                style="@style/hintBox"
+                android:layout_marginBottom="10dp"
+                android:text="Display the wind indicator on the map." />
+
+            <com.google.android.material.switchmaterial.SwitchMaterial
+                android:id="@+id/settingRadials"
+                style="@style/settingsSwitch"
+                android:text="@string/txtDisplayRadials" />
+
+            <TextView
+                style="@style/hintBox"
+                android:layout_marginBottom="10dp"
+                android:text="Display or hide all radial indicators on the map." />
+
+            <com.google.android.material.switchmaterial.SwitchMaterial
+                android:id="@+id/settingRadialsMarkers"
+                style="@style/settingsSwitch"
+                android:text="@string/txtDisplayRadialMarkers" />
+
+            <TextView
+                style="@style/hintBox"
+                android:text="Display or hide radial markers on the map. Markers are necessary to edit radials. Hiding markers can make the map more readable." />
+
+            <LinearLayout style="@style/dividerBox">
+
+                <View
+                    style="@style/dividerLine"
+                    android:layout_weight="1" />
+
+                <TextView
+                    style="@style/dividerText"
+                    android:text="@string/txtOptions" />
+
+                <View
+                    style="@style/dividerLine"
+                    android:layout_weight="1" />
+            </LinearLayout>
+
+            <androidx.constraintlayout.widget.ConstraintLayout style="@style/settingsSwitch">
+
+                <TextView
+                    android:id="@+id/txtScreenOrientation"
+                    style="@style/settingsSwitch"
+                    android:layout_width="wrap_content"
+                    android:text="@string/txtScreenOrientation"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <Spinner
+                    android:id="@+id/spinnerScreenOrientation"
+                    style="@style/settingsSpinner"
+                    app:layout_constraintBaseline_toBaselineOf="@id/txtScreenOrientation"
+                    app:layout_constraintRight_toRightOf="parent" />
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <TextView
+                style="@style/hintBox"
+                android:layout_marginBottom="10dp"
+                android:text="Force fixed or automatic device's screen orientation." />
+
+            <com.google.android.material.switchmaterial.SwitchMaterial
+                android:id="@+id/settingsScreenOn"
+                style="@style/settingsSwitch"
+                android:text="@string/txtKeepScreenOn" />
+
+            <TextView
+                style="@style/hintBox"
+                android:layout_marginBottom="10dp"
+                android:text="Force your device's screen to be turned on while using the app." />
+
+            <com.google.android.material.switchmaterial.SwitchMaterial
+                android:id="@+id/settingTimeUTC"
+                style="@style/settingsSwitch"
+                android:text="@string/txtTimeUTC" />
+
+            <TextView
+                style="@style/hintBox"
+                android:layout_marginBottom="10dp"
+                android:text="Display local or ZULU (UTC) times in the app." />
+
+            <com.google.android.material.switchmaterial.SwitchMaterial
+                android:id="@+id/settingHints"
+                style="@style/settingsSwitch"
+                android:text="@string/txtDisplayHints" />
+
+            <TextView
+                style="@style/hintBox"
+                android:layout_marginBottom="10dp"
+                android:text="Display hint messages in the application. The link to all messages is located on the About page." />
+
         </LinearLayout>
     </ScrollView>
 

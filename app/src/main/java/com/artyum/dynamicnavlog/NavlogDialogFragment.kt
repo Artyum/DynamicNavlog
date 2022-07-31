@@ -128,7 +128,7 @@ class NavlogDialogFragment(private val item: Int, private val adapter: NavlogAda
         }
 
         // Hide coordinates row when GPS support is disabled
-        if (!settings.gpsAssist) bind.dialogCoordsRow.visibility = View.GONE
+        if (!options.gpsAssist) bind.dialogCoordsRow.visibility = View.GONE
 
         // Fill values
         if (item < navlogList.size) {

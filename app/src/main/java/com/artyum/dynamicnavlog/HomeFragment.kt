@@ -39,7 +39,7 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
         (activity as MainActivity).displayButtons()
 
         // GPS indicator
-        if (!settings.gpsAssist) bind.txtTrackAngleIndicatorBox.visibility = View.GONE
+        if (!options.gpsAssist) bind.txtTrackAngleIndicatorBox.visibility = View.GONE
 
         // Display units
         displayUnits()
@@ -222,7 +222,7 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
     }
 
     private fun setGpsTag(a: MainActivity, b: FragmentHomeBinding, h: HomeItem) {
-        if (settings.gpsAssist) {
+        if (options.gpsAssist) {
             safeVisibility(a, b.txtGsGpsTag, View.VISIBLE)
             if (h.gps.isValid) {
                 a.runOnUiThread { b.txtGsGpsTag.paintFlags = Paint.STRIKE_THRU_TEXT_FLAG.dec() }

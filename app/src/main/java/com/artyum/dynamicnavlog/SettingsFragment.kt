@@ -7,16 +7,9 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
-import android.widget.Toast
-import androidx.core.view.isVisible
 import androidx.core.widget.doOnTextChanged
 import androidx.fragment.app.Fragment
 import com.artyum.dynamicnavlog.databinding.FragmentSettingsBinding
-import kotlinx.coroutines.CoroutineName
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
-import kotlinx.coroutines.sync.withLock
 
 class SettingsFragment : Fragment(R.layout.fragment_settings) {
     private val TAG = "SettingsFragment"
@@ -147,97 +140,6 @@ class SettingsFragment : Fragment(R.layout.fragment_settings) {
                 }
             }
 
-        // Switch - GPS assist master
-        bind.settingGpsAssist.setOnCheckedChangeListener { _, isChecked ->
-            val a = activity as MainActivity
-            if (navlogList.size == 0 || isNavlogGpsReady()) {
-                settings.gpsAssist = isChecked
-                if (settings.gpsAssist) {
-                    setGpsGroupVisibility(true)
-                    a.locationSubscribe()
-                } else {
-                    setGpsGroupVisibility(false)
-                    runBlocking { gpsMutex.withLock { gpsData.isValid = false } }
-                    a.locationUnsubscribe()
-                }
-            } else {
-                settings.gpsAssist = false
-                Toast.makeText(view.context, R.string.txtNotAllTrueTrackSet, Toast.LENGTH_LONG).show()
-            }
-            change = true
-            saveForm()
-        }
-
-        // Switch - Auto-detect Waypoint
-        bind.settingAutoNext.setOnCheckedChangeListener { _, isChecked ->
-            settings.autoNext = isChecked
-            setWptDetectVisibility(settings.autoNext)
-            change = true
-            saveForm()
-            if (isAutoNextEnabled()) CoroutineScope(CoroutineName("gpsCoroutine")).launch { (activity as MainActivity).detectFlightStageThread() }
-        }
-
-        // Switch - Trace recording
-        bind.settingTrace.setOnCheckedChangeListener { _, isChecked ->
-            settings.displayTrace = isChecked
-            change = true
-            saveForm()
-        }
-
-        // Switch - Display wind arrow
-        bind.settingWindArrow.setOnCheckedChangeListener { _, isChecked ->
-            settings.drawWindArrow = isChecked
-            change = true
-            saveForm()
-        }
-
-        // Switch - Display radials
-        bind.settingRadials.setOnCheckedChangeListener { _, isChecked ->
-            settings.drawRadials = isChecked
-            setDisplayRadialsMarkersVisibility(settings.drawRadials)
-            change = true
-            saveForm()
-        }
-
-        // Switch - Display radial's markers
-        bind.settingRadialsMarkers.setOnCheckedChangeListener { _, isChecked ->
-            settings.drawRadialsMarkers = isChecked
-            change = true
-            saveForm()
-        }
-
-        // Switch - Auto-next radius
-        bind.spinnerNextRadius.onItemSelectedListener =
-            object : AdapterView.OnItemSelectedListener {
-                override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
-                    if (position != settings.nextRadius) {
-                        settings.nextRadius = position
-                        change = true
-                        saveForm()
-                    }
-                }
-
-                override fun onNothingSelected(parent: AdapterView<*>?) {
-                    return
-                }
-            }
-
-        // Spinner - Map orientation
-        bind.spinnerMapOrientation.onItemSelectedListener =
-            object : AdapterView.OnItemSelectedListener {
-                override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
-                    if (position != settings.mapOrientation) {
-                        settings.mapOrientation = position
-                        change = true
-                        saveForm()
-                    }
-                }
-
-                override fun onNothingSelected(parent: AdapterView<*>?) {
-                    return
-                }
-            }
-
         setupUI(view)
         restoreSettings()
     }
@@ -272,18 +174,6 @@ class SettingsFragment : Fragment(R.layout.fragment_settings) {
             planeList.add(plane)
         }
         bind.spinnerAirplane.adapter = ArrayAdapter(view.context, R.layout.support_simple_spinner_dropdown_item, planeList)
-
-        // Spinner - Map orientation
-        val mapOrientationList = ArrayList<String>()
-        mapOrientationList.add("North Up")     // 0
-        mapOrientationList.add("Track Up")     // 1
-        mapOrientationList.add("Bearing Up")   // 2
-        bind.spinnerMapOrientation.adapter = ArrayAdapter(view.context, R.layout.support_simple_spinner_dropdown_item, mapOrientationList)
-
-        // Switch - Auto-next radius
-        val nextRadiusOptions = ArrayList<String>()
-        for (i in nextRadiusList.indices) nextRadiusOptions.add(getNextRadiusUnits(i))
-        bind.spinnerNextRadius.adapter = ArrayAdapter(view.context, R.layout.support_simple_spinner_dropdown_item, nextRadiusOptions)
     }
 
     private fun restoreSettings() {
@@ -320,19 +210,6 @@ class SettingsFragment : Fragment(R.layout.fragment_settings) {
         bind.settingWindSpd.setText(formatDouble(toUserUnitsSpd(settings.windSpd), 1))
         bind.hintWindSpd.hint = getString(R.string.txtWindSpeed) + " (" + getUnitsSpd() + ")"
 
-        // GPS settings
-        bind.settingGpsAssist.isChecked = settings.gpsAssist
-        bind.spinnerMapOrientation.setSelection(settings.mapOrientation)
-        bind.spinnerNextRadius.setSelection(settings.nextRadius)
-        bind.settingAutoNext.isChecked = settings.autoNext
-        bind.settingTrace.isChecked = settings.displayTrace
-        bind.settingWindArrow.isChecked = settings.drawWindArrow
-        bind.settingRadials.isChecked = settings.drawRadials
-        bind.settingRadialsMarkers.isChecked = settings.drawRadialsMarkers
-
-        setGpsGroupVisibility(settings.gpsAssist)
-        setWptDetectVisibility(settings.autoNext)
-        setDisplayRadialsMarkersVisibility(settings.drawRadials)
         refreshSpareFuelBox()
 
         restore = false
@@ -363,18 +240,6 @@ class SettingsFragment : Fragment(R.layout.fragment_settings) {
         }
     }
 
-    private fun setGpsGroupVisibility(visible: Boolean) {
-        bind.gpsGroup.isVisible = visible
-    }
-
-    private fun setWptDetectVisibility(visible: Boolean) {
-        bind.settingWptDetection.isVisible = visible
-    }
-
-    private fun setDisplayRadialsMarkersVisibility(visible: Boolean) {
-        bind.settingRadialsMarkers.isVisible = visible
-    }
-
     private fun isValidWindDir(v: Double?): Boolean {
         return v != null && v in 0.0..360.0
     }
@@ -403,15 +268,11 @@ class SettingsFragment : Fragment(R.layout.fragment_settings) {
 }
 
 fun isAutoNextEnabled(): Boolean {
-    return settings.gpsAssist && settings.autoNext
-}
-
-fun isDisplayFlightTrace(): Boolean {
-    return settings.gpsAssist && settings.displayTrace
+    return options.gpsAssist && options.autoNext
 }
 
 fun isMapFollow(): Boolean {
-    return settings.gpsAssist && settings.mapFollow
+    return options.gpsAssist && settings.mapFollow
 }
 
 fun resetAllSettings() {

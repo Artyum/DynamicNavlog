@@ -210,8 +210,8 @@ class MapFragment : Fragment(R.layout.fragment_map) {
         }
 
         // Follow map mode
-        if (settings.gpsAssist) {
-            if (settings.mapFollow && settings.gpsAssist) bind.btnFollowToggle.setImageResource(R.drawable.ic_gps_lock)
+        if (options.gpsAssist) {
+            if (settings.mapFollow) bind.btnFollowToggle.setImageResource(R.drawable.ic_gps_lock)
             else bind.btnFollowToggle.setImageResource(R.drawable.ic_gps_unlock)
         } else {
             bind.btnFollowToggle.visibility = View.GONE
@@ -264,7 +264,7 @@ class MapFragment : Fragment(R.layout.fragment_map) {
                         // Auto-next circle
                         if (isAutoNextEnabled() && i >= item) {
                             val pos = navlogList[i].coords!!
-                            val radius = nm2m(nextRadiusList[settings.nextRadius])
+                            val radius = nm2m(nextRadiusList[options.nextRadius])
                             val fill1 = R.color.greenTransparent   // Airplane inside the circle
                             val fill2 = R.color.grayTransparent2
 
@@ -321,7 +321,7 @@ class MapFragment : Fragment(R.layout.fragment_map) {
     }
 
     private fun drawTrace() {
-        if (!isDisplayFlightTrace()) return
+        if (!options.displayTrace) return
         if (!mapReady || tracePointsList.size == 0) return
         Log.d(TAG, "drawTrace")
 
@@ -340,7 +340,7 @@ class MapFragment : Fragment(R.layout.fragment_map) {
 
     private fun drawWindArrow() {
         if (!mapReady) return
-        if (!settings.drawWindArrow) return
+        if (!options.drawWindArrow) return
         //Log.d(TAG, "drawWindArrow")
 
         windArrowLine?.remove()
@@ -368,7 +368,7 @@ class MapFragment : Fragment(R.layout.fragment_map) {
 
     private fun drawRadials() {
         if (!mapReady) return
-        if (!settings.drawRadials) return
+        if (!options.drawRadials) return
         //Log.d(TAG, "drawRadials")
 
         radialMarkers.forEach { it.remove() }
@@ -383,7 +383,7 @@ class MapFragment : Fragment(R.layout.fragment_map) {
         for (i in radialList.indices) {
             val radial = radialList[i]
             val declination = getDeclination(radial.pos1)
-            if (settings.drawRadialsMarkers) {
+            if (options.drawRadialsMarkers) {
                 addMarker(pos = radial.pos1, type = C.MAP_ITEM_RADIAL, id = 2 * i, hue = BitmapDescriptorFactory.HUE_BLUE)
                 addMarker(pos = radial.pos2, type = C.MAP_ITEM_RADIAL, id = 2 * i + 1, hue = BitmapDescriptorFactory.HUE_BLUE)
             }
@@ -485,7 +485,7 @@ class MapFragment : Fragment(R.layout.fragment_map) {
             val item = getNavlogCurrentItemId()
             val zoom: Float
             val target: LatLng
-            val bearing = if (settings.mapOrientation != C.MAP_ORIENTATION_NORTH && navlogList[item].trueTrack != null) navlogList[item].trueTrack!!.toFloat() else 0f
+            val bearing = if (options.mapOrientation != C.MAP_ORIENTATION_NORTH && navlogList[item].trueTrack != null) navlogList[item].trueTrack!!.toFloat() else 0f
 
             if (isMapFollow() && gps.isValid) {
                 // Zoom to GPS pos
@@ -525,7 +525,7 @@ class MapFragment : Fragment(R.layout.fragment_map) {
         runBlocking { gpsMutex.withLock { gps = gpsData } }
 
         if (gps.isValid) {
-            val bearing = if (settings.mapOrientation == C.MAP_ORIENTATION_BEARING && gps.bearing != null) gps.bearing!!
+            val bearing = if (options.mapOrientation == C.MAP_ORIENTATION_BEARING && gps.bearing != null) gps.bearing!!
             else map.cameraPosition.bearing
 
             val cameraPosition = CameraPosition.Builder()

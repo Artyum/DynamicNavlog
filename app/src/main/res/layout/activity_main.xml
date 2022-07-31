@@ -84,6 +84,13 @@
             </LinearLayout>
         </LinearLayout>
 
+        <TextView
+            android:id="@+id/gpsLostBox"
+            style="@style/gpsLostBox"
+            android:text="@string/txtGPSLost"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/adBox" />
+
         <androidx.fragment.app.FragmentContainerView
             android:id="@+id/nav_host_fragment"
             android:name="androidx.navigation.fragment.NavHostFragment"
@@ -91,7 +98,7 @@
             android:layout_height="0dp"
             app:defaultNavHost="true"
             app:layout_constraintBottom_toTopOf="@id/bottomNav"
-            app:layout_constraintTop_toBottomOf="@id/adBox"
+            app:layout_constraintTop_toBottomOf="@id/gpsLostBox"
             app:navGraph="@navigation/nav_graph" />
 
         <RelativeLayout
