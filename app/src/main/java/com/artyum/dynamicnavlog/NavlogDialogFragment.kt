@@ -70,7 +70,7 @@ class NavlogDialogFragment(private val item: Int, private val adapter: NavlogAda
             val lng = clearString(bind.dialogLng.text.toString().trim())
 
             if (dest != "" && mt != "" && dist != "") {
-                val dMagneticTrack = getDoubleOrNull(mt)
+                var dMagneticTrack = getDoubleOrNull(mt)
                 val dDist = fromUserUnitsDis(getDoubleOrNull(dist))
                 var dTrueTrack = getDoubleOrNull(tt)
                 val dDeclination = getDoubleOrNull(declination)
@@ -88,10 +88,10 @@ class NavlogDialogFragment(private val item: Int, private val adapter: NavlogAda
                     chk = false
                 }
 
-                if (dTrueTrack == null && dDeclination != null && dMagneticTrack != null) dTrueTrack = dMagneticTrack - dDeclination
+                if (dTrueTrack == null && dDeclination != null && dMagneticTrack != null) dTrueTrack = normalizeBearing(dMagneticTrack - dDeclination)
 
-                var coords: LatLng? = null
-                if (dLat != null && dLng != null) coords = LatLng(dLat, dLng)
+                var pos: LatLng? = null
+                if (dLat != null && dLng != null) pos = LatLng(dLat, dLng)
 
                 if (chk) {
                     navlogList[item].dest = dest.uppercase()
@@ -100,7 +100,7 @@ class NavlogDialogFragment(private val item: Int, private val adapter: NavlogAda
                     navlogList[item].magneticTrack = dMagneticTrack!!
                     navlogList[item].distance = dDist!!
                     navlogList[item].remarks = remarks
-                    navlogList[item].coords = coords
+                    navlogList[item].coords = pos
                     navlogList[item].active = bind.dialogCheckboxActive.isChecked
 
                     adapter?.notifyItemChanged(item)

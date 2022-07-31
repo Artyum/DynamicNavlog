@@ -325,7 +325,7 @@ fun loadStateDnl(fileName: String = C.stateFile) {
         }
         newSettings.planId = generateStringId()
 
-        resetSettings()
+        resetAllSettings()
         settings = newSettings
         timers = newTimers
         navlogList = newNavlogList
@@ -465,7 +465,7 @@ fun loadState(fileName: String = C.stateFile) {
         }
     }
 
-    resetSettings()
+    resetAllSettings()
     settings = newSettings
     timers = newTimers
     navlogList = newNavlogList

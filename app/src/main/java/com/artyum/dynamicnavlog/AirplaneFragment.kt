@@ -9,6 +9,7 @@ import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import androidx.core.widget.doAfterTextChanged
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.setFragmentResultListener
 import androidx.navigation.fragment.findNavController
 import com.artyum.dynamicnavlog.databinding.FragmentAirplaneBinding
 
@@ -20,6 +21,7 @@ class AirplaneFragment : Fragment() {
 
     private var spdUnits = 0
     private var volUnits = 0
+    private var editAirplaneId: String = ""
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         _binding = FragmentAirplaneBinding.inflate(inflater, container, false)
@@ -62,6 +64,12 @@ class AirplaneFragment : Fragment() {
                 }
             }
 
+        setFragmentResultListener("requestKey") { _, bundle ->
+            editAirplaneId = bundle.getString("airplaneId").toString()
+            loadAirplane()
+            restoreSettings()
+        }
+
         bind.airplaneType.doAfterTextChanged { onChange() }
         bind.airplaneReg.doAfterTextChanged { onChange() }
         bind.airplaneRmk.doAfterTextChanged { onChange() }
@@ -73,8 +81,6 @@ class AirplaneFragment : Fragment() {
         bind.btnApply.setOnClickListener { saveAirplane() }
 
         setupUI(view)
-        loadAirplane()
-        restoreSettings()
     }
 
     private fun onChange() {
@@ -190,17 +196,18 @@ class AirplaneFragment : Fragment() {
     }
 
     private fun loadAirplane() {
-        if (!editAirplaneID.isNullOrEmpty()) {
+        if (editAirplaneId.isNotEmpty()) {
             // Search in airplane list
             for (i in airplaneList.indices) {
-                if (airplaneList[i].id == editAirplaneID) {
+                if (airplaneList[i].id == editAirplaneId) {
                     airplane = airplaneList[i].copy()
                     return
                 }
             }
+        } else {
+            airplane = Airplane()
+            airplane.id = generateStringId()
         }
-        airplane = Airplane()
-        airplane.id = generateStringId()
     }
 
     private fun restoreSettings() {

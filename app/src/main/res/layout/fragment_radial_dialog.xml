@@ -9,7 +9,7 @@
 
     <LinearLayout
         style="@style/dividerBox"
-        android:layout_marginTop="0dp"
+        android:layout_marginTop="10dp"
         android:layout_marginBottom="10dp">
 
         <View
@@ -48,7 +48,8 @@
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/dialogDistance"
-                style="@style/navDialogText" />
+                style="@style/navDialogText"
+                android:inputType="numberDecimal" />
         </com.google.android.material.textfield.TextInputLayout>
     </LinearLayout>
 
@@ -81,7 +82,6 @@
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/dialogLat1"
                 style="@style/navDialogText"
-                android:enabled="false"
                 android:inputType="numberDecimal" />
         </com.google.android.material.textfield.TextInputLayout>
 
@@ -94,7 +94,6 @@
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/dialogLng1"
                 style="@style/navDialogText"
-                android:enabled="false"
                 android:inputType="numberDecimal" />
         </com.google.android.material.textfield.TextInputLayout>
     </LinearLayout>

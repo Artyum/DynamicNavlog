@@ -9,7 +9,7 @@
     android:paddingVertical="5dp">
     <LinearLayout
         style="@style/dividerBox"
-        android:layout_marginTop="0dp"
+        android:layout_marginTop="10dp"
         android:layout_marginBottom="10dp">
 
         <View
