@@ -70,7 +70,7 @@ class NavlogDialogFragment(private val item: Int, private val adapter: NavlogAda
             val lng = clearString(bind.dialogLng.text.toString().trim())
 
             if (dest != "" && mt != "" && dist != "") {
-                var dMagneticTrack = getDoubleOrNull(mt)
+                val dMagneticTrack = getDoubleOrNull(mt)
                 val dDist = fromUserUnitsDis(getDoubleOrNull(dist))
                 var dTrueTrack = getDoubleOrNull(tt)
                 val dDeclination = getDoubleOrNull(declination)
@@ -162,8 +162,8 @@ class NavlogDialogFragment(private val item: Int, private val adapter: NavlogAda
 
             // Latitude
             if (navlogList[item].coords != null) {
-                bind.dialogLat.setText(formatDouble(navlogList[item].coords?.latitude, C.COORDS_PRECISION))
-                bind.dialogLng.setText(formatDouble(navlogList[item].coords?.longitude, C.COORDS_PRECISION))
+                bind.dialogLat.setText(formatDouble(navlogList[item].coords?.latitude, C.POS_PRECISION))
+                bind.dialogLng.setText(formatDouble(navlogList[item].coords?.longitude, C.POS_PRECISION))
             } else {
                 bind.dialogLat.setText("")
                 bind.dialogLng.setText("")
@@ -222,10 +222,8 @@ class NavlogDialogFragment(private val item: Int, private val adapter: NavlogAda
         val prevCoords = getPrevCoords(item)
         if (tt != null && dist != null && prevCoords != null) {
             val newCoords = calcDestinationPos(from = prevCoords, bearing = tt, distance = nm2m(dist))
-            //val d = getDeclination(newCoords)
-            //bind.dialogDeclination.setText(formatDouble(d, 1))
-            bind.dialogLat.setText(formatDouble(newCoords.latitude, C.COORDS_PRECISION))
-            bind.dialogLng.setText(formatDouble(newCoords.longitude, C.COORDS_PRECISION))
+            bind.dialogLat.setText(formatDouble(newCoords.latitude, C.POS_PRECISION))
+            bind.dialogLng.setText(formatDouble(newCoords.longitude, C.POS_PRECISION))
         }
     }
 

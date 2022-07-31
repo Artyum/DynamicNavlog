@@ -182,7 +182,9 @@ object C {
     const val VOL_UKGAL = 1
     const val VOL_LITERS = 2
 
-    const val ZULU_SIGN = "ᶻ"
+    const val SIGN_ZULU = "ᶻ"
+    const val SIGN_EAST = "ᴱ"
+    const val SIGN_WEST = "ᵂ"
 
     const val PRESSURE_INHG = 0
     const val PRESSURE_HPA = 1
@@ -216,7 +218,7 @@ object C {
     const val GPS_ALIVE_SEC = 30
 
     const val MAX_ANGLE_INDICATOR = 10
-    const val COORDS_PRECISION = 6
+    const val POS_PRECISION = 6
     const val LOCATION_PERMISSION_REQ_CODE = 99
     const val TF_DISPLAY_CUR = 0
     const val TF_DISPLAY_REM = 1

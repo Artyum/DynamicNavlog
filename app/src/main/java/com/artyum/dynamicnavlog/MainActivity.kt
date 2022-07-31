@@ -834,7 +834,7 @@ class MainActivity : AppCompatActivity() {
         gpsMutex.withLock {
             gpsData.time = loc.time
 
-            gpsData.coords = (LatLng(roundDouble(loc.latitude, C.COORDS_PRECISION), roundDouble(loc.longitude, C.COORDS_PRECISION)))
+            gpsData.coords = (LatLng(roundDouble(loc.latitude, C.POS_PRECISION), roundDouble(loc.longitude, C.POS_PRECISION)))
             gpsData.speedMps = loc.speed.toDouble()
             gpsData.speedKt = mps2kt(gpsData.speedMps)
 

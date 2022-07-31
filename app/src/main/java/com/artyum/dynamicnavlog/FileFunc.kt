@@ -571,8 +571,8 @@ fun saveTracePoint(p: LatLng) {
     if (tracePointsList.size == 0) return
 
     val str = JSONObject()
-    str.put("lat", formatDouble(p.latitude, C.COORDS_PRECISION))
-    str.put("lng", formatDouble(p.longitude, C.COORDS_PRECISION))
+    str.put("lat", formatDouble(p.latitude, C.POS_PRECISION))
+    str.put("lng", formatDouble(p.longitude, C.POS_PRECISION))
     str.put("date", getCurrentDate())
     str.put("time", getCurrentTime())
 
@@ -670,8 +670,8 @@ fun savePlanAsGpx(): String {
 
     if (navlogList.size > 0 && settings.takeoffPos != null) {
         var name = "Start"
-        var lat = formatDouble(settings.takeoffPos?.latitude, C.COORDS_PRECISION)
-        var lng = formatDouble(settings.takeoffPos?.longitude, C.COORDS_PRECISION)
+        var lat = formatDouble(settings.takeoffPos?.latitude, C.POS_PRECISION)
+        var lng = formatDouble(settings.takeoffPos?.longitude, C.POS_PRECISION)
         wpt += ("\t<wpt lat=\"$lat\" lon=\"$lng\"><name>$name</name></wpt>\n")
         trkpt += ("\t<trkpt lat=\"$lat\" lon=\"$lng\"></trkpt>\n")
 
@@ -679,8 +679,8 @@ fun savePlanAsGpx(): String {
             if (navlogList[i].active && navlogList[i].coords != null) {
                 export = true
                 name = navlogList[i].dest
-                lat = formatDouble(navlogList[i].coords?.latitude, C.COORDS_PRECISION)
-                lng = formatDouble(navlogList[i].coords?.longitude, C.COORDS_PRECISION)
+                lat = formatDouble(navlogList[i].coords?.latitude, C.POS_PRECISION)
+                lng = formatDouble(navlogList[i].coords?.longitude, C.POS_PRECISION)
                 wpt += ("\t<wpt lat=\"$lat\" lon=\"$lng\"><name>$name</name></wpt>\n")
                 trkpt += ("\t<trkpt lat=\"$lat\" lon=\"$lng\"></trkpt>\n")
             }

@@ -90,10 +90,10 @@ class RadialDialogFragment(private val pos1: LatLng? = null, private val pos2: L
             // Edit radial
             bind.dialogRadial.setText(formatDouble(radialList[item].angle, 0))
             bind.dialogDistance.setText(formatDouble(toUserUnitsDis(radialList[item].dist), 2))
-            bind.dialogLat1.setText(formatDouble(radialList[item].pos1.latitude, C.COORDS_PRECISION))
-            bind.dialogLng1.setText(formatDouble(radialList[item].pos1.longitude, C.COORDS_PRECISION))
-            bind.dialogLat2.setText(formatDouble(radialList[item].pos2.latitude, C.COORDS_PRECISION))
-            bind.dialogLng2.setText(formatDouble(radialList[item].pos2.longitude, C.COORDS_PRECISION))
+            bind.dialogLat1.setText(formatDouble(radialList[item].pos1.latitude, C.POS_PRECISION))
+            bind.dialogLng1.setText(formatDouble(radialList[item].pos1.longitude, C.POS_PRECISION))
+            bind.dialogLat2.setText(formatDouble(radialList[item].pos2.latitude, C.POS_PRECISION))
+            bind.dialogLng2.setText(formatDouble(radialList[item].pos2.longitude, C.POS_PRECISION))
         } else if (pos1 != null && pos2 != null) {
             // New radial
             // Calculate Radial and distance
@@ -102,10 +102,10 @@ class RadialDialogFragment(private val pos1: LatLng? = null, private val pos2: L
 
             bind.dialogRadial.setText(formatDouble(radial))
             bind.dialogDistance.setText(formatDouble(toUserUnitsDis(dist), 2))
-            bind.dialogLat1.setText(formatDouble(pos1.latitude, C.COORDS_PRECISION))
-            bind.dialogLng1.setText(formatDouble(pos1.longitude, C.COORDS_PRECISION))
-            bind.dialogLat2.setText(formatDouble(pos2.latitude, C.COORDS_PRECISION))
-            bind.dialogLng2.setText(formatDouble(pos2.longitude, C.COORDS_PRECISION))
+            bind.dialogLat1.setText(formatDouble(pos1.latitude, C.POS_PRECISION))
+            bind.dialogLng1.setText(formatDouble(pos1.longitude, C.POS_PRECISION))
+            bind.dialogLat2.setText(formatDouble(pos2.latitude, C.POS_PRECISION))
+            bind.dialogLng2.setText(formatDouble(pos2.longitude, C.POS_PRECISION))
 
             bind.btnDialogRemove.visibility = View.GONE
         }
@@ -120,8 +120,8 @@ class RadialDialogFragment(private val pos1: LatLng? = null, private val pos2: L
             dist = nm2m(fromUserUnitsDis(dist)!!)
             angle = normalizeBearing(angle - getDeclination(LatLng(lat1, lng1)))
             val pos2 = calcDestinationPos(LatLng(lat1, lng1), angle, dist)
-            bind.dialogLat2.setText(formatDouble(pos2.latitude, C.COORDS_PRECISION))
-            bind.dialogLng2.setText(formatDouble(pos2.longitude, C.COORDS_PRECISION))
+            bind.dialogLat2.setText(formatDouble(pos2.latitude, C.POS_PRECISION))
+            bind.dialogLng2.setText(formatDouble(pos2.longitude, C.POS_PRECISION))
         }
     }
 }

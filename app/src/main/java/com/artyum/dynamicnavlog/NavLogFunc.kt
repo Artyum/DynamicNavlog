@@ -309,12 +309,12 @@ fun recalculateWaypoints() {
             val prevCoords = getPrevCoords(i)
             if (prevCoords != null && navlogList[i].coords != null) {
                 val tt = calcBearing(prevCoords, navlogList[i].coords!!)
-                val d = getDeclination(navlogList[i].coords!!)
-                val mt = normalizeBearing(tt + d)
+                val declination = getDeclination(navlogList[i].coords!!)
+                val mt = normalizeBearing(tt + declination)
                 val dist = m2nm(calcDistance(prevCoords, navlogList[i].coords!!))
 
                 navlogList[i].trueTrack = tt
-                navlogList[i].declination = d
+                navlogList[i].declination = declination
                 navlogList[i].magneticTrack = mt
                 navlogList[i].distance = dist
             }
