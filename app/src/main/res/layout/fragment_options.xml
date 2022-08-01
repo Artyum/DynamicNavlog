@@ -322,12 +322,14 @@
             <com.google.android.material.switchmaterial.SwitchMaterial
                 android:id="@+id/settingHints"
                 style="@style/settingsSwitch"
-                android:text="@string/txtDisplayHints" />
+                android:text="@string/txtDisplayHints"
+                android:visibility="gone" />
 
             <TextView
                 style="@style/hintBox"
                 android:layout_marginBottom="10dp"
-                android:text="Display hint messages in the application. The link to all messages is located on the About page." />
+                android:text="Display hint messages in the application. The link to all messages is located on the About page."
+                android:visibility="gone" />
 
         </LinearLayout>
     </ScrollView>

@@ -343,8 +343,6 @@ class MapFragment : Fragment(R.layout.fragment_map) {
         if (!options.drawWindArrow) return
         //Log.d(TAG, "drawWindArrow")
 
-        windArrowLine?.remove()
-
         val line = PolylineOptions()
             .clickable(false)
             .color(ContextCompat.getColor(this.requireContext(), R.color.windArrow))
@@ -363,6 +361,7 @@ class MapFragment : Fragment(R.layout.fragment_map) {
         val q2 = calcDestinationPos(endPoint, normalizeBearing(angle - 10.0), len2)
 
         line.add(startPoint, endPoint, q1, q2)
+        windArrowLine?.remove()
         windArrowLine = map.addPolyline(line)
     }
 
@@ -600,7 +599,7 @@ class MapFragment : Fragment(R.layout.fragment_map) {
         var position = navlogList.size
         val prevCoords: LatLng
 
-        if (navlogList.size == 0) {
+        if (navlogList.size == 0 || getNavlogLastActiveItemId() < 0) {
             prevCoords = settings.takeoffPos!!
         } else {
             // Find nearest waypoints among all navlog items - active and not active

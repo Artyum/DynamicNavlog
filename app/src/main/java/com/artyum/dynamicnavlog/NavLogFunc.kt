@@ -251,7 +251,7 @@ fun recalculateFlight(adapter: NavlogAdapter?) {
             if (navlogList[item].active && isNavlogItemValid(item)) {
                 resetNavlogItem(item)
 
-                val fc: FlightCalculator = flightCalculator(
+                val fDFata = flightCalculator(
                     course = navlogList[item].magneticTrack!!,
                     windDir = settings.windDir,
                     windSpd = settings.windSpd,
@@ -260,20 +260,20 @@ fun recalculateFlight(adapter: NavlogAdapter?) {
                     fph = airplane.fph
                 )
 
-                navlogList[item].wca = fc.wca
-                navlogList[item].hdg = fc.hdg
-                navlogList[item].gs = fc.gs
-                navlogList[item].time = fc.time
-                navlogList[item].fuel = fc.fuel
+                navlogList[item].wca = fDFata.wca
+                navlogList[item].hdg = fDFata.hdg
+                navlogList[item].gs = fDFata.gs
+                navlogList[item].time = fDFata.time
+                navlogList[item].fuel = fDFata.fuel
                 navlogList[item].fuelRemaining = null
 
-                if (fc.time != null) {
-                    timeIncrement += fc.time
+                if (fDFata.time != null) {
+                    timeIncrement += fDFata.time
                     navlogList[item].timeIncrement = timeIncrement
                 }
 
-                if (fc.fuel != null) {
-                    if (fuelRemaining != null) fuelRemaining -= fc.fuel
+                if (fDFata.fuel != null) {
+                    if (fuelRemaining != null) fuelRemaining -= fDFata.fuel
                     navlogList[item].fuelRemaining = fuelRemaining
                 }
 
@@ -298,6 +298,7 @@ fun recalculateTotals() {
         }
     }
     totals.fuel = airplane.fph * totals.time / 3600.0
+    if (settings.fob < totals.fuel) settings.fob = totals.fuel
 }
 
 fun recalculateWaypoints() {

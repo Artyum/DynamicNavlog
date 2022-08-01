@@ -28,6 +28,7 @@ class AboutFragment : Fragment(R.layout.fragment_about) {
         (activity as MainActivity).hideButtons()
 
         // Clickable links
+        bind.linkManual.movementMethod = LinkMovementMethod.getInstance()
         bind.linkEmail.movementMethod = LinkMovementMethod.getInstance()
         bind.linkChangeLog.movementMethod = LinkMovementMethod.getInstance()
         bind.linkPrivacyPolicy.movementMethod = LinkMovementMethod.getInstance()

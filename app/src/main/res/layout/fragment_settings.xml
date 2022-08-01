@@ -10,7 +10,9 @@
 
     <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        tools:layout_editor_absoluteX="-26dp"
+        tools:layout_editor_absoluteY="-133dp">
 
         <LinearLayout
             style="@style/globalFragmentFrame"
@@ -27,7 +29,7 @@
                     android:id="@+id/settingFlightPlanNameBox"
                     style="@style/inputLayout"
                     android:layout_width="match_parent"
-                    android:hint="@string/txtFlightPlanName">
+                    android:hint="@string/txtFlightPlanTitle">
 
                     <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/settingFlightPlanName"
@@ -67,7 +69,7 @@
 
             <LinearLayout
                 style="@style/dividerBox"
-                android:layout_marginBottom="5dp">
+                android:layout_marginBottom="0dp">
 
                 <View
                     style="@style/dividerLine"
@@ -88,91 +90,37 @@
                 android:layout_marginVertical="5dp"
                 android:text="@string/txtNoAirplaneInSettings" />
 
-            <Spinner
-                android:id="@+id/spinnerAirplane"
+            <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="5dp" />
+                android:orientation="horizontal">
 
-            <androidx.constraintlayout.widget.ConstraintLayout
-                android:id="@+id/airplaneDetailsBox"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
-
-                <LinearLayout
-                    android:id="@+id/plane1"
-                    android:layout_width="wrap_content"
+                <Spinner
+                    android:id="@+id/spinnerAirplane"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
+                    app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintLeft_toLeftOf="parent"
-                    app:layout_constraintTop_toTopOf="parent">
+                    app:layout_constraintRight_toLeftOf="@id/hintTakeoffFuel"
+                    app:layout_constraintTop_toTopOf="parent" />
 
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="@string/txtTAS" />
-
-                    <TextView
-                        android:id="@+id/airplaneDetailsTas"
-                        style="@style/airplaneDetails"
-                        android:layout_marginHorizontal="@dimen/unitsMargin" />
-
-                    <TextView
-                        android:id="@+id/airplaneSpdUnits"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content" />
-                </LinearLayout>
-
-                <LinearLayout
-                    android:id="@+id/plane2"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    app:layout_constraintLeft_toRightOf="@id/plane1"
-                    app:layout_constraintRight_toLeftOf="@id/plane3"
-                    app:layout_constraintTop_toTopOf="parent">
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="@string/txtTankCapacity" />
-
-                    <TextView
-                        android:id="@+id/airplaneDetailsTank"
-                        style="@style/airplaneDetails"
-                        android:layout_marginHorizontal="@dimen/unitsMargin" />
-
-                    <TextView
-                        android:id="@+id/airplaneFuelUnits1"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content" />
-                </LinearLayout>
-
-                <LinearLayout
-                    android:id="@+id/plane3"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/hintTakeoffFuel"
+                    style="@style/inputLayout"
+                    android:layout_width="120dp"
+                    android:hint="@string/txtTakeoffFuel"
                     app:layout_constraintRight_toRightOf="parent"
                     app:layout_constraintTop_toTopOf="parent">
 
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="@string/txtFph" />
-
-                    <TextView
-                        android:id="@+id/airplaneDetailsFph"
-                        style="@style/airplaneDetails"
-                        android:layout_marginHorizontal="@dimen/unitsMargin" />
-
-                    <TextView
-                        android:id="@+id/airplaneFuelUnits2"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content" />
-                </LinearLayout>
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/settingFuel"
+                        style="@style/layoutTextDecimal" />
+                </com.google.android.material.textfield.TextInputLayout>
             </androidx.constraintlayout.widget.ConstraintLayout>
 
             <LinearLayout
                 style="@style/dividerBox"
-                android:layout_marginVertical="15dp">
+                android:layout_marginTop="20dp">
 
                 <View
                     style="@style/dividerLine"
@@ -180,7 +128,7 @@
 
                 <TextView
                     style="@style/dividerText"
-                    android:text="@string/txtWindAndFuel" />
+                    android:text="@string/txtWeatherConditions" />
 
                 <View
                     style="@style/dividerLine"
@@ -196,18 +144,6 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal">
-
-                <com.google.android.material.textfield.TextInputLayout
-                    android:id="@+id/hintTakeoffFuel"
-                    style="@style/inputLayout"
-                    android:hint="@string/txtTakeoffFuel">
-
-                    <com.google.android.material.textfield.TextInputEditText
-                        android:id="@+id/settingFuel"
-                        style="@style/layoutTextDecimal" />
-                </com.google.android.material.textfield.TextInputLayout>
-
-                <TextView style="@style/spacer" />
 
                 <com.google.android.material.textfield.TextInputLayout
                     style="@style/inputLayout"
@@ -232,76 +168,198 @@
 
             </LinearLayout>
 
-            <TableLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="15dp">
+            <LinearLayout
+                style="@style/dividerBox"
+                android:layout_marginTop="20dp">
 
-                <TableRow>
+                <View
+                    style="@style/dividerLine"
+                    android:layout_weight="1" />
+
+                <TextView
+                    style="@style/dividerText"
+                    android:text="@string/txtPlanSummary" />
+
+                <View
+                    style="@style/dividerLine"
+                    android:layout_weight="1" />
+            </LinearLayout>
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="15dp"
+                android:orientation="horizontal">
+
+                <TableLayout
+                    android:id="@+id/table1"
+                    style="@style/sumTable"
+                    android:layout_width="0dp"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintTop_toTopOf="parent">
+
+                    <TableRow style="@style/sumTableRow">
+
+                        <TextView
+                            style="@style/sumTableCol0"
+                            android:text="@string/txtCruiseSpeerTAS" />
+
+                        <LinearLayout style="@style/sumTableCol1">
+
+                            <TextView
+                                android:id="@+id/airplaneTas"
+                                style="@style/airplaneDetails" />
+
+                            <TextView
+                                android:id="@+id/airplaneTasUnits"
+                                style="@style/sumTableUnits" />
+                        </LinearLayout>
+                    </TableRow>
+
+                    <TableRow style="@style/sumTableRow">
+
+                        <TextView
+                            style="@style/sumTableCol0"
+                            android:text="@string/txtTankCapacity" />
+
+                        <LinearLayout style="@style/sumTableCol1">
+
+                            <TextView
+                                android:id="@+id/airplaneTank"
+                                style="@style/airplaneDetails" />
+
+                            <TextView
+                                android:id="@+id/airplaneTankUnits"
+                                style="@style/sumTableUnits" />
+                        </LinearLayout>
+                    </TableRow>
+
+                    <TableRow style="@style/sumTableRow">
+
+                        <TextView
+                            style="@style/sumTableCol0"
+                            android:text="@string/txtFph" />
+
+                        <LinearLayout style="@style/sumTableCol1">
+
+                            <TextView
+                                android:id="@+id/airplaneFph"
+                                style="@style/airplaneDetails" />
+
+                            <TextView
+                                android:id="@+id/airplaneFphUnits"
+                                style="@style/sumTableUnits" />
+                        </LinearLayout>
+                    </TableRow>
+                </TableLayout>
+
+                <TableLayout
+                    android:id="@+id/table2"
+                    style="@style/sumTable"
+                    android:layout_width="0dp"
+                    app:layout_constraintLeft_toRightOf="@id/table1"
+                    app:layout_constraintRight_toRightOf="parent"
+                    app:layout_constraintTop_toTopOf="parent">
+
+                    <TableRow style="@style/sumTableRow">
+
+                        <TextView
+                            style="@style/sumTableCol0"
+                            android:text="@string/txtDistance" />
+
+                        <LinearLayout style="@style/sumTableCol1">
+
+                            <TextView
+                                android:id="@+id/totsDist"
+                                style="@style/airplaneDetails" />
+
+                            <TextView
+                                android:id="@+id/totsDistUnits"
+                                style="@style/sumTableUnits" />
+                        </LinearLayout>
+                    </TableRow>
+
+                    <TableRow style="@style/sumTableRow">
+
+                        <TextView
+                            style="@style/sumTableCol0"
+                            android:text="@string/txtTime" />
+
+                        <LinearLayout style="@style/sumTableCol1">
+
+                            <TextView
+                                android:id="@+id/totTime"
+                                style="@style/airplaneDetails" />
+
+                        </LinearLayout>
+                    </TableRow>
+
+                    <TableRow style="@style/sumTableRow">
+
+                        <TextView
+                            style="@style/sumTableCol0"
+                            android:text="@string/txtFuelRequired" />
+
+                        <LinearLayout style="@style/sumTableCol1">
+
+                            <TextView
+                                android:id="@+id/totFuel"
+                                style="@style/airplaneDetails" />
+
+                            <TextView
+                                android:id="@+id/totFuelUnits"
+                                style="@style/sumTableUnits" />
+
+                        </LinearLayout>
+                    </TableRow>
+                </TableLayout>
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <TableLayout style="@style/sumTable">
+
+                <TableRow style="@style/sumTableRow">
 
                     <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_column="0"
+                        style="@style/sumTableCol0"
                         android:text="@string/txtSpareFuel" />
 
-                    <LinearLayout
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_column="1"
-                        android:layout_marginStart="10dp">
+                    <LinearLayout style="@style/sumTableCol1">
 
                         <TextView
                             android:id="@+id/spareFuel"
-                            style="@style/airplaneDetails"
-                            android:layout_marginEnd="@dimen/unitsMargin" />
+                            style="@style/airplaneDetails" />
 
                         <TextView
                             android:id="@+id/spareFuelUnits"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content" />
+                            style="@style/sumTableUnits" />
                     </LinearLayout>
                 </TableRow>
 
-                <TableRow android:layout_marginVertical="4dp">
+                <TableRow style="@style/sumTableRow">
 
                     <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_column="0"
+                        style="@style/sumTableCol0"
                         android:text="@string/txtExtraDistance" />
 
-                    <LinearLayout
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_column="1"
-                        android:layout_marginStart="10dp">
+                    <LinearLayout style="@style/sumTableCol1">
 
                         <TextView
                             android:id="@+id/extraDistance"
-                            style="@style/airplaneDetails"
-                            android:layout_marginEnd="@dimen/unitsMargin" />
+                            style="@style/airplaneDetails" />
 
                         <TextView
                             android:id="@+id/extraDistanceUnits"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content" />
+                            style="@style/sumTableUnits" />
                     </LinearLayout>
                 </TableRow>
 
-                <TableRow>
+                <TableRow style="@style/sumTableRow">
 
                     <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_column="0"
+                        style="@style/sumTableCol0"
                         android:text="@string/txtExtraFlightTime" />
 
-                    <LinearLayout
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_column="1"
-                        android:layout_marginStart="10dp">
+                    <LinearLayout style="@style/sumTableCol1">
 
                         <TextView
                             android:id="@+id/additionalTime"
