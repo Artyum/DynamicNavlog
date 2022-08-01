@@ -13,14 +13,6 @@
             android:title="@string/txtRemoveAds" />
     </group>
     <group
-        android:id="@+id/groupOptions"
-        android:checkableBehavior="none">
-        <item
-            android:id="@+id/drawerOptions"
-            android:icon="@drawable/ic_options"
-            android:title="@string/txtOptions" />
-    </group>
-    <group
         android:id="@+id/groupNew"
         android:checkableBehavior="none">
         <item
@@ -36,6 +28,14 @@
             android:id="@+id/drawerAirplanes"
             android:icon="@drawable/ic_flight"
             android:title="@string/txtAirplanes" />
+    </group>
+    <group
+        android:id="@+id/groupOptions"
+        android:checkableBehavior="none">
+        <item
+            android:id="@+id/drawerOptions"
+            android:icon="@drawable/ic_options"
+            android:title="@string/txtOptions" />
     </group>
     <group
         android:id="@+id/calculators"

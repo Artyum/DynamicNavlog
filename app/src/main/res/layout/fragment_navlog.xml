@@ -132,7 +132,7 @@
 
             <TextView
                 style="@style/navlogSummary"
-                android:text="@string/txtTotalDistance" />
+                android:text="@string/txtDistance" />
 
             <TextView
                 android:id="@+id/txtTotalDist"
@@ -149,7 +149,7 @@
 
             <TextView
                 style="@style/navlogSummary"
-                android:text="@string/txtTotalTime" />
+                android:text="@string/txtFlightTime" />
 
             <TextView
                 android:id="@+id/txtTotalTime"
@@ -166,7 +166,7 @@
 
             <TextView
                 style="@style/navlogSummary"
-                android:text="@string/txtTotalFuel" />
+                android:text="@string/txtFuelRequired" />
 
             <TextView
                 android:id="@+id/txtTotalFuel"

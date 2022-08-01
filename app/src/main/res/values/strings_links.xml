@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="linkManual"><a href="https://artyum.github.io/dynamicnavlog/manual.html">Manual</a></string>
+    <string name="linkChangeLog"><a href="https://artyum.github.io/dynamicnavlog/changelog.html">Change log</a></string>
+    <string name="linkPrivacyPolicy"><a href="https://artyum.github.io/dynamicnavlog/privacy-policy.html">Privacy policy</a></string>
+    <string name="linkPermissions"><a href="https://www.youtube.com/watch?v=98Y0nIItm38">Location permissions (video)</a></string>
+</resources>

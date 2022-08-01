@@ -3,8 +3,7 @@
     <string name="appName">Dynamic NavLog</string>
     <string name="linkEmail"><a href="mailto:dynamicnavlog@gmail.com\">dynamicnavlog@gmail.com</a></string>
     <string name="txtChangeLog">Change log</string>
-    <string name="adStaticInfo">If this app is useful to you, please consider donation to support further development</string>
-    <string name="adStaticEnjoyFlight"><b>Enjoy Your Flight</b></string>
+    <string name="adStaticInfo">If the app is useful to you, please consider donation to support further development. Thank you!</string>
     <string name="txtTooManyItems">Only 10 waypoints in free version are allowed. Please consider purchasing the app to disable the limit.</string>
     <string name="txtNotAllTrueTrackSet">To use the GPS assistance, all waypoints must contain co-ordinates</string>
     <string name="txtNoTakeoffPoint">Before adding a waypoint, set the takeoff coordinates by clicking on the map</string>
@@ -35,11 +34,12 @@
     <string name="txtFlightPlanSettings">Flight plan settings</string>
     <string name="txtFlightSettings">Flight settings</string>
     <string name="txtFlightPlan">Flight Plan</string>
-    <string name="txtFlightPlanName">Flight plan name</string>
+    <string name="txtFlightPlanTitle">Flight plan title</string>
     <string name="txtInvalidFlightPlanName">Cannot save: Invalid flight plan name</string>
     <string name="txtFuelSettings">Fuel Settings</string>
     <string name="txtTimeStamps">Timestamps</string>
     <string name="txtSummary">Summary</string>
+    <string name="txtPlanSummary">Plan summary</string>
     <string name="txtWindAndFuelCalculator">Wind/Fuel Calculator</string>
     <string name="txtNavigationLog">Navigation Log</string>
     <string name="txtLoadFlightPlan">Load flight plan</string>
@@ -55,9 +55,6 @@
     <string name="txtPurchase">Purchase Dynamic NavLog</string>
     <string name="txtAbout">About</string>
     <string name="txtContact">Contact</string>
-    <string name="linkChangeLog"><a href="https://artyum.github.io/dynamicnavlog/changelog.html">Change log</a></string>
-    <string name="linkPrivacyPolicy"><a href="https://artyum.github.io/dynamicnavlog/privacy-policy.html">Privacy policy</a></string>
-    <string name="linkPermissions"><a href="https://www.youtube.com/watch?v=98Y0nIItm38">Location permissions (video)</a></string>
     <string name="txtVersion">Version</string>
     <string name="txtDensityCalculator">Density altitude</string>
     <string name="txtInvalidDialogCheck">Destination, Magnetic Track and Distance are mandatory fields</string>
@@ -120,7 +117,7 @@
     <string name="txtValue">Value</string>
     <string name="txtWindDirection">Wind direction</string>
     <string name="txtWind">Wind</string>
-    <string name="txtWindAndFuel">Wind and fuel</string>
+    <string name="txtWeatherConditions">Weather conditions</string>
     <string name="txtStationPressure">Station pressure</string>
     <string name="txtAltimeterSetting">Altimeter setting</string>
     <string name="txtTemperature">Temperature</string>
@@ -132,12 +129,12 @@
     <string name="txtDensityAltitudeAprox">Density altitude (aprox.)</string>
     <string name="txtElevations">Elevation</string>
     <string name="txtStationElevations">Station elevation</string>
-    <string name="txtWindSpeed">Wind spd.</string>
+    <string name="txtWindSpeed">Wind speed</string>
     <string name="txtSpeed">Speed</string>
     <string name="txtSpeedUnits">Speed units</string>
     <string name="txtTAS">TAS</string>
     <string name="txtRange">Range</string>
-    <string name="txtCruiseSpeerTAS">Cruise speed (TAS)</string>
+    <string name="txtCruiseSpeerTAS">Cruise TAS</string>
     <string name="txtFph">Fuel/h</string>
     <string name="txtTakeoffFuel">T/O fuel</string>
     <string name="txtTank">Tank</string>
@@ -167,8 +164,7 @@
     <string name="txtActive">Active</string>
     <string name="txtTimeUTC">Display ZULU times</string>
     <string name="txtGPS">GPS</string>
-    <string name="txtGPSLost">Warning! GPS signal lost. Working in No-GPS mode.</string>
-    <string name="txtWarningNoGPS">Warning! No GPS signal</string>
+    <string name="txtGPSLost">Waiting fog GPS signal. Manual mode enabled.</string>
     <string name="txtGPSAssist">GPS assist</string>
     <string name="txtAutoNextWPT">Detect T/O, LND, WPT</string>
     <string name="txtDisplayFlightTrace">Show flight trace</string>
@@ -178,10 +174,10 @@
     <string name="txtDisplayWindArrow">Show wind indicator</string>
     <string name="txtKeepScreenOn">Keep the screen on</string>
     <string name="txtTotalDistance">Total distance</string>
-    <string name="txtExtraDistance">Extra distance (no wind)</string>
+    <string name="txtExtraDistance">Extra distance (min-max)</string>
     <string name="txtTotalTime">Total time</string>
     <string name="txtTotalFuel">Total fuel</string>
-    <string name="txtSpareFuel">Fuel: required/spare</string>
+    <string name="txtSpareFuel">Spare fuel</string>
     <string name="txtWarningLongClick">Warning! Hold to overwrite</string>
     <string name="txtNavlogNotReady">Navigation log is not ready</string>
     <string name="txtHoldButtonToConfirm">Hold to confirm</string>
@@ -211,7 +207,7 @@
     <string name="txtWarningFlightInProgressDialog">Warning! Flight in progress. Are you sure?</string>
     <string name="txtWarningAreYouSure">Are you sure?</string>
     <string name="txtFlightTime">Flight time</string>
-    <string name="txtExtraFlightTime">Extra flight time</string>
+    <string name="txtExtraFlightTime">Additional flight time</string>
     <string name="txtFuelToLand">Fuel to land</string>
     <string name="txtTimeToLand">Time to land</string>
     <string name="txtNavigation">Navigation</string>
@@ -246,5 +242,5 @@
     <string name="txtCannotConnectToGooglePlay">Cannot fetch data from Google Play. Check your Internet connection. Please try again later.</string>
     <string name="txtLocationMessage">The application will ask for access to device\'s location.\n\nDynamic NavLog collects location data to present position on maps and for proper functionality
         of features like automatic detection of takeoff, landing and waypoint arrival.\n\n\It is also strongly recommended to allow the app to collect location data while running in the background
-        or while the screen is off.\n\nMore information: www.youtube.com/watch?v=98Y0nIItm38</string>
+        or while the screen is off.\n\nPlease find the link to instructional video on the About page.</string>
 </resources>

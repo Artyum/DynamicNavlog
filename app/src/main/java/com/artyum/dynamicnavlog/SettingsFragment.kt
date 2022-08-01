@@ -38,7 +38,6 @@ class SettingsFragment : Fragment(R.layout.fragment_settings) {
         bind.settingFlightPlanName.doOnTextChanged { text, _, _, _ ->
             val tmp = text.toString().trim()
             if (settings.planName != tmp) {
-                //println("planName")
                 settings.planName = tmp
                 change = true
             }
@@ -51,7 +50,6 @@ class SettingsFragment : Fragment(R.layout.fragment_settings) {
         bind.settingFrom.doOnTextChanged { text, _, _, _ ->
             val tmp = clearString(text.toString())
             if (settings.departure != tmp) {
-                //println("departure")
                 settings.departure = tmp
                 change = true
             }
@@ -64,7 +62,6 @@ class SettingsFragment : Fragment(R.layout.fragment_settings) {
         bind.settingDestination.doOnTextChanged { text, _, _, _ ->
             val tmp = clearString(text.toString())
             if (settings.destination != tmp) {
-                //println("destination")
                 settings.destination = tmp
                 change = true
             }
@@ -83,6 +80,7 @@ class SettingsFragment : Fragment(R.layout.fragment_settings) {
                 settings.windDir = dWindDir!!
                 bind.settingsInfoBox.visibility = View.GONE
                 change = true
+                refreshSummaryBox()
             }
         }
         bind.settingWindDir.setOnFocusChangeListener { _, hasFocus ->
@@ -97,6 +95,7 @@ class SettingsFragment : Fragment(R.layout.fragment_settings) {
                 settings.windSpd = dWindSpd!!
                 bind.settingsInfoBox.visibility = View.GONE
                 change = true
+                refreshSummaryBox()
             }
         }
         bind.settingWindSpd.setOnFocusChangeListener { _, hasFocus ->
@@ -113,7 +112,7 @@ class SettingsFragment : Fragment(R.layout.fragment_settings) {
                 settings.fob = dFob
                 bind.settingsInfoBox.visibility = View.GONE
                 change = true
-                refreshSpareFuelBox()
+                refreshSummaryBox()
             }
         }
         bind.settingFuel.setOnFocusChangeListener { _, hasFocus ->
@@ -133,6 +132,7 @@ class SettingsFragment : Fragment(R.layout.fragment_settings) {
                     }
                     change = true
                     saveForm()
+                    refreshSummaryBox()
                 }
 
                 override fun onNothingSelected(parent: AdapterView<*>?) {
@@ -192,51 +192,98 @@ class SettingsFragment : Fragment(R.layout.fragment_settings) {
         val id = getAirplaneListPosition(settings.airplaneId)
         if (id > 0) {
             bind.spinnerAirplane.setSelection(id)
-            bind.airplaneDetailsTas.text = formatDouble(toUserUnitsSpd(airplane.tas))
-            bind.airplaneDetailsTank.text = formatDouble(toUserUnitsVol(airplane.tank))
-            bind.airplaneDetailsFph.text = formatDouble(toUserUnitsVol(airplane.fph), 1)
-            bind.airplaneDetailsBox.visibility = View.VISIBLE
+            bind.airplaneTas.text = formatDouble(toUserUnitsSpd(airplane.tas))
+            bind.airplaneTasUnits.text = getUnitsSpd()
+            bind.airplaneTank.text = formatDouble(toUserUnitsVol(airplane.tank))
+            bind.airplaneTankUnits.text = getUnitsVol()
+            bind.airplaneFph.text = formatDouble(toUserUnitsVol(airplane.fph), 1)
+            bind.airplaneFphUnits.text = getUnitsVol()
             bind.settingsSelectAirplaneMsg.visibility = View.GONE
         } else {
-            bind.airplaneDetailsBox.visibility = View.GONE
+            bind.airplaneTas.text = "-"
+            bind.airplaneTasUnits.text = ""
+            bind.airplaneTank.text = "-"
+            bind.airplaneTankUnits.text = ""
+            bind.airplaneFph.text = "-"
+            bind.airplaneFphUnits.text = ""
             bind.settingsSelectAirplaneMsg.visibility = View.VISIBLE
         }
-        bind.airplaneSpdUnits.text = getUnitsSpd()
-        bind.airplaneFuelUnits1.text = getUnitsVol()
-        bind.airplaneFuelUnits2.text = getUnitsVol()
 
         // Wind conditions
         bind.settingWindDir.setText(formatDouble(settings.windDir, 1))
         bind.settingWindSpd.setText(formatDouble(toUserUnitsSpd(settings.windSpd), 1))
         bind.hintWindSpd.hint = getString(R.string.txtWindSpeed) + " (" + getUnitsSpd() + ")"
 
-        refreshSpareFuelBox()
+        refreshSummaryBox()
 
         restore = false
     }
 
-    private fun refreshSpareFuelBox() {
+    private fun refreshSummaryBox() {
         if (settings.airplaneId != "" && airplane.fph > 0.0) {
+            val txtTotDist = formatDouble(toUserUnitsDis(totals.dist))
+            val txtTotTime = formatSecondsToTime(totals.time)
+            val txtTotFuel = formatDouble(toUserUnitsVol(totals.fuel))
+
             val spareFuel = settings.fob - totals.fuel
-            val h = spareFuel / airplane.fph
-            val extraDist = airplane.tas * h
+
+            // Distance opposite to the wind
+            val fData1 = flightCalculator(
+                course = settings.windDir,
+                windDir = settings.windDir,
+                windSpd = settings.windSpd,
+                tas = airplane.tas,
+                fob = spareFuel,
+                fph = airplane.fph
+            )
+
+            // Distance with the wind
+            val fData2 = flightCalculator(
+                course = normalizeBearing(settings.windDir + 180.0),
+                windDir = settings.windDir,
+                windSpd = settings.windSpd,
+                tas = airplane.tas,
+                fob = spareFuel,
+                fph = airplane.fph
+            )
+
+            val txtSpareFuel = formatDouble(toUserUnitsVol(spareFuel))
+            val txtExtraTime = formatSecondsToTime(fData1.time)
+            val txtExtraDist = formatDouble(toUserUnitsDis(fData1.dist)) + "-" + formatDouble(toUserUnitsDis(fData2.dist))
+
+            // Display
+
+            // Total distance
+            bind.totsDist.text = txtTotDist
+            bind.totsDistUnits.text = getUnitsDis()
+            bind.totFuel.text = txtTotFuel
+            bind.totFuelUnits.text = getUnitsVol()
 
             //  Extra fuel
-            bind.spareFuel.text = formatDouble(toUserUnitsVol(totals.fuel)) + "/" + formatDouble(toUserUnitsVol(spareFuel))
+            bind.spareFuel.text = txtSpareFuel
             bind.spareFuelUnits.text = getUnitsVol()
 
             // Extra distance
-            bind.extraDistance.text = formatDouble(toUserUnitsDis(extraDist))
+            bind.extraDistance.text = txtExtraDist
             bind.extraDistanceUnits.text = getUnitsDis()
 
+            // Plan flight time
+            bind.totTime.text = txtTotTime
+
             // Extra time
-            bind.additionalTime.text = formatSecondsToTime((h * 3600.0).toLong())
+            bind.additionalTime.text = txtExtraTime
         } else {
-            bind.spareFuel.text = ""
-            bind.extraDistance.text = ""
+            // Clear
+            bind.totsDist.text = "-"
+            bind.totsDistUnits.text = ""
+            bind.totTime.text = "-"
+            bind.totFuel.text = "-"
+            bind.totFuelUnits.text = ""
+            bind.spareFuel.text = "-"
+            bind.spareFuelUnits.text = ""
+            bind.extraDistance.text = "-"
+            bind.extraDistanceUnits.text = ""
             bind.additionalTime.text = "-"
-            bind.spareFuelUnits.text = "-"
-            bind.extraDistanceUnits.text = "-"
         }
     }
 

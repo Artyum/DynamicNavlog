@@ -65,8 +65,8 @@ class NavlogAdapter(
             holder.tvAta.text = formatDateTime(item.ata, C.FORMAT_TIME)
 
             // Fuel
-            val p1 = if (item.fuel!! < C.VOL_THRESHOLD) 1 else 0
-            val p2 = if (item.fuelRemaining!! < C.VOL_THRESHOLD) 1 else 0
+            val p1 = if (item.fuel != null && item.fuel!! < C.VOL_THRESHOLD) 1 else 0
+            val p2 = if (item.fuelRemaining != null && item.fuelRemaining!! < C.VOL_THRESHOLD) 1 else 0
             if (settings.tfDisplayToggle == C.TF_DISPLAY_CUR) holder.tvFuel.text = formatDouble(toUserUnitsVol(item.fuel), p1)
             else holder.tvFuel.text = formatDouble(toUserUnitsVol(item.fuelRemaining), p2)
         } else {

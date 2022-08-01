@@ -73,20 +73,20 @@ data class Options(
     var spdUnits: Int = 0,
     var distUnits: Int = 0,
     var volUnits: Int = 0,
-    var screenOrientation: Int = C.SCREEN_PORTRAIT,
+    var screenOrientation: Int = C.SCREEN_SENSOR,
     var timeInUTC: Boolean = false,
     var keepScreenOn: Boolean = false,
     var autoTakeoffSpd: Double = kt2mps(40.0),   // Minimum speed for takeoff detection in m/s
     var autoLandingSpd: Double = kt2mps(30.0),   // Maximum speed for landing detection in m/s
     var mapOrientation: Int = C.MAP_ORIENTATION_NORTH,
     var displayTrace: Boolean = true,
-    var drawWindArrow: Boolean = false,
+    var drawWindArrow: Boolean = true,
     var drawRadials: Boolean = true,
     var drawRadialsMarkers: Boolean = true,
-    var showHints: Boolean = true,
     var gpsAssist: Boolean = true,
     var autoNext: Boolean = true,
-    var nextRadius: Int = C.DEFAULT_NEXT_RADIUS
+    var nextRadius: Int = C.DEFAULT_NEXT_RADIUS,
+    var showHints: Boolean = true
 )
 
 data class Timers(
@@ -122,12 +122,13 @@ data class PlanListItem(
     var planName: String
 )
 
-data class FlightCalculator(
+data class FlightData(
     val wca: Double,
     val hdg: Double,
     val gs: Double,
     val time: Long?, // Time in seconds
-    val fuel: Double?
+    val fuel: Double?,
+    val dist: Double?
 )
 
 data class SinCosAngle(
@@ -498,25 +499,44 @@ fun generateWindCircle(imgView: ImageView, resources: Resources, course: Double,
     imgView.visibility = View.VISIBLE
 }
 
-fun flightCalculator(course: Double, windDir: Double, windSpd: Double, tas: Double, dist: Double? = null, fph: Double? = null): FlightCalculator {
+fun flightCalculator(course: Double, windDir: Double, windSpd: Double, tas: Double, dist: Double? = null, fob: Double? = null, fph: Double? = null): FlightData {
     val wtAngle = deg2rad(course - windDir + 180f)
     val sinWca = windSpd * sin(wtAngle) / tas
+
+    // WCA
     var wca = asin(sinWca)
+
+    // GS
     val gs = tas * cos(wca) + windSpd * cos(wtAngle)
+
+    // HDG
     wca = rad2deg(wca)
     val hdg = normalizeBearing(course + wca)
 
     var time: Long? = null
     var fuel: Double? = null
+    var dis: Double? = null
 
     if (dist != null) {
-        time = (dist / gs * 60f * 60f).toLong()
+        // Time
+        time = (dist / gs * 3600.0).toLong()
+
+        // Fuel required
         if (fph != null && fph > 0.0) {
             fuel = dist / gs * fph
         }
+    } else {
+        if (fob != null && fph != null && fph > 0.0) {
+            // Distance
+            val h = fob / fph
+            dis = gs * h
+
+            // Time
+            time = (h * 3600.0).toLong()
+        }
     }
 
-    return FlightCalculator(wca = wca, hdg = hdg, gs = gs, time = time, fuel = fuel)
+    return FlightData(wca = wca, hdg = hdg, gs = gs, time = time, fuel = fuel, dist = dis)
 }
 
 fun isFlightInProgress(): Boolean {
