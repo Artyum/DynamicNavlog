@@ -86,9 +86,9 @@
                 android:orientation="horizontal">
 
                 <com.google.android.material.textfield.TextInputLayout
-                    android:id="@+id/takeOffBox"
+                    android:id="@+id/takeoffBox"
                     style="@style/inputLayout"
-                    android:hint="@string/txtTakeoffDetect">
+                    android:hint="@string/txtTakeoffSpeed">
 
                     <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/takeoffSpd"
@@ -98,9 +98,9 @@
                 <TextView style="@style/spacer" />
 
                 <com.google.android.material.textfield.TextInputLayout
-                    android:id="@+id/lndBox"
+                    android:id="@+id/landingBox"
                     style="@style/inputLayout"
-                    android:hint="@string/txtLandingDetect">
+                    android:hint="@string/txtLandingSpeed">
 
                     <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/landingSpd"
@@ -111,7 +111,7 @@
             <TextView
                 style="@style/hintBox"
                 android:layout_marginTop="10dp"
-                android:text="Take-off and landing detection occurs when the GPS speed is respectively higher and lower than the specified speeds (in knots)." />
+                android:text="Take-off and landing detection occurs when the GPS speed is respectively higher and lower than the specified speeds." />
 
             <LinearLayout style="@style/dividerBox">
 

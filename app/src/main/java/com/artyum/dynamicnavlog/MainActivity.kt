@@ -647,7 +647,7 @@ class MainActivity : AppCompatActivity() {
         calcNavlog()
         saveState()
         displayButtons()
-        refreshDisplay = true
+        globalRefresh = true
     }
 
     fun displayButtons() {
@@ -834,7 +834,7 @@ class MainActivity : AppCompatActivity() {
         gpsMutex.withLock {
             gpsData.time = loc.time
 
-            gpsData.coords = (LatLng(roundDouble(loc.latitude, C.POS_PRECISION), roundDouble(loc.longitude, C.POS_PRECISION)))
+            gpsData.pos = (LatLng(roundDouble(loc.latitude, C.POS_PRECISION), roundDouble(loc.longitude, C.POS_PRECISION)))
             gpsData.speedMps = loc.speed.toDouble()
             gpsData.speedKt = mps2kt(gpsData.speedMps)
 
@@ -844,7 +844,7 @@ class MainActivity : AppCompatActivity() {
 
             gpsData.heartbeat = true
             //println("GPS time: ${gpsData.time}")
-            //println(gpsData.coords!!.latitude.toString() + " " + gpsData.coords!!.longitude.toString() + " rawSpeed=" + formatDouble(gpsData.rawSpeed, 2) + " spd=" + formatDouble(gpsData.speed, 2))
+            //println(gpsData.pos!!.latitude.toString() + " " + gpsData.pos!!.longitude.toString() + " rawSpeed=" + formatDouble(gpsData.rawSpeed, 2) + " spd=" + formatDouble(gpsData.speed, 2))
         }
     }
 
@@ -896,20 +896,16 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    suspend fun detectFlightStageThread() {
-        if (autoNextRunning) return
-        autoNextRunning = true
-
+    private suspend fun detectFlightStageThread() {
         var speedCnt = 0
         var gps: GpsData
         var prevTime = 0L
         var prevDist = 0.0
-        var changeWptCircle = false
 
-        while (isAutoNextEnabled()) {
+        while (true) {
             // Loop every 1 sec
             val curTime = System.currentTimeMillis() / 1000L
-            if (curTime != prevTime) {
+            if (curTime != prevTime && isAutoNextEnabled()) {
                 prevTime = curTime
                 //Log.d(TAG, "autoNextThread")
 
@@ -923,7 +919,6 @@ class MainActivity : AppCompatActivity() {
                         if (gps.speedMps > options.autoTakeoffSpd) speedCnt += 1 else speedCnt = 0
                         if (speedCnt >= C.AUTO_NEXT_WAIT_SEC) {
                             // Auto Takeoff
-                            Log.d(TAG, "Auto takeoff")
                             setStageTakeoff()
                             startNavlogService()
                             speedCnt = 0
@@ -932,15 +927,9 @@ class MainActivity : AppCompatActivity() {
                         val item = getNavlogCurrentItemId()
                         val last = getNavlogLastActiveItemId()
 
-                        if (navlogList[item].coords != null) {
-                            val dist = m2nm(calcDistance(gps.coords!!, navlogList[item].coords!!))
-                            if (dist <= nextRadiusList[options.nextRadius]) {
-                                //One-time refresh map after entering WPT circle
-                                if (!changeWptCircle) {
-                                    changeWptCircle = true
-                                    isInsideCircle = true
-                                    refreshDisplay = true
-                                }
+                        if (navlogList[item].pos != null) {
+                            val dist = m2nm(calcDistance(gps.pos!!, navlogList[item].pos!!))
+                            if (dist <= nextRadiusList[options.nextRadiusIndex]) {
                                 if (item < last) {
                                     // Auto Next Waypoint
                                     // Detect passed waypoint when airplane is in the circle and the distance from waypoint is increasing
@@ -956,13 +945,10 @@ class MainActivity : AppCompatActivity() {
                                     if (speedCnt >= C.AUTO_NEXT_WAIT_SEC) {
                                         Log.d(TAG, "Auto landing")
                                         setStageLanding()
-                                        displayButtons()
+                                        runOnUiThread { displayButtons() }
                                         speedCnt = 0
                                     }
                                 }
-                            } else {
-                                changeWptCircle = false
-                                isInsideCircle = false
                             }
                         }
                     }
@@ -972,22 +958,21 @@ class MainActivity : AppCompatActivity() {
                 }
             }
         }
-        autoNextRunning = false
     }
 
     private suspend fun recordTraceThread() {
         var gps: GpsData
-        var preCoords = LatLng(0.0, 0.0)
+        var prevPos = LatLng(0.0, 0.0)
 
         while (true) {
             val stage = getFlightStage()
             if (stage > C.STAGE_1_BEFORE_ENGINE_START && stage < C.STAGE_5_AFTER_ENGINE_SHUTDOWN) {
                 gpsMutex.withLock { gps = gpsData }
-                if (gps.isValid && preCoords != gps.coords) {
-                    if (calcDistance(preCoords, gps.coords!!) >= C.MINIMAL_TRACE_POINTS_DIST) {
-                        preCoords = gps.coords!!
-                        tracePointsList.add(gps.coords!!)
-                        saveTracePoint(gps.coords!!)
+                if (gps.isValid && prevPos != gps.pos) {
+                    if (calcDistance(prevPos, gps.pos!!) >= C.MINIMAL_TRACE_POINTS_DIST) {
+                        prevPos = gps.pos!!
+                        tracePointsList.add(gps.pos!!)
+                        saveTracePoint(gps.pos!!)
                     }
                 }
             }

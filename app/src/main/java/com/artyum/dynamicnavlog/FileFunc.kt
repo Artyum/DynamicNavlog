@@ -18,12 +18,12 @@ fun saveState(fileName: String = "") {
     val jTimers = JSONObject()
     val jNavLog = JSONObject()
     val jRadials = JSONObject()
-    val id = settings.planId
+    val planId = settings.planId
 
-    Log.d(tag, "saveState: $id")
+    Log.d(tag, "saveState: $planId")
 
     // Settings
-    jSettings.put("id", id)
+    jSettings.put("id", planId)
     jSettings.put("name", settings.planName)
     jSettings.put("from", settings.departure)
     jSettings.put("dest", settings.destination)
@@ -66,8 +66,8 @@ fun saveState(fileName: String = "") {
             item.put("rmk", navlogList[i].remarks)
             item.put("act", navlogList[i].active)
             item.put("cur", navlogList[i].current)
-            item.put("lat", navlogList[i].coords?.latitude)
-            item.put("lng", navlogList[i].coords?.longitude)
+            item.put("lat", navlogList[i].pos?.latitude)
+            item.put("lng", navlogList[i].pos?.longitude)
 
             jNavLog.put("wpt_$i", item)
         }
@@ -99,7 +99,7 @@ fun saveState(fileName: String = "") {
         val fn: String = if (fileName == "current_state" + C.DNL_EXTENSION) {
             fileName.replace(C.DNL_EXTENSION, C.JSON_EXTENSION, ignoreCase = true)
         } else {
-            id + C.JSON_EXTENSION
+            planId + C.JSON_EXTENSION
         }
         val file = File(externalAppDir, fn)
         file.writeText(json.toString())
@@ -110,7 +110,7 @@ fun saveState(fileName: String = "") {
 
         // Copy current state file to plan name file
         if (settings.planName != "") {
-            val fn = id + C.JSON_EXTENSION
+            val fn = planId + C.JSON_EXTENSION
             val planFile = File(externalAppDir, fn)
             planFile.writeText(json.toString())
         }
@@ -195,7 +195,7 @@ fun loadState(fileName: String = C.stateFile) {
 
             val lat = getDoubleOrNull(getItem(wpt, "lat"))
             val lng = getDoubleOrNull(getItem(wpt, "lng"))
-            val coords: LatLng? = if (lat != null && lng != null) LatLng(lat, lng) else null
+            val pos: LatLng? = if (lat != null && lng != null) LatLng(lat, lng) else null
 
             if (dest.isNotEmpty() && mt != null && dist != null) newNavlogList.add(
                 NavlogItem(
@@ -216,7 +216,7 @@ fun loadState(fileName: String = C.stateFile) {
                     remarks = remarks,
                     active = active,
                     current = current,
-                    coords = coords
+                    pos = pos
                 )
             )
         }
@@ -280,7 +280,7 @@ fun saveOptions() {
     jOptions.put("hints", options.showHints)
     jOptions.put("gps", options.gpsAssist)
     jOptions.put("autonext", options.autoNext)
-    jOptions.put("nextr", options.nextRadius)
+    jOptions.put("nextr", options.nextRadiusIndex)
 
     val json = JSONObject()
     json.put("options", jOptions)
@@ -322,7 +322,7 @@ fun loadOptions() {
             newOptions.showHints = getItem(jOptions, "hints")?.toBoolean() ?: true
             newOptions.gpsAssist = getItem(jOptions, "gps")?.toBoolean() ?: true
             newOptions.autoNext = getItem(jOptions, "autonext")?.toBoolean() ?: true
-            newOptions.nextRadius = getItem(jOptions, "nextr")?.toIntOrNull() ?: C.DEFAULT_NEXT_RADIUS
+            newOptions.nextRadiusIndex = getItem(jOptions, "nextr")?.toIntOrNull() ?: C.DEFAULT_NEXT_RADIUS
             options = newOptions
         }
     } else {
@@ -440,8 +440,8 @@ fun loadStateDnl(fileName: String = C.stateFile) {
 
                         val lat = getDoubleOrNull(str[iLat])
                         val lon = getDoubleOrNull(str[iLon])
-                        var coords: LatLng? = null
-                        if (lat != null && lon != null) coords = LatLng(lat, lon)
+                        var pos: LatLng? = null
+                        if (lat != null && lon != null) pos = LatLng(lat, lon)
 
                         if (chk) newNavlogList.add(
                             NavlogItem(
@@ -462,7 +462,7 @@ fun loadStateDnl(fileName: String = C.stateFile) {
                                 remarks = remarks,
                                 active = str[iActive].toBoolean(),
                                 current = str[iCurrent].toBoolean(),
-                                coords = coords
+                                pos = pos
                             )
                         )
                     }
@@ -593,7 +593,7 @@ fun loadTrace(): Boolean {
             }
         }
         if (tracePointsList.size > 1) {
-            refreshDisplay = true
+            globalRefresh = true
             return true
         } else tracePointsList.clear()
     }
@@ -672,11 +672,11 @@ fun savePlanAsGpx(): String {
         trkpt += ("\t<trkpt lat=\"$lat\" lon=\"$lng\"></trkpt>\n")
 
         for (i in navlogList.indices) {
-            if (navlogList[i].active && navlogList[i].coords != null) {
+            if (navlogList[i].active && navlogList[i].pos != null) {
                 export = true
                 name = navlogList[i].dest
-                lat = formatDouble(navlogList[i].coords?.latitude, C.POS_PRECISION)
-                lng = formatDouble(navlogList[i].coords?.longitude, C.POS_PRECISION)
+                lat = formatDouble(navlogList[i].pos?.latitude, C.POS_PRECISION)
+                lng = formatDouble(navlogList[i].pos?.longitude, C.POS_PRECISION)
                 wpt += ("\t<wpt lat=\"$lat\" lon=\"$lng\"><name>$name</name></wpt>\n")
                 trkpt += ("\t<trkpt lat=\"$lat\" lon=\"$lng\"></trkpt>\n")
             }

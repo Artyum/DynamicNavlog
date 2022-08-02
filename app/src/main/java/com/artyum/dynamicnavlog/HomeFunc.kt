@@ -73,8 +73,8 @@ class HomeItem() {
 
             // ETE
             eteSec = if (gps.isValid && isNavlogItemGpsReady(item)) {
-                if (gps.speedMps > C.GPS_MINIMUM_RAWSPEED) {
-                    val dist = calcDistance(gps.coords!!, navlogList[item].coords!!)
+                if (gps.speedMps >= C.GPS_MINIMUM_RAW_SPEED) {
+                    val dist = calcDistance(gps.pos!!, navlogList[item].pos!!)
                     (dist / gps.speedMps).toLong()   // Time in seconds
                 } else 0L
             } else {
@@ -84,8 +84,8 @@ class HomeItem() {
             // Dist
             if (gps.isValid) {
                 val prevCoords = getPrevCoords(item)
-                distRemaining = calcDistance(gps.coords!!, navlogList[item].coords!!)
-                distFromPrevWpt = calcDistance(prevCoords!!, gps.coords!!)
+                distRemaining = calcDistance(gps.pos!!, navlogList[item].pos!!)
+                distFromPrevWpt = calcDistance(prevCoords!!, gps.pos!!)
                 //val distTotal = calcDistance(prevCoords, navlogList[item].coords!!)
                 val distTotal = distFromPrevWpt + distRemaining
                 distPct = distFromPrevWpt / distTotal * 100.0
@@ -113,8 +113,8 @@ class HomeItem() {
 
             // Track angle / Direct MT
             if (gps.isValid) {
-                trackAngle = calcBearingAngle(navlogList[item].coords!!, gps.coords!!, getPrevCoords(item)!!)
-                dmt = normalizeBearing(calcBearing(gps.coords!!, navlogList[item].coords!!) + navlogList[item].declination!!)
+                trackAngle = calcBearingAngle(navlogList[item].pos!!, gps.pos!!, getPrevCoords(item)!!)
+                dmt = normalizeBearing(calcBearing(gps.pos!!, navlogList[item].pos!!) + navlogList[item].declination!!)
             }
 
             // Fuel to land
@@ -224,9 +224,9 @@ class HomeItem() {
 
         // Check hit waypoint circle
         if (stage == C.STAGE_3_FLIGHT_IN_PROGRESS && distRemaining > 0 && gps.isValid && gps.bearing != null && item >= 0) {
-            val p = calcDestinationPos(gps.coords!!, gps.bearing!!.toDouble(), nm2m(distRemaining))
-            val d = calcDistance(p, navlogList[item].coords!!)
-            if (m2nm(d) > nextRadiusList[options.nextRadius]) hit = false
+            val p = calcDestinationPos(gps.pos!!, gps.bearing!!.toDouble(), nm2m(distRemaining))
+            val d = calcDistance(p, navlogList[item].pos!!)
+            if (m2nm(d) > nextRadiusList[options.nextRadiusIndex]) hit = false
         }
 
         return HomeDtkAngleBar(left, right, hit)

@@ -9,9 +9,6 @@ import android.widget.ArrayAdapter
 import androidx.core.widget.doOnTextChanged
 import androidx.fragment.app.Fragment
 import com.artyum.dynamicnavlog.databinding.FragmentOptionsBinding
-import kotlinx.coroutines.CoroutineName
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.sync.withLock
 
@@ -56,15 +53,14 @@ class OptionsFragment : Fragment(R.layout.fragment_options) {
             options.autoNext = isChecked
             save = true
             saveForm()
-            if (isAutoNextEnabled()) CoroutineScope(CoroutineName("gpsCoroutine")).launch { (activity as MainActivity).detectFlightStageThread() }
         }
 
         // Switch - Auto-next radius
         bind.spinnerNextRadius.onItemSelectedListener =
             object : AdapterView.OnItemSelectedListener {
                 override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
-                    if (position != options.nextRadius) {
-                        options.nextRadius = position
+                    if (position != options.nextRadiusIndex) {
+                        options.nextRadiusIndex = position
                         save = true
                         saveForm()
                     }
@@ -74,10 +70,12 @@ class OptionsFragment : Fragment(R.layout.fragment_options) {
                     return
                 }
             }
+
         // Takeoff detect speed
         bind.takeoffSpd.doOnTextChanged { text, _, _, _ ->
             var dToSpd = getDoubleOrNull(text.toString())
             if (dToSpd != null) {
+                dToSpd = fromUserUnitsSpd(dToSpd)!!
                 if (dToSpd < C.AUTO_TAKEOFF_MIN_SPEED_KT) dToSpd = C.AUTO_TAKEOFF_MIN_SPEED_KT
                 options.autoTakeoffSpd = kt2mps(dToSpd)
                 save = true
@@ -89,6 +87,7 @@ class OptionsFragment : Fragment(R.layout.fragment_options) {
         bind.landingSpd.doOnTextChanged { text, _, _, _ ->
             var dLndSpd = getDoubleOrNull(text.toString())
             if (dLndSpd != null) {
+                dLndSpd = fromUserUnitsSpd(dLndSpd)!!
                 if (dLndSpd < C.AUTO_LANDING_MIN_SPEED_KT) dLndSpd = C.AUTO_LANDING_MIN_SPEED_KT
                 options.autoLandingSpd = kt2mps(dLndSpd)
                 save = true
@@ -119,6 +118,7 @@ class OptionsFragment : Fragment(R.layout.fragment_options) {
                     if (position != options.distUnits) {
                         options.distUnits = position
                         save = true
+                        setupUI()
                         saveForm()
                     }
                 }
@@ -226,7 +226,7 @@ class OptionsFragment : Fragment(R.layout.fragment_options) {
             saveForm()
         }
 
-        setupUI(view)
+        setupUI()
         restoreOptions()
     }
 
@@ -243,46 +243,49 @@ class OptionsFragment : Fragment(R.layout.fragment_options) {
         restoreOptions()
     }
 
-    private fun setupUI(view: View) {
+    private fun setupUI() {
         // Spinner - Speed units
         val unitsSpdList = ArrayList<String>()
         unitsSpdList.add("Knots (kt)")            // 0
         unitsSpdList.add("Miles/h (mph)")         // 1
         unitsSpdList.add("Kilometers/h (kph)")    // 2
-        bind.spinnerUnitsSpd.adapter = ArrayAdapter(view.context, R.layout.support_simple_spinner_dropdown_item, unitsSpdList)
+        bind.spinnerUnitsSpd.adapter = ArrayAdapter(this.context!!, R.layout.support_simple_spinner_dropdown_item, unitsSpdList)
 
         // Spinner - Speed units
         val unitsDistList = ArrayList<String>()
         unitsDistList.add("Nautical miles (nm)")  // 0
         unitsDistList.add("Statute miles (sm)")   // 1
         unitsDistList.add("Kilometers (km)")      // 2
-        bind.spinnerUnitsDist.adapter = ArrayAdapter(view.context, R.layout.support_simple_spinner_dropdown_item, unitsDistList)
+        bind.spinnerUnitsDist.adapter = ArrayAdapter(this.context!!, R.layout.support_simple_spinner_dropdown_item, unitsDistList)
 
         // Spinner - Volume units
         val unitsFuelList = ArrayList<String>()
         unitsFuelList.add("US Gal (gal)")         // 0
         unitsFuelList.add("UK Gal (gal)")         // 1
         unitsFuelList.add("Liters (l)")           // 2
-        bind.spinnerUnitsVol.adapter = ArrayAdapter(view.context, R.layout.support_simple_spinner_dropdown_item, unitsFuelList)
+        bind.spinnerUnitsVol.adapter = ArrayAdapter(this.context!!, R.layout.support_simple_spinner_dropdown_item, unitsFuelList)
 
         // Spinner - Screen orientation
         val screenOrientationList = ArrayList<String>()
         screenOrientationList.add("Portrait")     // 0
         screenOrientationList.add("Landscape")    // 1
         screenOrientationList.add("Auto")         // 2
-        bind.spinnerScreenOrientation.adapter = ArrayAdapter(view.context, R.layout.support_simple_spinner_dropdown_item, screenOrientationList)
+        bind.spinnerScreenOrientation.adapter = ArrayAdapter(this.context!!, R.layout.support_simple_spinner_dropdown_item, screenOrientationList)
 
         // Spinner - Map orientation
         val mapOrientationList = ArrayList<String>()
         mapOrientationList.add("North Up")     // 0
         mapOrientationList.add("Track Up")     // 1
         mapOrientationList.add("Bearing Up")   // 2
-        bind.spinnerMapOrientation.adapter = ArrayAdapter(view.context, R.layout.support_simple_spinner_dropdown_item, mapOrientationList)
+        bind.spinnerMapOrientation.adapter = ArrayAdapter(this.context!!, R.layout.support_simple_spinner_dropdown_item, mapOrientationList)
 
         // Switch - Auto-next radius
         val nextRadiusOptions = ArrayList<String>()
-        for (i in nextRadiusList.indices) nextRadiusOptions.add(getNextRadiusUnits(i))
-        bind.spinnerNextRadius.adapter = ArrayAdapter(view.context, R.layout.support_simple_spinner_dropdown_item, nextRadiusOptions)
+        for (i in nextRadiusList.indices) {
+            val r = formatDouble(toUserUnitsDis(nextRadiusList[i]), 1) + " " + getUnitsDis()
+            nextRadiusOptions.add(r)
+        }
+        bind.spinnerNextRadius.adapter = ArrayAdapter(this.context!!, R.layout.support_simple_spinner_dropdown_item, nextRadiusOptions)
     }
 
     private fun restoreOptions() {
@@ -291,9 +294,10 @@ class OptionsFragment : Fragment(R.layout.fragment_options) {
         // Navigation options
         bind.settingGpsAssist.isChecked = options.gpsAssist
         bind.settingAutoNext.isChecked = options.autoNext
-        bind.spinnerNextRadius.setSelection(options.nextRadius)
-        bind.takeoffSpd.setText(formatDouble(mps2kt(options.autoTakeoffSpd)))
-        bind.landingSpd.setText(formatDouble(mps2kt(options.autoLandingSpd)))
+        bind.spinnerNextRadius.setSelection(options.nextRadiusIndex)
+
+        bind.takeoffSpd.setText(formatDouble(toUserUnitsSpd(mps2kt(options.autoTakeoffSpd))))
+        bind.landingSpd.setText(formatDouble(toUserUnitsSpd(mps2kt(options.autoLandingSpd))))
 
         // Display units
         bind.spinnerUnitsSpd.setSelection(options.spdUnits)
@@ -316,9 +320,13 @@ class OptionsFragment : Fragment(R.layout.fragment_options) {
         // Enable / disable options
         bind.settingAutoNext.isEnabled = options.gpsAssist
         bind.spinnerNextRadius.isEnabled = !(!options.gpsAssist || !options.autoNext)
-        bind.takeOffBox.isEnabled = bind.spinnerNextRadius.isEnabled
-        bind.lndBox.isEnabled = bind.spinnerNextRadius.isEnabled
         bind.settingRadialsMarkers.isEnabled = options.drawRadials
+
+        bind.takeoffBox.isEnabled = bind.spinnerNextRadius.isEnabled
+        bind.landingBox.isEnabled = bind.spinnerNextRadius.isEnabled
+        bind.takeoffBox.hint = getString(R.string.txtTakeoffSpeed) + " (" + getUnitsSpd() + ")"
+        bind.landingBox.hint = getString(R.string.txtLandingSpeed) + " (" + getUnitsSpd() + ")"
+
 
         restore = false
     }

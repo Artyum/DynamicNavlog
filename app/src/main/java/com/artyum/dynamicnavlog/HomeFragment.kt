@@ -100,9 +100,9 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
 
             // Loop every 1 sec
             val curTime = System.currentTimeMillis() / 1000L
-            if (curTime != prevTime || refreshDisplay) {
+            if (curTime != prevTime || globalRefresh) {
                 prevTime = curTime
-                refreshDisplay = false
+                globalRefresh = false
                 //println("Home Thread: $coroutineContext")
 
                 val h = HomeItem()

@@ -47,7 +47,7 @@ data class NavlogItem(
     var remarks: String = "",             // Waypoint notes
     var active: Boolean = true,           // Is waypoint active
     var current: Boolean = false,         // Is waypoint current
-    var coords: LatLng? = null            // Waypoint coordinates
+    var pos: LatLng? = null               // Waypoint coordinates
 )
 
 data class Radial(
@@ -76,8 +76,8 @@ data class Options(
     var screenOrientation: Int = C.SCREEN_SENSOR,
     var timeInUTC: Boolean = false,
     var keepScreenOn: Boolean = false,
-    var autoTakeoffSpd: Double = kt2mps(40.0),   // Minimum speed for takeoff detection in m/s
-    var autoLandingSpd: Double = kt2mps(30.0),   // Maximum speed for landing detection in m/s
+    var autoTakeoffSpd: Double = kt2mps(40.0),      // Minimum speed for takeoff detection in m/s
+    var autoLandingSpd: Double = kt2mps(30.0),      // Maximum speed for landing detection in m/s
     var mapOrientation: Int = C.MAP_ORIENTATION_NORTH,
     var displayTrace: Boolean = true,
     var drawWindArrow: Boolean = true,
@@ -85,7 +85,7 @@ data class Options(
     var drawRadialsMarkers: Boolean = true,
     var gpsAssist: Boolean = true,
     var autoNext: Boolean = true,
-    var nextRadius: Int = C.DEFAULT_NEXT_RADIUS,
+    var nextRadiusIndex: Int = C.DEFAULT_NEXT_RADIUS,  // Index in nextRadiusList
     var showHints: Boolean = true
 )
 
@@ -100,7 +100,7 @@ data class Timers(
 )
 
 data class GpsData(
-    var coords: LatLng? = null,
+    var pos: LatLng? = null,
     var time: Long = 0L,
     var speedMps: Double = 0.0,
     var speedKt: Double = 0.0,
@@ -220,12 +220,12 @@ object C {
     const val TF_DISPLAY_CUR = 0
     const val TF_DISPLAY_REM = 1
 
-    const val GPS_MINIMUM_RAWSPEED = 3           // 3m/s = ~6kt = ~10kph
-    const val AUTO_TAKEOFF_MIN_SPEED_KT = 20.0   // 10kt = 19kph  15kt = 28kph  20kt = 37kph
-    const val AUTO_LANDING_MIN_SPEED_KT = 20.0   // 30kt = 55kph  40kt = 74kph  50kt = 92kph
+    const val GPS_MINIMUM_RAW_SPEED = 2          // Minimum speed to calculate ETE 3m/s = ~6kt = ~10kph
+    const val AUTO_TAKEOFF_MIN_SPEED_KT = 1.0    // 10kt = 19kph  15kt = 28kph  20kt = 37kph
+    const val AUTO_LANDING_MIN_SPEED_KT = 1.0    // 30kt = 55kph  40kt = 74kph  50kt = 92kph
     const val AUTO_NEXT_WAIT_SEC = 3             // Takeoff if speed is AUTO_TAKEOFF_SPEED_MPS for AUTO_NEXT_WAIT_SEC seconds
 
-    const val DEFAULT_NEXT_RADIUS = 0       // Index in nextRadiusList array
+    const val DEFAULT_NEXT_RADIUS = 0            // Index in nextRadiusList array
 
     // Map option
     const val MAP_ORIENTATION_NORTH = 0
@@ -277,18 +277,13 @@ val nextRadiusList = arrayListOf(0.5, 1.0, 2.0)  // Next circle radius in NM
 
 var serviceRunning = false
 var locationSubscribed = false
-var autoNextRunning = false
 var isAppPurchased = false
+
 var gpsData = GpsData()
 var gpsMutex = Mutex()
-var refreshDisplay = false   // Refresh home, navlog and map pages on flight stage or waypoint change
-var isInsideCircle = false   // Flag set to true if GPS position is inside current WPT circle
 
-fun roundDouble(value: Double, precision: Int): Double = (value * 10.0.pow(precision)).roundToLong() / 10.0.pow(precision)
-
-fun angleCalc(rad: Double): SinCosAngle {
-    return SinCosAngle(sin(rad).toFloat(), cos(rad).toFloat())
-}
+@Volatile
+var globalRefresh = false   // Refresh home, navlog and map pages on flight stage or waypoint change
 
 fun generateStringId(): String {
     var ok = false
@@ -322,6 +317,12 @@ fun generateStringId(): String {
         }
     }
     return randomString
+}
+
+fun roundDouble(value: Double, precision: Int): Double = (value * 10.0.pow(precision)).roundToLong() / 10.0.pow(precision)
+
+fun angleCalc(rad: Double): SinCosAngle {
+    return SinCosAngle(sin(rad).toFloat(), cos(rad).toFloat())
 }
 
 fun generateWindCircle(imgView: ImageView, resources: Resources, course: Double, windDir: Double, hdg: Double, speedRatio: Double) {
@@ -556,10 +557,6 @@ fun formatDouble(value: Double?, precision: Int = 0): String {
     var tmp = if (precision == 0) value.roundToInt().toString() else roundDouble(value, precision).toString()
     if (tmp.contains('.')) tmp = tmp.trimEnd('0').trimEnd('.')
     return tmp
-}
-
-fun getNextRadiusUnits(i: Int): String {
-    return formatDouble(nextRadiusList[i], 1) + " nm"
 }
 
 fun getDoubleOrNull(value: String?): Double? {

@@ -117,11 +117,10 @@ class NavlogFragment : Fragment(R.layout.fragment_navlog), NavlogAdapter.OnItemC
     }
 
     private suspend fun updateNavlogPageThread() {
-        val a = activity as? MainActivity ?: return
         while (true) {
-            if (refreshDisplay) {
-                refreshDisplay = false
-                a.runOnUiThread { adapter.notifyDataSetChanged() }
+            if (globalRefresh) {
+                globalRefresh = false
+                adapter.notifyDataSetChanged()
             }
             delay(100)
         }

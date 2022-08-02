@@ -101,19 +101,6 @@
         <item name="android:layout_marginBottom">2dp</item>
     </style>
 
-    <style name="aboutText">
-        <item name="android:layout_width">wrap_content</item>
-        <item name="android:layout_height">wrap_content</item>
-    </style>
-
-    <style name="aboutTextBold" parent="aboutText">
-        <item name="android:textStyle">bold</item>
-    </style>
-
-    <style name="aboutTextVersion" parent="aboutTextBold">
-        <item name="android:layout_marginTop">8dp</item>
-    </style>
-
     <style name="txtRowText">
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>

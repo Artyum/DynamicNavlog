@@ -111,7 +111,7 @@ fun isNavlogItemValid(i: Int): Boolean {
 }
 
 fun isNavlogItemGpsReady(i: Int): Boolean {
-    return i < navlogList.size && navlogList[i].coords != null && navlogList[i].declination != null && navlogList[i].trueTrack != null && navlogList[i].magneticTrack != null
+    return i < navlogList.size && navlogList[i].pos != null && navlogList[i].declination != null && navlogList[i].trueTrack != null && navlogList[i].magneticTrack != null
 }
 
 fun isNavlogGpsReady(): Boolean {
@@ -170,7 +170,7 @@ fun setNextWaypoint() {
     }
 
     // Refresh map on next-waypoint
-    refreshDisplay = true
+    globalRefresh = true
 }
 
 fun setPrevWaypoint() {
@@ -189,14 +189,14 @@ fun getPrevCoords(i: Int): LatLng? {
     else {
         val prev = getNavlogPrevItemId(i)
         if (prev < 0) settings.takeoffPos
-        else navlogList[prev].coords
+        else navlogList[prev].pos
     }
 }
 
 fun getNextCoords(i: Int): LatLng? {
     val next = getNavlogNextItemId(i)
     return if (next < 0) null
-    else navlogList[next].coords
+    else navlogList[next].pos
 }
 
 fun invertNavlog() {
@@ -209,8 +209,8 @@ fun invertNavlog() {
     settings.destination = tmp
 
     // Save takeoff coords as new last coords
-    val newLastCoords = settings.takeoffPos!!
-    settings.takeoffPos = navlogList[last].coords
+    val newLastPos = settings.takeoffPos!!
+    settings.takeoffPos = navlogList[last].pos
 
     val newNavlogList = ArrayList<NavlogItem>()
     for (i in last - 1 downTo first) {
@@ -224,7 +224,7 @@ fun invertNavlog() {
         dest = settings.destination,
         magneticTrack = navlogList[first].magneticTrack?.plus(180.0),
         distance = navlogList[first].distance,
-        coords = newLastCoords
+        pos = newLastPos
     )
     newNavlogList.add(item)
 
@@ -308,11 +308,11 @@ fun recalculateWaypoints() {
     for (i in navlogList.indices) {
         if (navlogList[i].active) {
             val prevCoords = getPrevCoords(i)
-            if (prevCoords != null && navlogList[i].coords != null) {
-                val tt = calcBearing(prevCoords, navlogList[i].coords!!)
-                val declination = getDeclination(navlogList[i].coords!!)
+            if (prevCoords != null && navlogList[i].pos != null) {
+                val tt = calcBearing(prevCoords, navlogList[i].pos!!)
+                val declination = getDeclination(navlogList[i].pos!!)
                 val mt = normalizeBearing(tt + declination)
-                val dist = m2nm(calcDistance(prevCoords, navlogList[i].coords!!))
+                val dist = m2nm(calcDistance(prevCoords, navlogList[i].pos!!))
 
                 navlogList[i].trueTrack = tt
                 navlogList[i].declination = declination
@@ -328,7 +328,7 @@ fun setStageOffBlock() {
     saveState()
     tracePointsList.clear()
     deleteTrace()
-    refreshDisplay = true
+    globalRefresh = true
 }
 
 fun setStageTakeoff() {
@@ -337,21 +337,21 @@ fun setStageTakeoff() {
     setFirstCurrent()
     calcNavlog()
     saveState()
-    refreshDisplay = true
+    globalRefresh = true
 }
 
 fun setStageBack() {
     setPrevWaypoint()
     calcNavlog()
     saveState()
-    refreshDisplay = true
+    globalRefresh = true
 }
 
 fun setStageNext() {
     setNextWaypoint()
     calcNavlog()
     saveState()
-    refreshDisplay = true
+    globalRefresh = true
 }
 
 fun setStageLanding() {
@@ -359,11 +359,11 @@ fun setStageLanding() {
     navlogList[getNavlogCurrentItemId()].ata = LocalDateTime.now()
     calcNavlog()
     saveState()
-    refreshDisplay = true
+    globalRefresh = true
 }
 
 fun setStageOnBLock() {
     timers.onblock = LocalDateTime.now()
     saveState()
-    refreshDisplay = true
+    globalRefresh = true
 }
