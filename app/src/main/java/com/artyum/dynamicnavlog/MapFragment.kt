@@ -43,6 +43,9 @@ class MapFragment : Fragment(R.layout.fragment_map) {
 
     private var radialPoint1: LatLng? = null
 
+    private var mapPrevPos: String = ""
+    private var apiZoom: Boolean = false
+
     var timerTrace = 0
     var timerFollow = 0
 
@@ -103,7 +106,7 @@ class MapFragment : Fragment(R.layout.fragment_map) {
                         if (m.title == C.MAP_ITEM_TRACK.toString()) {
                             // Drag a waypoint
                             if (!isFlightInProgress() || (isFlightInProgress() && i >= getNavlogCurrentItemId())) {
-                                if (i < 0) settings.takeoffPos = m.position else navlogList[i].coords = m.position
+                                if (i < 0) settings.takeoffPos = m.position else navlogList[i].pos = m.position
                                 calcNavlog()
                                 saveState()
                             }
@@ -150,12 +153,25 @@ class MapFragment : Fragment(R.layout.fragment_map) {
                         settings.mapFollow = false
                         bind.btnFollowToggle.setImageResource(R.drawable.ic_gps_unlock)
                     }
+
+                    //Zoom during map follow
+                    if (reason == GoogleMap.OnCameraMoveStartedListener.REASON_API_ANIMATION) {
+                        apiZoom = true
+                    }
                 }
 
                 // Draw wind arrow on map move
-                map.setOnCameraMoveListener { drawWindArrow() }
+                map.setOnCameraMoveListener {
+                    drawWindArrow()
+                    if (apiZoom) {
+                        if (mapPrevPos == map.cameraPosition.toString()) {
+                            apiZoom = false
+                        } else mapPrevPos = map.cameraPosition.toString()
+                    }
+                }
 
                 mapReady = true
+
                 drawRadials()
                 drawTrace()
                 drawFlightPlan()
@@ -259,21 +275,18 @@ class MapFragment : Fragment(R.layout.fragment_map) {
                             if (i == item) hue = BitmapDescriptorFactory.HUE_MAGENTA   // Current
                             if (i < item) hue = BitmapDescriptorFactory.HUE_AZURE      // Passed
                         }
-                        if (i >= item) addMarker(pos = navlogList[i].coords!!, type = C.MAP_ITEM_TRACK, id = i, hue = hue)
+                        if (i >= item) addMarker(pos = navlogList[i].pos!!, type = C.MAP_ITEM_TRACK, id = i, hue = hue)
 
                         // Auto-next circle
                         if (isAutoNextEnabled() && i >= item) {
-                            val pos = navlogList[i].coords!!
-                            val radius = nm2m(nextRadiusList[options.nextRadius])
-                            val fill1 = R.color.greenTransparent   // Airplane inside the circle
-                            val fill2 = R.color.grayTransparent2
+                            val pos = navlogList[i].pos!!
+                            val radius = nm2m(nextRadiusList[options.nextRadiusIndex])
+                            val fill = R.color.grayTransparent2
 
                             if (isFlightInProgress()) {
-                                if (i == item) {
-                                    if (isInsideCircle) addCircle(pos = pos, radius = radius, fillColor = fill1, type = C.MAP_ITEM_TRACK)
-                                    else addCircle(pos = pos, radius = radius, fillColor = fill2, type = C.MAP_ITEM_TRACK)
-                                }
-                            } else addCircle(pos = pos, radius = radius, fillColor = fill2, type = C.MAP_ITEM_TRACK)
+                                // Show only current waypoint circle
+                                if (i == item) addCircle(pos = pos, radius = radius, fillColor = fill, type = C.MAP_ITEM_TRACK)
+                            } else addCircle(pos = pos, radius = radius, fillColor = fill, type = C.MAP_ITEM_TRACK)
                         }
 
                         // Track color
@@ -284,19 +297,19 @@ class MapFragment : Fragment(R.layout.fragment_map) {
                         }
 
                         // Track line
-                        if (prev != null) addLine(prev, navlogList[i].coords!!, color, C.TRACK_WIDTH, C.MAP_ITEM_TRACK)
+                        if (prev != null) addLine(prev, navlogList[i].pos!!, color, C.TRACK_WIDTH, C.MAP_ITEM_TRACK)
                     } else {
                         // Inactive markers
-                        if (i >= item) addMarker(pos = navlogList[i].coords!!, type = C.MAP_ITEM_TRACK, id = i, hue = BitmapDescriptorFactory.HUE_VIOLET)
+                        if (i >= item) addMarker(pos = navlogList[i].pos!!, type = C.MAP_ITEM_TRACK, id = i, hue = BitmapDescriptorFactory.HUE_VIOLET)
 
                         // Inactive track line
                         if (i == 0) {
-                            addLine(settings.takeoffPos!!, navlogList[i].coords!!, R.color.trackinactive, C.TRACK_INACTIVE_WIDTH, C.MAP_ITEM_TRACK)
-                            if (navlogList.size > 1 && navlogList[1].active) addLine(navlogList[0].coords!!, navlogList[i + 1].coords!!, R.color.trackinactive, C.TRACK_INACTIVE_WIDTH, C.MAP_ITEM_TRACK)
+                            addLine(settings.takeoffPos!!, navlogList[i].pos!!, R.color.trackinactive, C.TRACK_INACTIVE_WIDTH, C.MAP_ITEM_TRACK)
+                            if (navlogList.size > 1 && navlogList[1].active) addLine(navlogList[0].pos!!, navlogList[i + 1].pos!!, R.color.trackinactive, C.TRACK_INACTIVE_WIDTH, C.MAP_ITEM_TRACK)
                         } else if (i > 0 && i < navlogList.size) {
-                            addLine(navlogList[i - 1].coords!!, navlogList[i].coords!!, R.color.trackinactive, C.TRACK_INACTIVE_WIDTH, C.MAP_ITEM_TRACK)
+                            addLine(navlogList[i - 1].pos!!, navlogList[i].pos!!, R.color.trackinactive, C.TRACK_INACTIVE_WIDTH, C.MAP_ITEM_TRACK)
                             if (i < navlogList.size - 1 && navlogList[i + 1].active) {
-                                addLine(navlogList[i].coords!!, navlogList[i + 1].coords!!, R.color.trackinactive, C.TRACK_INACTIVE_WIDTH, C.MAP_ITEM_TRACK)
+                                addLine(navlogList[i].pos!!, navlogList[i + 1].pos!!, R.color.trackinactive, C.TRACK_INACTIVE_WIDTH, C.MAP_ITEM_TRACK)
                             }
                         }
                     }
@@ -305,12 +318,12 @@ class MapFragment : Fragment(R.layout.fragment_map) {
 
             // Show not "gps-ready" waypoints
             var cnt = 0  // Count points
-            for (i in navlogList.indices) if (navlogList[i].coords == null) cnt += 1
+            for (i in navlogList.indices) if (navlogList[i].pos == null) cnt += 1
             if (cnt > 0) {
                 // Draw
                 var angle = 0.0
                 for (i in navlogList.indices) {
-                    if (navlogList[i].coords == null) {
+                    if (navlogList[i].pos == null) {
                         val point = calcDestinationPos(settings.takeoffPos!!, angle, nm2m(10.0))
                         angle += 360.0 / cnt.toDouble()
                         addMarker(pos = point, type = C.MAP_ITEM_TRACK, id = i, hue = BitmapDescriptorFactory.HUE_YELLOW)
@@ -424,7 +437,7 @@ class MapFragment : Fragment(R.layout.fragment_map) {
         }
         for (i in navlogList.indices) {
             if (isNavlogItemGpsReady(i)) {
-                builder.include(navlogList[i].coords!!)
+                builder.include(navlogList[i].pos!!)
                 chkItems = true
             }
         }
@@ -460,7 +473,7 @@ class MapFragment : Fragment(R.layout.fragment_map) {
                 // New flight plan with no points -> Zoom to position
                 if (gps.isValid) {
                     val cameraPosition = CameraPosition.Builder()
-                        .target(gps.coords!!)
+                        .target(gps.pos!!)
                         .zoom(10f)
                         .bearing(0f)
                         .tilt(0f)
@@ -472,7 +485,7 @@ class MapFragment : Fragment(R.layout.fragment_map) {
             if (gps.isValid) {
                 // Zoom to current gps position
                 val cameraPosition = CameraPosition.Builder()
-                    .target(gps.coords!!)
+                    .target(gps.pos!!)
                     .zoom(15f)
                     .bearing(0f)
                     .tilt(map.cameraPosition.tilt)
@@ -482,22 +495,22 @@ class MapFragment : Fragment(R.layout.fragment_map) {
         } else if (stage == C.STAGE_3_FLIGHT_IN_PROGRESS) {
             // Zoom to prev and current waypoint
             val item = getNavlogCurrentItemId()
-            val zoom: Float
+            var zoom: Float
             val target: LatLng
             val bearing = if (options.mapOrientation != C.MAP_ORIENTATION_NORTH && navlogList[item].trueTrack != null) navlogList[item].trueTrack!!.toFloat() else 0f
 
             if (isMapFollow() && gps.isValid) {
-                // Zoom to GPS pos
-                zoom = 12f
-                target = gps.coords!!
+                // Zoom to GPS position
+                zoom = if (map.cameraPosition.zoom <= 3) 12f else map.cameraPosition.zoom
+                target = gps.pos!!
             } else {
                 val builder = LatLngBounds.Builder()
 
-                // Include current coords
-                val cur = navlogList[item].coords
+                // Include current position
+                val cur = navlogList[item].pos
                 if (cur != null) builder.include(cur)
 
-                // Include prev coords
+                // Include previous position
                 val prev = getPrevCoords(item)
                 if (prev != null) builder.include(prev)
 
@@ -519,6 +532,8 @@ class MapFragment : Fragment(R.layout.fragment_map) {
 
     private fun followPosition() {
         if (!mapReady) return
+        if (!settings.mapFollow) return
+        if (apiZoom) return
 
         var gps: GpsData
         runBlocking { gpsMutex.withLock { gps = gpsData } }
@@ -528,12 +543,12 @@ class MapFragment : Fragment(R.layout.fragment_map) {
             else map.cameraPosition.bearing
 
             val cameraPosition = CameraPosition.Builder()
-                .target(gps.coords!!)
+                .target(gps.pos!!)
                 .zoom(map.cameraPosition.zoom)
                 .bearing(bearing)
                 .tilt(map.cameraPosition.tilt)
                 .build()
-            map.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition), 450, null)
+            map.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition), 400, null)
         }
     }
 
@@ -605,19 +620,19 @@ class MapFragment : Fragment(R.layout.fragment_map) {
             // Find nearest waypoints among all navlog items - active and not active
             val angleList = ArrayList<Angles>()
 
-            if (isNavlogItemGpsReady(0)) angleList.add(Angles(-1, abs(calcBearingAngle(pos, settings.takeoffPos!!, navlogList[0].coords!!))))
+            if (isNavlogItemGpsReady(0)) angleList.add(Angles(-1, abs(calcBearingAngle(pos, settings.takeoffPos!!, navlogList[0].pos!!))))
 
             // Search through waypoints
             for (i in navlogList.indices) {
-                if (isNavlogItemGpsReady(i) && isNavlogItemGpsReady(i + 1)) angleList.add(Angles(i, abs(calcBearingAngle(pos, navlogList[i].coords!!, navlogList[i + 1].coords!!))))
+                if (isNavlogItemGpsReady(i) && isNavlogItemGpsReady(i + 1)) angleList.add(Angles(i, abs(calcBearingAngle(pos, navlogList[i].pos!!, navlogList[i + 1].pos!!))))
             }
 
             // Sort by angle
             angleList.sortByDescending { it.angle }
             if (angleList[0].angle > 90.0) {
                 position = angleList[0].i + 1
-                prevCoords = if (position == 0) settings.takeoffPos!! else navlogList[position - 1].coords!!
-            } else prevCoords = navlogList[getNavlogLastActiveItemId()].coords!!
+                prevCoords = if (position == 0) settings.takeoffPos!! else navlogList[position - 1].pos!!
+            } else prevCoords = navlogList[getNavlogLastActiveItemId()].pos!!
         }
 
         // True track
@@ -627,7 +642,7 @@ class MapFragment : Fragment(R.layout.fragment_map) {
         val dist = m2nm(calcDistance(prevCoords, pos))
 
         // Add item
-        navlogList.add(position, NavlogItem(dest = "", coords = pos, trueTrack = tt, declination = getDeclination(pos), distance = dist))
+        navlogList.add(position, NavlogItem(dest = "", pos = pos, trueTrack = tt, declination = getDeclination(pos), distance = dist))
         val dialog = NavlogDialogFragment(position)
         dialog.show(parentFragmentManager, "NavlogDialogFragment")
     }
@@ -650,8 +665,9 @@ class MapFragment : Fragment(R.layout.fragment_map) {
     private suspend fun updateMapThread() {
         while (true) {
             // Refresh the map
-            if (refreshDisplay) {
-                refreshDisplay = false
+            if (globalRefresh) {
+                globalRefresh = false
+
                 drawRadials()
                 drawTrace()
                 drawFlightPlan()
@@ -668,7 +684,7 @@ class MapFragment : Fragment(R.layout.fragment_map) {
             // Map follow
             if (timerFollow == 0) {
                 timerFollow = if (getFlightStage() == C.STAGE_3_FLIGHT_IN_PROGRESS) 5 else 50
-                if (settings.mapFollow) followPosition()
+                followPosition()
             }
 
             if (timerTrace > 0) timerTrace -= 1
@@ -690,7 +706,7 @@ class MapFragment : Fragment(R.layout.fragment_map) {
                 prevTime = curTime
 
                 val stage = getFlightStage()
-                if (stage > C.STAGE_1_BEFORE_ENGINE_START && stage < C.STAGE_4_AFTER_LANDING) {
+                if (stage == C.STAGE_3_FLIGHT_IN_PROGRESS) {
                     val h = HomeItem()
 
                     // Show top navigation

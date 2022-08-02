@@ -30,19 +30,17 @@
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="@dimen/aboutItemMargin">
+                android:layout_height="wrap_content">
 
                 <TextView
                     android:id="@+id/a"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    style="@style/aboutItem"
                     android:text="@string/txtVersion"
                     app:layout_constraintLeft_toLeftOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
 
                 <TextView
-                    style="@style/aboutText"
+                    style="@style/aboutItem"
                     android:text="2.0"
                     app:layout_constraintBaseline_toBaselineOf="@id/a"
                     app:layout_constraintRight_toRightOf="parent" />
@@ -51,19 +49,18 @@
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="@dimen/aboutItemMargin">
+                android:layout_marginTop="10dp">
 
                 <TextView
                     android:id="@+id/b"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    style="@style/aboutItem"
                     android:text="@string/txtContact"
                     app:layout_constraintLeft_toLeftOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
 
                 <TextView
                     android:id="@+id/linkEmail"
-                    style="@style/aboutText"
+                    style="@style/aboutItem"
                     android:text="@string/linkEmail"
                     app:layout_constraintBaseline_toBaselineOf="@id/b"
                     app:layout_constraintRight_toRightOf="parent" />
@@ -71,36 +68,32 @@
 
             <TextView
                 android:id="@+id/linkManual"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
-                android:layout_marginBottom="@dimen/aboutItemMargin"
+                style="@style/aboutItem"
+                android:layout_marginTop="25dp"
                 android:text="@string/linkManual"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
             <TextView
                 android:id="@+id/linkChangeLog"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="@dimen/aboutItemMargin"
+                style="@style/aboutItem"
+                android:layout_marginTop="15dp"
                 android:text="@string/linkChangeLog"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
             <TextView
                 android:id="@+id/linkPrivacyPolicy"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="@dimen/aboutItemMargin"
+                style="@style/aboutItem"
+                android:layout_marginTop="15dp"
                 android:text="@string/linkPrivacyPolicy"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
             <TextView
                 android:id="@+id/linkPermissions"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                style="@style/aboutItem"
+                android:layout_marginTop="15dp"
                 android:text="@string/linkPermissions"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />

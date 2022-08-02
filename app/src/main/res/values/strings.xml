@@ -39,7 +39,6 @@
     <string name="txtFuelSettings">Fuel Settings</string>
     <string name="txtTimeStamps">Timestamps</string>
     <string name="txtSummary">Summary</string>
-    <string name="txtPlanSummary">Plan summary</string>
     <string name="txtWindAndFuelCalculator">Wind/Fuel Calculator</string>
     <string name="txtNavigationLog">Navigation Log</string>
     <string name="txtLoadFlightPlan">Load flight plan</string>
@@ -138,8 +137,8 @@
     <string name="txtFph">Fuel/h</string>
     <string name="txtTakeoffFuel">T/O fuel</string>
     <string name="txtTank">Tank</string>
-    <string name="txtTakeoffDetect">T/O detect spd (kt)</string>
-    <string name="txtLandingDetect">LND detect spd (kt)</string>
+    <string name="txtTakeoffSpeed">T/O speed</string>
+    <string name="txtLandingSpeed">LND speed</string>
     <string name="txtTankCapacity">Tank capacity</string>
     <string name="txtPerformance">Performance</string>
     <string name="txtApply">Apply</string>

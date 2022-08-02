@@ -100,7 +100,7 @@ class NavlogDialogFragment(private val item: Int, private val adapter: NavlogAda
                     navlogList[item].magneticTrack = dMagneticTrack!!
                     navlogList[item].distance = dDist!!
                     navlogList[item].remarks = remarks
-                    navlogList[item].coords = pos
+                    navlogList[item].pos = pos
                     navlogList[item].active = bind.dialogCheckboxActive.isChecked
 
                     adapter?.notifyItemChanged(item)
@@ -161,9 +161,9 @@ class NavlogDialogFragment(private val item: Int, private val adapter: NavlogAda
             bind.boxDistance.hint = getString(R.string.txtDistance) + " (" + getUnitsDis() + ")"
 
             // Latitude
-            if (navlogList[item].coords != null) {
-                bind.dialogLat.setText(formatDouble(navlogList[item].coords?.latitude, C.POS_PRECISION))
-                bind.dialogLng.setText(formatDouble(navlogList[item].coords?.longitude, C.POS_PRECISION))
+            if (navlogList[item].pos != null) {
+                bind.dialogLat.setText(formatDouble(navlogList[item].pos?.latitude, C.POS_PRECISION))
+                bind.dialogLng.setText(formatDouble(navlogList[item].pos?.longitude, C.POS_PRECISION))
             } else {
                 bind.dialogLat.setText("")
                 bind.dialogLng.setText("")
