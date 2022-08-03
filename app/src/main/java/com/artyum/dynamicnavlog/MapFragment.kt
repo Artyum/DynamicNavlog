@@ -28,6 +28,7 @@ class MapFragment : Fragment(R.layout.fragment_map) {
     private val bind get() = _binding!!
 
     private lateinit var map: GoogleMap
+    private lateinit var map2: GoogleMap
     private var mapReady: Boolean = false
 
     private val trackMarkers = ArrayList<Marker>()
@@ -44,6 +45,7 @@ class MapFragment : Fragment(R.layout.fragment_map) {
     private var radialPoint1: LatLng? = null
 
     private var mapPrevPos: String = ""
+    private var initZoom: Boolean = true    // Zoom on fragment load (one-time)
     private var apiZoom: Boolean = false
 
     var timerTrace = 0
@@ -66,11 +68,15 @@ class MapFragment : Fragment(R.layout.fragment_map) {
 
         val con = (activity as MainActivity).applicationContext
         val mapFragment = childFragmentManager.findFragmentById(R.id.mapFragment) as SupportMapFragment
+        val mapFragment2 = childFragmentManager.findFragmentById(R.id.mapFragment2) as SupportMapFragment
 
         if (ActivityCompat.checkSelfPermission(con, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions((activity as MainActivity), arrayOf(Manifest.permission.ACCESS_FINE_LOCATION), C.LOCATION_PERMISSION_REQ_CODE)
         } else {
-            mapFragment.getMapAsync { it ->
+            mapFragment2.getMapAsync {
+                map2 = it
+            }
+            mapFragment.getMapAsync {
                 map = it
                 map.isMyLocationEnabled = true
                 map.uiSettings.isMyLocationButtonEnabled = true
@@ -493,9 +499,8 @@ class MapFragment : Fragment(R.layout.fragment_map) {
                 map.moveCamera(CameraUpdateFactory.newCameraPosition(cameraPosition))
             } else zoomToAll()
         } else if (stage == C.STAGE_3_FLIGHT_IN_PROGRESS) {
-            // Zoom to prev and current waypoint
             val item = getNavlogCurrentItemId()
-            var zoom: Float
+            val zoom: Float
             val target: LatLng
             val bearing = if (options.mapOrientation != C.MAP_ORIENTATION_NORTH && navlogList[item].trueTrack != null) navlogList[item].trueTrack!!.toFloat() else 0f
 
@@ -504,20 +509,23 @@ class MapFragment : Fragment(R.layout.fragment_map) {
                 zoom = if (map.cameraPosition.zoom <= 3) 12f else map.cameraPosition.zoom
                 target = gps.pos!!
             } else {
-                val builder = LatLngBounds.Builder()
+                // Zoom to previous and current waypoint
+                val wpt = navlogList[item]
 
-                // Include current position
-                val cur = navlogList[item].pos
-                if (cur != null) builder.include(cur)
-
-                // Include previous position
-                val prev = getPrevCoords(item)
-                if (prev != null) builder.include(prev)
-
-                val bounds = builder.build()
-                map.moveCamera(CameraUpdateFactory.newLatLngBounds(bounds, 200))
-                zoom = map.cameraPosition.zoom
-                target = bounds.center
+                if (options.mapOrientation == C.MAP_ORIENTATION_NORTH) {
+                    // Boundary with current and previous waypoint
+                    val builder = LatLngBounds.Builder()
+                    builder.include(wpt.pos!!)
+                    builder.include(getPrevCoords(item)!!)
+                    val bounds = builder.build()
+                    map2.moveCamera(CameraUpdateFactory.newLatLngBounds(bounds, C.MAP_ZOOM_PADDING))
+                    target = bounds.center
+                    zoom = map2.cameraPosition.zoom
+                } else {
+                    // Center between previous and current waypoint
+                    target = calcDestinationPos(wpt.pos!!, normalizeBearing(wpt.trueTrack!! + 180.0), nm2m(wpt.distance!! / 2.0))
+                    zoom = getZoomLevel(target.latitude, navlogList[item].distance!!)
+                }
             }
 
             val cameraPosition = CameraPosition.Builder()
@@ -526,7 +534,12 @@ class MapFragment : Fragment(R.layout.fragment_map) {
                 .bearing(bearing)
                 .tilt(map.cameraPosition.tilt)
                 .build()
-            map.moveCamera(CameraUpdateFactory.newCameraPosition(cameraPosition))
+
+            if (initZoom) {
+                // If the Map fragment was opened
+                initZoom = false
+                map.moveCamera(CameraUpdateFactory.newCameraPosition(cameraPosition))
+            } else map.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition))
         }
     }
 
@@ -662,8 +675,22 @@ class MapFragment : Fragment(R.layout.fragment_map) {
         bind.txtTotalFuel.text = strFuel
     }
 
+    private fun getZoomLevel(latitude: Double, distance: Double): Float {
+        val zoomRatio = 1.0 + (latitude / 90.0)  // Zoom ratio dependent on the latitude (1-equator; 2-north/south pole)
+        val pos1 = LatLng(0.0, 0.0)
+        val pos2 = calcDestinationPos(pos1, 0.0, nm2m(distance) * zoomRatio)
+        val builder = LatLngBounds.Builder()
+        builder.include(pos1)
+        builder.include(pos2)
+        val bounds = builder.build()
+        //Set the camera position on second map (invisible to the user)
+        map2.moveCamera(CameraUpdateFactory.newLatLngBounds(bounds, C.MAP_ZOOM_PADDING))
+        return map2.cameraPosition.zoom
+    }
+
     private suspend fun updateMapThread() {
-        while (true) {
+        while (_binding != null) {
+
             // Refresh the map
             if (globalRefresh) {
                 globalRefresh = false
