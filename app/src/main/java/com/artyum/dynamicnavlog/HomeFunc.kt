@@ -38,6 +38,7 @@ class HomeItem() {
     var distFromPrevWpt: Double = 0.0   // Distance in straight line from previous WPT
     var distRemaining: Double = 0.0     // Distance remaining to next WPT
     var distPct: Double = 0.0           // Distance travelled between WPTs in %
+    var isInsideCircle: Boolean = false
 
     init {
         if (options.gpsAssist) runBlocking { gpsMutex.withLock { gps = gpsData } }
@@ -120,6 +121,8 @@ class HomeItem() {
             // Fuel to land
             fuelToLand = airplane.fph * timeToLand.toDouble() / 3600.0
 
+            // Inside circle
+            isInsideCircle = distRemaining <= nextRadiusList[options.nextRadiusIndex]
         } else if (stage >= C.STAGE_4_AFTER_LANDING) {
             estFlightTimeSec = Duration.between(timers.takeoff, timers.landing).toMillis() / 1000
         }

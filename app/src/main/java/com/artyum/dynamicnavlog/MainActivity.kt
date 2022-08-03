@@ -935,7 +935,7 @@ class MainActivity : AppCompatActivity() {
                                     // Detect passed waypoint when airplane is in the circle and the distance from waypoint is increasing
                                     if (prevDist == 0.0) prevDist = dist
                                     else if (dist > prevDist) {
-                                        Log.d(TAG, "Auto next wpt")
+                                        //Log.d(TAG, "Auto next wpt")
                                         prevDist = 0.0
                                         setStageNext()
                                     } else prevDist = dist
@@ -943,7 +943,7 @@ class MainActivity : AppCompatActivity() {
                                     // Auto Landing
                                     if (gps.speedMps < options.autoLandingSpd) speedCnt += 1 else speedCnt = 0
                                     if (speedCnt >= C.AUTO_NEXT_WAIT_SEC) {
-                                        Log.d(TAG, "Auto landing")
+                                        //Log.d(TAG, "Auto landing")
                                         setStageLanding()
                                         runOnUiThread { displayButtons() }
                                         speedCnt = 0
