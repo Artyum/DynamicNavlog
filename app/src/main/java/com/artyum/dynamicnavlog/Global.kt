@@ -15,6 +15,7 @@ import java.time.LocalDateTime
 import kotlin.math.*
 
 data class Settings(
+    @Volatile
     var planId: String = "",
     var planName: String = "",
     var departure: String = "",
@@ -231,6 +232,7 @@ object C {
     const val MAP_ORIENTATION_NORTH = 0
     const val MAP_ORIENTATION_TRACK = 1
     const val MAP_ORIENTATION_BEARING = 2
+    const val MAP_ZOOM_PADDING = 160
 
     //Screen orientation
     const val SCREEN_PORTRAIT = 0

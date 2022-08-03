@@ -110,13 +110,13 @@ class CalcDensityFragment : Fragment(R.layout.fragment_calc_density) {
                 elev_ft = m2ft(elev_m)
             }
 
-//        println("pressure_inhg $pressure_inhg")
-//        println("pressure_hpa $pressure_hpa")
-//        println("temp_f $temp_f")
-//        println("temp_c $temp_c")
-//        println("temp_k $temp_k")
-//        println("elev_ft $elev_ft")
-//        println("elev_m $elev_m")
+            //println("pressure_inhg $pressure_inhg")
+            //println("pressure_hpa $pressure_hpa")
+            //println("temp_f $temp_f")
+            //println("temp_c $temp_c")
+            //println("temp_k $temp_k")
+            //println("elev_ft $elev_ft")
+            //println("elev_m $elev_m")
 
             val units = if (elevationUnits == C.ELEV_FT) " ft" else " m"
 

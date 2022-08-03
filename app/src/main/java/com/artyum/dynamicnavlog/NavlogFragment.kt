@@ -117,12 +117,12 @@ class NavlogFragment : Fragment(R.layout.fragment_navlog), NavlogAdapter.OnItemC
     }
 
     private suspend fun updateNavlogPageThread() {
-        while (true) {
+        while (_binding != null) {
             if (globalRefresh) {
                 globalRefresh = false
                 adapter.notifyDataSetChanged()
             }
-            delay(100)
+            delay(50)
         }
     }
 }

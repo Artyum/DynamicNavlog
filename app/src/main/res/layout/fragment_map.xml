@@ -128,6 +128,14 @@
     </LinearLayout>
 
     <fragment
+        android:id="@+id/mapFragment2"
+        android:name="com.google.android.gms.maps.SupportMapFragment"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toTopOf="@id/summaryTotals"
+        app:layout_constraintTop_toBottomOf="@id/topNavigation" />
+
+    <fragment
         android:id="@+id/mapFragment"
         android:name="com.google.android.gms.maps.SupportMapFragment"
         android:layout_width="match_parent"
