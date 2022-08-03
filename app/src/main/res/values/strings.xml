@@ -90,6 +90,7 @@
     <string name="txtDist">DIST</string>
     <string name="txtWca">WCA</string>
     <string name="txtHdg">HDG</string>
+    <string name="txtHdgNext">HDG Next</string>
     <string name="txtGs">GS</string>
     <string name="txtTime">Time</string>
     <string name="txtFuelRequired">Fuel required</string>

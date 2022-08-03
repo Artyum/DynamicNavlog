@@ -705,7 +705,7 @@ fun saveTraceAsGpx(): String {
     val file = File(externalAppDir, trkFile)
 
     if (file.exists()) {
-        var export = false
+        var cnt = 0
         var trkpt = ""
         var item: JSONObject
 
@@ -716,12 +716,12 @@ fun saveTraceAsGpx(): String {
                 item = JSONObject(line)
                 // Json fields: "lat", "lng", "date", "time"
                 trkpt += ("\t<trkpt lat=\"${item["lat"]}\" lon=\"${item["lng"]}\"><ele></ele><time>${item["date"]}T${item["time"]}</time></trkpt>\n")
-                export = true
+                cnt += 1
             } catch (e: Exception) {
             }
         }
 
-        if (export) {
+        if (cnt > 1) {
             val gpx = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
                     "<gpx version=\"1.0\">\n" +
                     "\t<name>${settings.planName}</name>\n" +

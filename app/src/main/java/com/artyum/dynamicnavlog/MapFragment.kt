@@ -3,7 +3,6 @@ package com.artyum.dynamicnavlog
 import android.Manifest
 import android.content.pm.PackageManager
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -44,11 +43,15 @@ class MapFragment : Fragment(R.layout.fragment_map) {
 
     private var radialPoint1: LatLng? = null
 
-    private var mapPrevPos: String = ""
     private var initZoom: Boolean = true    // Zoom on fragment load (one-time)
-    private var apiZoom: Boolean = false
 
+    @Volatile
+    private var mapFollow: Boolean = settings.mapFollow
+
+    @Volatile
     var timerTrace = 0
+
+    @Volatile
     var timerFollow = 0
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
@@ -79,8 +82,8 @@ class MapFragment : Fragment(R.layout.fragment_map) {
             mapFragment.getMapAsync {
                 map = it
                 map.isMyLocationEnabled = true
-                map.uiSettings.isMyLocationButtonEnabled = true
-                map.uiSettings.isZoomControlsEnabled = true
+                map.uiSettings.isMyLocationButtonEnabled = false
+                map.uiSettings.isZoomControlsEnabled = false
                 map.uiSettings.isMapToolbarEnabled = false
                 map.uiSettings.isCompassEnabled = true
                 map.mapType = settings.mapType
@@ -159,22 +162,13 @@ class MapFragment : Fragment(R.layout.fragment_map) {
                         settings.mapFollow = false
                         bind.btnFollowToggle.setImageResource(R.drawable.ic_gps_unlock)
                     }
-
-                    //Zoom during map follow
                     if (reason == GoogleMap.OnCameraMoveStartedListener.REASON_API_ANIMATION) {
-                        apiZoom = true
+                        mapFollow = false
                     }
                 }
 
                 // Draw wind arrow on map move
-                map.setOnCameraMoveListener {
-                    drawWindArrow()
-                    if (apiZoom) {
-                        if (mapPrevPos == map.cameraPosition.toString()) {
-                            apiZoom = false
-                        } else mapPrevPos = map.cameraPosition.toString()
-                    }
-                }
+                map.setOnCameraMoveListener { drawWindArrow() }
 
                 mapReady = true
 
@@ -196,6 +190,10 @@ class MapFragment : Fragment(R.layout.fragment_map) {
             saveState()
         }
 
+        // Zoom buttons
+        bind.btnMapZoomIn.setOnClickListener { mapZoom(1) }
+        bind.btnMapZoomOut.setOnClickListener { mapZoom(-1) }
+
         // Button Follow
         bind.btnFollowToggle.setOnClickListener {
             if (settings.mapFollow) {
@@ -203,6 +201,7 @@ class MapFragment : Fragment(R.layout.fragment_map) {
                 bind.btnFollowToggle.setImageResource(R.drawable.ic_gps_unlock)
             } else {
                 settings.mapFollow = true
+                mapFollow = true
                 bind.btnFollowToggle.setImageResource(R.drawable.ic_gps_lock)
                 timerFollow = 0
             }
@@ -232,17 +231,13 @@ class MapFragment : Fragment(R.layout.fragment_map) {
         }
 
         // Follow map mode
-        if (options.gpsAssist) {
-            if (settings.mapFollow) bind.btnFollowToggle.setImageResource(R.drawable.ic_gps_lock)
-            else bind.btnFollowToggle.setImageResource(R.drawable.ic_gps_unlock)
-        } else {
-            bind.btnFollowToggle.visibility = View.GONE
-        }
+        if (settings.mapFollow) bind.btnFollowToggle.setImageResource(R.drawable.ic_gps_lock)
+        else bind.btnFollowToggle.setImageResource(R.drawable.ic_gps_unlock)
 
         // Refresh bottom summary bar
         refreshBottomBar()
 
-        // Display plan units
+        // Display units in top navigation bar
         bind.txtNavGs.text = getString(R.string.txtGs) + " (" + getUnitsSpd() + ")"
         bind.txtNavDist.text = getString(R.string.txtDist) + " (" + getUnitsDis() + ")"
 
@@ -341,8 +336,8 @@ class MapFragment : Fragment(R.layout.fragment_map) {
 
     private fun drawTrace() {
         if (!options.displayTrace) return
-        if (!mapReady || tracePointsList.size == 0) return
-        Log.d(TAG, "drawTrace")
+        if (!mapReady || tracePointsList.size < 2) return
+        //Log.d(TAG, "drawTrace")
 
         traceLine?.remove()
 
@@ -450,7 +445,7 @@ class MapFragment : Fragment(R.layout.fragment_map) {
 
         if (chkTO || chkItems) {
             val bounds = builder.build()
-            map.moveCamera(CameraUpdateFactory.newLatLngBounds(bounds, 130))
+            map.moveCamera(CameraUpdateFactory.newLatLngBounds(bounds, C.MAP_ZOOM_PADDING))
 
             // Zoom only to TakeOff point
             val zoom: Float = if (chkTO && !chkItems) 9f else map.cameraPosition.zoom
@@ -502,7 +497,15 @@ class MapFragment : Fragment(R.layout.fragment_map) {
             val item = getNavlogCurrentItemId()
             val zoom: Float
             val target: LatLng
-            val bearing = if (options.mapOrientation != C.MAP_ORIENTATION_NORTH && navlogList[item].trueTrack != null) navlogList[item].trueTrack!!.toFloat() else 0f
+
+            val bearing = if (options.mapOrientation == C.MAP_ORIENTATION_NORTH) {
+                0f
+            } else if (options.mapOrientation == C.MAP_ORIENTATION_TRACK) {
+                if (navlogList[item].trueTrack != null) navlogList[item].trueTrack!!.toFloat() else 0f
+            } else {
+                // C.MAP_ORIENTATION_BEARING
+                if (gps.isValid) gps.bearing!! else if (navlogList[item].trueTrack != null) navlogList[item].trueTrack!!.toFloat() else 0f
+            }
 
             if (isMapFollow() && gps.isValid) {
                 // Zoom to GPS position
@@ -510,21 +513,20 @@ class MapFragment : Fragment(R.layout.fragment_map) {
                 target = gps.pos!!
             } else {
                 // Zoom to previous and current waypoint
-                val wpt = navlogList[item]
 
-                if (options.mapOrientation == C.MAP_ORIENTATION_NORTH) {
-                    // Boundary with current and previous waypoint
-                    val builder = LatLngBounds.Builder()
-                    builder.include(wpt.pos!!)
-                    builder.include(getPrevCoords(item)!!)
-                    val bounds = builder.build()
+                // Get boundary
+                val wpt = navlogList[item]
+                val builder = LatLngBounds.Builder()
+                builder.include(wpt.pos!!)
+                builder.include(getPrevCoords(item)!!)
+                val bounds = builder.build()
+                target = bounds.center
+
+                zoom = if (options.mapOrientation == C.MAP_ORIENTATION_NORTH) {
                     map2.moveCamera(CameraUpdateFactory.newLatLngBounds(bounds, C.MAP_ZOOM_PADDING))
-                    target = bounds.center
-                    zoom = map2.cameraPosition.zoom
+                    map2.cameraPosition.zoom
                 } else {
-                    // Center between previous and current waypoint
-                    target = calcDestinationPos(wpt.pos!!, normalizeBearing(wpt.trueTrack!! + 180.0), nm2m(wpt.distance!! / 2.0))
-                    zoom = getZoomLevel(target.latitude, navlogList[item].distance!!)
+                    getZoomLevel(target, navlogList[item].distance!!)
                 }
             }
 
@@ -536,22 +538,33 @@ class MapFragment : Fragment(R.layout.fragment_map) {
                 .build()
 
             if (initZoom) {
-                // If the Map fragment was opened
                 initZoom = false
                 map.moveCamera(CameraUpdateFactory.newCameraPosition(cameraPosition))
-            } else map.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition))
+            } else {
+                mapFollow = false
+                map.stopAnimation()
+                map.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition), 1000, object : GoogleMap.CancelableCallback {
+                    override fun onFinish() {
+                        mapFollow = true
+                    }
+
+                    override fun onCancel() {}
+                })
+            }
         }
     }
 
     private fun followPosition() {
         if (!mapReady) return
         if (!settings.mapFollow) return
-        if (apiZoom) return
+        if (!mapFollow) return
 
         var gps: GpsData
         runBlocking { gpsMutex.withLock { gps = gpsData } }
 
         if (gps.isValid) {
+            if (map.cameraPosition.target == gps.pos) return
+
             val bearing = if (options.mapOrientation == C.MAP_ORIENTATION_BEARING && gps.bearing != null) gps.bearing!!
             else map.cameraPosition.bearing
 
@@ -561,7 +574,18 @@ class MapFragment : Fragment(R.layout.fragment_map) {
                 .bearing(bearing)
                 .tilt(map.cameraPosition.tilt)
                 .build()
-            map.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition), 400, null)
+
+            if (mapFollow) {
+                mapFollow = false
+                map.stopAnimation()
+                map.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition), 900, object : GoogleMap.CancelableCallback {
+                    override fun onFinish() {
+                        mapFollow = true
+                    }
+
+                    override fun onCancel() {}
+                })
+            }
         }
     }
 
@@ -675,22 +699,38 @@ class MapFragment : Fragment(R.layout.fragment_map) {
         bind.txtTotalFuel.text = strFuel
     }
 
-    private fun getZoomLevel(latitude: Double, distance: Double): Float {
-        val zoomRatio = 1.0 + (latitude / 90.0)  // Zoom ratio dependent on the latitude (1-equator; 2-north/south pole)
-        val pos1 = LatLng(0.0, 0.0)
-        val pos2 = calcDestinationPos(pos1, 0.0, nm2m(distance) * zoomRatio)
+    private fun getZoomLevel(pos: LatLng, distance: Double): Float {
+        val pos2 = calcDestinationPos(pos, 0.0, nm2m(distance))
         val builder = LatLngBounds.Builder()
-        builder.include(pos1)
+        builder.include(pos)
         builder.include(pos2)
         val bounds = builder.build()
-        //Set the camera position on second map (invisible to the user)
+        // Set the camera position on second map (invisible to the user) to read the zoom level
         map2.moveCamera(CameraUpdateFactory.newLatLngBounds(bounds, C.MAP_ZOOM_PADDING))
         return map2.cameraPosition.zoom
     }
 
+    private fun mapZoom(zoom: Int) {
+        val cameraPosition = CameraPosition.Builder()
+            .target(map.cameraPosition.target)
+            .zoom(map.cameraPosition.zoom + zoom)
+            .bearing(map.cameraPosition.bearing)
+            .tilt(map.cameraPosition.tilt)
+            .build()
+
+        mapFollow = false
+        map.stopAnimation()
+        map.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition), 200, object : GoogleMap.CancelableCallback {
+            override fun onFinish() {
+                mapFollow = true
+            }
+
+            override fun onCancel() {}
+        })
+    }
+
     private suspend fun updateMapThread() {
         while (_binding != null) {
-
             // Refresh the map
             if (globalRefresh) {
                 globalRefresh = false
@@ -710,7 +750,7 @@ class MapFragment : Fragment(R.layout.fragment_map) {
 
             // Map follow
             if (timerFollow == 0) {
-                timerFollow = if (getFlightStage() == C.STAGE_3_FLIGHT_IN_PROGRESS) 5 else 50
+                timerFollow = if (getFlightStage() == C.STAGE_3_FLIGHT_IN_PROGRESS) 10 else 50
                 followPosition()
             }
 
@@ -747,8 +787,15 @@ class MapFragment : Fragment(R.layout.fragment_map) {
                     a.runOnUiThread { b.topMapGs.text = gs }
 
                     // HDG
-                    val (hdg, _, _) = h.getHdg()
-                    a.runOnUiThread { b.topMapHdg.text = hdg }
+                    val (hdg, hdgNext, _) = h.getHdg()
+                    if (h.isInsideCircle) a.runOnUiThread {
+                        b.labelHdg.text = context?.getString(R.string.txtHdgNext) ?: ""
+                        b.topMapHdg.text = hdgNext
+                    }
+                    else a.runOnUiThread {
+                        b.labelHdg.text = context?.getString(R.string.txtHdg) ?: ""
+                        b.topMapHdg.text = hdg
+                    }
 
                     // ETE
                     a.runOnUiThread { b.topMapEte.text = h.getEte().ete }
