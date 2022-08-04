@@ -38,7 +38,7 @@ class MapFragment : Fragment(R.layout.fragment_map) {
     private val radialCircles = ArrayList<Circle>()
     private val radialLines = ArrayList<Polyline>()
 
-    //    private var windArrowLine: Polyline? = null
+    //private var windArrowLine: Polyline? = null
     private var traceLine: Polyline? = null
 
     private var radialStartPoint: LatLng? = null
