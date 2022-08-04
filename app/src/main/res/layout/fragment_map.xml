@@ -12,7 +12,6 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:visibility="gone"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
@@ -129,7 +128,7 @@
     </LinearLayout>
 
     <fragment
-        android:id="@+id/mapFragment2"
+        android:id="@+id/mapFragmentHidden"
         android:name="com.google.android.gms.maps.SupportMapFragment"
         android:layout_width="match_parent"
         android:layout_height="0dp"
@@ -180,6 +179,15 @@
             app:layout_constraintTop_toBottomOf="@id/btnMapZoomIn"
             app:srcCompat="@drawable/ic_remove" />
     </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <ImageView
+        android:id="@+id/mapWindIndicator"
+        android:layout_width="90dp"
+        android:layout_height="90dp"
+        android:layout_marginTop="15dp"
+        android:layout_marginEnd="15dp"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/topNavigation" />
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/summaryTotals"

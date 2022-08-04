@@ -96,7 +96,8 @@ class TimersFragment : Fragment(R.layout.fragment_timers) {
 
 fun roundToMinutes(t: LocalDateTime?): LocalDateTime? {
     if (t == null) return null
-    return if (t.second <= 30) t.minusSeconds(t.second.toLong()) else t.plusSeconds((60 - t.second).toLong())
+    //return if (t.second <= 30) t.minusSeconds(t.second.toLong()) else t.plusSeconds((60 - t.second).toLong())
+    return t.minusSeconds(t.second.toLong())
 }
 
 fun formatDateTime(t: LocalDateTime?, pattern: String): String {

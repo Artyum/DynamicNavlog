@@ -502,6 +502,58 @@ fun generateWindCircle(imgView: ImageView, resources: Resources, course: Double,
     imgView.visibility = View.VISIBLE
 }
 
+fun generateWindArrow(imgView: ImageView, resources: Resources, bearing: Double) {
+    val bitmap = Bitmap.createBitmap(100, 100, Bitmap.Config.ARGB_8888)
+    val canvas = Canvas(bitmap)
+    val paint = Paint()
+    paint.isAntiAlias = true
+
+    val customTypeface = resources.getFont(R.font.hind_vadodara)
+    paint.typeface = customTypeface
+
+    // Center
+    val x = canvas.width / 2f
+    val y = canvas.height / 2f
+
+    // Map bearing to canvas angle
+    val angle = -bearing - 90.0
+
+    val len = canvas.width / 2
+    val len2 = (canvas.width / 2.7).toFloat()
+
+    paint.textSize = 25f
+    paint.style = Paint.Style.FILL
+    paint.strokeWidth = 3f
+
+    paint.color = ResourcesCompat.getColor(resources, R.color.windArrow, null)
+
+    // Back line
+    var sc: SinCosAngle = angleCalc(deg2rad(angle))
+    var x1 = x + sc.cosa * len
+    var y1 = y + sc.sina * len
+    canvas.drawLine(x, y, x1, y1, paint)
+
+    // Front line
+    sc = angleCalc(deg2rad(angle + 180))
+    x1 = x + sc.cosa * len
+    y1 = y + sc.sina * len
+    canvas.drawLine(x, y, x1, y1, paint)
+
+    // Arrow 1
+    sc = angleCalc(deg2rad(angle + 10))
+    val x2 = x1 + sc.cosa * len2
+    val y2 = y1 + sc.sina * len2
+    canvas.drawLine(x1, y1, x2, y2, paint)
+
+    // Arrow 2
+    sc = angleCalc(deg2rad(angle - 10))
+    val x3 = x1 + sc.cosa * len2
+    val y3 = y1 + sc.sina * len2
+    canvas.drawLine(x2, y2, x3, y3, paint)
+
+    imgView.setImageBitmap(bitmap)
+}
+
 fun flightCalculator(course: Double, windDir: Double, windSpd: Double, tas: Double, dist: Double? = null, fob: Double? = null, fph: Double? = null): FlightData {
     val wtAngle = deg2rad(course - windDir + 180f)
     val sinWca = windSpd * sin(wtAngle) / tas
