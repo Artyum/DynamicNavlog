@@ -168,9 +168,6 @@ fun setNextWaypoint() {
         navlogList[next].current = true
         navlogList[item].current = false
     }
-
-    // Refresh map on next-waypoint
-    globalRefresh = true
 }
 
 fun setPrevWaypoint() {

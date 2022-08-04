@@ -27,7 +27,7 @@ class MapFragment : Fragment(R.layout.fragment_map) {
     private val bind get() = _binding!!
 
     private lateinit var map: GoogleMap
-    private lateinit var map2: GoogleMap
+    private lateinit var map2: GoogleMap   // Used for setting a zoom level
     private var mapReady: Boolean = false
 
     private val trackMarkers = ArrayList<Marker>()
@@ -38,15 +38,12 @@ class MapFragment : Fragment(R.layout.fragment_map) {
     private val radialCircles = ArrayList<Circle>()
     private val radialLines = ArrayList<Polyline>()
 
-    private var windArrowLine: Polyline? = null
+    //    private var windArrowLine: Polyline? = null
     private var traceLine: Polyline? = null
 
-    private var radialPoint1: LatLng? = null
-
-    private var initZoom: Boolean = true    // Zoom on fragment load (one-time)
-
-    @Volatile
-    private var mapFollow: Boolean = settings.mapFollow
+    private var radialStartPoint: LatLng? = null
+    private var initZoom: Boolean = true    // Zoom on fragment (one-time)
+    private var mapFollow: Boolean = true
 
     @Volatile
     var timerTrace = 0
@@ -71,17 +68,17 @@ class MapFragment : Fragment(R.layout.fragment_map) {
 
         val con = (activity as MainActivity).applicationContext
         val mapFragment = childFragmentManager.findFragmentById(R.id.mapFragment) as SupportMapFragment
-        val mapFragment2 = childFragmentManager.findFragmentById(R.id.mapFragment2) as SupportMapFragment
+        val mapFragmentHidden = childFragmentManager.findFragmentById(R.id.mapFragmentHidden) as SupportMapFragment
 
         if (ActivityCompat.checkSelfPermission(con, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions((activity as MainActivity), arrayOf(Manifest.permission.ACCESS_FINE_LOCATION), C.LOCATION_PERMISSION_REQ_CODE)
         } else {
-            mapFragment2.getMapAsync {
+            mapFragmentHidden.getMapAsync {
                 map2 = it
             }
-            mapFragment.getMapAsync {
+            mapFragment.getMapAsync { it ->
                 map = it
-                map.isMyLocationEnabled = true
+                map.isMyLocationEnabled = options.gpsAssist
                 map.uiSettings.isMyLocationButtonEnabled = false
                 map.uiSettings.isZoomControlsEnabled = false
                 map.uiSettings.isMapToolbarEnabled = false
@@ -90,19 +87,19 @@ class MapFragment : Fragment(R.layout.fragment_map) {
 
                 // Click on map listener - add waypoint or radial
                 map.setOnMapClickListener { pos: LatLng ->
-                    if (radialPoint1 == null) {
+                    if (radialStartPoint == null) {
                         if (settings.takeoffPos == null) setTakeoffPoint(pos)
                         else addWaypoint(pos)
                     } else {
                         // Radial second click
-                        addRadial(radialPoint1!!, pos)
-                        radialPoint1 = null
+                        addRadial(radialStartPoint!!, pos)
+                        radialStartPoint = null
                     }
                 }
 
                 // Long click on map - Start new radial
                 map.setOnMapLongClickListener { pos: LatLng ->
-                    radialPoint1 = pos
+                    radialStartPoint = pos
                     Toast.makeText(view.context, getString(R.string.txtAddRadial), Toast.LENGTH_SHORT).show()
                 }
 
@@ -111,6 +108,7 @@ class MapFragment : Fragment(R.layout.fragment_map) {
                     override fun onMarkerDragStart(p0: Marker) {}
                     override fun onMarkerDrag(p0: Marker) {}
                     override fun onMarkerDragEnd(m: Marker) {
+                        radialStartPoint = null
                         val i: Int = m.tag.toString().toInt()
                         if (m.title == C.MAP_ITEM_TRACK.toString()) {
                             // Drag a waypoint
@@ -160,10 +158,8 @@ class MapFragment : Fragment(R.layout.fragment_map) {
                 map.setOnCameraMoveStartedListener { reason: Int ->
                     if (settings.mapFollow && reason == GoogleMap.OnCameraMoveStartedListener.REASON_GESTURE) {
                         settings.mapFollow = false
+                        mapFollow = true
                         bind.btnFollowToggle.setImageResource(R.drawable.ic_gps_unlock)
-                    }
-                    if (reason == GoogleMap.OnCameraMoveStartedListener.REASON_API_ANIMATION) {
-                        mapFollow = false
                     }
                 }
 
@@ -178,9 +174,6 @@ class MapFragment : Fragment(R.layout.fragment_map) {
                 zoomToTrack()
                 drawWindArrow()
             }
-
-            // Start home thread
-            CoroutineScope(CoroutineName("map")).launch { updateMapNavUIThread() }
         }
 
         setFragmentResultListener("requestKey") { _, _ ->
@@ -188,6 +181,7 @@ class MapFragment : Fragment(R.layout.fragment_map) {
             drawRadials()
             drawFlightPlan()
             saveState()
+            (activity as MainActivity).displayButtons()
         }
 
         // Zoom buttons
@@ -195,17 +189,22 @@ class MapFragment : Fragment(R.layout.fragment_map) {
         bind.btnMapZoomOut.setOnClickListener { mapZoom(-1) }
 
         // Button Follow
-        bind.btnFollowToggle.setOnClickListener {
-            if (settings.mapFollow) {
-                settings.mapFollow = false
-                bind.btnFollowToggle.setImageResource(R.drawable.ic_gps_unlock)
-            } else {
-                settings.mapFollow = true
+        if (options.gpsAssist) {
+            bind.btnFollowToggle.visibility = View.VISIBLE
+            bind.btnFollowToggle.setOnClickListener {
+                if (settings.mapFollow) {
+                    settings.mapFollow = false
+                    bind.btnFollowToggle.setImageResource(R.drawable.ic_gps_unlock)
+                } else {
+                    settings.mapFollow = true
+                    bind.btnFollowToggle.setImageResource(R.drawable.ic_gps_lock)
+                    timerFollow = 0
+                }
                 mapFollow = true
-                bind.btnFollowToggle.setImageResource(R.drawable.ic_gps_lock)
-                timerFollow = 0
+                saveState()
             }
-            saveState()
+        } else {
+            bind.btnFollowToggle.visibility = View.GONE
         }
 
         // Button Map type
@@ -240,6 +239,9 @@ class MapFragment : Fragment(R.layout.fragment_map) {
         // Display units in top navigation bar
         bind.txtNavGs.text = getString(R.string.txtGs) + " (" + getUnitsSpd() + ")"
         bind.txtNavDist.text = getString(R.string.txtDist) + " (" + getUnitsDis() + ")"
+
+        // Start home thread
+        CoroutineScope(CoroutineName("map")).launch { updateMapNavUIThread() }
 
         // Run map update thread
         lifecycleScope.launch { updateMapThread() }
@@ -357,26 +359,28 @@ class MapFragment : Fragment(R.layout.fragment_map) {
         if (!options.drawWindArrow) return
         //Log.d(TAG, "drawWindArrow")
 
-        val line = PolylineOptions()
-            .clickable(false)
-            .color(ContextCompat.getColor(this.requireContext(), R.color.windArrow))
-            .geodesic(false)
-            .width(7f)
+        generateWindArrow(bind.mapWindIndicator, resources, normalizeBearing(map.cameraPosition.bearing - settings.windDir + getDeclination(map.cameraPosition.target)))
 
-        val visibleRegion: VisibleRegion = map.projection.visibleRegion
-        val center = visibleRegion.latLngBounds.center
-        val angle = normalizeBearing(settings.windDir - getDeclination(center))  // Get declination from the center of the screen
-        val len1 = calcDistance(center, visibleRegion.latLngBounds.southwest) / 4.0
-        val len2 = len1 / 2.8
-
-        val startPoint = calcDestinationPos(center, angle, len1 / 2.0)
-        val endPoint = calcDestinationPos(startPoint, normalizeBearing(angle + 180.0), len1)
-        val q1 = calcDestinationPos(endPoint, normalizeBearing(angle + 10.0), len2)
-        val q2 = calcDestinationPos(endPoint, normalizeBearing(angle - 10.0), len2)
-
-        line.add(startPoint, endPoint, q1, q2)
-        windArrowLine?.remove()
-        windArrowLine = map.addPolyline(line)
+//        val line = PolylineOptions()
+//            .clickable(false)
+//            .color(ContextCompat.getColor(this.requireContext(), R.color.windArrow))
+//            .geodesic(false)
+//            .width(7f)
+//
+//        val visibleRegion: VisibleRegion = map.projection.visibleRegion
+//        val center = visibleRegion.latLngBounds.center
+//        val angle = normalizeBearing(settings.windDir - getDeclination(center))  // Get declination from the center of the screen
+//        val len1 = calcDistance(center, visibleRegion.latLngBounds.southwest) / 4.0
+//        val len2 = len1 / 2.8
+//
+//        val startPoint = calcDestinationPos(center, angle, len1 / 2.0)
+//        val endPoint = calcDestinationPos(startPoint, normalizeBearing(angle + 180.0), len1)
+//        val q1 = calcDestinationPos(endPoint, normalizeBearing(angle + 10.0), len2)
+//        val q2 = calcDestinationPos(endPoint, normalizeBearing(angle - 10.0), len2)
+//
+//        line.add(startPoint, endPoint, q1, q2)
+//        windArrowLine?.remove()
+//        windArrowLine = map.addPolyline(line)
     }
 
     private fun drawRadials() {
@@ -542,13 +546,15 @@ class MapFragment : Fragment(R.layout.fragment_map) {
                 map.moveCamera(CameraUpdateFactory.newCameraPosition(cameraPosition))
             } else {
                 mapFollow = false
-                map.stopAnimation()
                 map.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition), 1000, object : GoogleMap.CancelableCallback {
                     override fun onFinish() {
+                        //println("zoomToTrack finish")
                         mapFollow = true
                     }
 
-                    override fun onCancel() {}
+                    override fun onCancel() {
+                        //println("zoomToTrack cancel")
+                    }
                 })
             }
         }
@@ -577,13 +583,17 @@ class MapFragment : Fragment(R.layout.fragment_map) {
 
             if (mapFollow) {
                 mapFollow = false
-                map.stopAnimation()
+                println("followPosition start")
                 map.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition), 900, object : GoogleMap.CancelableCallback {
                     override fun onFinish() {
+                        //println("followPosition finish")
                         mapFollow = true
                     }
 
-                    override fun onCancel() {}
+                    override fun onCancel() {
+                        //println("followPosition cancel")
+                        mapFollow = false
+                    }
                 })
             }
         }
@@ -734,7 +744,6 @@ class MapFragment : Fragment(R.layout.fragment_map) {
             // Refresh the map
             if (globalRefresh) {
                 globalRefresh = false
-
                 drawRadials()
                 drawTrace()
                 drawFlightPlan()
