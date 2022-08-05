@@ -340,15 +340,11 @@ class MainActivity : AppCompatActivity() {
                 builder.setMessage(msg)
                     .setCancelable(false)
                     .setPositiveButton(R.string.txtYes) { _, _ ->
-                        if (isNavlogReady()) {
-                            if (isNavlogGpsReady()) {
-                                copyFlightPlan("Inverted")
-                                invertNavlog()
-                                resetFlight()
-                                Toast.makeText(this, getString(R.string.txtReverseDone), Toast.LENGTH_SHORT).show()
-                                navController.navigate(R.id.settingsFragment)
-                            } else Toast.makeText(this, getString(R.string.txtReverseOnlyGPS), Toast.LENGTH_SHORT).show()
-                        } else Toast.makeText(this, getString(R.string.txtReverseNotReady), Toast.LENGTH_SHORT).show()
+                        copyFlightPlan("Inverted")
+                        invertNavlog()
+                        resetFlight()
+                        Toast.makeText(this, getString(R.string.txtReverseDone), Toast.LENGTH_SHORT).show()
+                        navController.navigate(R.id.settingsFragment)
                     }
                     .setNegativeButton(R.string.txtNo) { dialog, _ ->
                         dialog.dismiss()

@@ -201,11 +201,11 @@ fun invertNavlog() {
     val last = getNavlogLastActiveItemId()
 
     // Swap Departure and Destination
-    val tmp = settings.departure
+    val dep = settings.departure
     settings.departure = settings.destination
-    settings.destination = tmp
+    settings.destination = dep
 
-    // Save takeoff coords as new last coords
+    // Save takeoff position as new last position
     val newLastPos = settings.takeoffPos!!
     settings.takeoffPos = navlogList[last].pos
 
@@ -219,13 +219,13 @@ fun invertNavlog() {
     // Add last waypoint
     val item = NavlogItem(
         dest = settings.destination,
-        magneticTrack = navlogList[first].magneticTrack?.plus(180.0),
+        magneticTrack = normalizeBearing(navlogList[first].magneticTrack!!.plus(180.0)),
         distance = navlogList[first].distance,
         pos = newLastPos
     )
     newNavlogList.add(item)
 
-    // Save new NavLog
+    // Set new NavlogList
     navlogList = newNavlogList
 }
 
