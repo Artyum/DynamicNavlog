@@ -107,11 +107,11 @@ fun isNavlogReady(): Boolean {
 }
 
 fun isNavlogItemValid(i: Int): Boolean {
-    return i < navlogList.size && navlogList[i].dest != "" && navlogList[i].magneticTrack != null && navlogList[i].distance != null
+    return i < navlogList.size && navlogList[i].dest != "" && navlogList[i].mt != null && navlogList[i].dist != null
 }
 
 fun isNavlogItemGpsReady(i: Int): Boolean {
-    return i < navlogList.size && navlogList[i].pos != null && navlogList[i].declination != null && navlogList[i].trueTrack != null && navlogList[i].magneticTrack != null
+    return i < navlogList.size && navlogList[i].pos != null && navlogList[i].d != null && navlogList[i].tt != null && navlogList[i].mt != null
 }
 
 fun isNavlogGpsReady(): Boolean {
@@ -219,8 +219,8 @@ fun invertNavlog() {
     // Add last waypoint
     val item = NavlogItem(
         dest = settings.destination,
-        magneticTrack = normalizeBearing(navlogList[first].magneticTrack!!.plus(180.0)),
-        distance = navlogList[first].distance,
+        mt = normalizeBearing(navlogList[first].mt!!.plus(180.0)),
+        dist = navlogList[first].dist,
         pos = newLastPos
     )
     newNavlogList.add(item)
@@ -249,11 +249,11 @@ fun recalculateFlight(adapter: NavlogAdapter?) {
                 resetNavlogItem(item)
 
                 val fDFata = flightCalculator(
-                    course = navlogList[item].magneticTrack!!,
+                    course = navlogList[item].mt!!,
                     windDir = settings.windDir,
                     windSpd = settings.windSpd,
                     tas = airplane.tas,
-                    dist = navlogList[item].distance,
+                    dist = navlogList[item].dist,
                     fph = airplane.fph
                 )
 
@@ -290,7 +290,7 @@ fun recalculateTotals() {
 
     for (i in navlogList.indices) {
         if (navlogList[i].active && isNavlogItemValid(i)) {
-            totals.dist += navlogList[i].distance ?: 0.0
+            totals.dist += navlogList[i].dist ?: 0.0
             totals.time += navlogList[i].time ?: 0L
         }
     }
@@ -307,14 +307,14 @@ fun recalculateWaypoints() {
             val prevCoords = getPrevCoords(i)
             if (prevCoords != null && navlogList[i].pos != null) {
                 val tt = calcBearing(prevCoords, navlogList[i].pos!!)
-                val declination = getDeclination(navlogList[i].pos!!)
-                val mt = normalizeBearing(tt + declination)
+                val d = getDeclination(navlogList[i].pos!!)
+                val mt = normalizeBearing(tt + d)
                 val dist = m2nm(calcDistance(prevCoords, navlogList[i].pos!!))
 
-                navlogList[i].trueTrack = tt
-                navlogList[i].declination = declination
-                navlogList[i].magneticTrack = mt
-                navlogList[i].distance = dist
+                navlogList[i].tt = tt
+                navlogList[i].d = d
+                navlogList[i].mt = mt
+                navlogList[i].dist = dist
             }
         }
     }

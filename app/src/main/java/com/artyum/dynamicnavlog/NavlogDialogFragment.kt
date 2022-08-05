@@ -95,10 +95,10 @@ class NavlogDialogFragment(private val item: Int, private val adapter: NavlogAda
 
                 if (chk) {
                     navlogList[item].dest = dest.uppercase()
-                    navlogList[item].trueTrack = dTrueTrack
-                    navlogList[item].declination = dDeclination
-                    navlogList[item].magneticTrack = dMagneticTrack!!
-                    navlogList[item].distance = dDist!!
+                    navlogList[item].tt = dTrueTrack
+                    navlogList[item].d = dDeclination
+                    navlogList[item].mt = dMagneticTrack!!
+                    navlogList[item].dist = dDist!!
                     navlogList[item].remarks = remarks
                     navlogList[item].pos = pos
                     navlogList[item].active = bind.dialogCheckboxActive.isChecked
@@ -127,9 +127,6 @@ class NavlogDialogFragment(private val item: Int, private val adapter: NavlogAda
             }
         }
 
-        // Hide coordinates row when GPS support is disabled
-        if (!options.gpsAssist) bind.dialogCoordsRow.visibility = View.GONE
-
         // Fill values
         if (item < navlogList.size) {
             val prev = (getNavlogPrevItemId(item))
@@ -138,26 +135,26 @@ class NavlogDialogFragment(private val item: Int, private val adapter: NavlogAda
             bind.dialogDest.setText(navlogList[item].dest.uppercase())
 
             // True track
-            bind.dialogTt.setText(formatDouble(navlogList[item].trueTrack, 1))
+            bind.dialogTt.setText(formatDouble(navlogList[item].tt, 1))
 
             // Declination
-            if (navlogList[item].declination != null) {
-                bind.dialogDeclination.setText(formatDouble(navlogList[item].declination, 1))
+            if (navlogList[item].d != null) {
+                bind.dialogDeclination.setText(formatDouble(navlogList[item].d, 1))
             } else {
-                if (item > 0 && prev >= 0 && navlogList[prev].declination != null) {
-                    val declination = navlogList[prev].declination!!
+                if (item > 0 && prev >= 0 && navlogList[prev].d != null) {
+                    val declination = navlogList[prev].d!!
                     bind.dialogDeclination.setText(formatDouble(declination, 1))
-                    if (navlogList[item].magneticTrack != null && navlogList[item].trueTrack == null) {
-                        bind.dialogTt.setText(formatDouble(navlogList[item].magneticTrack!! - declination, 1))
+                    if (navlogList[item].mt != null && navlogList[item].tt == null) {
+                        bind.dialogTt.setText(formatDouble(navlogList[item].mt!! - declination, 1))
                     }
                 }
             }
 
             // Magnetic track
-            if (navlogList[item].magneticTrack != null) bind.dialogMt.setText(formatDouble(navlogList[item].magneticTrack, 1))
+            if (navlogList[item].mt != null) bind.dialogMt.setText(formatDouble(navlogList[item].mt, 1))
 
             // Distance
-            bind.dialogDist.setText(formatDouble(toUserUnitsDis(navlogList[item].distance), 1))
+            bind.dialogDist.setText(formatDouble(toUserUnitsDis(navlogList[item].dist), 1))
             bind.boxDistance.hint = getString(R.string.txtDistance) + " (" + getUnitsDis() + ")"
 
             // Latitude

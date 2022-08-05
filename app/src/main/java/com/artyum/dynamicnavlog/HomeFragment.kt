@@ -64,7 +64,7 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
             val i = getNavlogCurrentItemId()
             generateWindCircle(
                 bind.imgHomeView, resources,
-                course = navlogList[i].magneticTrack!!,
+                course = navlogList[i].mt!!,
                 windDir = settings.windDir,
                 hdg = navlogList[i].hdg!!,
                 speedRatio = navlogList[i].gs!! / sr
@@ -74,7 +74,7 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
             val first = getNavlogFirstActiveItemId()
             generateWindCircle(
                 bind.imgHomeView, resources,
-                course = navlogList[first].magneticTrack!!,
+                course = navlogList[first].mt!!,
                 windDir = settings.windDir,
                 hdg = navlogList[first].hdg!!,
                 speedRatio = navlogList[first].gs!! / sr
