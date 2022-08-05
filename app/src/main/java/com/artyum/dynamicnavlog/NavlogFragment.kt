@@ -34,7 +34,7 @@ class NavlogFragment : Fragment(R.layout.fragment_navlog), NavlogAdapter.OnItemC
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         bind.navlogLayout.keepScreenOn = options.keepScreenOn
-        (activity as MainActivity).displayButtons()
+        (activity as MainActivity).hideButtons()
 
         // Current & Incrementally switch
         bind.btnDisplayToggle.setOnClickListener {
@@ -122,7 +122,7 @@ class NavlogFragment : Fragment(R.layout.fragment_navlog), NavlogAdapter.OnItemC
                 globalRefresh = false
                 adapter.notifyDataSetChanged()
             }
-            delay(50)
+            delay(1000)
         }
     }
 }
