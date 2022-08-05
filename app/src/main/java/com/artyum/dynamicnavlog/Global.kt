@@ -232,7 +232,7 @@ object C {
     const val MAP_ORIENTATION_NORTH = 0
     const val MAP_ORIENTATION_TRACK = 1
     const val MAP_ORIENTATION_BEARING = 2
-    const val MAP_ZOOM_PADDING = 150
+    const val MAP_ZOOM_PADDING = 170
 
     //Screen orientation
     const val SCREEN_PORTRAIT = 0

@@ -685,6 +685,7 @@ class MainActivity : AppCompatActivity() {
                     hideBtnNextLand()
                 } else {
                     hideBtnNext()
+                    enableBtnPrev()
                     showBtnNextLand()
                 }
             }
@@ -694,13 +695,9 @@ class MainActivity : AppCompatActivity() {
     }
 
     fun hideButtons() {
-        //bind.btnBox.visibility = View.VISIBLE
+        bind.btnBoxPrevNext.visibility = View.GONE
         bind.btnOffBlock.visibility = View.GONE
         bind.btnTakeoff.visibility = View.GONE
-        bind.btnBoxPrevNext.visibility = View.GONE
-        //bind.btnPrevWpt.visibility = View.GONE
-        //bind.btnNextWpt.visibility = View.GONE
-        //bind.btnNextLand.visibility = View.GONE
         bind.btnLanding.visibility = View.GONE
         bind.btnOnBlock.visibility = View.GONE
     }

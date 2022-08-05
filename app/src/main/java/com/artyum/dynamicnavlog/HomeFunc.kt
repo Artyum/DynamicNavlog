@@ -35,8 +35,8 @@ class HomeItem() {
     var fuelTimeRemaining: Double = 0.0
     var fuelRemaining: Double = 0.0
     var fuelUsed: Double = 0.0
+    var distToCurrentWpt: Double = 0.0         // Distance remaining to next WPT
     var distFromPrevWpt: Double = 0.0   // Distance in straight line from previous WPT
-    var distRemaining: Double = 0.0     // Distance remaining to next WPT
     var distPct: Double = 0.0           // Distance travelled between WPTs in %
     var isInsideCircle: Boolean = false
 
@@ -84,22 +84,19 @@ class HomeItem() {
 
             // Dist
             if (gps.isValid) {
-                val prevCoords = getPrevCoords(item)
-                distRemaining = calcDistance(gps.pos!!, navlogList[item].pos!!)
-                distFromPrevWpt = calcDistance(prevCoords!!, gps.pos!!)
-                //val distTotal = calcDistance(prevCoords, navlogList[item].coords!!)
-                val distTotal = distFromPrevWpt + distRemaining
+                val prevPos = getPrevCoords(item)
+                distToCurrentWpt = calcDistance(gps.pos!!, navlogList[item].pos!!)
+                distFromPrevWpt = calcDistance(prevPos!!, gps.pos!!)
+                val distTotal = distFromPrevWpt + distToCurrentWpt
                 distPct = distFromPrevWpt / distTotal * 100.0
-
-                distRemaining = m2nm(distRemaining)
+                distToCurrentWpt = m2nm(distToCurrentWpt)
                 distFromPrevWpt = m2nm(distFromPrevWpt)
-
             } else {
                 val legTime = Duration.between(prevTime, eta2wpt).toMillis() / 1000
                 val legPct = eteSec.toDouble() / legTime.toDouble()
                 distPct = (1.0 - legPct) * 100.0
-                distRemaining = navlogList[item].distance!! * legPct
-                distFromPrevWpt = navlogList[item].distance!! - distRemaining
+                distToCurrentWpt = navlogList[item].distance!! * legPct
+                distFromPrevWpt = navlogList[item].distance!! - distToCurrentWpt
             }
 
             // Estimated flight time
@@ -122,7 +119,7 @@ class HomeItem() {
             fuelToLand = airplane.fph * timeToLand.toDouble() / 3600.0
 
             // Inside circle
-            isInsideCircle = distRemaining <= nextRadiusList[options.nextRadiusIndex]
+            isInsideCircle = distToCurrentWpt <= nextRadiusList[options.nextRadiusIndex]
         } else if (stage >= C.STAGE_4_AFTER_LANDING) {
             estFlightTimeSec = Duration.between(timers.takeoff, timers.landing).toMillis() / 1000
         }
@@ -226,8 +223,8 @@ class HomeItem() {
         }
 
         // Check hit waypoint circle
-        if (stage == C.STAGE_3_FLIGHT_IN_PROGRESS && distRemaining > 0 && gps.isValid && gps.bearing != null && item >= 0) {
-            val p = calcDestinationPos(gps.pos!!, gps.bearing!!.toDouble(), nm2m(distRemaining))
+        if (stage == C.STAGE_3_FLIGHT_IN_PROGRESS && distToCurrentWpt > 0 && gps.isValid && gps.bearing != null && item >= 0) {
+            val p = calcDestinationPos(gps.pos!!, gps.bearing!!.toDouble(), nm2m(distToCurrentWpt))
             val d = calcDistance(p, navlogList[item].pos!!)
             if (m2nm(d) > nextRadiusList[options.nextRadiusIndex]) hit = false
         }
@@ -243,20 +240,23 @@ class HomeItem() {
                 if (navlogList[first].distance!! > C.DIST_THRESHOLD) ret.dist = formatDouble(toUserUnitsDis(navlogList[first].distance!!))
                 else ret.dist = formatDouble(toUserUnitsDis(navlogList[first].distance!!), 1)
             }
-            return ret
-        } else if (stage > C.STAGE_3_FLIGHT_IN_PROGRESS) return ret
+        } else if (stage == C.STAGE_3_FLIGHT_IN_PROGRESS) {
+            var p = if (toUserUnitsDis(abs(distToCurrentWpt))!! > C.DIST_THRESHOLD) 0 else 1
+            ret.dist = formatDouble(toUserUnitsDis(abs(distToCurrentWpt)), p)
 
-        // stage == C.STAGE_3_FLIGHT_IN_PROGRESS
-        ret.dist = if (abs(distRemaining) > C.DIST_THRESHOLD) formatDouble(toUserUnitsDis(abs(distRemaining))) else formatDouble(toUserUnitsDis(abs(distRemaining)), 1)
-        ret.distTravelled = if (abs(distFromPrevWpt) > C.DIST_THRESHOLD) formatDouble(toUserUnitsDis(abs(distFromPrevWpt))) else formatDouble(toUserUnitsDis(abs(distFromPrevWpt)), 1)
-        ret.pct = formatDouble(distPct) + "%"
-        if (distRemaining < 0.0) ret.sign = true
+            p = if (toUserUnitsDis(abs(distFromPrevWpt))!! > C.DIST_THRESHOLD) 0 else 1
+            ret.distTravelled = formatDouble(toUserUnitsDis(abs(distFromPrevWpt)), p)
 
-        if (distPct > 100.0) {
-            distPct = (1.0 - (distPct - 100.0) / distPct) * 100.0
-            ret.overflow = true
+            ret.pct = formatDouble(distPct) + "%"
+            if (distToCurrentWpt < 0.0) ret.sign = true
+
+            if (distPct > 100.0) {
+                distPct = (1.0 - (distPct - 100.0) / distPct) * 100.0
+                ret.overflow = true
+            }
+            ret.progress = distPct.roundToInt()
         }
-        ret.progress = distPct.roundToInt()
+
         return ret
     }
 
@@ -309,7 +309,7 @@ class HomeItem() {
         val ret = HomeFuelTime()
 
         if (stage < C.STAGE_5_AFTER_ENGINE_SHUTDOWN && fuelToLand > 0.0) ret.ftl = formatDouble(toUserUnitsVol(fuelToLand))
-        if (distRemaining < 0.0) ret.ftlmark = "?"
+        if (distToCurrentWpt < 0.0) ret.ftlmark = "?"
         if (engineTimeSec > 0.0) ret.engineTime = formatSecondsToTime(engineTimeSec) else ret.engineTime = "-"
 
         ret.fuelTime = formatSecondsToTime(fuelTimeRemaining.toLong())

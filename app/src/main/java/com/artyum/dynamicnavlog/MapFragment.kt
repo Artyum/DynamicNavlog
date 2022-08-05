@@ -241,7 +241,7 @@ class MapFragment : Fragment(R.layout.fragment_map) {
         bind.txtNavDist.text = getString(R.string.txtDist) + " (" + getUnitsDis() + ")"
 
         // Start home thread
-        CoroutineScope(CoroutineName("map")).launch { updateMapNavUIThread() }
+        CoroutineScope(CoroutineName("map")).launch { updateNavigationBoxThread() }
 
         // Run map update thread
         lifecycleScope.launch { updateMapThread() }
@@ -769,7 +769,7 @@ class MapFragment : Fragment(R.layout.fragment_map) {
         }
     }
 
-    private fun updateMapNavUIThread() {
+    private fun updateNavigationBoxThread() {
         var prevTime = 0L
 
         while (true) {

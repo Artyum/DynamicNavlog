@@ -36,26 +36,26 @@ class NavlogDialogFragment(private val item: Int, private val adapter: NavlogAda
         bind.dialogTt.doAfterTextChanged {
             if (cmt) {
                 calcMt()
-                calcCoords()
+                calcPos()
             }
         }
 
         bind.dialogDeclination.doAfterTextChanged {
             if (cmt) {
                 calcMt()
-                calcCoords()
+                calcPos()
             }
         }
 
         bind.dialogMt.doAfterTextChanged {
             if (ctt) {
                 calcTt()
-                calcCoords()
+                calcPos()
             }
         }
 
         bind.dialogDist.doAfterTextChanged {
-            calcCoords()
+            calcPos()
         }
 
         // Button Apply
@@ -193,37 +193,35 @@ class NavlogDialogFragment(private val item: Int, private val adapter: NavlogAda
     }
 
     private fun calcTt() {
-        Log.d(TAG, "calcTt")
         cmt = false
         val mt = getDoubleOrNull(bind.dialogMt.text.toString())
-        val decl = getDoubleOrNull(bind.dialogDeclination.text.toString())
-        if (mt != null && decl != null && mt in 0.0..360.0) {
-            val tt = normalizeBearing(mt - decl)
+        val d = getDoubleOrNull(bind.dialogDeclination.text.toString())
+        if (mt != null && d != null && mt in 0.0..360.0) {
+            val tt = normalizeBearing(mt - d)
             bind.dialogTt.setText(formatDouble(tt, 1))
         } else bind.dialogTt.setText("")
         cmt = true
     }
 
     private fun calcMt() {
-        Log.d(TAG, "calcMt")
         ctt = false
         val tt = getDoubleOrNull(bind.dialogTt.text.toString())
-        val decl = getDoubleOrNull(bind.dialogDeclination.text.toString())
-        if (tt != null && decl != null && tt in 0.0..360.0) {
-            val mt = normalizeBearing(tt + decl)
+        val d = getDoubleOrNull(bind.dialogDeclination.text.toString())
+        if (tt != null && d != null && tt in 0.0..360.0) {
+            val mt = normalizeBearing(tt + d)
             bind.dialogMt.setText(formatDouble(mt, 1))
         } else bind.dialogMt.setText("")
         ctt = true
     }
 
-    private fun calcCoords() {
+    private fun calcPos() {
         val tt = getDoubleOrNull(bind.dialogTt.text.toString())
-        val dist = getDoubleOrNull(bind.dialogDist.text.toString())
-        val prevCoords = getPrevCoords(item)
-        if (tt != null && dist != null && prevCoords != null) {
-            val newCoords = calcDestinationPos(from = prevCoords, bearing = tt, distance = nm2m(dist))
-            bind.dialogLat.setText(formatDouble(newCoords.latitude, C.POS_PRECISION))
-            bind.dialogLng.setText(formatDouble(newCoords.longitude, C.POS_PRECISION))
+        val dist = fromUserUnitsDis(getDoubleOrNull(bind.dialogDist.text.toString()))
+        val prevPos = getPrevCoords(item)
+        if (tt != null && dist != null && prevPos != null) {
+            val newPos = calcDestinationPos(from = prevPos, bearing = tt, distance = nm2m(dist))
+            bind.dialogLat.setText(formatDouble(newPos.latitude, C.POS_PRECISION))
+            bind.dialogLng.setText(formatDouble(newPos.longitude, C.POS_PRECISION))
         }
     }
 
