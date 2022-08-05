@@ -50,10 +50,10 @@ fun saveState(fileName: String = "") {
         if (isNavlogItemValid(i)) {
             val item = JSONObject()
             item.put("dest", navlogList[i].dest)
-            item.put("tt", navlogList[i].trueTrack)
-            item.put("d", navlogList[i].declination)
-            item.put("mt", navlogList[i].magneticTrack)
-            item.put("dist", navlogList[i].distance)
+            item.put("tt", navlogList[i].tt)
+            item.put("d", navlogList[i].d)
+            item.put("mt", navlogList[i].mt)
+            item.put("dist", navlogList[i].dist)
             item.put("wca", navlogList[i].wca)
             item.put("hdg", navlogList[i].hdg)
             item.put("gs", navlogList[i].gs)
@@ -200,10 +200,10 @@ fun loadState(fileName: String = C.stateFile) {
             if (dest.isNotEmpty() && mt != null && dist != null) newNavlogList.add(
                 NavlogItem(
                     dest = dest,
-                    trueTrack = tt,
-                    declination = d,
-                    magneticTrack = mt,
-                    distance = dist,
+                    tt = tt,
+                    d = d,
+                    mt = mt,
+                    dist = dist,
                     wca = wca,
                     hdg = hdg,
                     gs = gs,
@@ -446,10 +446,10 @@ fun loadStateDnl(fileName: String = C.stateFile) {
                         if (chk) newNavlogList.add(
                             NavlogItem(
                                 dest = str[iDest].uppercase(),
-                                trueTrack = tt,
-                                declination = d,
-                                magneticTrack = mt!!,
-                                distance = dist!!,
+                                tt = tt,
+                                d = d,
+                                mt = mt!!,
+                                dist = dist!!,
                                 wca = wca,
                                 hdg = hdg,
                                 gs = gs,
@@ -635,10 +635,10 @@ fun savePlanAsCsv(): String {
         for (i in navlogList.indices) {
             if (navlogList[i].active) {
                 var msg = navlogList[i].dest + ";" +
-                        formatDouble(navlogList[i].trueTrack) + ";" +
-                        formatDouble(navlogList[i].declination) + ";" +
-                        formatDouble(navlogList[i].magneticTrack) + ";" +
-                        formatDouble(navlogList[i].distance) + ";" +
+                        formatDouble(navlogList[i].tt) + ";" +
+                        formatDouble(navlogList[i].d) + ";" +
+                        formatDouble(navlogList[i].mt) + ";" +
+                        formatDouble(navlogList[i].dist) + ";" +
                         formatDouble(navlogList[i].wca) + ";" +
                         formatDouble(navlogList[i].hdg) + ";" +
                         formatDouble(navlogList[i].gs) + ";" +

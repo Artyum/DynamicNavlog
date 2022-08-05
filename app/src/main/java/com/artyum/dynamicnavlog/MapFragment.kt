@@ -505,10 +505,10 @@ class MapFragment : Fragment(R.layout.fragment_map) {
             val bearing = if (options.mapOrientation == C.MAP_ORIENTATION_NORTH) {
                 0f
             } else if (options.mapOrientation == C.MAP_ORIENTATION_TRACK) {
-                if (navlogList[item].trueTrack != null) navlogList[item].trueTrack!!.toFloat() else 0f
+                if (navlogList[item].tt != null) navlogList[item].tt!!.toFloat() else 0f
             } else {
                 // C.MAP_ORIENTATION_BEARING
-                if (gps.isValid) gps.bearing!! else if (navlogList[item].trueTrack != null) navlogList[item].trueTrack!!.toFloat() else 0f
+                if (gps.isValid) gps.bearing!! else if (navlogList[item].tt != null) navlogList[item].tt!!.toFloat() else 0f
             }
 
             if (isMapFollow() && gps.isValid) {
@@ -530,7 +530,7 @@ class MapFragment : Fragment(R.layout.fragment_map) {
                     map2.moveCamera(CameraUpdateFactory.newLatLngBounds(bounds, C.MAP_ZOOM_PADDING))
                     map2.cameraPosition.zoom
                 } else {
-                    getZoomLevel(target, navlogList[item].distance!!)
+                    getZoomLevel(target, navlogList[item].dist!!)
                 }
             }
 
@@ -689,7 +689,7 @@ class MapFragment : Fragment(R.layout.fragment_map) {
         val dist = m2nm(calcDistance(prevCoords, pos))
 
         // Add item
-        navlogList.add(position, NavlogItem(dest = "", pos = pos, trueTrack = tt, declination = getDeclination(pos), distance = dist))
+        navlogList.add(position, NavlogItem(dest = "", pos = pos, tt = tt, d = getDeclination(pos), dist = dist))
         val dialog = NavlogDialogFragment(position)
         dialog.show(parentFragmentManager, "NavlogDialogFragment")
     }

@@ -25,24 +25,24 @@ class NavlogAdapter(
         holder.tvDest.text = item.dest
 
         // TT
-        holder.tvTt.text = formatDouble(item.trueTrack)
+        holder.tvTt.text = formatDouble(item.tt)
 
         // d
         var tmp = ""
-        if (item.declination != null) {
-            tmp = if (item.declination!! < 0.0) formatDouble(-item.declination!!) + C.SIGN_EAST
-            else formatDouble(item.declination) + C.SIGN_WEST
+        if (item.d != null) {
+            tmp = if (item.d!! < 0.0) formatDouble(-item.d!!) + C.SIGN_EAST
+            else formatDouble(item.d) + C.SIGN_WEST
         }
         holder.tvDec.text = tmp
 
         // MT
-        holder.tvMt.text = formatDouble(item.magneticTrack)
+        holder.tvMt.text = formatDouble(item.mt)
 
         // DIST
         tmp = ""
-        if (item.distance != null) {
-            val p = if (item.distance!! < C.DIST_THRESHOLD) 1 else 0
-            tmp = formatDouble(toUserUnitsDis(item.distance), p)
+        if (item.dist != null) {
+            val p = if (item.dist!! < C.DIST_THRESHOLD) 1 else 0
+            tmp = formatDouble(toUserUnitsDis(item.dist), p)
         }
         holder.tvDist.text = tmp
 

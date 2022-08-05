@@ -32,19 +32,19 @@ data class Settings(
 
 data class NavlogItem(
     var dest: String,                     // Waypoint name
-    var trueTrack: Double? = null,
-    var declination: Double? = null,
-    var magneticTrack: Double? = null,
-    var distance: Double? = null,         // Leg length
+    var tt: Double? = null,               // True track
+    var d: Double? = null,                // Declination
+    var mt: Double? = null,               // Magnetic track
+    var dist: Double? = null,             // Leg length (nm)
     var wca: Double? = null,              // Wind Correction Angle
     var hdg: Double? = null,              // Heading
-    var gs: Double? = null,               // Ground speed
+    var gs: Double? = null,               // Ground speed (kt)
     var time: Long? = null,               // Leg time in seconds
-    var timeIncrement: Long? = null,      // Leg time in seconds
-    var eta: LocalDateTime? = null,
-    var ata: LocalDateTime? = null,
+    var timeIncrement: Long? = null,      // Time incrementar
     var fuel: Double? = null,             // Fuel required for leg
-    var fuelRemaining: Double? = null,    // Total fuel remaining
+    var fuelRemaining: Double? = null,    // Fuel remaining
+    var eta: LocalDateTime? = null,       // ETA
+    var ata: LocalDateTime? = null,       // ATA
     var remarks: String = "",             // Waypoint notes
     var active: Boolean = true,           // Is waypoint active
     var current: Boolean = false,         // Is waypoint current

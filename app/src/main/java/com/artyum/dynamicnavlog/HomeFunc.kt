@@ -95,8 +95,8 @@ class HomeItem() {
                 val legTime = Duration.between(prevTime, eta2wpt).toMillis() / 1000
                 val legPct = eteSec.toDouble() / legTime.toDouble()
                 distPct = (1.0 - legPct) * 100.0
-                distToCurrentWpt = navlogList[item].distance!! * legPct
-                distFromPrevWpt = navlogList[item].distance!! - distToCurrentWpt
+                distToCurrentWpt = navlogList[item].dist!! * legPct
+                distFromPrevWpt = navlogList[item].dist!! - distToCurrentWpt
             }
 
             // Estimated flight time
@@ -112,7 +112,7 @@ class HomeItem() {
             // Track angle / Direct MT
             if (gps.isValid) {
                 trackAngle = calcBearingAngle(navlogList[item].pos!!, gps.pos!!, getPrevCoords(item)!!)
-                dmt = normalizeBearing(calcBearing(gps.pos!!, navlogList[item].pos!!) + navlogList[item].declination!!)
+                dmt = normalizeBearing(calcBearing(gps.pos!!, navlogList[item].pos!!) + navlogList[item].d!!)
             }
 
             // Fuel to land
@@ -196,9 +196,9 @@ class HomeItem() {
         var angle = ""
 
         if (stage < C.STAGE_3_FLIGHT_IN_PROGRESS && first >= 0) {
-            mt = formatDouble(navlogList[first].magneticTrack)
+            mt = formatDouble(navlogList[first].mt)
         } else if (stage == C.STAGE_3_FLIGHT_IN_PROGRESS) {
-            mt = formatDouble(navlogList[item].magneticTrack)
+            mt = formatDouble(navlogList[item].mt)
             if (gps.isValid) {
                 angle = if (abs(trackAngle) >= C.DIST_THRESHOLD) formatDouble(trackAngle) else formatDouble(trackAngle, 1)
                 mtDct = formatDouble(dmt)
@@ -236,9 +236,9 @@ class HomeItem() {
         val ret = HomeDist()
 
         if (stage < C.STAGE_3_FLIGHT_IN_PROGRESS) {
-            if (first >= 0 && navlogList[first].distance != null) {
-                if (navlogList[first].distance!! > C.DIST_THRESHOLD) ret.dist = formatDouble(toUserUnitsDis(navlogList[first].distance!!))
-                else ret.dist = formatDouble(toUserUnitsDis(navlogList[first].distance!!), 1)
+            if (first >= 0 && navlogList[first].dist != null) {
+                if (navlogList[first].dist!! > C.DIST_THRESHOLD) ret.dist = formatDouble(toUserUnitsDis(navlogList[first].dist!!))
+                else ret.dist = formatDouble(toUserUnitsDis(navlogList[first].dist!!), 1)
             }
         } else if (stage == C.STAGE_3_FLIGHT_IN_PROGRESS) {
             var p = if (toUserUnitsDis(abs(distToCurrentWpt))!! > C.DIST_THRESHOLD) 0 else 1
