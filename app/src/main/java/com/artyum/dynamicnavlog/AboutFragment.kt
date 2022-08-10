@@ -25,7 +25,7 @@ class AboutFragment : Fragment(R.layout.fragment_about) {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         bind.aboutLayout.keepScreenOn = options.keepScreenOn
-        (activity as MainActivity).hideButtons()
+        (activity as MainActivity).displayButtons()
 
         // Clickable links
         bind.linkManual.movementMethod = LinkMovementMethod.getInstance()

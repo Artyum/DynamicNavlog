@@ -1,7 +1,6 @@
 package com.artyum.dynamicnavlog
 
 import android.Manifest
-import android.annotation.SuppressLint
 import android.app.AlertDialog
 import android.content.Intent
 import android.content.pm.ActivityInfo
@@ -271,7 +270,6 @@ class MainActivity : AppCompatActivity() {
         return navController.navigateUp(appBarConfiguration) || super.onSupportNavigateUp()
     }
 
-    @SuppressLint("RestrictedApi")
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         menuInflater.inflate(R.menu.options_menu, menu)
         return true
@@ -308,6 +306,7 @@ class MainActivity : AppCompatActivity() {
                         resetFlight()
                         //Toast.makeText(this, getString(R.string.txtResetDone), Toast.LENGTH_SHORT).show()
                         //navController.navigate(R.id.homeFragment)
+                        displayButtons()
                     }
                     .setNegativeButton(R.string.txtNo) { dialog, _ ->
                         dialog.dismiss()
@@ -660,10 +659,13 @@ class MainActivity : AppCompatActivity() {
           - btnOnBlock
         */
 
-        val stage = getFlightStage()
-
         // Hide all buttons
         hideButtons()
+
+        val currentFragment = navController.currentDestination.toString()
+        if (!currentFragment.contains("HomeFragment") and !currentFragment.contains("MapFragment")) return
+
+        val stage = getFlightStage()
 
         if (stage == C.STAGE_1_BEFORE_ENGINE_START) {
             if (isNavlogReady()) bind.btnOffBlock.visibility = View.VISIBLE
@@ -690,7 +692,7 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    fun hideButtons() {
+    private fun hideButtons() {
         bind.btnBoxPrevNext.visibility = View.GONE
         bind.btnOffBlock.visibility = View.GONE
         bind.btnTakeoff.visibility = View.GONE

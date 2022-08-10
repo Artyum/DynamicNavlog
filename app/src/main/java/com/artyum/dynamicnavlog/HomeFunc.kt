@@ -73,7 +73,7 @@ class HomeItem() {
             val eta2wpt = prevTime!!.plusSeconds(navlogList[item].time!!)
 
             // ETE
-            eteSec = if (gps.isValid && isNavlogItemGpsReady(item)) {
+            eteSec = if (gps.isValid) {
                 if (gps.speedMps >= C.GPS_MINIMUM_RAW_SPEED) {
                     val dist = calcDistance(gps.pos!!, navlogList[item].pos!!)
                     (dist / gps.speedMps).toLong()   // Time in seconds
