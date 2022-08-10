@@ -33,7 +33,7 @@ class OptionsFragment : Fragment(R.layout.fragment_options) {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         bind.optionsLayout.keepScreenOn = options.keepScreenOn
-        (activity as MainActivity).hideButtons()
+        (activity as MainActivity).displayButtons()
 
         // Switch - GPS assist
         bind.settingGpsAssist.setOnCheckedChangeListener { _, isChecked ->

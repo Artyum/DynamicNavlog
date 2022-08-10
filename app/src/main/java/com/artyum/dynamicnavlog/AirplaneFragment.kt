@@ -36,7 +36,7 @@ class AirplaneFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         bind.airplaneLayout.keepScreenOn = options.keepScreenOn
-        (activity as MainActivity).hideButtons()
+        (activity as MainActivity).displayButtons()
 
         // Speed units
         bind.spinnerSpeedUnits.onItemSelectedListener =

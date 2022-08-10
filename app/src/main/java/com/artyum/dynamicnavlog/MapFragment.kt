@@ -37,8 +37,6 @@ class MapFragment : Fragment(R.layout.fragment_map) {
     private val radialMarkers = ArrayList<Marker>()
     private val radialCircles = ArrayList<Circle>()
     private val radialLines = ArrayList<Polyline>()
-
-    //private var windArrowLine: Polyline? = null
     private var traceLine: Polyline? = null
 
     private var radialStartPoint: LatLng? = null
@@ -237,8 +235,10 @@ class MapFragment : Fragment(R.layout.fragment_map) {
         refreshBottomBar()
 
         // Display units in top navigation bar
-        bind.txtNavGs.text = getString(R.string.txtGs) + " (" + getUnitsSpd() + ")"
-        bind.txtNavDist.text = getString(R.string.txtDist) + " (" + getUnitsDis() + ")"
+        val txtGs = getString(R.string.txtGs) + " (" + getUnitsSpd() + ")"
+        bind.txtNavGs.text = txtGs
+        val txtDist = getString(R.string.txtDist) + " (" + getUnitsDis() + ")"
+        bind.txtNavDist.text = txtDist
 
         // Start home thread
         CoroutineScope(CoroutineName("map")).launch { updateNavigationBoxThread() }
@@ -249,87 +249,76 @@ class MapFragment : Fragment(R.layout.fragment_map) {
 
     private fun drawFlightPlan() {
         if (!mapReady) return
+        if (settings.takeoffPos == null) return
         //Log.d(TAG, "drawFlightPlan")
 
-        if (settings.takeoffPos != null) {
-            trackMarkers.forEach { it.remove() }
-            trackMarkers.clear()
-            trackLines.forEach { it.remove() }
-            trackLines.clear()
-            trackCircles.forEach { it.remove() }
-            trackCircles.clear()
+        val stage = getFlightStage()
+        trackMarkers.forEach { it.remove() }
+        trackMarkers.clear()
+        trackLines.forEach { it.remove() }
+        trackLines.clear()
+        trackCircles.forEach { it.remove() }
+        trackCircles.clear()
 
-            // Departure point
-            if (getFlightStage() < C.STAGE_3_FLIGHT_IN_PROGRESS) addMarker(pos = settings.takeoffPos!!, type = C.MAP_ITEM_TRACK, id = -1, hue = BitmapDescriptorFactory.HUE_GREEN)
+        // Departure point
+        if (stage < C.STAGE_3_FLIGHT_IN_PROGRESS) addMarker(pos = settings.takeoffPos!!, type = C.MAP_ITEM_TRACK, id = -1, hue = BitmapDescriptorFactory.HUE_GREEN)
 
-            // Track
-            val item = getNavlogCurrentItemId()
-            val last = getNavlogLastActiveItemId()
+        // Track
+        val item = getNavlogCurrentItemId()
+        val last = getNavlogLastActiveItemId()
 
-            for (i in navlogList.indices) {
-                if (isNavlogItemGpsReady(i)) {
-                    if (navlogList[i].active) {
-                        val prev = getPrevCoords(i)
+        for (i in navlogList.indices) {
+            if (navlogList[i].active) {
+                val prev = getPrevCoords(i)
 
-                        // Markers
-                        var hue = BitmapDescriptorFactory.HUE_RED                      // Default
-                        if (i == last) hue = BitmapDescriptorFactory.HUE_ORANGE        // Last
-                        if (isFlightInProgress()) {
-                            if (i == item) hue = BitmapDescriptorFactory.HUE_MAGENTA   // Current
-                            if (i < item) hue = BitmapDescriptorFactory.HUE_AZURE      // Passed
-                        }
-                        if (i >= item) addMarker(pos = navlogList[i].pos!!, type = C.MAP_ITEM_TRACK, id = i, hue = hue)
-
-                        // Auto-next circle
-                        if (isAutoNextEnabled() && i >= item) {
-                            val pos = navlogList[i].pos!!
-                            val radius = nm2m(nextRadiusList[options.nextRadiusIndex])
-                            val fill = R.color.grayTransparent2
-
-                            if (isFlightInProgress()) {
-                                // Show only current waypoint circle
-                                if (i == item) addCircle(pos = pos, radius = radius, fillColor = fill, type = C.MAP_ITEM_TRACK)
-                            } else addCircle(pos = pos, radius = radius, fillColor = fill, type = C.MAP_ITEM_TRACK)
-                        }
-
-                        // Track color
-                        var color: Int = R.color.trackdefault   // Default
-                        if (isFlightInProgress()) {
-                            if (i < item) color = R.color.trackpassed   // Passed track
-                            else if (i == item) color = R.color.trackcurrent      // Current track
-                        }
-
-                        // Track line
-                        if (prev != null) addLine(prev, navlogList[i].pos!!, color, C.TRACK_WIDTH, C.MAP_ITEM_TRACK)
-                    } else {
-                        // Inactive markers
-                        if (i >= item) addMarker(pos = navlogList[i].pos!!, type = C.MAP_ITEM_TRACK, id = i, hue = BitmapDescriptorFactory.HUE_VIOLET)
-
-                        // Inactive track line
-                        if (i == 0) {
-                            addLine(settings.takeoffPos!!, navlogList[i].pos!!, R.color.trackinactive, C.TRACK_INACTIVE_WIDTH, C.MAP_ITEM_TRACK)
-                            if (navlogList.size > 1 && navlogList[1].active) addLine(navlogList[0].pos!!, navlogList[i + 1].pos!!, R.color.trackinactive, C.TRACK_INACTIVE_WIDTH, C.MAP_ITEM_TRACK)
-                        } else if (i > 0 && i < navlogList.size) {
-                            addLine(navlogList[i - 1].pos!!, navlogList[i].pos!!, R.color.trackinactive, C.TRACK_INACTIVE_WIDTH, C.MAP_ITEM_TRACK)
-                            if (i < navlogList.size - 1 && navlogList[i + 1].active) {
-                                addLine(navlogList[i].pos!!, navlogList[i + 1].pos!!, R.color.trackinactive, C.TRACK_INACTIVE_WIDTH, C.MAP_ITEM_TRACK)
-                            }
-                        }
-                    }
+                // Markers
+                var hue = BitmapDescriptorFactory.HUE_RED                      // Default
+                if (i == last) hue = BitmapDescriptorFactory.HUE_ORANGE        // Last
+                if (isFlightInProgress()) {
+                    if (i == item) hue = BitmapDescriptorFactory.HUE_MAGENTA   // Current
+                    if (i < item) hue = BitmapDescriptorFactory.HUE_AZURE      // Passed
                 }
-            }
+                if (stage < C.STAGE_4_AFTER_LANDING) {
+                    if (i >= item) addMarker(pos = navlogList[i].pos!!, type = C.MAP_ITEM_TRACK, id = i, hue = hue)
+                } else {
+                    // Add two marker at start and end
+                    addMarker(pos = settings.takeoffPos!!, type = C.MAP_ITEM_TRACK, id = i, hue = BitmapDescriptorFactory.HUE_GREEN, draggable = false)
+                    addMarker(pos = navlogList[last].pos!!, type = C.MAP_ITEM_TRACK, id = i, hue = hue, draggable = false)
+                }
 
-            // Show not "gps-ready" waypoints
-            var cnt = 0  // Count points
-            for (i in navlogList.indices) if (navlogList[i].pos == null) cnt += 1
-            if (cnt > 0) {
-                // Draw
-                var angle = 0.0
-                for (i in navlogList.indices) {
-                    if (navlogList[i].pos == null) {
-                        val point = calcDestinationPos(settings.takeoffPos!!, angle, nm2m(10.0))
-                        angle += 360.0 / cnt.toDouble()
-                        addMarker(pos = point, type = C.MAP_ITEM_TRACK, id = i, hue = BitmapDescriptorFactory.HUE_YELLOW)
+                // Auto-next circle
+                if (isAutoNextEnabled() && i >= item) {
+                    val pos = navlogList[i].pos!!
+                    val radius = nm2m(nextRadiusList[options.nextRadiusIndex])
+                    val fill = R.color.grayTransparent2
+
+                    if (isFlightInProgress()) {
+                        // Show only current waypoint circle
+                        if (i == item) addCircle(pos = pos, radius = radius, fillColor = fill, type = C.MAP_ITEM_TRACK)
+                    } else addCircle(pos = pos, radius = radius, fillColor = fill, type = C.MAP_ITEM_TRACK)
+                }
+
+                // Track color
+                var color: Int = R.color.trackdefault   // Default
+                if (isFlightInProgress()) {
+                    if (i < item) color = R.color.trackpassed   // Passed track
+                    else if (i == item) color = R.color.trackcurrent      // Current track
+                }
+
+                // Track line
+                if (prev != null) addLine(prev, navlogList[i].pos!!, color, C.TRACK_WIDTH, C.MAP_ITEM_TRACK)
+            } else {
+                // Inactive markers
+                if (i >= item) addMarker(pos = navlogList[i].pos!!, type = C.MAP_ITEM_TRACK, id = i, hue = BitmapDescriptorFactory.HUE_VIOLET)
+
+                // Inactive track line
+                if (i == 0) {
+                    addLine(settings.takeoffPos!!, navlogList[i].pos!!, R.color.trackinactive, C.TRACK_INACTIVE_WIDTH, C.MAP_ITEM_TRACK)
+                    if (navlogList.size > 1 && navlogList[1].active) addLine(navlogList[0].pos!!, navlogList[i + 1].pos!!, R.color.trackinactive, C.TRACK_INACTIVE_WIDTH, C.MAP_ITEM_TRACK)
+                } else if (i > 0 && i < navlogList.size) {
+                    addLine(navlogList[i - 1].pos!!, navlogList[i].pos!!, R.color.trackinactive, C.TRACK_INACTIVE_WIDTH, C.MAP_ITEM_TRACK)
+                    if (i < navlogList.size - 1 && navlogList[i + 1].active) {
+                        addLine(navlogList[i].pos!!, navlogList[i + 1].pos!!, R.color.trackinactive, C.TRACK_INACTIVE_WIDTH, C.MAP_ITEM_TRACK)
                     }
                 }
             }
@@ -358,29 +347,7 @@ class MapFragment : Fragment(R.layout.fragment_map) {
         if (!mapReady) return
         if (!options.drawWindArrow) return
         //Log.d(TAG, "drawWindArrow")
-
         generateWindArrow(bind.mapWindIndicator, resources, normalizeBearing(map.cameraPosition.bearing - settings.windDir + getDeclination(map.cameraPosition.target)))
-
-//        val line = PolylineOptions()
-//            .clickable(false)
-//            .color(ContextCompat.getColor(this.requireContext(), R.color.windArrow))
-//            .geodesic(false)
-//            .width(7f)
-//
-//        val visibleRegion: VisibleRegion = map.projection.visibleRegion
-//        val center = visibleRegion.latLngBounds.center
-//        val angle = normalizeBearing(settings.windDir - getDeclination(center))  // Get declination from the center of the screen
-//        val len1 = calcDistance(center, visibleRegion.latLngBounds.southwest) / 4.0
-//        val len2 = len1 / 2.8
-//
-//        val startPoint = calcDestinationPos(center, angle, len1 / 2.0)
-//        val endPoint = calcDestinationPos(startPoint, normalizeBearing(angle + 180.0), len1)
-//        val q1 = calcDestinationPos(endPoint, normalizeBearing(angle + 10.0), len2)
-//        val q2 = calcDestinationPos(endPoint, normalizeBearing(angle - 10.0), len2)
-//
-//        line.add(startPoint, endPoint, q1, q2)
-//        windArrowLine?.remove()
-//        windArrowLine = map.addPolyline(line)
     }
 
     private fun drawRadials() {
@@ -441,10 +408,8 @@ class MapFragment : Fragment(R.layout.fragment_map) {
             chkTO = true
         }
         for (i in navlogList.indices) {
-            if (isNavlogItemGpsReady(i)) {
-                builder.include(navlogList[i].pos!!)
-                chkItems = true
-            }
+            builder.include(navlogList[i].pos!!)
+            chkItems = true
         }
 
         if (chkTO || chkItems) {
@@ -599,11 +564,11 @@ class MapFragment : Fragment(R.layout.fragment_map) {
         }
     }
 
-    private fun addMarker(pos: LatLng, type: Int, id: Int, hue: Float) {
+    private fun addMarker(pos: LatLng, type: Int, id: Int, hue: Float, draggable: Boolean = true) {
         val m = map.addMarker(
             MarkerOptions()
                 .position(pos)
-                .draggable(true)
+                .draggable(draggable)
                 .icon(BitmapDescriptorFactory.defaultMarker(hue))
                 .title(type.toString())
         )
@@ -667,11 +632,11 @@ class MapFragment : Fragment(R.layout.fragment_map) {
             // Find nearest waypoints among all navlog items - active and not active
             val angleList = ArrayList<Angles>()
 
-            if (isNavlogItemGpsReady(0)) angleList.add(Angles(-1, abs(calcBearingAngle(pos, settings.takeoffPos!!, navlogList[0].pos!!))))
+            angleList.add(Angles(-1, abs(calcBearingAngle(pos, settings.takeoffPos!!, navlogList[0].pos!!))))
 
             // Search through waypoints
-            for (i in navlogList.indices) {
-                if (isNavlogItemGpsReady(i) && isNavlogItemGpsReady(i + 1)) angleList.add(Angles(i, abs(calcBearingAngle(pos, navlogList[i].pos!!, navlogList[i + 1].pos!!))))
+            for (i in 0 until navlogList.size - 1) {
+                angleList.add(Angles(i, abs(calcBearingAngle(pos, navlogList[i].pos!!, navlogList[i + 1].pos!!))))
             }
 
             // Sort by angle

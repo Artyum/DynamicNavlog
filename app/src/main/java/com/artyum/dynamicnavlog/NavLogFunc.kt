@@ -110,18 +110,6 @@ fun isNavlogItemValid(i: Int): Boolean {
     return i < navlogList.size && navlogList[i].dest != "" && navlogList[i].mt != null && navlogList[i].dist != null
 }
 
-fun isNavlogItemGpsReady(i: Int): Boolean {
-    return i < navlogList.size && navlogList[i].pos != null && navlogList[i].d != null && navlogList[i].tt != null && navlogList[i].mt != null
-}
-
-fun isNavlogGpsReady(): Boolean {
-    if (settings.takeoffPos == null || navlogList.size == 0) return false
-    for (i in navlogList.indices) {
-        if (!isNavlogItemGpsReady(i)) return false
-    }
-    return true
-}
-
 fun setFirstCurrent() {
     val i = getNavlogFirstActiveItemId()
     if (i != -1) navlogList[i].current = true
