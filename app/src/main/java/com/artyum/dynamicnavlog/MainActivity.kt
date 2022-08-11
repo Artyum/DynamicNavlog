@@ -662,6 +662,7 @@ class MainActivity : AppCompatActivity() {
         // Hide all buttons
         hideButtons()
 
+        // Display buttons only on specific Fragments
         val currentFragment = navController.currentDestination.toString()
         if (!currentFragment.contains("HomeFragment") and !currentFragment.contains("MapFragment")) return
 
@@ -874,7 +875,7 @@ class MainActivity : AppCompatActivity() {
                         if (gpsFailCnt >= C.GPS_ALIVE_SEC) {
                             // GPS lost
                             gpsData.isValid = false
-                            runOnUiThread { bind.gpsLostBox.visibility = View.VISIBLE }
+                            if (isFlightInProgress()) runOnUiThread { bind.gpsLostBox.visibility = View.VISIBLE }
                         } else gpsFailCnt += 1
                     } else {
                         gpsFailCnt = 0
