@@ -206,7 +206,7 @@ fun invertNavlog() {
 
     // Add last waypoint
     val item = NavlogItem(
-        dest = settings.destination,
+        dest = if (settings.destination == "") "END" else settings.destination,
         mt = normalizeBearing(navlogList[first].mt!!.plus(180.0)),
         dist = navlogList[first].dist,
         pos = newLastPos
