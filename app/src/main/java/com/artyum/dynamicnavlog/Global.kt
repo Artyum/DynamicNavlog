@@ -288,7 +288,6 @@ var gpsMutex = Mutex()
 var globalRefresh = false   // Refresh home, navlog and map pages on flight stage or waypoint change
 
 fun generateStringId(): String {
-    var ok = false
     var randomString = ""
     val charPool: List<Char> = ('a'..'z') + ('A'..'Z') + ('0'..'9')
 
@@ -304,20 +303,11 @@ fun generateStringId(): String {
     // 10 ->    107 518 933 731
     // 15 -> 93 052 749 919 920
 
-    while (!ok) {
-        randomString = (1..10)
-            .map { _ -> kotlin.random.Random.nextInt(0, charPool.size) }
-            .map(charPool::get)
-            .joinToString("");
+    randomString = (1..10)
+        .map { _ -> kotlin.random.Random.nextInt(0, charPool.size) }
+        .map(charPool::get)
+        .joinToString("");
 
-        ok = true
-        for (i in airplaneList.indices) {
-            if (airplaneList[i].id == randomString) {
-                ok = false
-                break
-            }
-        }
-    }
     return randomString
 }
 
@@ -521,10 +511,8 @@ fun generateWindArrow(imgView: ImageView, resources: Resources, bearing: Double)
     val len = canvas.width / 2
     val len2 = (canvas.width / 2.7).toFloat()
 
-    paint.textSize = 25f
-    paint.style = Paint.Style.FILL
     paint.strokeWidth = 3f
-
+    paint.style = Paint.Style.FILL
     paint.color = ResourcesCompat.getColor(resources, R.color.windArrow, null)
 
     // Back line

@@ -342,7 +342,6 @@ class MapFragment : Fragment(R.layout.fragment_map) {
     private fun drawWindArrow() {
         if (!mapReady) return
         if (!options.drawWindArrow) return
-        //Log.d(TAG, "drawWindArrow")
         generateWindArrow(bind.mapWindIndicator, resources, normalizeBearing(map.cameraPosition.bearing - settings.windDir + getDeclination(map.cameraPosition.target)))
     }
 
