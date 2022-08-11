@@ -280,10 +280,6 @@ class MapFragment : Fragment(R.layout.fragment_map) {
                 }
                 if (stage < C.STAGE_4_AFTER_LANDING) {
                     if (i >= item) addMarker(pos = navlogList[i].pos!!, type = C.MAP_ITEM_TRACK, id = i, hue = hue)
-                } else {
-                    // Add two marker at start and end
-                    addMarker(pos = settings.takeoffPos!!, type = C.MAP_ITEM_TRACK, id = i, hue = BitmapDescriptorFactory.HUE_GREEN, draggable = false)
-                    addMarker(pos = navlogList[last].pos!!, type = C.MAP_ITEM_TRACK, id = i, hue = hue, draggable = false)
                 }
 
                 // Auto-next circle
@@ -564,11 +560,11 @@ class MapFragment : Fragment(R.layout.fragment_map) {
         }
     }
 
-    private fun addMarker(pos: LatLng, type: Int, id: Int, hue: Float, draggable: Boolean = true) {
+    private fun addMarker(pos: LatLng, type: Int, id: Int, hue: Float) {
         val m = map.addMarker(
             MarkerOptions()
                 .position(pos)
-                .draggable(draggable)
+                .draggable(true)
                 .icon(BitmapDescriptorFactory.defaultMarker(hue))
                 .title(type.toString())
         )
