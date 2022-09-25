@@ -11,8 +11,8 @@ android {
     defaultConfig {
         applicationId "com.artyum.dynamicnavlog"
         minSdk 26
-        targetSdk 30
-        versionCode 17
+        targetSdk 33
+        versionCode 20
         versionName "2.0.3"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
