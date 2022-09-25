@@ -310,6 +310,16 @@
                 android:text="Force your device's screen to be turned on while using the app." />
 
             <com.google.android.material.switchmaterial.SwitchMaterial
+                android:id="@+id/settingBlockPlanEdit"
+                style="@style/settingsSwitch"
+                android:text="@string/txtBlockPlanEdit" />
+
+            <TextView
+                style="@style/hintBox"
+                android:layout_marginBottom="10dp"
+                android:text="Disable flight plan change after Off-Block." />
+
+            <com.google.android.material.switchmaterial.SwitchMaterial
                 android:id="@+id/settingTimeUTC"
                 style="@style/settingsSwitch"
                 android:text="@string/txtTimeUTC" />
