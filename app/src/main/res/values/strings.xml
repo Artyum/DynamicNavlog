@@ -145,7 +145,7 @@
     <string name="txtGroundTimeTotal">GND total time</string>
     <string name="txtActive">Active</string>
     <string name="txtTimeUTC">Display UTC times</string>
-    <string name="txtBlockPlanEdit">Block plan editing during flight</string>
+    <string name="txtBlockPlanEdit">Prevent plan changes during flight</string>
     <string name="txtGPS">GPS</string>
     <string name="txtGPSLost">Waiting fog GPS signal. Manual mode enabled.</string>
     <string name="txtGPSAssist">GPS assist</string>

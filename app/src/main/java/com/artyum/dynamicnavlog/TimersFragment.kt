@@ -103,13 +103,13 @@ class TimersFragment : Fragment(R.layout.fragment_timers) {
 
         // Display
         val stage = getFlightStage()
-        if (stage >= C.STAGE_3_FLIGHT_IN_PROGRESS) bind.outGroundTime1.text = formatSecondsToTime(gnd1)
+        if (stage >= C.STAGE_3_FLIGHT_IN_PROGRESS) bind.outGroundTime1.text = formatSecondsToTime(sec = gnd1, showSec = false)
         if (stage >= C.STAGE_5_AFTER_ENGINE_SHUTDOWN) {
-            bind.outGroundTime2.text = formatSecondsToTime(gnd2)
-            bind.outGroundTimeT.text = formatSecondsToTime(gndT)
-            bind.outBlockTime.text = formatSecondsToTime(blockTime)
+            bind.outGroundTime2.text = formatSecondsToTime(sec = gnd2, showSec = false)
+            bind.outGroundTimeT.text = formatSecondsToTime(sec = gndT, showSec = false)
+            bind.outBlockTime.text = formatSecondsToTime(sec = blockTime, showSec = false)
         }
-        if (stage >= C.STAGE_4_AFTER_LANDING) bind.outFlightTime.text = formatSecondsToTime(flightTime)
+        if (stage >= C.STAGE_4_AFTER_LANDING) bind.outFlightTime.text = formatSecondsToTime(flightTime, showSec = false)
     }
 }
 
@@ -141,7 +141,7 @@ fun formatEpochTime(timestamp: Long): String {
     return sdf.format(netDate)
 }
 
-fun formatMillisToTime(millis: Long?, showSec: Boolean = false): String {
+fun formatMillisToTime(millis: Long?, showSec: Boolean = true): String {
     if (millis == null) return ""
     if (millis <= 0L) return "0" + C.S_DELIMITER
 
@@ -154,33 +154,28 @@ fun formatMillisToTime(millis: Long?, showSec: Boolean = false): String {
     if (m < 0) m = -m
     if (s < 0) s = -s
 
-    val hstr = h.toString()
-    val mstr = m.toString()
-    val sstr = s.toString()
+    val hStr = h.toString()
+    val mStr = m.toString()
+    val sStr = s.toString()
 
     var msg: String = sign
 
     // Hour
-    if (h > 0) msg += hstr + C.H_DELIMITER
+    if (h > 0) msg += hStr + C.H_DELIMITER
 
     // Min
-    if (h > 0) msg += mstr.padStart(2, '0') + C.M_DELIMITER
-    if (h == 0L && m > 0) msg += mstr + C.M_DELIMITER
+    if (h > 0) msg += mStr.padStart(2, '0') + C.M_DELIMITER
+    else if (m > 0) msg += mStr + C.M_DELIMITER
 
     // Sec
-    if (showSec) {
-        if (h == 0L && m < C.TIME_THRESHOLD) {
-            if (m > 0) msg += sstr.padStart(2, '0') + C.S_DELIMITER
-            else msg += sstr + C.S_DELIMITER
-        } else {
-            if (h == 0L && m == 0L) msg += sstr + C.S_DELIMITER
-            else msg += sstr.padStart(2, '0') + C.S_DELIMITER
-        }
+    if (h == 0L && m < C.TIME_THRESHOLD && showSec) {
+        msg += if (m > 0) sStr.padStart(2, '0') + C.S_DELIMITER
+        else sStr + C.S_DELIMITER
     }
     return msg
 }
 
-fun formatSecondsToTime(sec: Long?, showSec: Boolean = false): String {
+fun formatSecondsToTime(sec: Long?, showSec: Boolean = true): String {
     if (sec == null) return ""
     return formatMillisToTime(sec * 1000, showSec)
 }
@@ -269,9 +264,9 @@ fun resetTimers() {
 }
 
 fun getCurrentDate(): String {
-    return SimpleDateFormat("yyyy-MM-dd").format(Date())
+    return SimpleDateFormat("yyyy-MM-dd", Locale.US).format(Date())
 }
 
 fun getCurrentTime(): String {
-    return SimpleDateFormat("HH:mm:ss").format(Date())
+    return SimpleDateFormat("HH:mm:ss", Locale.US).format(Date())
 }
