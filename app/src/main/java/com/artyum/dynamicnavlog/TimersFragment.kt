@@ -12,6 +12,7 @@ import java.time.LocalDateTime
 import java.time.ZoneId
 import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter
+import java.time.temporal.ChronoUnit
 import java.util.*
 import java.util.concurrent.TimeUnit
 
@@ -39,32 +40,50 @@ class TimersFragment : Fragment(R.layout.fragment_timers) {
         bind.timersLayout.keepScreenOn = options.keepScreenOn
         (activity as MainActivity).displayButtons()
 
+        bind.utcSwitch.setOnCheckedChangeListener { _, isChecked ->
+            val opt = options.timeInUTC
+            options.timeInUTC = isChecked
+            displayTimestamps()
+            options.timeInUTC = opt
+        }
+
+        bind.utcSwitch.isChecked = options.timeInUTC
+
+        // Test
+        //timers.offblock = LocalDateTime.of(2022, 9, 25, 15, 15, 34)
+        //timers.takeoff = LocalDateTime.of(2022, 9, 25, 15, 22, 14)
+        //timers.landing = LocalDateTime.of(2022, 9, 25, 17, 5, 14)
+        //timers.onblock = LocalDateTime.of(2022, 9, 25, 17, 13, 54)
+
         tOffblock = roundToMinutes(timers.offblock)
         tTakeoff = roundToMinutes(timers.takeoff)
         tLanding = roundToMinutes(timers.landing)
         tOnblock = roundToMinutes(timers.onblock)
 
-        refreshView()
-        calcSummary()
+        displayTimestamps()
+        displaySummary()
     }
 
-    private fun refreshView() {
-        bind.flightName.setText(settings.planName)
+    private fun displayTimestamps() {
+        bind.flightName.text = settings.planName
 
-        var str = if (timers.offblock != null) formatDateTime(tOffblock, C.FORMAT_DATETIME) else ""
-        bind.timeOffBlock.setText(str)
+        var str = if (timers.offblock != null) formatDateTime(tOffblock, C.FORMAT_DATE) else ""
+        bind.flightDate.text = str
 
-        str = if (timers.takeoff != null) formatDateTime(tTakeoff, C.FORMAT_DATETIME) else ""
-        bind.timeTakeoff.setText(str)
+        str = if (timers.offblock != null) formatDateTime(tOffblock, C.FORMAT_TIME) else ""
+        bind.timeOffBlock.text = str
 
-        str = if (timers.landing != null) formatDateTime(tLanding, C.FORMAT_DATETIME) else ""
-        bind.timeLanding.setText(str)
+        str = if (timers.takeoff != null) formatDateTime(tTakeoff, C.FORMAT_TIME) else ""
+        bind.timeTakeoff.text = str
 
-        str = if (timers.onblock != null) formatDateTime(tOnblock, C.FORMAT_DATETIME) else ""
-        bind.timeOnBlock.setText(str)
+        str = if (timers.landing != null) formatDateTime(tLanding, C.FORMAT_TIME) else ""
+        bind.timeLanding.text = str
+
+        str = if (timers.onblock != null) formatDateTime(tOnblock, C.FORMAT_TIME) else ""
+        bind.timeOnBlock.text = str
     }
 
-    private fun calcSummary() {
+    private fun displaySummary() {
         var gnd1: Long = 0
         var gnd2: Long = 0
         var gndT: Long = 0
@@ -84,20 +103,19 @@ class TimersFragment : Fragment(R.layout.fragment_timers) {
 
         // Display
         val stage = getFlightStage()
-        if (stage >= C.STAGE_3_FLIGHT_IN_PROGRESS) bind.outGroundTime1.setText(formatSecondsToTime(gnd1))
+        if (stage >= C.STAGE_3_FLIGHT_IN_PROGRESS) bind.outGroundTime1.text = formatSecondsToTime(gnd1)
         if (stage >= C.STAGE_5_AFTER_ENGINE_SHUTDOWN) {
-            bind.outGroundTime2.setText(formatSecondsToTime(gnd2))
-            bind.outGroundTimeT.setText(formatSecondsToTime(gndT))
-            bind.outBlockTime.setText(formatSecondsToTime(blockTime))
+            bind.outGroundTime2.text = formatSecondsToTime(gnd2)
+            bind.outGroundTimeT.text = formatSecondsToTime(gndT)
+            bind.outBlockTime.text = formatSecondsToTime(blockTime)
         }
-        if (stage >= C.STAGE_4_AFTER_LANDING) bind.outFlightTime.setText(formatSecondsToTime(flightTime))
+        if (stage >= C.STAGE_4_AFTER_LANDING) bind.outFlightTime.text = formatSecondsToTime(flightTime)
     }
 }
 
 fun roundToMinutes(t: LocalDateTime?): LocalDateTime? {
     if (t == null) return null
-    //return if (t.second <= 30) t.minusSeconds(t.second.toLong()) else t.plusSeconds((60 - t.second).toLong())
-    return t.minusSeconds(t.second.toLong())
+    return t.truncatedTo(ChronoUnit.MINUTES)
 }
 
 fun formatDateTime(t: LocalDateTime?, pattern: String): String {
@@ -106,10 +124,8 @@ fun formatDateTime(t: LocalDateTime?, pattern: String): String {
     val ldtZoned: ZonedDateTime = t.atZone(ZoneId.systemDefault())
     val utcZoned: ZonedDateTime = ldtZoned.withZoneSameInstant(ZoneId.of("UTC"))
 
-    return if (options.timeInUTC)
-        utcZoned.format(DateTimeFormatter.ofPattern(pattern)) + C.SIGN_ZULU
-    else
-        ldtZoned.format(DateTimeFormatter.ofPattern(pattern))
+    return if (options.timeInUTC) utcZoned.format(DateTimeFormatter.ofPattern(pattern)) + C.SIGN_ZULU
+    else ldtZoned.format(DateTimeFormatter.ofPattern(pattern))
 }
 
 fun formatDateTimeJson(t: LocalDateTime?): String {
@@ -152,14 +168,15 @@ fun formatMillisToTime(millis: Long?, showSec: Boolean = false): String {
     if (h == 0L && m > 0) msg += mstr + C.M_DELIMITER
 
     // Sec
-    if (h == 0L && m < C.TIME_THRESHOLD && !showSec) {
-        if (m > 0) msg += sstr.padStart(2, '0') + C.S_DELIMITER
-        else msg += sstr + C.S_DELIMITER
-    } else if (showSec) {
-        if (h == 0L && m == 0L) msg += sstr + C.S_DELIMITER
-        else msg += sstr.padStart(2, '0') + C.S_DELIMITER
+    if (showSec) {
+        if (h == 0L && m < C.TIME_THRESHOLD) {
+            if (m > 0) msg += sstr.padStart(2, '0') + C.S_DELIMITER
+            else msg += sstr + C.S_DELIMITER
+        } else {
+            if (h == 0L && m == 0L) msg += sstr + C.S_DELIMITER
+            else msg += sstr.padStart(2, '0') + C.S_DELIMITER
+        }
     }
-
     return msg
 }
 

@@ -281,6 +281,7 @@ fun saveOptions() {
     jOptions.put("gps", options.gpsAssist)
     jOptions.put("autonext", options.autoNext)
     jOptions.put("nextr", options.nextRadiusIndex)
+    jOptions.put("blockedit", options.blockPlanEdit)
 
     val json = JSONObject()
     json.put("options", jOptions)
@@ -323,6 +324,7 @@ fun loadOptions() {
             newOptions.gpsAssist = getItem(jOptions, "gps")?.toBoolean() ?: true
             newOptions.autoNext = getItem(jOptions, "autonext")?.toBoolean() ?: true
             newOptions.nextRadiusIndex = getItem(jOptions, "nextr")?.toIntOrNull() ?: C.DEFAULT_NEXT_RADIUS
+            newOptions.blockPlanEdit = getItem(jOptions, "blockedit")?.toBoolean() ?: false
             options = newOptions
         }
     } else {
