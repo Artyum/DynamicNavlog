@@ -15,8 +15,7 @@ import java.time.LocalDateTime
 import kotlin.math.*
 
 data class Settings(
-    @Volatile
-    var planId: String = "",
+    @Volatile var planId: String = "",
     var planName: String = "",
     var departure: String = "",
     var destination: String = "",
@@ -40,7 +39,7 @@ data class NavlogItem(
     var hdg: Double? = null,              // Heading
     var gs: Double? = null,               // Ground speed (kt)
     var time: Long? = null,               // Leg time in seconds
-    var timeIncrement: Long? = null,      // Time incrementar
+    var timeIncrement: Long? = null,      // Time incremental
     var fuel: Double? = null,             // Fuel required for leg
     var fuelRemaining: Double? = null,    // Fuel remaining
     var eta: LocalDateTime? = null,       // ETA
@@ -52,22 +51,11 @@ data class NavlogItem(
 )
 
 data class Radial(
-    var angle: Double,
-    var dist: Double,
-    var pos1: LatLng,
-    var pos2: LatLng
+    var angle: Double, var dist: Double, var pos1: LatLng, var pos2: LatLng
 )
 
 data class Airplane(
-    var id: String = "",
-    var type: String = "",
-    var reg: String = "",
-    var rmk: String = "",
-    var tas: Double = 0.0,
-    var fph: Double = 0.0,
-    var tank: Double = 0.0,
-    var spdUnits: Int = 0,
-    var volUnits: Int = 0
+    var id: String = "", var type: String = "", var reg: String = "", var rmk: String = "", var tas: Double = 0.0, var fph: Double = 0.0, var tank: Double = 0.0, var spdUnits: Int = 0, var volUnits: Int = 0
 )
 
 data class Options(
@@ -80,72 +68,53 @@ data class Options(
     var autoTakeoffSpd: Double = kt2mps(40.0),      // Minimum speed for takeoff detection in m/s
     var autoLandingSpd: Double = kt2mps(30.0),      // Maximum speed for landing detection in m/s
     var mapOrientation: Int = C.MAP_ORIENTATION_NORTH,
-    var displayTrace: Boolean = true,
-    var drawWindArrow: Boolean = true,
-    var drawRadials: Boolean = true,
-    var drawRadialsMarkers: Boolean = true,
-    var gpsAssist: Boolean = true,
-    var autoNext: Boolean = true,
+    var displayTrace: Boolean = true, var drawWindArrow: Boolean = true,
+    var drawRadials: Boolean = true, var drawRadialsMarkers: Boolean = true,
+    var gpsAssist: Boolean = true, var autoNext: Boolean = true,
     var nextRadiusIndex: Int = C.DEFAULT_NEXT_RADIUS,  // Index in nextRadiusList
+    var blockPlanEdit: Boolean = false,
     var showHints: Boolean = true
 )
 
 data class Timers(
-    var offblock: LocalDateTime? = null,
-    var takeoff: LocalDateTime? = null,
-    var landing: LocalDateTime? = null,
-    var onblock: LocalDateTime? = null,
-    var flightTime: Long? = null,    // Seconds
+    var offblock: LocalDateTime? = null, var takeoff: LocalDateTime? = null, var landing: LocalDateTime? = null, var onblock: LocalDateTime? = null, var flightTime: Long? = null,    // Seconds
     var blockTime: Long? = null,     // Seconds
     var groundTime: Long? = null     // Seconds
 )
 
 data class GpsData(
-    var pos: LatLng? = null,
-    var time: Long = 0L,
-    var speedMps: Double = 0.0,
-    var speedKt: Double = 0.0,
-    var bearing: Float? = null,
+    var pos: LatLng? = null, var time: Long = 0L, var speedMps: Double = 0.0, var speedKt: Double = 0.0, var bearing: Float? = null,
     //var altitude: Double = 0.0,
     //var hAccuracy: Double = 0.0,
-    var heartbeat: Boolean = false,
-    var isValid: Boolean = false
+    var heartbeat: Boolean = false, var isValid: Boolean = false
 )
 
 data class Totals(
-    var dist: Double = 0.0,
-    var time: Long = 0,
-    var fuel: Double = 0.0
+    var dist: Double = 0.0, var time: Long = 0, var fuel: Double = 0.0
 )
 
 data class PlanListItem(
-    var id: String,
-    var planName: String
+    var id: String, var planName: String
 )
 
 data class FlightData(
-    val wca: Double,
-    val hdg: Double,
-    val gs: Double,
-    val time: Long?, // Time in seconds
-    val fuel: Double?,
-    val dist: Double?
+    val wca: Double, val hdg: Double, val gs: Double, val time: Long?, // Time in seconds
+    val fuel: Double?, val dist: Double?
 )
 
 data class SinCosAngle(
-    val sina: Float,
-    val cosa: Float
+    val sina: Float, val cosa: Float
 )
 
 data class ReleaseOptions(
-    val initializeAds: Boolean,
-    val startBillingClient: Boolean
+    val initializeAds: Boolean, val startBillingClient: Boolean
 )
 
 object C {
-    const val FORMAT_DATETIME = "yyyy-MM-dd   HH:mm"
-    const val FORMAT_DATETIME_SEC = "yyyy-MM-dd   HH:mm:ss"
+    const val FORMAT_DATETIME = "yyyy-MM-dd  HH:mm"
+    const val FORMAT_DATETIME_SEC = "yyyy-MM-dd  HH:mm:ss"
     const val FORMAT_TIME = "HH:mm"
+    const val FORMAT_DATE = "yyyy-MM-dd"
 
     const val DNL_EXTENSION = ".dnl"
     const val GPX_EXTENSION = ".gpx"
@@ -288,7 +257,6 @@ var gpsMutex = Mutex()
 var globalRefresh = false   // Refresh home, navlog and map pages on flight stage or waypoint change
 
 fun generateStringId(): String {
-    var randomString = ""
     val charPool: List<Char> = ('a'..'z') + ('A'..'Z') + ('0'..'9')
 
     // No. of combinations
@@ -303,10 +271,7 @@ fun generateStringId(): String {
     // 10 ->    107 518 933 731
     // 15 -> 93 052 749 919 920
 
-    randomString = (1..10)
-        .map { _ -> kotlin.random.Random.nextInt(0, charPool.size) }
-        .map(charPool::get)
-        .joinToString("");
+    val randomString = (1..10).map { _ -> kotlin.random.Random.nextInt(0, charPool.size) }.map(charPool::get).joinToString("");
 
     return randomString
 }
@@ -592,6 +557,10 @@ fun isEngineRunning(): Boolean {
 
 fun isSettingsReady(): Boolean {
     return settings.airplaneId != "" && airplane.tas > settings.windSpd
+}
+
+fun isPlanEditDisabled(): Boolean {
+    return getFlightStage() > C.STAGE_1_BEFORE_ENGINE_START && options.blockPlanEdit
 }
 
 fun formatDouble(value: Double?, precision: Int = 0): String {

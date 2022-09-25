@@ -85,6 +85,8 @@ class MapFragment : Fragment(R.layout.fragment_map) {
 
                 // Click on map listener - add waypoint or radial
                 map.setOnMapClickListener { pos: LatLng ->
+                    if (isPlanEditDisabled()) return@setOnMapClickListener
+
                     if (radialStartPoint == null) {
                         if (settings.takeoffPos == null) setTakeoffPoint(pos)
                         else addWaypoint(pos)
@@ -97,6 +99,8 @@ class MapFragment : Fragment(R.layout.fragment_map) {
 
                 // Long click on map - Start new radial
                 map.setOnMapLongClickListener { pos: LatLng ->
+                    if (isPlanEditDisabled()) return@setOnMapLongClickListener
+
                     radialStartPoint = pos
                     Toast.makeText(view.context, getString(R.string.txtAddRadial), Toast.LENGTH_SHORT).show()
                 }
@@ -106,6 +110,8 @@ class MapFragment : Fragment(R.layout.fragment_map) {
                     override fun onMarkerDragStart(p0: Marker) {}
                     override fun onMarkerDrag(p0: Marker) {}
                     override fun onMarkerDragEnd(m: Marker) {
+                        if (isPlanEditDisabled()) return
+
                         radialStartPoint = null
                         val i: Int = m.tag.toString().toInt()
                         if (m.title == C.MAP_ITEM_TRACK.toString()) {
@@ -134,6 +140,8 @@ class MapFragment : Fragment(R.layout.fragment_map) {
 
                 // Click on a marker
                 map.setOnMarkerClickListener {
+                    if (isPlanEditDisabled()) return@setOnMarkerClickListener true
+
                     val i: Int = it.tag.toString().toInt()
                     if (it.title == C.MAP_ITEM_TRACK.toString()) {
                         // Click on a waypoint
