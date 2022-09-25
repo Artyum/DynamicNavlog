@@ -17,16 +17,30 @@
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
-            <com.google.android.material.textfield.TextInputLayout
-                style="@style/timersTextInput"
-                android:hint="@string/txtFlightPlanTitle">
-
-                <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/flightName"
-                    style="@style/timersText" />
-            </com.google.android.material.textfield.TextInputLayout>
-
             <LinearLayout style="@style/dividerBox">
+
+                <View
+                    style="@style/dividerLine"
+                    android:layout_weight="1" />
+
+                <TextView
+                    style="@style/dividerText"
+                    android:text="@string/txtFlightPlan" />
+
+                <View
+                    style="@style/dividerLine"
+                    android:layout_weight="1" />
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/flightName"
+                style="@style/timersText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
+            <LinearLayout
+                style="@style/dividerBox"
+                android:layout_marginTop="20dp">
 
                 <View
                     style="@style/dividerLine"
@@ -41,57 +55,76 @@
                     android:layout_weight="1" />
             </LinearLayout>
 
-            <LinearLayout
-                android:layout_width="match_parent"
+            <com.google.android.material.switchmaterial.SwitchMaterial
+                android:id="@+id/utcSwitch"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal">
+                android:text="@string/txtTimeUTC"
+                android:textSize="14sp"
+                app:switchPadding="20dp" />
 
-                <com.google.android.material.textfield.TextInputLayout
-                    style="@style/timersTextInput"
-                    android:hint="@string/txtOffBlockTime">
+            <TableLayout style="@style/sumTable">
 
-                    <com.google.android.material.textfield.TextInputEditText
+                <TableRow style="@style/sumTableRow">
+
+                    <TextView
+                        style="@style/sumTableCol0"
+                        android:text="@string/txtFlightDate" />
+
+                    <TextView
+                        android:id="@+id/flightDate"
+                        style="@style/airplaneDetails"
+                        android:layout_marginStart="@dimen/sumTableMargin" />
+                </TableRow>
+
+                <TableRow style="@style/sumTableRow">
+
+                    <TextView
+                        style="@style/sumTableCol0"
+                        android:text="@string/txtOffBlock" />
+
+                    <TextView
                         android:id="@+id/timeOffBlock"
-                        style="@style/timersText" />
-                </com.google.android.material.textfield.TextInputLayout>
+                        style="@style/airplaneDetails"
+                        android:layout_marginStart="@dimen/sumTableMargin" />
+                </TableRow>
 
-                <LinearLayout style="@style/spacer" />
+                <TableRow style="@style/sumTableRow">
 
-                <com.google.android.material.textfield.TextInputLayout
-                    style="@style/timersTextInput"
-                    android:hint="@string/txtTakeoffTime">
+                    <TextView
+                        style="@style/sumTableCol0"
+                        android:text="@string/txtTakeoff" />
 
-                    <com.google.android.material.textfield.TextInputEditText
+                    <TextView
                         android:id="@+id/timeTakeoff"
-                        style="@style/timersText" />
-                </com.google.android.material.textfield.TextInputLayout>
-            </LinearLayout>
+                        style="@style/airplaneDetails"
+                        android:layout_marginStart="@dimen/sumTableMargin" />
+                </TableRow>
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal">
+                <TableRow style="@style/sumTableRow">
 
-                <com.google.android.material.textfield.TextInputLayout
-                    style="@style/timersTextInput"
-                    android:hint="@string/txtLandingTime">
+                    <TextView
+                        style="@style/sumTableCol0"
+                        android:text="@string/txtLanding" />
 
-                    <com.google.android.material.textfield.TextInputEditText
+                    <TextView
                         android:id="@+id/timeLanding"
-                        style="@style/timersText" />
-                </com.google.android.material.textfield.TextInputLayout>
+                        style="@style/airplaneDetails"
+                        android:layout_marginStart="@dimen/sumTableMargin" />
+                </TableRow>
 
-                <LinearLayout style="@style/spacer" />
+                <TableRow style="@style/sumTableRow">
 
-                <com.google.android.material.textfield.TextInputLayout
-                    style="@style/timersTextInput"
-                    android:hint="@string/txtOnBlockTime">
+                    <TextView
+                        style="@style/sumTableCol0"
+                        android:text="@string/txtOnBlock" />
 
-                    <com.google.android.material.textfield.TextInputEditText
+                    <TextView
                         android:id="@+id/timeOnBlock"
-                        style="@style/timersText" />
-                </com.google.android.material.textfield.TextInputLayout>
-            </LinearLayout>
+                        style="@style/airplaneDetails"
+                        android:layout_marginStart="@dimen/sumTableMargin" />
+                </TableRow>
+            </TableLayout>
 
             <LinearLayout style="@style/dividerBox">
 
@@ -108,66 +141,70 @@
                     android:layout_weight="1" />
             </LinearLayout>
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+            <TableLayout style="@style/sumTable">
 
-                <com.google.android.material.textfield.TextInputLayout
-                    style="@style/timersTextInput"
-                    android:layout_weight="1"
-                    android:hint="@string/txtGroundTime1">
+                <TableRow style="@style/sumTableRow">
 
-                    <com.google.android.material.textfield.TextInputEditText
+                    <TextView
+                        style="@style/sumTableCol0"
+                        android:text="@string/txtGroundTime1" />
+
+                    <TextView
                         android:id="@+id/outGroundTime1"
-                        style="@style/timersText" />
-                </com.google.android.material.textfield.TextInputLayout>
+                        style="@style/airplaneDetails"
+                        android:layout_marginStart="@dimen/sumTableMargin" />
+                </TableRow>
 
-                <com.google.android.material.textfield.TextInputLayout
-                    style="@style/timersTextInput"
-                    android:layout_marginHorizontal="@dimen/tableMargin"
-                    android:layout_weight="1"
-                    android:hint="@string/txtGroundTime2">
+                <TableRow style="@style/sumTableRow">
 
-                    <com.google.android.material.textfield.TextInputEditText
+                    <TextView
+                        style="@style/sumTableCol0"
+
+                        android:text="@string/txtGroundTime2" />
+
+                    <TextView
                         android:id="@+id/outGroundTime2"
-                        style="@style/timersText" />
-                </com.google.android.material.textfield.TextInputLayout>
+                        style="@style/airplaneDetails"
+                        android:layout_marginStart="@dimen/sumTableMargin" />
+                </TableRow>
 
-                <com.google.android.material.textfield.TextInputLayout
-                    style="@style/timersTextInput"
-                    android:layout_weight="1"
-                    android:hint="@string/txtGroundTimeTotal">
+                <TableRow style="@style/sumTableRow">
 
-                    <com.google.android.material.textfield.TextInputEditText
+                    <TextView
+                        style="@style/sumTableCol0"
+                        android:text="@string/txtGroundTimeTotal" />
+
+                    <TextView
                         android:id="@+id/outGroundTimeT"
-                        style="@style/timersText" />
-                </com.google.android.material.textfield.TextInputLayout>
-            </LinearLayout>
+                        style="@style/airplaneDetails"
+                        android:layout_marginStart="@dimen/sumTableMargin" />
+                </TableRow>
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                <TableRow style="@style/sumTableRow">
 
-                <com.google.android.material.textfield.TextInputLayout
-                    style="@style/timersTextInput"
-                    android:hint="@string/txtFlightTime">
+                    <TextView
+                        style="@style/sumTableCol0"
+                        android:text="@string/txtFlightTime" />
 
-                    <com.google.android.material.textfield.TextInputEditText
+                    <TextView
                         android:id="@+id/outFlightTime"
-                        style="@style/timersText" />
-                </com.google.android.material.textfield.TextInputLayout>
+                        style="@style/airplaneDetails"
+                        android:layout_marginStart="@dimen/sumTableMargin" />
+                </TableRow>
 
-                <LinearLayout style="@style/spacer" />
+                <TableRow style="@style/sumTableRow">
 
-                <com.google.android.material.textfield.TextInputLayout
-                    style="@style/timersTextInput"
-                    android:hint="@string/txtBlockTime">
+                    <TextView
+                        style="@style/sumTableCol0"
+                        android:text="@string/txtBlockTime" />
 
-                    <com.google.android.material.textfield.TextInputEditText
+                    <TextView
                         android:id="@+id/outBlockTime"
-                        style="@style/timersText" />
-                </com.google.android.material.textfield.TextInputLayout>
-            </LinearLayout>
+                        style="@style/airplaneDetails"
+                        android:layout_marginStart="@dimen/sumTableMargin" />
+                </TableRow>
+            </TableLayout>
+
         </LinearLayout>
     </LinearLayout>
 </ScrollView>
