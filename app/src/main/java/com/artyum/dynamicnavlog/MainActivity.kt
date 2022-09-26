@@ -65,11 +65,8 @@ class MainActivity : AppCompatActivity() {
         // List of fragments without 'back arrow'
         appBarConfiguration = AppBarConfiguration(
             setOf(
-                R.id.homeFragment, R.id.settingsFragment, R.id.navlogFragment, R.id.mapFragment,
-                R.id.purchaseFragment, R.id.calcWindFragment, R.id.calcFuelFragment, R.id.calcTimeDistFragment, R.id.calcDensity2Fragment, R.id.calcUnitsFragment,
-                R.id.airplaneListFragment, R.id.planListFragment, R.id.aboutFragment, R.id.timersFragment, R.id.optionsFragment
-            ),
-            bind.drawerLayout
+                R.id.homeFragment, R.id.settingsFragment, R.id.navlogFragment, R.id.mapFragment, R.id.purchaseFragment, R.id.calcWindFragment, R.id.calcFuelFragment, R.id.calcTimeDistFragment, R.id.calcDensity2Fragment, R.id.calcUnitsFragment, R.id.airplaneListFragment, R.id.planListFragment, R.id.aboutFragment, R.id.timersFragment, R.id.optionsFragment
+            ), bind.drawerLayout
         )
 
         setSupportActionBar(bind.toolbar)
@@ -95,17 +92,14 @@ class MainActivity : AppCompatActivity() {
         navView.menu.findItem(R.id.drawerItemNew).setOnMenuItemClickListener {
             if (isEngineRunning()) {
                 val builder = AlertDialog.Builder(this@MainActivity)
-                builder.setMessage(R.string.txtWarningFlightInProgressDialog)
-                    .setCancelable(false)
-                    .setPositiveButton(R.string.txtYes) { _, _ ->
-                        newFlightPlan()
-                        navController.navigate(SettingsFragmentDirections.actionGlobalSettingsFragment())
-                        bind.drawerLayout.close()
-                    }
-                    .setNegativeButton(R.string.txtNo) { dialog, _ ->
-                        dialog.dismiss()
-                        bind.drawerLayout.close()
-                    }
+                builder.setMessage(R.string.txtWarningFlightInProgressDialog).setCancelable(false).setPositiveButton(R.string.txtYes) { _, _ ->
+                    newFlightPlan()
+                    navController.navigate(SettingsFragmentDirections.actionGlobalSettingsFragment())
+                    bind.drawerLayout.close()
+                }.setNegativeButton(R.string.txtNo) { dialog, _ ->
+                    dialog.dismiss()
+                    bind.drawerLayout.close()
+                }
                 val alert = builder.create()
                 alert.show()
             } else {
@@ -300,17 +294,14 @@ class MainActivity : AppCompatActivity() {
             R.id.optionResetFlight -> {
                 val msg = if (isFlightInProgress()) R.string.txtWarningFlightInProgressDialog else R.string.txtWarningAreYouSure
                 val builder = AlertDialog.Builder(this@MainActivity)
-                builder.setMessage(msg)
-                    .setCancelable(false)
-                    .setPositiveButton(R.string.txtYes) { _, _ ->
-                        resetFlight()
-                        //Toast.makeText(this, getString(R.string.txtResetDone), Toast.LENGTH_SHORT).show()
-                        //navController.navigate(R.id.homeFragment)
-                        displayButtons()
-                    }
-                    .setNegativeButton(R.string.txtNo) { dialog, _ ->
-                        dialog.dismiss()
-                    }
+                builder.setMessage(msg).setCancelable(false).setPositiveButton(R.string.txtYes) { _, _ ->
+                    resetFlight()
+                    //Toast.makeText(this, getString(R.string.txtResetDone), Toast.LENGTH_SHORT).show()
+                    //navController.navigate(R.id.homeFragment)
+                    displayButtons()
+                }.setNegativeButton(R.string.txtNo) { dialog, _ ->
+                    dialog.dismiss()
+                }
                 val alert = builder.create()
                 alert.show()
             }
@@ -318,17 +309,14 @@ class MainActivity : AppCompatActivity() {
             R.id.optionCopyPlan -> {
                 val msg = if (isFlightInProgress()) R.string.txtWarningFlightInProgressDialog else R.string.txtWarningAreYouSure
                 val builder = AlertDialog.Builder(this@MainActivity)
-                builder.setMessage(msg)
-                    .setCancelable(false)
-                    .setPositiveButton(R.string.txtYes) { _, _ ->
-                        copyFlightPlan("Copy")
-                        resetFlight()
-                        Toast.makeText(this, getString(R.string.txtCopyDone), Toast.LENGTH_SHORT).show()
-                        navController.navigate(R.id.settingsFragment)
-                    }
-                    .setNegativeButton(R.string.txtNo) { dialog, _ ->
-                        dialog.dismiss()
-                    }
+                builder.setMessage(msg).setCancelable(false).setPositiveButton(R.string.txtYes) { _, _ ->
+                    copyFlightPlan("Copy")
+                    resetFlight()
+                    Toast.makeText(this, getString(R.string.txtCopyDone), Toast.LENGTH_SHORT).show()
+                    navController.navigate(R.id.settingsFragment)
+                }.setNegativeButton(R.string.txtNo) { dialog, _ ->
+                    dialog.dismiss()
+                }
                 val alert = builder.create()
                 alert.show()
             }
@@ -336,18 +324,15 @@ class MainActivity : AppCompatActivity() {
             R.id.optionInvertTrack -> {
                 val msg = if (isFlightInProgress()) R.string.txtWarningFlightInProgressDialog else R.string.txtWarningAreYouSure
                 val builder = AlertDialog.Builder(this@MainActivity)
-                builder.setMessage(msg)
-                    .setCancelable(false)
-                    .setPositiveButton(R.string.txtYes) { _, _ ->
-                        copyFlightPlan("Inverted")
-                        invertNavlog()
-                        resetFlight()
-                        Toast.makeText(this, getString(R.string.txtReverseDone), Toast.LENGTH_SHORT).show()
-                        navController.navigate(R.id.settingsFragment)
-                    }
-                    .setNegativeButton(R.string.txtNo) { dialog, _ ->
-                        dialog.dismiss()
-                    }
+                builder.setMessage(msg).setCancelable(false).setPositiveButton(R.string.txtYes) { _, _ ->
+                    copyFlightPlan("Inverted")
+                    invertNavlog()
+                    resetFlight()
+                    Toast.makeText(this, getString(R.string.txtReverseDone), Toast.LENGTH_SHORT).show()
+                    navController.navigate(R.id.settingsFragment)
+                }.setNegativeButton(R.string.txtNo) { dialog, _ ->
+                    dialog.dismiss()
+                }
                 val alert = builder.create()
                 alert.show()
             }
@@ -359,10 +344,7 @@ class MainActivity : AppCompatActivity() {
     private fun startBillingClient() {
         Log.d(TAG, "startBillingClient")
 
-        billingClient = BillingClient.newBuilder(this)
-            .setListener(purchaseUpdateListener)
-            .enablePendingPurchases()
-            .build()
+        billingClient = BillingClient.newBuilder(this).setListener(purchaseUpdateListener).enablePendingPurchases().build()
 
         billingClient.startConnection(object : BillingClientStateListener {
             override fun onBillingSetupFinished(billingResult: BillingResult) {
@@ -460,9 +442,7 @@ class MainActivity : AppCompatActivity() {
             val productId = json.getString("productId")
             //Log.d(TAG, "launchPurchase productId: $productId")
             if (productId == Release.GOOGLE_PLAY_PRODUCT_ID) {
-                val billingFlowParams = BillingFlowParams.newBuilder()
-                    .setSkuDetails(billingItem!!)
-                    .build()
+                val billingFlowParams = BillingFlowParams.newBuilder().setSkuDetails(billingItem!!).build()
                 billingClient.launchBillingFlow(this, billingFlowParams)
             } else {
                 Log.d(TAG, "billingItem item NOT found")
@@ -788,11 +768,9 @@ class MainActivity : AppCompatActivity() {
         if (options.gpsAssist && !locationSubscribed) {
             if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
                 val builder = AlertDialog.Builder(this@MainActivity)
-                builder.setMessage(R.string.txtLocationMessage)
-                    .setCancelable(false)
-                    .setPositiveButton(R.string.txtOk) { _, _ ->
-                        ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.ACCESS_FINE_LOCATION), C.LOCATION_PERMISSION_REQ_CODE)
-                    }
+                builder.setMessage(R.string.txtLocationMessage).setCancelable(false).setPositiveButton(R.string.txtOk) { _, _ ->
+                    ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.ACCESS_FINE_LOCATION), C.LOCATION_PERMISSION_REQ_CODE)
+                }
                 val alert = builder.create()
                 alert.show()
             } else {

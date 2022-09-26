@@ -110,8 +110,6 @@ class MapFragment : Fragment(R.layout.fragment_map) {
                     override fun onMarkerDragStart(p0: Marker) {}
                     override fun onMarkerDrag(p0: Marker) {}
                     override fun onMarkerDragEnd(m: Marker) {
-                        if (isPlanEditDisabled()) return
-
                         radialStartPoint = null
                         val i: Int = m.tag.toString().toInt()
                         if (m.title == C.MAP_ITEM_TRACK.toString()) {
@@ -335,13 +333,7 @@ class MapFragment : Fragment(R.layout.fragment_map) {
         //Log.d(TAG, "drawTrace")
 
         traceLine?.remove()
-
-        val line = PolylineOptions()
-            .clickable(false)
-            .color(ContextCompat.getColor(this.requireContext(), R.color.traceLine))
-            .geodesic(true)
-            .pattern(listOf(Dash(15f), Gap(15f)))
-            .width(8f)
+        val line = PolylineOptions().clickable(false).color(ContextCompat.getColor(this.requireContext(), R.color.traceLine)).geodesic(true).pattern(listOf(Dash(15f), Gap(15f))).width(8f)
 
         for (i in tracePointsList.indices) line.add(tracePointsList[i])
         traceLine = map.addPolyline(line)
@@ -422,12 +414,7 @@ class MapFragment : Fragment(R.layout.fragment_map) {
             // Zoom only to TakeOff point
             val zoom: Float = if (chkTO && !chkItems) 9f else map.cameraPosition.zoom
 
-            val cameraPosition = CameraPosition.Builder()
-                .target(bounds.center)
-                .zoom(zoom)
-                .bearing(0f)
-                .tilt(map.cameraPosition.tilt)
-                .build()
+            val cameraPosition = CameraPosition.Builder().target(bounds.center).zoom(zoom).bearing(0f).tilt(map.cameraPosition.tilt).build()
             map.moveCamera(CameraUpdateFactory.newCameraPosition(cameraPosition))
         }
     }
@@ -445,24 +432,14 @@ class MapFragment : Fragment(R.layout.fragment_map) {
             if (settings.takeoffPos == null && navlogList.size == 0) {
                 // New flight plan with no points -> Zoom to position
                 if (gps.isValid) {
-                    val cameraPosition = CameraPosition.Builder()
-                        .target(gps.pos!!)
-                        .zoom(10f)
-                        .bearing(0f)
-                        .tilt(0f)
-                        .build()
+                    val cameraPosition = CameraPosition.Builder().target(gps.pos!!).zoom(10f).bearing(0f).tilt(0f).build()
                     map.moveCamera(CameraUpdateFactory.newCameraPosition(cameraPosition))
                 } else zoomToAll()
             } else zoomToAll()
         } else if (stage == C.STAGE_2_ENGINE_RUNNING || stage == C.STAGE_4_AFTER_LANDING) {
             if (gps.isValid) {
                 // Zoom to current gps position
-                val cameraPosition = CameraPosition.Builder()
-                    .target(gps.pos!!)
-                    .zoom(15f)
-                    .bearing(0f)
-                    .tilt(map.cameraPosition.tilt)
-                    .build()
+                val cameraPosition = CameraPosition.Builder().target(gps.pos!!).zoom(15f).bearing(0f).tilt(map.cameraPosition.tilt).build()
                 map.moveCamera(CameraUpdateFactory.newCameraPosition(cameraPosition))
             } else zoomToAll()
         } else if (stage == C.STAGE_3_FLIGHT_IN_PROGRESS) {
@@ -502,12 +479,7 @@ class MapFragment : Fragment(R.layout.fragment_map) {
                 }
             }
 
-            val cameraPosition = CameraPosition.Builder()
-                .target(target)
-                .zoom(zoom)
-                .bearing(bearing)
-                .tilt(map.cameraPosition.tilt)
-                .build()
+            val cameraPosition = CameraPosition.Builder().target(target).zoom(zoom).bearing(bearing).tilt(map.cameraPosition.tilt).build()
 
             if (initZoom) {
                 initZoom = false
@@ -542,12 +514,7 @@ class MapFragment : Fragment(R.layout.fragment_map) {
             val bearing = if (options.mapOrientation == C.MAP_ORIENTATION_BEARING && gps.bearing != null) gps.bearing!!
             else map.cameraPosition.bearing
 
-            val cameraPosition = CameraPosition.Builder()
-                .target(gps.pos!!)
-                .zoom(map.cameraPosition.zoom)
-                .bearing(bearing)
-                .tilt(map.cameraPosition.tilt)
-                .build()
+            val cameraPosition = CameraPosition.Builder().target(gps.pos!!).zoom(map.cameraPosition.zoom).bearing(bearing).tilt(map.cameraPosition.tilt).build()
 
             if (mapFollow) {
                 mapFollow = false
@@ -568,12 +535,9 @@ class MapFragment : Fragment(R.layout.fragment_map) {
     }
 
     private fun addMarker(pos: LatLng, type: Int, id: Int, hue: Float) {
+        val draggable = !isPlanEditDisabled()
         val m = map.addMarker(
-            MarkerOptions()
-                .position(pos)
-                .draggable(true)
-                .icon(BitmapDescriptorFactory.defaultMarker(hue))
-                .title(type.toString())
+            MarkerOptions().position(pos).draggable(draggable).icon(BitmapDescriptorFactory.defaultMarker(hue)).title(type.toString())
         )
         if (m != null) {
             m.tag = id
@@ -586,12 +550,7 @@ class MapFragment : Fragment(R.layout.fragment_map) {
 
     private fun addLine(p1: LatLng, p2: LatLng, color: Int, width: Float, type: Int) {
         val l = map.addPolyline(
-            PolylineOptions()
-                .clickable(false)
-                .color(ContextCompat.getColor(this.requireContext(), color))
-                .geodesic(true)
-                .width(width)
-                .add(p1, p2)
+            PolylineOptions().clickable(false).color(ContextCompat.getColor(this.requireContext(), color)).geodesic(true).width(width).add(p1, p2)
         )
         when (type) {
             C.MAP_ITEM_TRACK -> trackLines.add(l)
@@ -601,11 +560,7 @@ class MapFragment : Fragment(R.layout.fragment_map) {
 
     private fun addCircle(pos: LatLng, radius: Double, strokeColor: Int = R.color.gray, fillColor: Int = R.color.transparent, strokeWidth: Float = 3f, type: Int) {
         val c = map.addCircle(
-            CircleOptions()
-                .center(pos)
-                .radius(radius)
-                .strokeColor(ContextCompat.getColor(this.requireContext(), strokeColor))
-                .strokeWidth(strokeWidth)
+            CircleOptions().center(pos).radius(radius).strokeColor(ContextCompat.getColor(this.requireContext(), strokeColor)).strokeWidth(strokeWidth)
                 .fillColor(ContextCompat.getColor(this.requireContext(), fillColor))
         )
         when (type) {
@@ -622,8 +577,7 @@ class MapFragment : Fragment(R.layout.fragment_map) {
 
     private fun addWaypoint(pos: LatLng) {
         data class Angles(
-            val i: Int,
-            val angle: Double
+            val i: Int, val angle: Double
         )
 
         var position = navlogList.size
@@ -689,12 +643,7 @@ class MapFragment : Fragment(R.layout.fragment_map) {
     }
 
     private fun mapZoom(zoom: Int) {
-        val cameraPosition = CameraPosition.Builder()
-            .target(map.cameraPosition.target)
-            .zoom(map.cameraPosition.zoom + zoom)
-            .bearing(map.cameraPosition.bearing)
-            .tilt(map.cameraPosition.tilt)
-            .build()
+        val cameraPosition = CameraPosition.Builder().target(map.cameraPosition.target).zoom(map.cameraPosition.zoom + zoom).bearing(map.cameraPosition.bearing).tilt(map.cameraPosition.tilt).build()
 
         mapFollow = false
         map.stopAnimation()
