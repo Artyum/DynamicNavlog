@@ -209,7 +209,7 @@ object C {
     const val SCREEN_SENSOR = 2              // Auto
 
     // Limit in free version
-    const val FREE_PURCHASE_DELAY_SEC = 10   // Time this time the purchase message is hidden
+    const val FREE_PURCHASE_DELAY_SEC = 6    // Time of the donate notice on app startup
     const val FREE_WPT_NUMBER_LIMIT = 10     // Limit of waypoints in free version (disabled)
 
     // Flight stages

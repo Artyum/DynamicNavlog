@@ -1,7 +1,6 @@
 package com.artyum.dynamicnavlog
 
 object Release {
-    // adView
     // Key in activity_main.xml
 
     //const val GOOGLE_PLAY_PRODUCT_ID = "ads_remove_test2"
