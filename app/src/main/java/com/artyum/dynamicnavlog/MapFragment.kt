@@ -22,7 +22,6 @@ import kotlinx.coroutines.sync.withLock
 import kotlin.math.abs
 
 class MapFragment : Fragment(R.layout.fragment_map) {
-    private val TAG = "MapFragment"
     private var _binding: FragmentMapBinding? = null
     private val bind get() = _binding!!
 
@@ -61,7 +60,7 @@ class MapFragment : Fragment(R.layout.fragment_map) {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        bind.mapLayout.keepScreenOn = options.keepScreenOn
+        bind.mapLayout.keepScreenOn = G.vm.options.value!!.keepScreenOn
         (activity as MainActivity).displayButtons()
 
         val con = (activity as MainActivity).applicationContext
@@ -76,19 +75,19 @@ class MapFragment : Fragment(R.layout.fragment_map) {
             }
             mapFragment.getMapAsync { it ->
                 map = it
-                map.isMyLocationEnabled = options.gpsAssist
+                map.isMyLocationEnabled = G.vm.options.value!!.gpsAssist
                 map.uiSettings.isMyLocationButtonEnabled = false
                 map.uiSettings.isZoomControlsEnabled = false
                 map.uiSettings.isMapToolbarEnabled = false
                 map.uiSettings.isCompassEnabled = true
-                map.mapType = settings.mapType
+                map.mapType = G.vm.settings.value!!.mapType
 
                 // Click on map listener - add waypoint or radial
                 map.setOnMapClickListener { pos: LatLng ->
                     if (isPlanEditDisabled()) return@setOnMapClickListener
 
                     if (radialStartPoint == null) {
-                        if (settings.takeoffPos == null) setTakeoffPoint(pos)
+                        if (G.vm.settings.value!!.takeoffPos == null) setTakeoffPoint(pos)
                         else addWaypoint(pos)
                     } else {
                         // Radial second click
@@ -115,7 +114,7 @@ class MapFragment : Fragment(R.layout.fragment_map) {
                         if (m.title == C.MAP_ITEM_TRACK.toString()) {
                             // Drag a waypoint
                             if (!isFlightInProgress() || (isFlightInProgress() && i >= getNavlogCurrentItemId())) {
-                                if (i < 0) settings.takeoffPos = m.position else navlogList[i].pos = m.position
+                                if (i < 0) G.vm.settings.value!!.takeoffPos = m.position else navlogList[i].pos = m.position
                                 calcNavlog()
                                 saveState()
                             }
@@ -160,8 +159,8 @@ class MapFragment : Fragment(R.layout.fragment_map) {
 
                 // Map drag disables Camera Follow
                 map.setOnCameraMoveStartedListener { reason: Int ->
-                    if (settings.mapFollow && reason == GoogleMap.OnCameraMoveStartedListener.REASON_GESTURE) {
-                        settings.mapFollow = false
+                    if (G.vm.settings.value!!.mapFollow && reason == GoogleMap.OnCameraMoveStartedListener.REASON_GESTURE) {
+                        G.vm.settings.value!!.mapFollow = false
                         mapFollow = true
                         bind.btnFollowToggle.setImageResource(R.drawable.ic_gps_unlock)
                     }
@@ -193,14 +192,14 @@ class MapFragment : Fragment(R.layout.fragment_map) {
         bind.btnMapZoomOut.setOnClickListener { mapZoom(-1) }
 
         // Button Follow
-        if (options.gpsAssist) {
+        if (G.vm.options.value!!.gpsAssist) {
             bind.btnFollowToggle.visibility = View.VISIBLE
             bind.btnFollowToggle.setOnClickListener {
-                if (settings.mapFollow) {
-                    settings.mapFollow = false
+                if (G.vm.settings.value!!.mapFollow) {
+                    G.vm.settings.value!!.mapFollow = false
                     bind.btnFollowToggle.setImageResource(R.drawable.ic_gps_unlock)
                 } else {
-                    settings.mapFollow = true
+                    G.vm.settings.value!!.mapFollow = true
                     bind.btnFollowToggle.setImageResource(R.drawable.ic_gps_lock)
                     timerFollow = 0
                 }
@@ -228,13 +227,13 @@ class MapFragment : Fragment(R.layout.fragment_map) {
                         Toast.makeText(view.context, getString(R.string.txtMapTypeNormal), Toast.LENGTH_SHORT).show()
                     }
                 }
-                settings.mapType = map.mapType
+                G.vm.settings.value!!.mapType = map.mapType
             }
             saveState()
         }
 
         // Follow map mode
-        if (settings.mapFollow) bind.btnFollowToggle.setImageResource(R.drawable.ic_gps_lock)
+        if (G.vm.settings.value!!.mapFollow) bind.btnFollowToggle.setImageResource(R.drawable.ic_gps_lock)
         else bind.btnFollowToggle.setImageResource(R.drawable.ic_gps_unlock)
 
         // Refresh bottom summary bar
@@ -255,8 +254,7 @@ class MapFragment : Fragment(R.layout.fragment_map) {
 
     private fun drawFlightPlan() {
         if (!mapReady) return
-        if (settings.takeoffPos == null) return
-        //Log.d(TAG, "drawFlightPlan")
+        if (G.vm.settings.value!!.takeoffPos == null) return
 
         val stage = getFlightStage()
         trackMarkers.forEach { it.remove() }
@@ -267,7 +265,7 @@ class MapFragment : Fragment(R.layout.fragment_map) {
         trackCircles.clear()
 
         // Departure point
-        if (stage < C.STAGE_3_FLIGHT_IN_PROGRESS) addMarker(pos = settings.takeoffPos!!, type = C.MAP_ITEM_TRACK, id = -1, hue = BitmapDescriptorFactory.HUE_GREEN)
+        if (stage < C.STAGE_3_FLIGHT_IN_PROGRESS) addMarker(pos = G.vm.settings.value!!.takeoffPos!!, type = C.MAP_ITEM_TRACK, id = -1, hue = BitmapDescriptorFactory.HUE_GREEN)
 
         // Track
         val item = getNavlogCurrentItemId()
@@ -291,7 +289,7 @@ class MapFragment : Fragment(R.layout.fragment_map) {
                 // Auto-next circle
                 if (isAutoNextEnabled() && i >= item) {
                     val pos = navlogList[i].pos!!
-                    val radius = nm2m(nextRadiusList[options.nextRadiusIndex])
+                    val radius = nm2m(nextRadiusList[G.vm.options.value!!.nextRadiusIndex])
                     val fill = R.color.grayTransparent2
 
                     if (isFlightInProgress()) {
@@ -315,7 +313,7 @@ class MapFragment : Fragment(R.layout.fragment_map) {
 
                 // Inactive track line
                 if (i == 0) {
-                    addLine(settings.takeoffPos!!, navlogList[i].pos!!, R.color.trackinactive, C.TRACK_INACTIVE_WIDTH, C.MAP_ITEM_TRACK)
+                    addLine(G.vm.settings.value!!.takeoffPos!!, navlogList[i].pos!!, R.color.trackinactive, C.TRACK_INACTIVE_WIDTH, C.MAP_ITEM_TRACK)
                     if (navlogList.size > 1 && navlogList[1].active) addLine(navlogList[0].pos!!, navlogList[i + 1].pos!!, R.color.trackinactive, C.TRACK_INACTIVE_WIDTH, C.MAP_ITEM_TRACK)
                 } else if (i > 0 && i < navlogList.size) {
                     addLine(navlogList[i - 1].pos!!, navlogList[i].pos!!, R.color.trackinactive, C.TRACK_INACTIVE_WIDTH, C.MAP_ITEM_TRACK)
@@ -328,9 +326,8 @@ class MapFragment : Fragment(R.layout.fragment_map) {
     }
 
     private fun drawTrace() {
-        if (!options.displayTrace) return
+        if (!G.vm.options.value!!.displayTrace) return
         if (!mapReady || tracePointsList.size < 2) return
-        //Log.d(TAG, "drawTrace")
 
         traceLine?.remove()
         val line = PolylineOptions().clickable(false).color(ContextCompat.getColor(this.requireContext(), R.color.traceLine)).geodesic(true).pattern(listOf(Dash(15f), Gap(15f))).width(8f)
@@ -341,14 +338,13 @@ class MapFragment : Fragment(R.layout.fragment_map) {
 
     private fun drawWindArrow() {
         if (!mapReady) return
-        if (!options.drawWindArrow) return
-        generateWindArrow(bind.mapWindIndicator, resources, normalizeBearing(map.cameraPosition.bearing - settings.windDir + getDeclination(map.cameraPosition.target)))
+        if (!G.vm.options.value!!.drawWindArrow) return
+        generateWindArrow(bind.mapWindIndicator, resources, normalizeBearing(map.cameraPosition.bearing - G.vm.settings.value!!.windDir + getDeclination(map.cameraPosition.target)))
     }
 
     private fun drawRadials() {
         if (!mapReady) return
-        if (!options.drawRadials) return
-        //Log.d(TAG, "drawRadials")
+        if (!G.vm.options.value!!.drawRadials) return
 
         radialMarkers.forEach { it.remove() }
         radialMarkers.clear()
@@ -362,7 +358,7 @@ class MapFragment : Fragment(R.layout.fragment_map) {
         for (i in radialList.indices) {
             val radial = radialList[i]
             val declination = getDeclination(radial.pos1)
-            if (options.drawRadialsMarkers) {
+            if (G.vm.options.value!!.drawRadialsMarkers) {
                 addMarker(pos = radial.pos1, type = C.MAP_ITEM_RADIAL, id = 2 * i, hue = BitmapDescriptorFactory.HUE_BLUE)
                 addMarker(pos = radial.pos2, type = C.MAP_ITEM_RADIAL, id = 2 * i + 1, hue = BitmapDescriptorFactory.HUE_BLUE)
             }
@@ -398,8 +394,8 @@ class MapFragment : Fragment(R.layout.fragment_map) {
         var chkItems = false
         val builder = LatLngBounds.Builder()
 
-        if (settings.takeoffPos != null) {
-            builder.include(settings.takeoffPos!!)
+        if (G.vm.settings.value!!.takeoffPos != null) {
+            builder.include(G.vm.settings.value!!.takeoffPos!!)
             chkTO = true
         }
         for (i in navlogList.indices) {
@@ -429,7 +425,7 @@ class MapFragment : Fragment(R.layout.fragment_map) {
         val stage = getFlightStage()
 
         if (stage == C.STAGE_1_BEFORE_ENGINE_START || stage == C.STAGE_5_AFTER_ENGINE_SHUTDOWN) {
-            if (settings.takeoffPos == null && navlogList.size == 0) {
+            if (G.vm.settings.value!!.takeoffPos == null && navlogList.size == 0) {
                 // New flight plan with no points -> Zoom to position
                 if (gps.isValid) {
                     val cameraPosition = CameraPosition.Builder().target(gps.pos!!).zoom(10f).bearing(0f).tilt(0f).build()
@@ -447,9 +443,9 @@ class MapFragment : Fragment(R.layout.fragment_map) {
             val zoom: Float
             val target: LatLng
 
-            val bearing = if (options.mapOrientation == C.MAP_ORIENTATION_NORTH) {
+            val bearing = if (G.vm.options.value!!.mapOrientation == C.MAP_ORIENTATION_NORTH) {
                 0f
-            } else if (options.mapOrientation == C.MAP_ORIENTATION_TRACK) {
+            } else if (G.vm.options.value!!.mapOrientation == C.MAP_ORIENTATION_TRACK) {
                 if (navlogList[item].tt != null) navlogList[item].tt!!.toFloat() else 0f
             } else {
                 // C.MAP_ORIENTATION_BEARING
@@ -471,7 +467,7 @@ class MapFragment : Fragment(R.layout.fragment_map) {
                 val bounds = builder.build()
                 target = bounds.center
 
-                zoom = if (options.mapOrientation == C.MAP_ORIENTATION_NORTH) {
+                zoom = if (G.vm.options.value!!.mapOrientation == C.MAP_ORIENTATION_NORTH) {
                     map2.moveCamera(CameraUpdateFactory.newLatLngBounds(bounds, C.MAP_ZOOM_PADDING))
                     map2.cameraPosition.zoom
                 } else {
@@ -502,7 +498,7 @@ class MapFragment : Fragment(R.layout.fragment_map) {
 
     private fun followPosition() {
         if (!mapReady) return
-        if (!settings.mapFollow) return
+        if (!G.vm.settings.value!!.mapFollow) return
         if (!mapFollow) return
 
         var gps: GpsData
@@ -511,7 +507,7 @@ class MapFragment : Fragment(R.layout.fragment_map) {
         if (gps.isValid) {
             if (map.cameraPosition.target == gps.pos) return
 
-            val bearing = if (options.mapOrientation == C.MAP_ORIENTATION_BEARING && gps.bearing != null) gps.bearing!!
+            val bearing = if (G.vm.options.value!!.mapOrientation == C.MAP_ORIENTATION_BEARING && gps.bearing != null) gps.bearing!!
             else map.cameraPosition.bearing
 
             val cameraPosition = CameraPosition.Builder().target(gps.pos!!).zoom(map.cameraPosition.zoom).bearing(bearing).tilt(map.cameraPosition.tilt).build()
@@ -570,7 +566,7 @@ class MapFragment : Fragment(R.layout.fragment_map) {
     }
 
     private fun setTakeoffPoint(pos: LatLng) {
-        settings.takeoffPos = LatLng(roundDouble(pos.latitude, C.POS_PRECISION), roundDouble(pos.longitude, C.POS_PRECISION))
+        G.vm.settings.value!!.takeoffPos = LatLng(roundDouble(pos.latitude, C.POS_PRECISION), roundDouble(pos.longitude, C.POS_PRECISION))
         saveState()
         drawFlightPlan()
     }
@@ -584,12 +580,12 @@ class MapFragment : Fragment(R.layout.fragment_map) {
         val prevCoords: LatLng
 
         if (navlogList.size == 0 || getNavlogLastActiveItemId() < 0) {
-            prevCoords = settings.takeoffPos!!
+            prevCoords = G.vm.settings.value!!.takeoffPos!!
         } else {
             // Find nearest waypoints among all navlog items - active and not active
             val angleList = ArrayList<Angles>()
 
-            angleList.add(Angles(-1, abs(calcBearingAngle(pos, settings.takeoffPos!!, navlogList[0].pos!!))))
+            angleList.add(Angles(-1, abs(calcBearingAngle(pos, G.vm.settings.value!!.takeoffPos!!, navlogList[0].pos!!))))
 
             // Search through waypoints
             for (i in 0 until navlogList.size - 1) {
@@ -600,7 +596,7 @@ class MapFragment : Fragment(R.layout.fragment_map) {
             angleList.sortByDescending { it.angle }
             if (angleList[0].angle > 90.0) {
                 position = angleList[0].i + 1
-                prevCoords = if (position == 0) settings.takeoffPos!! else navlogList[position - 1].pos!!
+                prevCoords = if (position == 0) G.vm.settings.value!!.takeoffPos!! else navlogList[position - 1].pos!!
             } else prevCoords = navlogList[getNavlogLastActiveItemId()].pos!!
         }
 
@@ -622,12 +618,12 @@ class MapFragment : Fragment(R.layout.fragment_map) {
     }
 
     private fun refreshBottomBar() {
-        val p1 = if (totals.dist < C.DIST_THRESHOLD) 1 else 0
-        val p2 = if (totals.fuel < C.VOL_THRESHOLD) 1 else 0
-        val strDist = formatDouble(toUserUnitsDis(totals.dist), p1) + " " + getUnitsDis()
-        val strFuel = formatDouble(toUserUnitsVol(totals.fuel), p2) + " " + getUnitsVol()
+        val p1 = if (G.vm.totals.value!!.dist < C.DIST_THRESHOLD) 1 else 0
+        val p2 = if (G.vm.totals.value!!.fuel < C.VOL_THRESHOLD) 1 else 0
+        val strDist = formatDouble(toUserUnitsDis(G.vm.totals.value!!.dist), p1) + " " + getUnitsDis()
+        val strFuel = formatDouble(toUserUnitsVol(G.vm.totals.value!!.fuel), p2) + " " + getUnitsVol()
         bind.txtTotalDist.text = strDist
-        bind.txtTotalTime.text = formatSecondsToTime(totals.time)
+        bind.txtTotalTime.text = formatSecondsToTime(G.vm.totals.value!!.time)
         bind.txtTotalFuel.text = strFuel
     }
 

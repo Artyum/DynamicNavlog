@@ -43,7 +43,7 @@
                 <TextView
                     style="@style/aboutItem"
                     android:layout_marginTop="0dp"
-                    android:text="2.0.4"
+                    android:text="2.0.5"
                     app:layout_constraintBaseline_toBaselineOf="@id/a"
                     app:layout_constraintRight_toRightOf="parent" />
             </androidx.constraintlayout.widget.ConstraintLayout>

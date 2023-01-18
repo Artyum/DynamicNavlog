@@ -24,7 +24,7 @@ class AboutFragment : Fragment(R.layout.fragment_about) {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        bind.aboutLayout.keepScreenOn = options.keepScreenOn
+        bind.aboutLayout.keepScreenOn = G.vm.options.value!!.keepScreenOn
         (activity as MainActivity).displayButtons()
 
         // Clickable links

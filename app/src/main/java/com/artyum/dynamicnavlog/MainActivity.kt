@@ -16,6 +16,7 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.FileProvider
+import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.fragment.findNavController
@@ -36,10 +37,9 @@ import org.json.JSONObject
 import java.io.File
 
 class MainActivity : AppCompatActivity() {
-    private val TAG = "MainActivity"
-
+    private val tag = "MainActivity"
     private lateinit var bind: ActivityMainBinding
-    lateinit var navController: NavController
+    private lateinit var navController: NavController
     private lateinit var appBarConfiguration: AppBarConfiguration
     private lateinit var mAdView: AdView
 
@@ -215,15 +215,21 @@ class MainActivity : AppCompatActivity() {
             displayButtons()
         }
 
+        // Set GlobalViewModel
+        // Access from Fragment
+        // val viewModel = ViewModelProvider(requireActivity()).get(GlobalViewModel::class.java)
+        G.vm = ViewModelProvider(this, ViewModelProvider.AndroidViewModelFactory(application))[GlobalViewModel::class.java]
+        G.vm.settings.value = Settings()
+        G.vm.airplane.value = Airplane()
+        G.vm.options.value = Options()
+        G.vm.timers.value = Timers()
+        G.vm.totals.value = Totals()
+
         // Check purchase file to enable or disable ads
         checkPurchaseFile()
 
         // Billing client
         if (releaseOptions.startBillingClient) startBillingClient() else disableAds()
-
-        // Convert all saves to xml
-        //TODO delete this after some time v1.2.0 2022-06
-        convertAllDnlToJson()
 
         // Clear unused files
         clearFiles(C.GPX_EXTENSION)
@@ -342,14 +348,14 @@ class MainActivity : AppCompatActivity() {
 
     // Billing // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // //
     private fun startBillingClient() {
-        Log.d(TAG, "startBillingClient")
+        Log.d(tag, "startBillingClient")
 
         billingClient = BillingClient.newBuilder(this).setListener(purchaseUpdateListener).enablePendingPurchases().build()
 
         billingClient.startConnection(object : BillingClientStateListener {
             override fun onBillingSetupFinished(billingResult: BillingResult) {
                 if (billingResult.responseCode == BillingClient.BillingResponseCode.OK) {
-                    Log.d(TAG, "onBillingSetupFinished")
+                    Log.d(tag, "onBillingSetupFinished")
                     queryAvailableProducts()
                     //queryPurchaseHistory()
                     queryPurchases()
@@ -357,14 +363,14 @@ class MainActivity : AppCompatActivity() {
             }
 
             override fun onBillingServiceDisconnected() {
-                Log.d(TAG, "onBillingServiceDisconnected")
+                Log.d(tag, "onBillingServiceDisconnected")
                 checkPurchaseFile()
             }
         })
     }
 
     private fun queryAvailableProducts() {
-        Log.d(TAG, "queryAvailableProducts")
+        Log.d(tag, "queryAvailableProducts")
 
         val skuList = ArrayList<String>()
         skuList.add(Release.GOOGLE_PLAY_PRODUCT_ID)
@@ -373,14 +379,14 @@ class MainActivity : AppCompatActivity() {
         params.setSkusList(skuList).setType(BillingClient.SkuType.INAPP)
 
         billingClient.querySkuDetailsAsync(params.build()) { billingResult, skuDetailsList ->
-            Log.d(TAG, "querySkuDetailsAsync")
+            Log.d(tag, "querySkuDetailsAsync")
             if (billingResult.responseCode == BillingClient.BillingResponseCode.OK && !skuDetailsList.isNullOrEmpty()) {
-                Log.d(TAG, "querySkuDetailsAsync success")
+                Log.d(tag, "querySkuDetailsAsync success")
                 for (skuDetails in skuDetailsList) {
                     val json = JSONObject(skuDetails.originalJson)
                     val productId = json.getString("productId")
                     if (productId == Release.GOOGLE_PLAY_PRODUCT_ID) {
-                        Log.d(TAG, "querySkuDetailsAsync item found!")
+                        Log.d(tag, "querySkuDetailsAsync item found!")
                         billingItem = skuDetails
                         setPurchaseOptionVisibility(true)
                     }
@@ -391,7 +397,7 @@ class MainActivity : AppCompatActivity() {
                     //println("JSON: ${skuDetails.originalJson}")
                 }
             } else {
-                Log.d(TAG, "querySkuDetailsAsync item NOT found")
+                Log.d(tag, "querySkuDetailsAsync item NOT found")
                 //Thread.sleep(1000)
                 //queryAvailableProducts()
             }
@@ -399,7 +405,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun queryPurchases() {
-        Log.d(TAG, "queryPurchasesAsync")
+        Log.d(tag, "queryPurchasesAsync")
         billingClient.queryPurchasesAsync(BillingClient.SkuType.INAPP) { billingResult, purchases ->
             if (billingResult.responseCode == BillingClient.BillingResponseCode.OK) {
                 if (purchases.isNotEmpty()) {
@@ -408,92 +414,92 @@ class MainActivity : AppCompatActivity() {
                         val json = JSONObject(purchase.originalJson)
                         val productId = json.getString("productId")
                         if (productId == Release.GOOGLE_PLAY_PRODUCT_ID && purchase.purchaseState == Purchase.PurchaseState.PURCHASED) {
-                            Log.d(TAG, "queryPurchasesAsync item found!")
+                            Log.d(tag, "queryPurchasesAsync item found!")
                             itemExists = true
                             if (!purchase.isAcknowledged) acknowledgePurchase(purchase)
                             checkPurchaseToken(purchase.purchaseToken)
                         }
                     }
                     if (!itemExists) {
-                        Log.d(TAG, "queryPurchasesAsync item NOT found!")
+                        Log.d(tag, "queryPurchasesAsync item NOT found!")
                         enableAds()
                     }
                 } else {
                     if (queryPurchasesRetryCnt > 0) {
-                        Log.d(TAG, "queryPurchasesAsync RETRY $queryPurchasesRetryCnt")
+                        Log.d(tag, "queryPurchasesAsync RETRY $queryPurchasesRetryCnt")
                         Thread.sleep(5000)
                         queryPurchases()
                         queryPurchasesRetryCnt -= 1
                     } else {
-                        Log.d(TAG, "queryPurchasesAsync RETRY END")
+                        Log.d(tag, "queryPurchasesAsync RETRY END")
                     }
                 }
             } else {
-                Log.d(TAG, "queryPurchasesAsync response NOT OK; responseCode: " + billingResult.responseCode)
+                Log.d(tag, "queryPurchasesAsync response NOT OK; responseCode: " + billingResult.responseCode)
             }
         }
     }
 
     fun launchPurchase() {
-        Log.d(TAG, "launchPurchase")
+        Log.d(tag, "launchPurchase")
 
         if (billingItem != null) {
             val json = JSONObject(billingItem!!.originalJson)
             val productId = json.getString("productId")
-            //Log.d(TAG, "launchPurchase productId: $productId")
+            //Log.d(tag, "launchPurchase productId: $productId")
             if (productId == Release.GOOGLE_PLAY_PRODUCT_ID) {
                 val billingFlowParams = BillingFlowParams.newBuilder().setSkuDetails(billingItem!!).build()
                 billingClient.launchBillingFlow(this, billingFlowParams)
             } else {
-                Log.d(TAG, "billingItem item NOT found")
+                Log.d(tag, "billingItem item NOT found")
                 Toast.makeText(this, getString(R.string.txtCannotConnectToGooglePlay), Toast.LENGTH_LONG).show()
             }
         } else {
             Toast.makeText(this, getString(R.string.txtCannotConnectToGooglePlay), Toast.LENGTH_LONG).show()
-            Log.d(TAG, "billingItem is null")
+            Log.d(tag, "billingItem is null")
         }
     }
 
     private val purchaseUpdateListener = PurchasesUpdatedListener { billingResult, purchases ->
-        Log.d(TAG, "purchaseUpdateListener")
+        Log.d(tag, "purchaseUpdateListener")
 
         if (billingResult.responseCode == BillingClient.BillingResponseCode.OK && purchases != null) {
             for (purchase in purchases) {
-                Log.d(TAG, "PURCHASE responseCode OK")
+                Log.d(tag, "PURCHASE responseCode OK")
                 //println(purchase.originalJson)
                 acknowledgePurchase(purchase)
             }
         } else if (billingResult.responseCode == BillingClient.BillingResponseCode.USER_CANCELED) {
-            Log.d(TAG, "PURCHASE USER CANCELED")
+            Log.d(tag, "PURCHASE USER CANCELED")
         } else {
             // Payment declined
-            Log.d(TAG, "PURCHASE OTHER PROBLEM")
+            Log.d(tag, "PURCHASE OTHER PROBLEM")
         }
     }
 
     private fun acknowledgePurchase(purchase: Purchase) {
-        Log.d(TAG, "acknowledgePurchase")
+        Log.d(tag, "acknowledgePurchase")
 
         if (purchase.purchaseState == Purchase.PurchaseState.PURCHASED) {
-            Log.d(TAG, "PurchaseState.PURCHASED")
+            Log.d(tag, "PurchaseState.PURCHASED")
             if (!purchase.isAcknowledged) {
-                Log.d(TAG, "!purchase.isAcknowledged")
+                Log.d(tag, "!purchase.isAcknowledged")
                 val acknowledgePurchaseParams = AcknowledgePurchaseParams.newBuilder().setPurchaseToken(purchase.purchaseToken).build()
                 billingClient.acknowledgePurchase(acknowledgePurchaseParams) { billingResult ->
                     if (billingResult.responseCode == BillingClient.BillingResponseCode.OK) {
-                        Log.d(TAG, "acknowledgePurchase OK")
+                        Log.d(tag, "acknowledgePurchase OK")
                         savePurchaseToken(purchase.purchaseToken)
                     } else {
-                        Log.d(TAG, "acknowledgePurchase NOT OK")
-                        Log.d(TAG, "billingResponseCode: " + billingResult.responseCode)
-                        Log.d(TAG, "billingDebugMessage: " + billingResult.debugMessage)
+                        Log.d(tag, "acknowledgePurchase NOT OK")
+                        Log.d(tag, "billingResponseCode: " + billingResult.responseCode)
+                        Log.d(tag, "billingDebugMessage: " + billingResult.debugMessage)
                     }
                 }
             } else {
-                Log.d(TAG, "acknowledgePurchase isAcknowledged")
+                Log.d(tag, "acknowledgePurchase isAcknowledged")
             }
         } else {
-            Log.d(TAG, "acknowledgePurchase purchaseState NOT PURCHASED")
+            Log.d(tag, "acknowledgePurchase purchaseState NOT PURCHASED")
         }
     }
 
@@ -501,7 +507,7 @@ class MainActivity : AppCompatActivity() {
     // Advertisement
 
     private fun enableAds() {
-        Log.d(TAG, "enableAds")
+        Log.d(tag, "enableAds")
         isAppPurchased = false
         mAdView = findViewById(R.id.adView)
 
@@ -513,7 +519,7 @@ class MainActivity : AppCompatActivity() {
 
             override fun onAdFailedToLoad(adError: LoadAdError) {
                 val msg = "enableAds onAdFailedToLoad Code: ${adError.code} Message: ${adError.message}"
-                Log.d(TAG, msg)
+                Log.d(tag, msg)
                 runOnUiThread { bind.adStaticInfo.visibility = View.VISIBLE }
                 runOnUiThread { bind.boxAdView.visibility = View.GONE }
             }
@@ -524,7 +530,7 @@ class MainActivity : AppCompatActivity() {
         deletePurchaseFile()
 
         if (releaseOptions.initializeAds) {
-            Log.d(TAG, "initializeAds")
+            Log.d(tag, "initializeAds")
             MobileAds.initialize(applicationContext)
             val adRequest = AdRequest.Builder().build()
             runOnUiThread { mAdView.loadAd(adRequest) }
@@ -534,20 +540,20 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun disableAds() {
-        Log.d(TAG, "disableAds")
+        Log.d(tag, "disableAds")
         isAppPurchased = true
         runOnUiThread { bind.adBox.visibility = View.GONE }
         setPurchaseOptionVisibility(false)
     }
 
     private fun setPurchaseOptionVisibility(visibility: Boolean) {
-        Log.d(TAG, "setPurchaseOptionVisibility")
+        Log.d(tag, "setPurchaseOptionVisibility")
         var visible = visibility
         if (visible && isAppPurchased) {
-            Log.d(TAG, "isAppPurchased=true")
+            Log.d(tag, "isAppPurchased=true")
             visible = false
         }
-        Log.d(TAG, "groupPurchase visible: $visible")
+        Log.d(tag, "groupPurchase visible: $visible")
         val navView: NavigationView = findViewById(R.id.drawerView)
         runOnUiThread { navView.menu.setGroupVisible(R.id.groupPurchase, visible) }
     }
@@ -556,16 +562,16 @@ class MainActivity : AppCompatActivity() {
     // Purchase file
 
     private fun checkPurchaseToken(purchaseToken: String) {
-        Log.d(TAG, "checkPurchaseToken")
+        Log.d(tag, "checkPurchaseToken")
         val file = File(getInternalAppDir(), Release.GOOGLE_PLAY_PRODUCT_ID)
         if (file.exists()) {
             val lines = file.readLines()
             for (line in lines) {
                 if (line == purchaseToken) {
-                    Log.d(TAG, "purchaseToken check OK")
+                    Log.d(tag, "purchaseToken check OK")
                     disableAds()
                 } else {
-                    Log.d(TAG, "purchaseToken check NOT OK")
+                    Log.d(tag, "purchaseToken check NOT OK")
                     enableAds()
                     file.delete()
                 }
@@ -576,21 +582,21 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun savePurchaseToken(purchaseToken: String) {
-        Log.d(TAG, "savePurchaseToken")
+        Log.d(tag, "savePurchaseToken")
         val file = File(getInternalAppDir(), Release.GOOGLE_PLAY_PRODUCT_ID)
         file.writeText(purchaseToken)
         disableAds()
     }
 
     private fun checkPurchaseFile() {
-        Log.d(TAG, "checkPurchaseFile")
+        Log.d(tag, "checkPurchaseFile")
         val file = File(getInternalAppDir(), Release.GOOGLE_PLAY_PRODUCT_ID)
         if (file.exists()) disableAds()
         else enableAds()
     }
 
     private fun deletePurchaseFile() {
-        Log.d(TAG, "deletePurchaseFile")
+        Log.d(tag, "deletePurchaseFile")
         val file = File(getInternalAppDir(), Release.GOOGLE_PLAY_PRODUCT_ID)
         if (file.exists()) file.delete()
     }
@@ -606,15 +612,17 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun newFlightPlan() {
+        Log.d(tag, "newFlightPlan")
         saveState()
         navlogList.clear()
         resetAllSettings()
         resetFlight()
         resetRadials()
-        if (options.gpsAssist) locationSubscribe() else locationUnsubscribe()
+        if (G.vm.options.value!!.gpsAssist) locationSubscribe() else locationUnsubscribe()
     }
 
     fun resetFlight() {
+        Log.d(tag, "resetFlight")
         tracePointsList.clear()
         resetTimers()
         resetNavlog()
@@ -722,7 +730,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     fun setScreenOrientation() {
-        when (options.screenOrientation) {
+        when (G.vm.options.value!!.screenOrientation) {
             C.SCREEN_PORTRAIT -> requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
             C.SCREEN_LANDSCAPE -> requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE
             C.SCREEN_SENSOR -> requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_FULL_SENSOR
@@ -745,16 +753,12 @@ class MainActivity : AppCompatActivity() {
 
     // GPS features
     private fun locationSetup() {
-        Log.d(TAG, "locationSetup")
+        Log.d(tag, "locationSetup")
         fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this)
 
         // https://developer.android.com/training/location/change-location-settings
-        locationRequest = LocationRequest.create().apply {
-            interval = 1000
-            fastestInterval = 1000
-            maxWaitTime = 1000
-            priority = Priority.PRIORITY_HIGH_ACCURACY
-        }
+        // https://developer.android.com/reference/android/location/LocationRequest.Builder#setDurationMillis(long)
+        locationRequest = LocationRequest.Builder(Priority.PRIORITY_HIGH_ACCURACY, 1000).setMinUpdateDistanceMeters(3f).setMinUpdateIntervalMillis(1000).build()
 
         locationCallback = object : LocationCallback() {
             override fun onLocationResult(l: LocationResult) {
@@ -765,7 +769,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     fun locationSubscribe() {
-        if (options.gpsAssist && !locationSubscribed) {
+        if (G.vm.options.value!!.gpsAssist && !locationSubscribed) {
             if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
                 val builder = AlertDialog.Builder(this@MainActivity)
                 builder.setMessage(R.string.txtLocationMessage).setCancelable(false).setPositiveButton(R.string.txtOk) { _, _ ->
@@ -774,7 +778,7 @@ class MainActivity : AppCompatActivity() {
                 val alert = builder.create()
                 alert.show()
             } else {
-                Log.d(TAG, "locationSubscribe")
+                Log.d(tag, "locationSubscribe")
                 fusedLocationProviderClient.requestLocationUpdates(locationRequest, locationCallback, Looper.getMainLooper())
                 locationSubscribed = true
             }
@@ -782,12 +786,12 @@ class MainActivity : AppCompatActivity() {
     }
 
     fun locationUnsubscribe() {
-        Log.d(TAG, "locationUnsubscribe")
+        Log.d(tag, "locationUnsubscribe")
 
         val removeTask = fusedLocationProviderClient.removeLocationUpdates(locationCallback)
         removeTask.addOnCompleteListener { task ->
-            if (task.isSuccessful) Log.d(TAG, "Location Callback removed")
-            else Log.d(TAG, "Failed to remove Location Callback")
+            if (task.isSuccessful) Log.d(tag, "Location Callback removed")
+            else Log.d(tag, "Failed to remove Location Callback")
             locationSubscribed = false
         }
     }
@@ -798,7 +802,7 @@ class MainActivity : AppCompatActivity() {
             if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 locationSubscribe()
             } else {
-                Log.d(TAG, "GPS Permissions NOT granted by user")
+                Log.d(tag, "GPS Permissions NOT granted by user")
             }
         }
     }
@@ -846,8 +850,8 @@ class MainActivity : AppCompatActivity() {
         var gpsFailCnt = 0
 
         while (true) {
-            //Log.d(TAG, "gpsHealthCheckThread: $gpsFailCnt")
-            if (options.gpsAssist) {
+            //Log.d(tag, "gpsHealthCheckThread: $gpsFailCnt")
+            if (G.vm.options.value!!.gpsAssist) {
                 gpsMutex.withLock {
                     if (!gpsData.heartbeat) {
                         if (gpsFailCnt >= C.GPS_ALIVE_SEC) {
@@ -881,7 +885,7 @@ class MainActivity : AppCompatActivity() {
             val curTime = System.currentTimeMillis() / 1000L
             if (curTime != prevTime && isAutoNextEnabled()) {
                 prevTime = curTime
-                //Log.d(TAG, "autoNextThread")
+                //Log.d(tag, "autoNextThread")
 
                 gpsMutex.withLock { gps = gpsData }
 
@@ -890,7 +894,7 @@ class MainActivity : AppCompatActivity() {
 
                     if (stage == C.STAGE_2_ENGINE_RUNNING) {
                         // Detect takeoff
-                        if (gps.speedMps > options.autoTakeoffSpd) speedCnt += 1 else speedCnt = 0
+                        if (gps.speedMps > G.vm.options.value!!.autoTakeoffSpd) speedCnt += 1 else speedCnt = 0
                         if (speedCnt >= C.AUTO_NEXT_WAIT_SEC) {
                             // Auto Takeoff
                             setStageTakeoff()
@@ -903,21 +907,21 @@ class MainActivity : AppCompatActivity() {
 
                         if (navlogList[item].pos != null) {
                             val dist = m2nm(calcDistance(gps.pos!!, navlogList[item].pos!!))
-                            if (dist <= nextRadiusList[options.nextRadiusIndex]) {
+                            if (dist <= nextRadiusList[G.vm.options.value!!.nextRadiusIndex]) {
                                 if (item < last) {
                                     // Auto Next Waypoint
                                     // Detect passed waypoint when airplane is in the circle and the distance from waypoint is increasing
                                     if (prevDist == 0.0) prevDist = dist
                                     else if (dist > prevDist) {
-                                        //Log.d(TAG, "Auto next wpt")
+                                        //Log.d(tag, "Auto next wpt")
                                         prevDist = 0.0
                                         setStageNext()
                                     } else prevDist = dist
                                 } else {
                                     // Auto Landing
-                                    if (gps.speedMps < options.autoLandingSpd) speedCnt += 1 else speedCnt = 0
+                                    if (gps.speedMps < G.vm.options.value!!.autoLandingSpd) speedCnt += 1 else speedCnt = 0
                                     if (speedCnt >= C.AUTO_NEXT_WAIT_SEC) {
-                                        //Log.d(TAG, "Auto landing")
+                                        //Log.d(tag, "Auto landing")
                                         setStageLanding()
                                         runOnUiThread { displayButtons() }
                                         speedCnt = 0

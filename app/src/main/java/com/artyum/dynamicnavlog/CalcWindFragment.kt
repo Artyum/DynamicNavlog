@@ -31,7 +31,7 @@ class CalcWindFragment : Fragment(layout.fragment_calc_wind) {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        bind.calcWindLayout.keepScreenOn = options.keepScreenOn
+        bind.calcWindLayout.keepScreenOn = G.vm.options.value!!.keepScreenOn
         (activity as MainActivity).displayButtons()
 
         bind.btnCalculate.setOnClickListener {

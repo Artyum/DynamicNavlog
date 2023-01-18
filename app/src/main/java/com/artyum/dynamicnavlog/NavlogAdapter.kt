@@ -57,7 +57,7 @@ class NavlogAdapter(
             holder.tvGs.text = formatDouble(toUserUnitsSpd(item.gs))
 
             // TIME
-            if (settings.tfDisplayToggle == C.TF_DISPLAY_CUR) holder.tvTime.text = formatSecondsToTime(item.time)
+            if (G.vm.settings.value!!.tfDisplayToggle == C.TF_DISPLAY_CUR) holder.tvTime.text = formatSecondsToTime(item.time)
             else holder.tvTime.text = formatSecondsToTime(item.timeIncrement)
 
             // ETA / ATA
@@ -67,7 +67,7 @@ class NavlogAdapter(
             // Fuel
             val p1 = if (item.fuel != null && item.fuel!! < C.VOL_THRESHOLD) 1 else 0
             val p2 = if (item.fuelRemaining != null && item.fuelRemaining!! < C.VOL_THRESHOLD) 1 else 0
-            if (settings.tfDisplayToggle == C.TF_DISPLAY_CUR) holder.tvFuel.text = formatDouble(toUserUnitsVol(item.fuel), p1)
+            if (G.vm.settings.value!!.tfDisplayToggle == C.TF_DISPLAY_CUR) holder.tvFuel.text = formatDouble(toUserUnitsVol(item.fuel), p1)
             else holder.tvFuel.text = formatDouble(toUserUnitsVol(item.fuelRemaining), p2)
         } else {
             holder.tvWca.text = ""

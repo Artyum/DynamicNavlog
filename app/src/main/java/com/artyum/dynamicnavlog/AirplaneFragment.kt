@@ -13,8 +13,6 @@ import androidx.fragment.app.setFragmentResultListener
 import androidx.navigation.fragment.findNavController
 import com.artyum.dynamicnavlog.databinding.FragmentAirplaneBinding
 
-val TAG = "AirplaneFragment"
-
 class AirplaneFragment : Fragment() {
     private var _binding: FragmentAirplaneBinding? = null
     private val bind get() = _binding!!
@@ -35,7 +33,7 @@ class AirplaneFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        bind.airplaneLayout.keepScreenOn = options.keepScreenOn
+        bind.airplaneLayout.keepScreenOn = G.vm.options.value!!.keepScreenOn
         (activity as MainActivity).displayButtons()
 
         // Speed units
@@ -175,21 +173,23 @@ class AirplaneFragment : Fragment() {
         }
 
         if (ok) {
-            airplane.type = type
-            airplane.reg = reg
-            airplane.rmk = rmk
-            airplane.tas = tas!!
-            airplane.tank = tank!!
-            airplane.fph = fph!!
-            airplane.spdUnits = spdUnits
-            airplane.volUnits = volUnits
+            G.vm.airplane.value!!.type = type
+            G.vm.airplane.value!!.reg = reg
+            G.vm.airplane.value!!.rmk = rmk
+            G.vm.airplane.value!!.tas = tas!!
+            G.vm.airplane.value!!.tank = tank!!
+            G.vm.airplane.value!!.fph = fph!!
+            G.vm.airplane.value!!.spdUnits = spdUnits
+            G.vm.airplane.value!!.volUnits = volUnits
             addAirplane()
 
             // Refresh airplane settings
-            getAirplaneByID(settings.airplaneId)
+            getAirplaneByID(G.vm.settings.value!!.airplaneId)
             calcNavlog()
 
+            // Go back to the list of airplanes
             findNavController().popBackStack()
+
             //Toast.makeText(context, getString(R.string.txtAirplaneSaved), Toast.LENGTH_SHORT).show()
             //(bind.btnApply as MaterialButton).background.setTint(bind.btnApply.context.getColor(R.color.gray))
         }
@@ -200,27 +200,27 @@ class AirplaneFragment : Fragment() {
             // Search in airplane list
             for (i in airplaneList.indices) {
                 if (airplaneList[i].id == editAirplaneId) {
-                    airplane = airplaneList[i].copy()
+                    G.vm.airplane.value = airplaneList[i].copy()
                     return
                 }
             }
         } else {
-            airplane = Airplane()
-            airplane.id = generateStringId()
+            G.vm.airplane.value = Airplane()
+            G.vm.airplane.value!!.id = generateStringId()
         }
     }
 
     private fun restoreSettings() {
-        bind.airplaneType.setText(airplane.type)
-        bind.airplaneReg.setText(airplane.reg)
-        bind.airplaneRmk.setText(airplane.rmk)
+        bind.airplaneType.setText(G.vm.airplane.value!!.type)
+        bind.airplaneReg.setText(G.vm.airplane.value!!.reg)
+        bind.airplaneRmk.setText(G.vm.airplane.value!!.rmk)
 
-        bind.spinnerSpeedUnits.setSelection(airplane.spdUnits)
-        bind.spinnerVolUnits.setSelection(airplane.volUnits)
+        bind.spinnerSpeedUnits.setSelection(G.vm.airplane.value!!.spdUnits)
+        bind.spinnerVolUnits.setSelection(G.vm.airplane.value!!.volUnits)
 
-        val tas = airplane.tas
-        val tank = airplane.tank
-        val fph = airplane.fph
+        val tas = G.vm.airplane.value!!.tas
+        val tank = G.vm.airplane.value!!.tank
+        val fph = G.vm.airplane.value!!.fph
 
         if (tas > 0.0) bind.airplaneTas.setText(formatDouble(tas))
         if (tank > 0.0) bind.airplaneTank.setText(formatDouble(tank))
@@ -229,12 +229,12 @@ class AirplaneFragment : Fragment() {
 
     private fun addAirplane() {
         for (i in airplaneList.indices) {
-            if (airplaneList[i].id == airplane.id) {
+            if (airplaneList[i].id == G.vm.airplane.value!!.id) {
                 airplaneList.removeAt(i)
                 break
             }
         }
-        airplaneList.add(airplane)
+        airplaneList.add(G.vm.airplane.value!!)
         airplaneList.sortBy { it.reg }
         saveAirplaneList()
     }
@@ -248,28 +248,27 @@ fun getAirplaneByID(id: String) {
 
     for (i in airplaneList.indices) {
         if (airplaneList[i].id == id) {
-            Log.d(TAG, "getAirplaneByID: $id")
             // Convert airplane units to flight plan units
-
-            airplane = airplaneList[i].copy()
+            val a = airplaneList[i].copy()
 
             // Convert to kt and litres
-            when (airplane.spdUnits) {
-                C.SPD_MPH -> airplane.tas = mph2kt(airplane.tas)
-                C.SPD_KPH -> airplane.tas = kph2kt(airplane.tas)
+            when (a.spdUnits) {
+                C.SPD_MPH -> a.tas = mph2kt(a.tas)
+                C.SPD_KPH -> a.tas = kph2kt(a.tas)
             }
-            when (airplane.volUnits) {
+            when (a.volUnits) {
                 C.VOL_USGAL -> {
-                    airplane.tank = usgal2l(airplane.tank)
-                    airplane.fph = usgal2l(airplane.fph)
+                    a.tank = usgal2l(a.tank)
+                    a.fph = usgal2l(a.fph)
                 }
                 C.VOL_UKGAL -> {
-                    airplane.tank = ukgal2l(airplane.tank)
-                    airplane.fph = ukgal2l(airplane.fph)
+                    a.tank = ukgal2l(a.tank)
+                    a.fph = ukgal2l(a.fph)
                 }
             }
 
-            settings.airplaneId = id
+            G.vm.airplane.value = a
+            G.vm.settings.value!!.airplaneId = id
             return
         }
     }
@@ -277,6 +276,6 @@ fun getAirplaneByID(id: String) {
 }
 
 fun resetAirplaneSettings() {
-    settings.airplaneId = ""
-    airplane = Airplane()
+    G.vm.settings.value!!.airplaneId = ""
+    G.vm.airplane.value = Airplane()
 }
