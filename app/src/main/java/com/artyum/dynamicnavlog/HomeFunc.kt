@@ -41,7 +41,7 @@ class HomeItem() {
     var isInsideCircle: Boolean = false
 
     init {
-        if (options.gpsAssist) runBlocking { gpsMutex.withLock { gps = gpsData } }
+        if (G.vm.options.value!!.gpsAssist) runBlocking { gpsMutex.withLock { gps = gpsData } }
         stage = getFlightStage()
         item = getNavlogCurrentItemId()
         prev = getNavlogPrevItemId(item)
@@ -50,24 +50,24 @@ class HomeItem() {
         last = getNavlogLastActiveItemId()
 
         if (stage >= C.STAGE_5_AFTER_ENGINE_SHUTDOWN) {
-            engineTimeSec = Duration.between(timers.offblock, timers.onblock).toMillis() / 1000
+            engineTimeSec = Duration.between(G.vm.timers.value!!.offblock, G.vm.timers.value!!.onblock).toMillis() / 1000
         } else if (stage >= C.STAGE_2_ENGINE_RUNNING) {
-            engineTimeSec = Duration.between(timers.offblock, LocalDateTime.now()).toMillis() / 1000
+            engineTimeSec = Duration.between(G.vm.timers.value!!.offblock, LocalDateTime.now()).toMillis() / 1000
         }
 
-        if (airplane.fph > 0.0) {
-            fuelUsed = engineTimeSec.toDouble() / 3600.0 * airplane.fph
+        if (G.vm.airplane.value!!.fph > 0.0) {
+            fuelUsed = engineTimeSec.toDouble() / 3600.0 * G.vm.airplane.value!!.fph
 
-            fuelMaxTime = settings.fob / airplane.fph
-            fuelRemaining = settings.fob - fuelUsed
+            fuelMaxTime = G.vm.settings.value!!.fob / G.vm.airplane.value!!.fph
+            fuelRemaining = G.vm.settings.value!!.fob - fuelUsed
             fuelTimeRemaining = fuelMaxTime * 3600.0 - engineTimeSec.toDouble()
         }
 
         if (stage < C.STAGE_3_FLIGHT_IN_PROGRESS) {
-            if (isNavlogReady()) estFlightTimeSec = totals.time
-            fuelToLand = airplane.fph * totals.time.toDouble() / 3600.0
+            if (isNavlogReady()) estFlightTimeSec = G.vm.totals.value!!.time
+            fuelToLand = G.vm.airplane.value!!.fph * G.vm.totals.value!!.time.toDouble() / 3600.0
         } else if (stage == C.STAGE_3_FLIGHT_IN_PROGRESS) {
-            prevTime = if (item == first) timers.takeoff!! else navlogList[prev].ata!!
+            prevTime = if (item == first) G.vm.timers.value!!.takeoff!! else navlogList[prev].ata!!
 
             // ETA to Waypoint
             val eta2wpt = prevTime!!.plusSeconds(navlogList[item].time!!)
@@ -100,14 +100,14 @@ class HomeItem() {
             }
 
             // Estimated flight time
-            estFlightTimeSec = Duration.between(timers.takeoff, navlogList[last].eta).toMillis() / 1000
+            estFlightTimeSec = Duration.between(G.vm.timers.value!!.takeoff, navlogList[last].eta).toMillis() / 1000
             if (eteSec < 0) estFlightTimeSec -= eteSec
 
             // ETA to Landing
-            eta = timers.takeoff!!.plusSeconds(estFlightTimeSec)
+            eta = G.vm.timers.value!!.takeoff!!.plusSeconds(estFlightTimeSec)
 
             // Time to land
-            timeToLand = if (item == last) eteSec else estFlightTimeSec - Duration.between(timers.takeoff, LocalDateTime.now()).toMillis() / 1000
+            timeToLand = if (item == last) eteSec else estFlightTimeSec - Duration.between(G.vm.timers.value!!.takeoff, LocalDateTime.now()).toMillis() / 1000
 
             // Track angle / Direct MT
             if (gps.isValid) {
@@ -116,12 +116,12 @@ class HomeItem() {
             }
 
             // Fuel to land
-            fuelToLand = airplane.fph * timeToLand.toDouble() / 3600.0
+            fuelToLand = G.vm.airplane.value!!.fph * timeToLand.toDouble() / 3600.0
 
             // Inside circle
-            isInsideCircle = distToCurrentWpt <= nextRadiusList[options.nextRadiusIndex]
+            isInsideCircle = distToCurrentWpt <= nextRadiusList[G.vm.options.value!!.nextRadiusIndex]
         } else if (stage >= C.STAGE_4_AFTER_LANDING) {
-            estFlightTimeSec = Duration.between(timers.takeoff, timers.landing).toMillis() / 1000
+            estFlightTimeSec = Duration.between(G.vm.timers.value!!.takeoff, G.vm.timers.value!!.landing).toMillis() / 1000
         }
     }
 
@@ -149,7 +149,7 @@ class HomeItem() {
 
             if (gps.isValid) {
                 // Direct HDG (in HDG box)
-                val fc = flightCalculator(dmt, settings.windDir, settings.windSpd, airplane.tas)
+                val fc = flightCalculator(dmt, G.vm.settings.value!!.windDir, G.vm.settings.value!!.windSpd, G.vm.airplane.value!!.tas)
                 hdgDct = formatDouble(fc.hdg)
             }
         }
@@ -226,7 +226,7 @@ class HomeItem() {
         if (stage == C.STAGE_3_FLIGHT_IN_PROGRESS && distToCurrentWpt > 0 && gps.isValid && gps.bearing != null && item >= 0) {
             val p = calcDestinationPos(gps.pos!!, gps.bearing!!.toDouble(), nm2m(distToCurrentWpt))
             val d = calcDistance(p, navlogList[item].pos!!)
-            if (m2nm(d) > nextRadiusList[options.nextRadiusIndex]) hit = false
+            if (m2nm(d) > nextRadiusList[G.vm.options.value!!.nextRadiusIndex]) hit = false
         }
 
         return HomeDtkAngleBar(left, right, hit)
@@ -275,11 +275,11 @@ class HomeItem() {
         if (stage == C.STAGE_3_FLIGHT_IN_PROGRESS) {
             etaStr = formatDateTime(eta!!, C.FORMAT_TIME)
         } else if (stage > C.STAGE_3_FLIGHT_IN_PROGRESS) {
-            etaStr = formatDateTime(timers.landing!!, C.FORMAT_TIME)
+            etaStr = formatDateTime(G.vm.timers.value!!.landing!!, C.FORMAT_TIME)
         }
 
         // DIFF - difference between actual and planed time
-        val timeDeviationMin: Long = ((estFlightTimeSec - totals.time) / 60.0).roundToLong()
+        val timeDeviationMin: Long = ((estFlightTimeSec - G.vm.totals.value!!.time) / 60.0).roundToLong()
         if (timeDeviationMin != 0L) {
             diffStr = if (timeDeviationMin > 0) "+$timeDeviationMin\'"
             else "$timeDeviationMin\'"
@@ -297,7 +297,7 @@ class HomeItem() {
             if (estFlightTimeSec > 0) ttl = formatSecondsToTime(estFlightTimeSec)
         } else if (stage == C.STAGE_3_FLIGHT_IN_PROGRESS) {
             ttl = formatSecondsToTime(timeToLand)
-            val p = (totals.time - timeToLand).toDouble() / totals.time.toDouble() * 100.0
+            val p = (G.vm.totals.value!!.time - timeToLand).toDouble() / G.vm.totals.value!!.time.toDouble() * 100.0
             pct = formatDouble(p) + '%'
             progress = p.roundToInt()
         }
@@ -315,8 +315,8 @@ class HomeItem() {
         ret.fuelTime = formatSecondsToTime(fuelTimeRemaining.toLong())
         ret.fuelRemaining = formatDouble(toUserUnitsVol(fuelRemaining))
 
-        if (airplane.tank > 0.0) {
-            val pct = fuelRemaining / airplane.tank * 100.0
+        if (G.vm.airplane.value!!.tank > 0.0) {
+            val pct = fuelRemaining / G.vm.airplane.value!!.tank * 100.0
             ret.fuelPct = formatDouble(pct) + '%'
             ret.fuelPctBar = pct.roundToInt()
         }

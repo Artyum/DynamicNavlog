@@ -38,12 +38,12 @@ fun clearNavlogInvalidItems(adapter: NavlogAdapter?) {
 }
 
 fun recalculateEta() {
-    if (isNavlogReady() && timers.takeoff != null) {
+    if (isNavlogReady() && G.vm.timers.value!!.takeoff != null) {
         var i: Int = getNavlogCurrentItemId()
         while (i < navlogList.size) {
             if (navlogList[i].active) {
                 val prev = getNavlogPrevItemId(i)
-                val prevTime: LocalDateTime = if (i == getNavlogFirstActiveItemId()) timers.takeoff!! else if (i == getNavlogCurrentItemId()) navlogList[prev].ata!! else navlogList[prev].eta!!
+                val prevTime: LocalDateTime = if (i == getNavlogFirstActiveItemId()) G.vm.timers.value!!.takeoff!! else if (i == getNavlogCurrentItemId()) navlogList[prev].ata!! else navlogList[prev].eta!!
                 val eta: LocalDateTime = prevTime.plusSeconds(navlogList[i].time!!)
                 navlogList[i].eta = eta
             }
@@ -170,10 +170,10 @@ fun setPrevWaypoint() {
 }
 
 fun getPrevCoords(i: Int): LatLng? {
-    return if (i < 0) settings.takeoffPos
+    return if (i < 0) G.vm.settings.value!!.takeoffPos
     else {
         val prev = getNavlogPrevItemId(i)
-        if (prev < 0) settings.takeoffPos
+        if (prev < 0) G.vm.settings.value!!.takeoffPos
         else navlogList[prev].pos
     }
 }
@@ -189,13 +189,13 @@ fun invertNavlog() {
     val last = getNavlogLastActiveItemId()
 
     // Swap Departure and Destination
-    val dep = settings.departure
-    settings.departure = settings.destination
-    settings.destination = dep
+    val dep = G.vm.settings.value!!.departure
+    G.vm.settings.value!!.departure = G.vm.settings.value!!.destination
+    G.vm.settings.value!!.destination = dep
 
     // Save takeoff position as new last position
-    val newLastPos = settings.takeoffPos!!
-    settings.takeoffPos = navlogList[last].pos
+    val newLastPos = G.vm.settings.value!!.takeoffPos!!
+    G.vm.settings.value!!.takeoffPos = navlogList[last].pos
 
     val newNavlogList = ArrayList<NavlogItem>()
     for (i in last - 1 downTo first) {
@@ -206,7 +206,7 @@ fun invertNavlog() {
 
     // Add last waypoint
     val item = NavlogItem(
-        dest = if (settings.destination == "") "END" else settings.destination,
+        dest = if (G.vm.settings.value!!.destination == "") "END" else G.vm.settings.value!!.destination,
         mt = normalizeBearing(navlogList[first].mt!!.plus(180.0)),
         dist = navlogList[first].dist,
         pos = newLastPos
@@ -227,7 +227,7 @@ fun recalculateFlight(adapter: NavlogAdapter?) {
 
         if (item < 0 || item == first) {
             item = first
-            fuelRemaining = settings.fob
+            fuelRemaining = G.vm.settings.value!!.fob
         } else {
             fuelRemaining = navlogList[getNavlogPrevItemId(item)].fuelRemaining
         }
@@ -238,11 +238,11 @@ fun recalculateFlight(adapter: NavlogAdapter?) {
 
                 val fDFata = flightCalculator(
                     course = navlogList[item].mt!!,
-                    windDir = settings.windDir,
-                    windSpd = settings.windSpd,
-                    tas = airplane.tas,
+                    windDir = G.vm.settings.value!!.windDir,
+                    windSpd = G.vm.settings.value!!.windSpd,
+                    tas = G.vm.airplane.value!!.tas,
                     dist = navlogList[item].dist,
-                    fph = airplane.fph
+                    fph = G.vm.airplane.value!!.fph
                 )
 
                 navlogList[item].wca = fDFata.wca
@@ -272,22 +272,22 @@ fun recalculateFlight(adapter: NavlogAdapter?) {
 }
 
 fun recalculateTotals() {
-    totals.dist = 0.0
-    totals.time = 0
-    totals.fuel = 0.0
+    G.vm.totals.value!!.dist = 0.0
+    G.vm.totals.value!!.time = 0
+    G.vm.totals.value!!.fuel = 0.0
 
     for (i in navlogList.indices) {
         if (navlogList[i].active && isNavlogItemValid(i)) {
-            totals.dist += navlogList[i].dist ?: 0.0
-            totals.time += navlogList[i].time ?: 0L
+            G.vm.totals.value!!.dist += navlogList[i].dist ?: 0.0
+            G.vm.totals.value!!.time += navlogList[i].time ?: 0L
         }
     }
-    totals.fuel = airplane.fph * totals.time / 3600.0
-    if (settings.fob < totals.fuel) settings.fob = totals.fuel
+    G.vm.totals.value!!.fuel = G.vm.airplane.value!!.fph * G.vm.totals.value!!.time / 3600.0
+    if (G.vm.settings.value!!.fob < G.vm.totals.value!!.fuel) G.vm.settings.value!!.fob = G.vm.totals.value!!.fuel
 }
 
 fun recalculateWaypoints() {
-    if (settings.takeoffPos == null) return
+    if (G.vm.settings.value!!.takeoffPos == null) return
     //Log.d("NavLogFunc", "recalculateWaypoints")
 
     for (i in navlogList.indices) {
@@ -309,7 +309,7 @@ fun recalculateWaypoints() {
 }
 
 fun setStageOffBlock() {
-    timers.offblock = LocalDateTime.now()
+    G.vm.timers.value!!.offblock = LocalDateTime.now()
     saveState()
     tracePointsList.clear()
     deleteTrace()
@@ -317,8 +317,8 @@ fun setStageOffBlock() {
 }
 
 fun setStageTakeoff() {
-    if (timers.offblock == null) setStageOffBlock()
-    timers.takeoff = LocalDateTime.now()
+    if (G.vm.timers.value!!.offblock == null) setStageOffBlock()
+    G.vm.timers.value!!.takeoff = LocalDateTime.now()
     setFirstCurrent()
     calcNavlog()
     saveState()
@@ -340,7 +340,7 @@ fun setStageNext() {
 }
 
 fun setStageLanding() {
-    timers.landing = LocalDateTime.now()
+    G.vm.timers.value!!.landing = LocalDateTime.now()
     navlogList[getNavlogCurrentItemId()].ata = LocalDateTime.now()
     calcNavlog()
     saveState()
@@ -348,7 +348,7 @@ fun setStageLanding() {
 }
 
 fun setStageOnBLock() {
-    timers.onblock = LocalDateTime.now()
+    G.vm.timers.value!!.onblock = LocalDateTime.now()
     saveState()
     globalRefresh = true
 }

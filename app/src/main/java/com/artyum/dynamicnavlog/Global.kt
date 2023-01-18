@@ -8,6 +8,8 @@ import android.graphics.Rect
 import android.view.View
 import android.widget.ImageView
 import androidx.core.content.res.ResourcesCompat
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.ViewModel
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.model.LatLng
 import kotlinx.coroutines.sync.Mutex
@@ -15,7 +17,7 @@ import java.time.LocalDateTime
 import kotlin.math.*
 
 data class Settings(
-    @Volatile var planId: String = "",
+    var planId: String = "",
     var planName: String = "",
     var departure: String = "",
     var destination: String = "",
@@ -51,11 +53,22 @@ data class NavlogItem(
 )
 
 data class Radial(
-    var angle: Double, var dist: Double, var pos1: LatLng, var pos2: LatLng
+    var angle: Double,
+    var dist: Double,
+    var pos1: LatLng,
+    var pos2: LatLng
 )
 
 data class Airplane(
-    var id: String = "", var type: String = "", var reg: String = "", var rmk: String = "", var tas: Double = 0.0, var fph: Double = 0.0, var tank: Double = 0.0, var spdUnits: Int = 0, var volUnits: Int = 0
+    var id: String = "",
+    var type: String = "",
+    var reg: String = "",
+    var rmk: String = "",
+    var tas: Double = 0.0,
+    var fph: Double = 0.0,
+    var tank: Double = 0.0,
+    var spdUnits: Int = 0,
+    var volUnits: Int = 0
 )
 
 data class Options(
@@ -68,66 +81,79 @@ data class Options(
     var autoTakeoffSpd: Double = kt2mps(40.0),      // Minimum speed for takeoff detection in m/s
     var autoLandingSpd: Double = kt2mps(30.0),      // Maximum speed for landing detection in m/s
     var mapOrientation: Int = C.MAP_ORIENTATION_NORTH,
-    var displayTrace: Boolean = true, var drawWindArrow: Boolean = true,
-    var drawRadials: Boolean = true, var drawRadialsMarkers: Boolean = true,
-    var gpsAssist: Boolean = true, var autoNext: Boolean = true,
+    var displayTrace: Boolean = true,
+    var drawWindArrow: Boolean = true,
+    var drawRadials: Boolean = true,
+    var drawRadialsMarkers: Boolean = true,
+    var gpsAssist: Boolean = true,
+    var autoNext: Boolean = true,
     var nextRadiusIndex: Int = C.DEFAULT_NEXT_RADIUS,  // Index in nextRadiusList
     var blockPlanEdit: Boolean = false,
     var showHints: Boolean = true
 )
 
 data class Timers(
-    var offblock: LocalDateTime? = null, var takeoff: LocalDateTime? = null, var landing: LocalDateTime? = null, var onblock: LocalDateTime? = null, var flightTime: Long? = null,    // Seconds
+    var offblock: LocalDateTime? = null,
+    var takeoff: LocalDateTime? = null,
+    var landing: LocalDateTime? = null,
+    var onblock: LocalDateTime? = null,
+    var flightTime: Long? = null,    // Seconds
     var blockTime: Long? = null,     // Seconds
     var groundTime: Long? = null     // Seconds
 )
 
 data class GpsData(
-    var pos: LatLng? = null, var time: Long = 0L, var speedMps: Double = 0.0, var speedKt: Double = 0.0, var bearing: Float? = null,
+    var pos: LatLng? = null,
+    var time: Long = 0L,
+    var speedMps: Double = 0.0,
+    var speedKt: Double = 0.0,
+    var bearing: Float? = null,
     //var altitude: Double = 0.0,
     //var hAccuracy: Double = 0.0,
-    var heartbeat: Boolean = false, var isValid: Boolean = false
+    var heartbeat: Boolean = false,
+    var isValid: Boolean = false
 )
 
 data class Totals(
-    var dist: Double = 0.0, var time: Long = 0, var fuel: Double = 0.0
+    var dist: Double = 0.0,
+    var time: Long = 0,
+    var fuel: Double = 0.0
 )
 
 data class PlanListItem(
-    var id: String, var planName: String
+    var id: String,
+    var planName: String
 )
 
 data class FlightData(
-    val wca: Double, val hdg: Double, val gs: Double, val time: Long?, // Time in seconds
-    val fuel: Double?, val dist: Double?
+    val wca: Double,
+    val hdg: Double,
+    val gs: Double,
+    val time: Long?, // Time in seconds
+    val fuel: Double?,
+    val dist: Double?
 )
 
 data class SinCosAngle(
-    val sina: Float, val cosa: Float
+    val sina: Float,
+    val cosa: Float
 )
 
 data class ReleaseOptions(
-    val initializeAds: Boolean, val startBillingClient: Boolean
+    val initializeAds: Boolean,
+    val startBillingClient: Boolean
 )
 
 object C {
-    const val FORMAT_DATETIME = "yyyy-MM-dd  HH:mm"
+    //const val FORMAT_DATETIME = "yyyy-MM-dd  HH:mm"
     const val FORMAT_DATETIME_SEC = "yyyy-MM-dd  HH:mm:ss"
     const val FORMAT_TIME = "HH:mm"
     const val FORMAT_DATE = "yyyy-MM-dd"
 
-    const val DNL_EXTENSION = ".dnl"
     const val GPX_EXTENSION = ".gpx"
     const val CSV_EXTENSION = ".csv"
     const val TRK_EXTENSION = ".trk"  // Trace
     const val JSON_EXTENSION = ".json"
-    const val INI_SETTINGS = 1
-    const val INI_TIMERS = 2
-    const val INI_NAVLOG = 3
-    const val INI_SETTINGS_STR = "[Settings]"
-    const val INI_TIMERS_STR = "[Timers]"
-    const val INI_NAVLOG_STR = "[Navlog]"
-    const val INI_TIME_PATTERN = "yyyy-MM-dd HH:mm:ss"
     const val JSON_TIME_PATTERN = "yyyy-MM-dd HH:mm:ss"
 
     const val stateFile = "current_state$JSON_EXTENSION"
@@ -210,7 +236,7 @@ object C {
 
     // Limit in free version
     const val FREE_PURCHASE_DELAY_SEC = 6    // Time of the donate notice on app startup
-    const val FREE_WPT_NUMBER_LIMIT = 10     // Limit of waypoints in free version (disabled)
+    //const val FREE_WPT_NUMBER_LIMIT = 10     // Limit of waypoints in free version (disabled)
 
     // Flight stages
     const val STAGE_1_BEFORE_ENGINE_START = 1
@@ -232,18 +258,24 @@ object C {
     const val RADIAL_RADIUS_M = 3000.0
 }
 
+class GlobalViewModel : ViewModel() {
+    var settings: MutableLiveData<Settings> = MutableLiveData()
+    var airplane: MutableLiveData<Airplane> = MutableLiveData()
+    var options: MutableLiveData<Options> = MutableLiveData()
+    var timers: MutableLiveData<Timers> = MutableLiveData()
+    var totals: MutableLiveData<Totals> = MutableLiveData()
+}
+
+object G {
+    lateinit var vm: GlobalViewModel
+}
+
 var navlogList = ArrayList<NavlogItem>()
 var radialList = ArrayList<Radial>()
 var planList = ArrayList<PlanListItem>()
 var airplaneList = ArrayList<Airplane>()
 var tracePointsList = ArrayList<LatLng>()
 
-var settings = Settings()
-var airplane = Airplane()
-var options = Options()
-var timers = Timers()
-
-var totals = Totals()
 val nextRadiusList = arrayListOf(0.5, 1.0, 2.0)  // Next circle radius in NM
 
 var serviceRunning = false
@@ -253,12 +285,9 @@ var isAppPurchased = false
 var gpsData = GpsData()
 var gpsMutex = Mutex()
 
-@Volatile
 var globalRefresh = false   // Refresh home, navlog and map pages on flight stage or waypoint change
 
 fun generateStringId(): String {
-    val charPool: List<Char> = ('a'..'z') + ('A'..'Z') + ('0'..'9')
-
     // No. of combinations
     // 2 ->               1 891
     // 3 ->              37 820
@@ -270,9 +299,8 @@ fun generateStringId(): String {
     // 9 ->      20 286 591 270
     // 10 ->    107 518 933 731
     // 15 -> 93 052 749 919 920
-
+    val charPool: List<Char> = ('a'..'z') + ('A'..'Z') + ('0'..'9')
     val randomString = (1..10).map { _ -> kotlin.random.Random.nextInt(0, charPool.size) }.map(charPool::get).joinToString("");
-
     return randomString
 }
 
@@ -548,19 +576,19 @@ fun flightCalculator(course: Double, windDir: Double, windSpd: Double, tas: Doub
 }
 
 fun isFlightInProgress(): Boolean {
-    return isNavlogReady() && timers.takeoff != null && timers.landing == null
+    return isNavlogReady() && G.vm.timers.value!!.takeoff != null && G.vm.timers.value!!.landing == null
 }
 
 fun isEngineRunning(): Boolean {
-    return timers.offblock != null && timers.onblock == null
+    return G.vm.timers.value!!.offblock != null && G.vm.timers.value!!.onblock == null
 }
 
 fun isSettingsReady(): Boolean {
-    return settings.airplaneId != "" && airplane.tas > settings.windSpd
+    return G.vm.settings.value!!.airplaneId != "" && G.vm.airplane.value!!.tas > G.vm.settings.value!!.windSpd
 }
 
 fun isPlanEditDisabled(): Boolean {
-    return getFlightStage() > C.STAGE_1_BEFORE_ENGINE_START && options.blockPlanEdit
+    return getFlightStage() > C.STAGE_1_BEFORE_ENGINE_START && G.vm.options.value!!.blockPlanEdit
 }
 
 fun formatDouble(value: Double?, precision: Int = 0): String {

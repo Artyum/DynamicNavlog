@@ -37,49 +37,49 @@ class TimersFragment : Fragment(R.layout.fragment_timers) {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        bind.timersLayout.keepScreenOn = options.keepScreenOn
+        bind.timersLayout.keepScreenOn = G.vm.options.value!!.keepScreenOn
         (activity as MainActivity).displayButtons()
 
         bind.utcSwitch.setOnCheckedChangeListener { _, isChecked ->
-            val opt = options.timeInUTC
-            options.timeInUTC = isChecked
+            val opt = G.vm.options.value!!.timeInUTC
+            G.vm.options.value!!.timeInUTC = isChecked
             displayTimestamps()
-            options.timeInUTC = opt
+            G.vm.options.value!!.timeInUTC = opt
         }
 
-        bind.utcSwitch.isChecked = options.timeInUTC
+        bind.utcSwitch.isChecked = G.vm.options.value!!.timeInUTC
 
         // Test
-        //timers.offblock = LocalDateTime.of(2022, 9, 25, 15, 15, 34)
-        //timers.takeoff = LocalDateTime.of(2022, 9, 25, 15, 22, 14)
-        //timers.landing = LocalDateTime.of(2022, 9, 25, 17, 5, 14)
-        //timers.onblock = LocalDateTime.of(2022, 9, 25, 17, 13, 54)
+        //G.vm.timers.value!!.offblock = LocalDateTime.of(2022, 9, 25, 15, 15, 34)
+        //G.vm.timers.value!!.takeoff = LocalDateTime.of(2022, 9, 25, 15, 22, 14)
+        //G.vm.timers.value!!.landing = LocalDateTime.of(2022, 9, 25, 17, 5, 14)
+        //G.vm.timers.value!!.onblock = LocalDateTime.of(2022, 9, 25, 17, 13, 54)
 
-        tOffblock = roundToMinutes(timers.offblock)
-        tTakeoff = roundToMinutes(timers.takeoff)
-        tLanding = roundToMinutes(timers.landing)
-        tOnblock = roundToMinutes(timers.onblock)
+        tOffblock = roundToMinutes(G.vm.timers.value!!.offblock)
+        tTakeoff = roundToMinutes(G.vm.timers.value!!.takeoff)
+        tLanding = roundToMinutes(G.vm.timers.value!!.landing)
+        tOnblock = roundToMinutes(G.vm.timers.value!!.onblock)
 
         displayTimestamps()
         displaySummary()
     }
 
     private fun displayTimestamps() {
-        bind.flightName.text = settings.planName
+        bind.flightName.text = G.vm.settings.value!!.planName
 
-        var str = if (timers.offblock != null) formatDateTime(tOffblock, C.FORMAT_DATE) else ""
+        var str = if (G.vm.timers.value!!.offblock != null) formatDateTime(tOffblock, C.FORMAT_DATE) else ""
         bind.flightDate.text = str
 
-        str = if (timers.offblock != null) formatDateTime(tOffblock, C.FORMAT_TIME) else ""
+        str = if (G.vm.timers.value!!.offblock != null) formatDateTime(tOffblock, C.FORMAT_TIME) else ""
         bind.timeOffBlock.text = str
 
-        str = if (timers.takeoff != null) formatDateTime(tTakeoff, C.FORMAT_TIME) else ""
+        str = if (G.vm.timers.value!!.takeoff != null) formatDateTime(tTakeoff, C.FORMAT_TIME) else ""
         bind.timeTakeoff.text = str
 
-        str = if (timers.landing != null) formatDateTime(tLanding, C.FORMAT_TIME) else ""
+        str = if (G.vm.timers.value!!.landing != null) formatDateTime(tLanding, C.FORMAT_TIME) else ""
         bind.timeLanding.text = str
 
-        str = if (timers.onblock != null) formatDateTime(tOnblock, C.FORMAT_TIME) else ""
+        str = if (G.vm.timers.value!!.onblock != null) formatDateTime(tOnblock, C.FORMAT_TIME) else ""
         bind.timeOnBlock.text = str
     }
 
@@ -124,7 +124,7 @@ fun formatDateTime(t: LocalDateTime?, pattern: String): String {
     val ldtZoned: ZonedDateTime = t.atZone(ZoneId.systemDefault())
     val utcZoned: ZonedDateTime = ldtZoned.withZoneSameInstant(ZoneId.of("UTC"))
 
-    return if (options.timeInUTC) utcZoned.format(DateTimeFormatter.ofPattern(pattern)) + C.SIGN_ZULU
+    return if (G.vm.options.value!!.timeInUTC) utcZoned.format(DateTimeFormatter.ofPattern(pattern)) + C.SIGN_ZULU
     else ldtZoned.format(DateTimeFormatter.ofPattern(pattern))
 }
 
@@ -246,21 +246,15 @@ fun strTime2Sec(strTime: String): Double? {
 //seconds = resultInt % 86400 % 3600 % 60
 
 fun getFlightStage(): Int {
-    if (timers.offblock == null) return C.STAGE_1_BEFORE_ENGINE_START
-    if (timers.takeoff == null) return C.STAGE_2_ENGINE_RUNNING
-    if (timers.landing == null) return C.STAGE_3_FLIGHT_IN_PROGRESS
-    if (timers.onblock == null) return C.STAGE_4_AFTER_LANDING
+    if (G.vm.timers.value!!.offblock == null) return C.STAGE_1_BEFORE_ENGINE_START
+    if (G.vm.timers.value!!.takeoff == null) return C.STAGE_2_ENGINE_RUNNING
+    if (G.vm.timers.value!!.landing == null) return C.STAGE_3_FLIGHT_IN_PROGRESS
+    if (G.vm.timers.value!!.onblock == null) return C.STAGE_4_AFTER_LANDING
     return C.STAGE_5_AFTER_ENGINE_SHUTDOWN
 }
 
 fun resetTimers() {
-    timers.offblock = null
-    timers.takeoff = null
-    timers.landing = null
-    timers.onblock = null
-    timers.groundTime = null
-    timers.flightTime = null
-    timers.blockTime = null
+    G.vm.timers.value = Timers()
 }
 
 fun getCurrentDate(): String {

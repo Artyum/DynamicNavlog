@@ -26,7 +26,7 @@ class CalcFuelFragment : Fragment(R.layout.fragment_calc_fuel) {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        bind.fuelLayout.keepScreenOn = options.keepScreenOn
+        bind.fuelLayout.keepScreenOn = G.vm.options.value!!.keepScreenOn
         (activity as MainActivity).displayButtons()
 
         bind.btnCalculate.setOnClickListener {

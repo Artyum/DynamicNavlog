@@ -16,3 +16,4 @@ app/build
 # Commit
 # git rm -rf --cached .
 # git add .
+*.ods

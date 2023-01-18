@@ -15,7 +15,6 @@ import com.artyum.dynamicnavlog.databinding.FragmentNavlogDialogBinding
 import com.google.android.gms.maps.model.LatLng
 
 class NavlogDialogFragment(private val item: Int, private val adapter: NavlogAdapter? = null) : DialogFragment() {
-    private val TAG = "NavlogDialogFragment"
     private var _binding: FragmentNavlogDialogBinding? = null
     private val bind get() = _binding!!
 

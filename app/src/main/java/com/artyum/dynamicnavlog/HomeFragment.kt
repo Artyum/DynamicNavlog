@@ -18,8 +18,6 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 class HomeFragment : Fragment(R.layout.fragment_home) {
-    private val TAG = "HomeFragment"
-
     private var _binding: FragmentHomeBinding? = null
     private val bind get() = _binding!!
 
@@ -35,11 +33,11 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        bind.homeLayout.keepScreenOn = options.keepScreenOn
+        bind.homeLayout.keepScreenOn = G.vm.options.value!!.keepScreenOn
         (activity as MainActivity).displayButtons()
 
         // GPS indicator
-        if (!options.gpsAssist) bind.txtTrackAngleIndicatorBox.visibility = View.GONE
+        if (!G.vm.options.value!!.gpsAssist) bind.txtTrackAngleIndicatorBox.visibility = View.GONE
 
         // Display units
         displayUnits()
@@ -57,7 +55,7 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
     }
 
     private fun drawHomeWinStar() {
-        val sr = if (airplane.tas == 0.0) 1.0 else airplane.tas
+        val sr = if (G.vm.airplane.value!!.tas == 0.0) 1.0 else G.vm.airplane.value!!.tas
 
         if (getFlightStage() == C.STAGE_3_FLIGHT_IN_PROGRESS) {
             // Flight in progress
@@ -65,17 +63,17 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
             generateWindCircle(
                 bind.imgHomeView, resources,
                 course = navlogList[i].mt!!,
-                windDir = settings.windDir,
+                windDir = G.vm.settings.value!!.windDir,
                 hdg = navlogList[i].hdg!!,
                 speedRatio = navlogList[i].gs!! / sr
             )
-        } else if (isNavlogReady() && timers.takeoff == null) {
+        } else if (isNavlogReady() && G.vm.timers.value!!.takeoff == null) {
             // Stage OffBlock
             val first = getNavlogFirstActiveItemId()
             generateWindCircle(
                 bind.imgHomeView, resources,
                 course = navlogList[first].mt!!,
-                windDir = settings.windDir,
+                windDir = G.vm.settings.value!!.windDir,
                 hdg = navlogList[first].hdg!!,
                 speedRatio = navlogList[first].gs!! / sr
             )
@@ -222,7 +220,7 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
     }
 
     private fun setGpsTag(a: MainActivity, b: FragmentHomeBinding, h: HomeItem) {
-        if (options.gpsAssist) {
+        if (G.vm.options.value!!.gpsAssist) {
             safeVisibility(a, b.txtGsGpsTag, View.VISIBLE)
             if (h.gps.isValid) {
                 a.runOnUiThread { b.txtGsGpsTag.paintFlags = Paint.STRIKE_THRU_TEXT_FLAG.dec() }

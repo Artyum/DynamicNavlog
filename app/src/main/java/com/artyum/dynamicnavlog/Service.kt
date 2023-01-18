@@ -7,8 +7,6 @@ import android.os.IBinder
 import com.artyum.dynamicnavlog.App.Companion.CHANNEL_ID
 
 class Service : android.app.Service() {
-    private val TAG = "Service"
-
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         //val input: String? = intent?.getStringExtra("inputExtra")
 

@@ -71,7 +71,7 @@ fun usgal2ukgal(v: Double): Double = v * 0.8326741881485
 fun ukgal2usgal(v: Double): Double = v * 1.2009499204287
 
 fun getUnitsSpd(): String {
-    when (options.spdUnits) {
+    when (G.vm.options.value!!.spdUnits) {
         C.SPD_KNOTS -> return "kt"
         C.SPD_MPH -> return "mph"
         C.SPD_KPH -> return "kph"
@@ -80,7 +80,7 @@ fun getUnitsSpd(): String {
 }
 
 fun getUnitsDis(): String {
-    when (options.distUnits) {
+    when (G.vm.options.value!!.distUnits) {
         C.DIS_NM -> return "nm"
         C.DIS_SM -> return "sm"
         C.DIS_KM -> return "km"
@@ -89,7 +89,7 @@ fun getUnitsDis(): String {
 }
 
 fun getUnitsVol(): String {
-    when (options.volUnits) {
+    when (G.vm.options.value!!.volUnits) {
         C.VOL_USGAL -> return "gal"
         C.VOL_UKGAL -> return "gal"
         C.VOL_LITERS -> return "l"
@@ -101,7 +101,7 @@ fun getUnitsVol(): String {
 
 fun toUserUnitsSpd(v: Double?): Double? {
     if (v == null) return null
-    return when (options.spdUnits) {
+    return when (G.vm.options.value!!.spdUnits) {
         C.SPD_MPH -> kt2mph(v)
         C.SPD_KPH -> kt2kph(v)
         else -> v
@@ -110,7 +110,7 @@ fun toUserUnitsSpd(v: Double?): Double? {
 
 fun toUserUnitsDis(v: Double?): Double? {
     if (v == null) return null
-    return when (options.distUnits) {
+    return when (G.vm.options.value!!.distUnits) {
         C.DIS_SM -> nm2sm(v)
         C.DIS_KM -> nm2km(v)
         else -> v
@@ -119,7 +119,7 @@ fun toUserUnitsDis(v: Double?): Double? {
 
 fun toUserUnitsVol(v: Double?): Double? {
     if (v == null) return null
-    return when (options.volUnits) {
+    return when (G.vm.options.value!!.volUnits) {
         C.VOL_USGAL -> l2usgal(v)
         C.VOL_UKGAL -> l2ukgal(v)
         else -> v
@@ -130,7 +130,7 @@ fun toUserUnitsVol(v: Double?): Double? {
 
 fun fromUserUnitsSpd(v: Double?): Double? {
     if (v == null) return null
-    return when (options.spdUnits) {
+    return when (G.vm.options.value!!.spdUnits) {
         C.SPD_MPH -> mph2kt(v)
         C.SPD_KPH -> kph2kt(v)
         else -> v
@@ -139,7 +139,7 @@ fun fromUserUnitsSpd(v: Double?): Double? {
 
 fun fromUserUnitsDis(v: Double?): Double? {
     if (v == null) return null
-    return when (options.distUnits) {
+    return when (G.vm.options.value!!.distUnits) {
         C.DIS_SM -> sm2nm(v)
         C.DIS_KM -> km2nm(v)
         else -> v
@@ -148,7 +148,7 @@ fun fromUserUnitsDis(v: Double?): Double? {
 
 fun fromUserUnitsVol(v: Double?): Double? {
     if (v == null) return null
-    return when (options.volUnits) {
+    return when (G.vm.options.value!!.volUnits) {
         C.VOL_USGAL -> usgal2l(v)
         C.VOL_UKGAL -> ukgal2l(v)
         else -> v

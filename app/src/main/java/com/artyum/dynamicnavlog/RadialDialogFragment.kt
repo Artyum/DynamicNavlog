@@ -13,7 +13,6 @@ import com.artyum.dynamicnavlog.databinding.FragmentRadialDialogBinding
 import com.google.android.gms.maps.model.LatLng
 
 class RadialDialogFragment(private val pos1: LatLng? = null, private val pos2: LatLng? = null, private val item: Int? = null) : DialogFragment() {
-    private val TAG = "RadialDialogFragment"
     private var _binding: FragmentRadialDialogBinding? = null
     private val bind get() = _binding!!
 
