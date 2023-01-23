@@ -246,7 +246,10 @@ class SettingsFragment : Fragment(R.layout.fragment_settings) {
 
             val txtSpareFuel = formatDouble(toUserUnitsVol(spareFuel))
             val txtExtraTime = formatSecondsToTime(fData1.time)
-            val txtExtraDist = formatDouble(toUserUnitsDis(fData1.dist)) + "-" + formatDouble(toUserUnitsDis(fData2.dist))
+
+            val dist1 = formatDouble(toUserUnitsDis(fData1.dist))
+            val dist2 = formatDouble(toUserUnitsDis(fData2.dist))
+            val txtExtraDist = if (dist1 == dist2) dist1 else "$dist1-$dist2"
 
             // Display
 
