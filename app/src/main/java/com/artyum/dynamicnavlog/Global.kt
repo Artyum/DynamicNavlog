@@ -5,6 +5,7 @@ import android.graphics.Bitmap
 import android.graphics.Canvas
 import android.graphics.Paint
 import android.graphics.Rect
+import android.util.Log
 import android.view.View
 import android.widget.ImageView
 import androidx.core.content.res.ResourcesCompat
@@ -301,6 +302,7 @@ fun generateStringId(): String {
     // 15 -> 93 052 749 919 920
     val charPool: List<Char> = ('a'..'z') + ('A'..'Z') + ('0'..'9')
     val randomString = (1..10).map { _ -> kotlin.random.Random.nextInt(0, charPool.size) }.map(charPool::get).joinToString("");
+    Log.d("generateStringId", "New StringId: $randomString")
     return randomString
 }
 

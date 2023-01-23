@@ -13,6 +13,6 @@
     <dimen name="homeBtnHeight">60dp</dimen>
     <dimen name="homeBtnTextSize">16sp</dimen>
     <dimen name="airplaneSpinnerWidth">140dp</dimen>
-    <dimen name="unitsMargin">5dp</dimen>
+    <dimen name="unitsMargin">3dp</dimen>
     <dimen name="sumTableMargin">30dp</dimen>
 </resources>

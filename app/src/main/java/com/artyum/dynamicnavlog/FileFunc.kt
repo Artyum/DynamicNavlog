@@ -22,9 +22,6 @@ fun saveState() {
     val s = G.vm.settings.value!!
     val t = G.vm.timers.value!!
 
-    if (s.planId == "") s.planId = generateStringId()
-    Log.d(tag, "saveState planId: " + s.planId)
-
     // Settings
     jSettings.put("id", s.planId)
     jSettings.put("name", s.planName)
@@ -99,12 +96,17 @@ fun saveState() {
     // Normal save
     val file = File(externalAppDir, C.stateFile)
     file.writeText(json.toString())
+    Log.d(tag, "saveState: " + C.stateFile + " OK")
 
     // Copy current state file to plan name file
     if (G.vm.settings.value!!.planName != "") {
+        if (s.planId == "") s.planId = generateStringId()
         val fn = s.planId + C.JSON_EXTENSION
         val planFile = File(externalAppDir, fn)
         planFile.writeText(json.toString())
+        Log.d(tag, "saveState: planId: " + s.planId + "; planName: " + s.planName)
+    } else {
+        Log.d(tag, "saveState: Empty planName")
     }
 }
 
@@ -242,7 +244,7 @@ fun loadState(fileName: String = C.stateFile) {
     // Load airplane
     getAirplaneByID(G.vm.settings.value!!.airplaneId)
 
-    Log.d(tag, "loadState completed planId: " + newSettings.planId)
+    Log.d(tag, "loadState completed planId: " + G.vm.settings.value!!.planId + "; planName:" + G.vm.settings.value!!.planName)
 
     // Load trace
     if (isFlightInProgress()) loadTrace()

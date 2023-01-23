@@ -156,7 +156,7 @@
     <string name="txtDisplayRadialMarkers">Show radial markers</string>
     <string name="txtDisplayWindArrow">Show wind indicator</string>
     <string name="txtKeepScreenOn">Keep the screen on</string>
-    <string name="txtExtraDistance">Extra distance (min-max)</string>
+    <string name="txtExtraDistance">Extra distance</string>
     <string name="txtTotalTime">Total time</string>
     <string name="txtTotalFuel">Total fuel</string>
     <string name="txtSpareFuel">Spare fuel</string>
@@ -183,7 +183,7 @@
     <string name="txtWarningFlightInProgressDialog">Warning! Flight in progress. Are you sure?</string>
     <string name="txtWarningAreYouSure">Are you sure?</string>
     <string name="txtFlightTime">Flight time</string>
-    <string name="txtExtraFlightTime">Additional flight time</string>
+    <string name="txtExtraFlightTime">Extra flight time</string>
     <string name="txtFuelToLand">Fuel to land</string>
     <string name="txtTimeToLand">Time to land</string>
     <string name="txtNavigation">Navigation</string>
