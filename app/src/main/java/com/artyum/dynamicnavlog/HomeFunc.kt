@@ -35,7 +35,7 @@ class HomeItem() {
     var fuelTimeRemaining: Double = 0.0
     var fuelRemaining: Double = 0.0
     var fuelUsed: Double = 0.0
-    var distToCurrentWpt: Double = 0.0         // Distance remaining to next WPT
+    var distToCurrentWpt: Double = 0.0  // Distance remaining to next WPT
     var distFromPrevWpt: Double = 0.0   // Distance in straight line from previous WPT
     var distPct: Double = 0.0           // Distance travelled between WPTs in %
     var isInsideCircle: Boolean = false

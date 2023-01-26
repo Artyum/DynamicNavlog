@@ -127,15 +127,16 @@
         </androidx.constraintlayout.widget.ConstraintLayout>
     </LinearLayout>
 
-    <fragment
+    <androidx.fragment.app.FragmentContainerView
         android:id="@+id/mapFragmentHidden"
         android:name="com.google.android.gms.maps.SupportMapFragment"
         android:layout_width="match_parent"
         android:layout_height="0dp"
+        android:visibility="invisible"
         app:layout_constraintBottom_toTopOf="@id/summaryTotals"
         app:layout_constraintTop_toBottomOf="@id/topNavigation" />
 
-    <fragment
+    <androidx.fragment.app.FragmentContainerView
         android:id="@+id/mapFragment"
         android:name="com.google.android.gms.maps.SupportMapFragment"
         android:layout_width="match_parent"
@@ -154,6 +155,7 @@
         <com.google.android.material.floatingactionbutton.FloatingActionButton
             android:id="@+id/btnFollowToggle"
             style="@style/mapButton"
+            android:contentDescription="Follow"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:srcCompat="@drawable/ic_gps_lock" />
@@ -161,6 +163,7 @@
         <com.google.android.material.floatingactionbutton.FloatingActionButton
             android:id="@+id/btnMapType"
             style="@style/mapButton"
+            android:contentDescription="Map type"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintTop_toBottomOf="@id/btnFollowToggle"
             app:srcCompat="@drawable/ic_layer" />
@@ -168,6 +171,7 @@
         <com.google.android.material.floatingactionbutton.FloatingActionButton
             android:id="@+id/btnMapZoomIn"
             style="@style/mapButton"
+            android:contentDescription="Zoom out"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintTop_toBottomOf="@id/btnMapType"
             app:srcCompat="@drawable/ic_add" />
@@ -175,6 +179,7 @@
         <com.google.android.material.floatingactionbutton.FloatingActionButton
             android:id="@+id/btnMapZoomOut"
             style="@style/mapButton"
+            android:contentDescription="Zoom in"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintTop_toBottomOf="@id/btnMapZoomIn"
             app:srcCompat="@drawable/ic_remove" />
