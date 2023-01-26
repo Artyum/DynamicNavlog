@@ -147,7 +147,7 @@
     <string name="txtTimeUTC">Display UTC times</string>
     <string name="txtBlockPlanEdit">Prevent plan changes during flight</string>
     <string name="txtGPS">GPS</string>
-    <string name="txtGPSLost">Waiting fog GPS signal. Manual mode enabled.</string>
+    <string name="txtGPSLost">Waiting for GPS signal. No GPS mode activated.</string>
     <string name="txtGPSAssist">GPS assist</string>
     <string name="txtAutoNextWPT">Detect T/O, LND, WPT</string>
     <string name="txtDisplayFlightTrace">Show flight trace</string>

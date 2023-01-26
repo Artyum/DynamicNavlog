@@ -758,7 +758,9 @@ class MainActivity : AppCompatActivity() {
 
         // https://developer.android.com/training/location/change-location-settings
         // https://developer.android.com/reference/android/location/LocationRequest.Builder#setDurationMillis(long)
-        locationRequest = LocationRequest.Builder(Priority.PRIORITY_HIGH_ACCURACY, 1000).setMinUpdateDistanceMeters(3f).setMinUpdateIntervalMillis(1000).build()
+        locationRequest = LocationRequest.Builder(Priority.PRIORITY_HIGH_ACCURACY, 1000)
+            .setIntervalMillis(1000)          // Not slower than
+            .build()
 
         locationCallback = object : LocationCallback() {
             override fun onLocationResult(l: LocationResult) {
