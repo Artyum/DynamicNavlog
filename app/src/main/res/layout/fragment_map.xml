@@ -127,7 +127,7 @@
         </androidx.constraintlayout.widget.ConstraintLayout>
     </LinearLayout>
 
-    <androidx.fragment.app.FragmentContainerView
+    <fragment
         android:id="@+id/mapFragmentHidden"
         android:name="com.google.android.gms.maps.SupportMapFragment"
         android:layout_width="match_parent"
@@ -136,7 +136,7 @@
         app:layout_constraintBottom_toTopOf="@id/summaryTotals"
         app:layout_constraintTop_toBottomOf="@id/topNavigation" />
 
-    <androidx.fragment.app.FragmentContainerView
+    <fragment
         android:id="@+id/mapFragment"
         android:name="com.google.android.gms.maps.SupportMapFragment"
         android:layout_width="match_parent"
