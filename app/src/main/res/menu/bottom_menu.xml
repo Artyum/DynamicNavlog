@@ -3,7 +3,7 @@
     <item
         android:id="@+id/settingsFragment"
         android:icon="@drawable/ic_settings"
-        android:title="@string/txtSettings" />
+        android:title="@string/txtFlightPlan" />
     <item
         android:id="@+id/navlogFragment"
         android:icon="@drawable/ic_navigation"
@@ -15,5 +15,5 @@
     <item
         android:id="@+id/homeFragment"
         android:icon="@drawable/ic_display"
-        android:title="@string/txtFlightDisplay" />
+        android:title="@string/txtFlightComputer" />
 </menu>

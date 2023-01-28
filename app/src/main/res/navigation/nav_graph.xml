@@ -53,7 +53,7 @@
     <fragment
         android:id="@+id/settingsFragment"
         android:name="com.artyum.dynamicnavlog.SettingsFragment"
-        android:label="@string/txtSettings"
+        android:label="@string/txtFlightPlan"
         tools:layout="@layout/fragment_settings" />
     <action
         android:id="@+id/action_global_settingsFragment"

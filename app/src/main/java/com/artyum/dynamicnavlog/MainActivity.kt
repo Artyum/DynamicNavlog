@@ -74,6 +74,10 @@ class MainActivity : AppCompatActivity() {
         bind.bottomNav.setupWithNavController(navController)
         bind.drawerView.setupWithNavController(navController)
 
+        // Title for HomeFragment
+        supportActionBar?.title = getString(R.string.txtFlightComputer)
+        navController.currentDestination?.label = getString(R.string.txtFlightComputer)
+
         // Drawer menu
         val navView: NavigationView = findViewById(R.id.drawerView)
 

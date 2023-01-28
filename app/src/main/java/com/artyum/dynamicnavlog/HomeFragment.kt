@@ -60,32 +60,14 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
         if (getFlightStage() == C.STAGE_3_FLIGHT_IN_PROGRESS) {
             // Flight in progress
             val i = getNavlogCurrentItemId()
-            generateWindCircle(
-                bind.imgHomeView, resources,
-                course = navlogList[i].mt!!,
-                windDir = G.vm.settings.value!!.windDir,
-                hdg = navlogList[i].hdg!!,
-                speedRatio = navlogList[i].gs!! / sr
-            )
+            generateWindCircle(bind.imgHomeView, resources, course = navlogList[i].mt!!, windDir = G.vm.settings.value!!.windDir, hdg = navlogList[i].hdg!!, speedRatio = navlogList[i].gs!! / sr)
         } else if (isNavlogReady() && G.vm.timers.value!!.takeoff == null) {
             // Stage OffBlock
             val first = getNavlogFirstActiveItemId()
-            generateWindCircle(
-                bind.imgHomeView, resources,
-                course = navlogList[first].mt!!,
-                windDir = G.vm.settings.value!!.windDir,
-                hdg = navlogList[first].hdg!!,
-                speedRatio = navlogList[first].gs!! / sr
-            )
+            generateWindCircle(bind.imgHomeView, resources, course = navlogList[first].mt!!, windDir = G.vm.settings.value!!.windDir, hdg = navlogList[first].hdg!!, speedRatio = navlogList[first].gs!! / sr)
         } else {
             // Plan not ready
-            generateWindCircle(
-                bind.imgHomeView, resources,
-                course = 0.0,
-                windDir = 180.0,
-                hdg = 0.0,
-                speedRatio = 1.0
-            )
+            generateWindCircle(bind.imgHomeView, resources, course = 0.0, windDir = 180.0, hdg = 0.0, speedRatio = 1.0)
         }
     }
 

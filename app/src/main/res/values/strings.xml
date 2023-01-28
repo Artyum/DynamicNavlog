@@ -23,7 +23,6 @@
     <string name="txtUnits">Units</string>
     <string name="txtDisplayUnits">Display units</string>
     <string name="txtMapOptions">Map options</string>
-    <string name="txtSettings">Settings</string>
     <string name="txtFlightPlan">Flight Plan</string>
     <string name="txtFlightPlanTitle">Flight plan title</string>
     <string name="txtTimeStamps">Timestamps</string>
@@ -188,7 +187,6 @@
     <string name="txtTimeToLand">Time to land</string>
     <string name="txtNavigation">Navigation</string>
     <string name="txtNavigationOptions">Navigation options</string>
-    <string name="txtFlightDisplay">Flight display</string>
     <string name="txtWaypoint">Waypoint</string>
     <string name="txtFuelRemaining">Fuel remain.</string>
     <string name="txtEndurance">Endurance</string>
