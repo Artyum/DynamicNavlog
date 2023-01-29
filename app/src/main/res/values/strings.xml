@@ -174,6 +174,8 @@
     <string name="txtLoadTraceFailed">No trace to load</string>
     <string name="txtExportTraceERR">The flight trace cannot be saved</string>
     <string name="txtReverseDone">The track has been reversed</string>
+    <string name="txtReverseError">Cannot reverse an empty track</string>
+    <string name="txtEmptyPlanName">The Flight Plan Title cannot be empty</string>
     <string name="txtResetDone">The flight plan has been reset</string>
     <string name="txtCopyDone">The flight plan has been copied</string>
     <string name="txtMapTypeHybrid">Satellite map</string>

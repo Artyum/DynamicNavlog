@@ -320,10 +320,11 @@ class MainActivity : AppCompatActivity() {
                 val msg = if (isFlightInProgress()) R.string.txtWarningFlightInProgressDialog else R.string.txtWarningAreYouSure
                 val builder = AlertDialog.Builder(this@MainActivity)
                 builder.setMessage(msg).setCancelable(false).setPositiveButton(R.string.txtYes) { _, _ ->
-                    copyFlightPlan("Copy")
-                    resetFlight()
-                    Toast.makeText(this, getString(R.string.txtCopyDone), Toast.LENGTH_SHORT).show()
-                    navController.navigate(R.id.settingsFragment)
+                    if (copyFlightPlan("Copy")) {
+                        resetFlight()
+                        Toast.makeText(this, getString(R.string.txtCopyDone), Toast.LENGTH_SHORT).show()
+                        navController.navigate(R.id.settingsFragment)
+                    } else Toast.makeText(this, getString(R.string.txtEmptyPlanName), Toast.LENGTH_SHORT).show()
                 }.setNegativeButton(R.string.txtNo) { dialog, _ ->
                     dialog.dismiss()
                 }
@@ -335,11 +336,13 @@ class MainActivity : AppCompatActivity() {
                 val msg = if (isFlightInProgress()) R.string.txtWarningFlightInProgressDialog else R.string.txtWarningAreYouSure
                 val builder = AlertDialog.Builder(this@MainActivity)
                 builder.setMessage(msg).setCancelable(false).setPositiveButton(R.string.txtYes) { _, _ ->
-                    copyFlightPlan("Inverted")
-                    invertNavlog()
-                    resetFlight()
-                    Toast.makeText(this, getString(R.string.txtReverseDone), Toast.LENGTH_SHORT).show()
-                    navController.navigate(R.id.settingsFragment)
+                    if (copyFlightPlan("Inverted")) {
+                        if (invertNavlog()) {
+                            resetFlight()
+                            Toast.makeText(this, getString(R.string.txtReverseDone), Toast.LENGTH_SHORT).show()
+                            navController.navigate(R.id.settingsFragment)
+                        } else Toast.makeText(this, getString(R.string.txtReverseError), Toast.LENGTH_SHORT).show()
+                    } else Toast.makeText(this, getString(R.string.txtEmptyPlanName), Toast.LENGTH_SHORT).show()
                 }.setNegativeButton(R.string.txtNo) { dialog, _ ->
                     dialog.dismiss()
                 }
