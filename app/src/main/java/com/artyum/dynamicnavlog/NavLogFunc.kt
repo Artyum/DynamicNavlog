@@ -43,7 +43,8 @@ fun recalculateEta() {
         while (i < navlogList.size) {
             if (navlogList[i].active) {
                 val prev = getNavlogPrevItemId(i)
-                val prevTime: LocalDateTime = if (i == getNavlogFirstActiveItemId()) G.vm.timers.value!!.takeoff!! else if (i == getNavlogCurrentItemId()) navlogList[prev].ata!! else navlogList[prev].eta!!
+                val prevTime: LocalDateTime =
+                    if (i == getNavlogFirstActiveItemId()) G.vm.timers.value!!.takeoff!! else if (i == getNavlogCurrentItemId()) navlogList[prev].ata!! else navlogList[prev].eta!!
                 val eta: LocalDateTime = prevTime.plusSeconds(navlogList[i].time!!)
                 navlogList[i].eta = eta
             }
@@ -184,9 +185,11 @@ fun getNextCoords(i: Int): LatLng? {
     else navlogList[next].pos
 }
 
-fun invertNavlog() {
+fun invertNavlog(): Boolean {
     val first = getNavlogFirstActiveItemId()
     val last = getNavlogLastActiveItemId()
+
+    if (first < 0 || last < 0) return false
 
     // Swap Departure and Destination
     val dep = G.vm.settings.value!!.departure
@@ -215,6 +218,8 @@ fun invertNavlog() {
 
     // Set new NavlogList
     navlogList = newNavlogList
+
+    return true
 }
 
 fun recalculateFlight(adapter: NavlogAdapter?) {

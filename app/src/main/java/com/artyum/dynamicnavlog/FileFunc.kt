@@ -562,10 +562,12 @@ fun saveTraceAsGpx(): String {
 }
 
 // Copy flight plan with new ID
-fun copyFlightPlan(postfix: String) {
+fun copyFlightPlan(postfix: String): Boolean {
+    if (G.vm.settings.value!!.planName == "") return false
     G.vm.settings.value!!.planId = generateStringId()
     G.vm.settings.value!!.planName = G.vm.settings.value!!.planName + " - $postfix"
     saveState()
+    return true
 }
 
 fun saveAirplaneList() {
