@@ -449,7 +449,7 @@ class MapFragment : Fragment(R.layout.fragment_map) {
                 if (navlogList[item].tt != null) navlogList[item].tt!!.toFloat() else 0f
             } else {
                 // C.MAP_ORIENTATION_BEARING
-                if (gps.isValid) gps.bearing!! else if (navlogList[item].tt != null) navlogList[item].tt!!.toFloat() else 0f
+                if (gps.isValid && gps.bearing != null) gps.bearing!! else if (navlogList[item].tt != null) navlogList[item].tt!!.toFloat() else 0f
             }
 
             if (isMapFollow() && gps.isValid) {
