@@ -9,13 +9,14 @@ import android.view.inputmethod.InputMethodManager
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.ViewModelProvider
 import com.artyum.dynamicnavlog.databinding.FragmentCalcTimedistBinding
 import kotlin.math.roundToLong
 
 class CalcTimeDistFragment : Fragment(R.layout.fragment_calc_timedist) {
     private var _binding: FragmentCalcTimedistBinding? = null
     private val bind get() = _binding!!
-
+    private lateinit var vm: GlobalViewModel
     private val unitsDistanceList = ArrayList<String>()
     private val unitsSpeedList = ArrayList<String>()
     var unitsDistance: Int = 0
@@ -33,7 +34,8 @@ class CalcTimeDistFragment : Fragment(R.layout.fragment_calc_timedist) {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        bind.timeDistLayout.keepScreenOn = G.vm.options.value!!.keepScreenOn
+        vm = ViewModelProvider(requireActivity())[GlobalViewModel::class.java]
+        bind.timeDistLayout.keepScreenOn = vm.options.value!!.keepScreenOn
         (activity as MainActivity).displayButtons()
 
         val con = view.context

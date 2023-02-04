@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.core.widget.doAfterTextChanged
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -17,6 +18,7 @@ class PlanListFragment : Fragment(R.layout.fragment_planlist), PlanListAdapter.O
     private var _binding: FragmentPlanlistBinding? = null
     private val bind get() = _binding!!
     private val adapter = PlanListAdapter(planList, this)
+    private lateinit var vm: GlobalViewModel
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         _binding = FragmentPlanlistBinding.inflate(inflater, container, false)
@@ -30,7 +32,8 @@ class PlanListFragment : Fragment(R.layout.fragment_planlist), PlanListAdapter.O
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        bind.planListLayout.keepScreenOn = G.vm.options.value!!.keepScreenOn
+        vm = ViewModelProvider(requireActivity())[GlobalViewModel::class.java]
+        bind.planListLayout.keepScreenOn = vm.options.value!!.keepScreenOn
         (activity as MainActivity).displayButtons()
 
         // Search box
@@ -93,7 +96,7 @@ class PlanListFragment : Fragment(R.layout.fragment_planlist), PlanListAdapter.O
     private fun loadFLightPlan(i: Int) {
         val fpn = planList[i].id
 
-        if (fpn != G.vm.settings.value!!.planId) {
+        if (fpn != vm.settings.value!!.planId) {
             loadState(planList[i].id)
             calcNavlog()
         }

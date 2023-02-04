@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -20,7 +21,8 @@ class NavlogFragment : Fragment(R.layout.fragment_navlog), NavlogAdapter.OnItemC
     private val bind get() = _binding!!
     private val adapter = NavlogAdapter(navlogList, this, this)
     private var isNavlogChanged: Boolean = false
-
+    private lateinit var vm: GlobalViewModel
+    
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         _binding = FragmentNavlogBinding.inflate(inflater, container, false)
         return bind.root
@@ -33,16 +35,17 @@ class NavlogFragment : Fragment(R.layout.fragment_navlog), NavlogAdapter.OnItemC
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        bind.navlogLayout.keepScreenOn = G.vm.options.value!!.keepScreenOn
+        vm = ViewModelProvider(requireActivity())[GlobalViewModel::class.java]
+        bind.navlogLayout.keepScreenOn = vm.options.value!!.keepScreenOn
         (activity as MainActivity).displayButtons()
 
         // Current & Incrementally switch
         bind.btnDisplayToggle.setOnClickListener {
-            if (G.vm.settings.value!!.tfDisplayToggle == C.TF_DISPLAY_CUR) {
-                G.vm.settings.value!!.tfDisplayToggle = C.TF_DISPLAY_REM
+            if (vm.settings.value!!.tfDisplayToggle == C.TF_DISPLAY_CUR) {
+                vm.settings.value!!.tfDisplayToggle = C.TF_DISPLAY_REM
                 Toast.makeText(view.context, R.string.txtDisplayIncremental, Toast.LENGTH_SHORT).show()
             } else {
-                G.vm.settings.value!!.tfDisplayToggle = C.TF_DISPLAY_CUR
+                vm.settings.value!!.tfDisplayToggle = C.TF_DISPLAY_CUR
                 Toast.makeText(view.context, R.string.txtDisplayCurrent, Toast.LENGTH_SHORT).show()
             }
             calcNavlog(adapter)
@@ -105,12 +108,12 @@ class NavlogFragment : Fragment(R.layout.fragment_navlog), NavlogAdapter.OnItemC
     override fun onItemLongClick(position: Int) {}
 
     private fun refreshBottomBar() {
-        val p1 = if (G.vm.totals.value!!.dist < C.DIST_THRESHOLD) 1 else 0
-        val p2 = if (G.vm.totals.value!!.fuel < C.VOL_THRESHOLD) 1 else 0
-        val strDist = formatDouble(toUserUnitsDis(G.vm.totals.value!!.dist), p1) + " " + getUnitsDis()
-        val strFuel = formatDouble(toUserUnitsVol(G.vm.totals.value!!.fuel), p2) + " " + getUnitsVol()
+        val p1 = if (vm.totals.value!!.dist < C.DIST_THRESHOLD) 1 else 0
+        val p2 = if (vm.totals.value!!.fuel < C.VOL_THRESHOLD) 1 else 0
+        val strDist = formatDouble(toUserUnitsDis(vm.totals.value!!.dist), p1) + " " + getUnitsDis()
+        val strFuel = formatDouble(toUserUnitsVol(vm.totals.value!!.fuel), p2) + " " + getUnitsVol()
         bind.txtTotalDist.text = strDist
-        bind.txtTotalTime.text = formatSecondsToTime(G.vm.totals.value!!.time)
+        bind.txtTotalTime.text = formatSecondsToTime(vm.totals.value!!.time)
         bind.txtTotalFuel.text = strFuel
 
         if (navlogList.size == 0) bind.btnDisplayToggle.visibility = View.GONE else bind.btnDisplayToggle.visibility = View.VISIBLE

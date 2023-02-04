@@ -10,12 +10,13 @@ import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.Toast
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.ViewModelProvider
 import com.artyum.dynamicnavlog.databinding.FragmentCalcUnitsBinding
 
 class CalcUnitsFragment : Fragment(R.layout.fragment_calc_units) {
     private var _binding: FragmentCalcUnitsBinding? = null
     private val bind get() = _binding!!
-
+    private lateinit var vm: GlobalViewModel
     private val unitsTypeList = ArrayList<String>()
     private val unitsList = ArrayList<String>()
     private var unitsType: Int = 0
@@ -33,7 +34,8 @@ class CalcUnitsFragment : Fragment(R.layout.fragment_calc_units) {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        bind.unitsLayout.keepScreenOn = G.vm.options.value!!.keepScreenOn
+        vm = ViewModelProvider(requireActivity())[GlobalViewModel::class.java]
+        bind.unitsLayout.keepScreenOn = vm.options.value!!.keepScreenOn
         (activity as MainActivity).displayButtons()
 
         val con = view.context

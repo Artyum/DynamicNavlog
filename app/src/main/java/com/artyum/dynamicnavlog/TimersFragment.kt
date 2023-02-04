@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.ViewModelProvider
 import com.artyum.dynamicnavlog.databinding.FragmentTimersBinding
 import java.text.SimpleDateFormat
 import java.time.Duration
@@ -19,11 +20,11 @@ import java.util.concurrent.TimeUnit
 class TimersFragment : Fragment(R.layout.fragment_timers) {
     private var _binding: FragmentTimersBinding? = null
     private val bind get() = _binding!!
-
     private var tOffblock: LocalDateTime? = null
     private var tTakeoff: LocalDateTime? = null
     private var tLanding: LocalDateTime? = null
     private var tOnblock: LocalDateTime? = null
+    private lateinit var vm: GlobalViewModel
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         _binding = FragmentTimersBinding.inflate(inflater, container, false)
@@ -37,49 +38,50 @@ class TimersFragment : Fragment(R.layout.fragment_timers) {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        bind.timersLayout.keepScreenOn = G.vm.options.value!!.keepScreenOn
+        vm = ViewModelProvider(requireActivity())[GlobalViewModel::class.java]
+        bind.timersLayout.keepScreenOn = vm.options.value!!.keepScreenOn
         (activity as MainActivity).displayButtons()
 
         bind.utcSwitch.setOnCheckedChangeListener { _, isChecked ->
-            val opt = G.vm.options.value!!.timeInUTC
-            G.vm.options.value!!.timeInUTC = isChecked
+            val opt = vm.options.value!!.timeInUTC
+            vm.options.value!!.timeInUTC = isChecked
             displayTimestamps()
-            G.vm.options.value!!.timeInUTC = opt
+            vm.options.value!!.timeInUTC = opt
         }
 
-        bind.utcSwitch.isChecked = G.vm.options.value!!.timeInUTC
+        bind.utcSwitch.isChecked = vm.options.value!!.timeInUTC
 
         // Test
-        //G.vm.timers.value!!.offblock = LocalDateTime.of(2022, 9, 25, 15, 15, 34)
-        //G.vm.timers.value!!.takeoff = LocalDateTime.of(2022, 9, 25, 15, 22, 14)
-        //G.vm.timers.value!!.landing = LocalDateTime.of(2022, 9, 25, 17, 5, 14)
-        //G.vm.timers.value!!.onblock = LocalDateTime.of(2022, 9, 25, 17, 13, 54)
+        //vm.timers.value!!.offblock = LocalDateTime.of(2022, 9, 25, 15, 15, 34)
+        //vm.timers.value!!.takeoff = LocalDateTime.of(2022, 9, 25, 15, 22, 14)
+        //vm.timers.value!!.landing = LocalDateTime.of(2022, 9, 25, 17, 5, 14)
+        //vm.timers.value!!.onblock = LocalDateTime.of(2022, 9, 25, 17, 13, 54)
 
-        tOffblock = roundToMinutes(G.vm.timers.value!!.offblock)
-        tTakeoff = roundToMinutes(G.vm.timers.value!!.takeoff)
-        tLanding = roundToMinutes(G.vm.timers.value!!.landing)
-        tOnblock = roundToMinutes(G.vm.timers.value!!.onblock)
+        tOffblock = roundToMinutes(vm.timers.value!!.offblock)
+        tTakeoff = roundToMinutes(vm.timers.value!!.takeoff)
+        tLanding = roundToMinutes(vm.timers.value!!.landing)
+        tOnblock = roundToMinutes(vm.timers.value!!.onblock)
 
         displayTimestamps()
         displaySummary()
     }
 
     private fun displayTimestamps() {
-        bind.flightName.text = G.vm.settings.value!!.planName
+        bind.flightName.text = vm.settings.value!!.planName
 
-        var str = if (G.vm.timers.value!!.offblock != null) formatDateTime(tOffblock, C.FORMAT_DATE) else ""
+        var str = if (vm.timers.value!!.offblock != null) formatDateTime(tOffblock, C.FORMAT_DATE) else ""
         bind.flightDate.text = str
 
-        str = if (G.vm.timers.value!!.offblock != null) formatDateTime(tOffblock, C.FORMAT_TIME) else ""
+        str = if (vm.timers.value!!.offblock != null) formatDateTime(tOffblock, C.FORMAT_TIME) else ""
         bind.timeOffBlock.text = str
 
-        str = if (G.vm.timers.value!!.takeoff != null) formatDateTime(tTakeoff, C.FORMAT_TIME) else ""
+        str = if (vm.timers.value!!.takeoff != null) formatDateTime(tTakeoff, C.FORMAT_TIME) else ""
         bind.timeTakeoff.text = str
 
-        str = if (G.vm.timers.value!!.landing != null) formatDateTime(tLanding, C.FORMAT_TIME) else ""
+        str = if (vm.timers.value!!.landing != null) formatDateTime(tLanding, C.FORMAT_TIME) else ""
         bind.timeLanding.text = str
 
-        str = if (G.vm.timers.value!!.onblock != null) formatDateTime(tOnblock, C.FORMAT_TIME) else ""
+        str = if (vm.timers.value!!.onblock != null) formatDateTime(tOnblock, C.FORMAT_TIME) else ""
         bind.timeOnBlock.text = str
     }
 

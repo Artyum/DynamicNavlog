@@ -8,6 +8,7 @@ import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import androidx.core.widget.doOnTextChanged
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.ViewModelProvider
 import com.artyum.dynamicnavlog.databinding.FragmentOptionsBinding
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.sync.withLock
@@ -15,7 +16,7 @@ import kotlinx.coroutines.sync.withLock
 class OptionsFragment : Fragment(R.layout.fragment_options) {
     private var _binding: FragmentOptionsBinding? = null
     private val bind get() = _binding!!
-
+    private lateinit var vm: GlobalViewModel
     private var save = false
     private var restore = false
 
@@ -31,13 +32,14 @@ class OptionsFragment : Fragment(R.layout.fragment_options) {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        bind.optionsLayout.keepScreenOn = G.vm.options.value!!.keepScreenOn
+        vm = ViewModelProvider(requireActivity())[GlobalViewModel::class.java]
+        bind.optionsLayout.keepScreenOn = vm.options.value!!.keepScreenOn
         (activity as MainActivity).displayButtons()
 
         // Switch - GPS assist
         bind.settingGpsAssist.setOnCheckedChangeListener { _, isChecked ->
-            G.vm.options.value!!.gpsAssist = isChecked
-            if (G.vm.options.value!!.gpsAssist) {
+            vm.options.value!!.gpsAssist = isChecked
+            if (vm.options.value!!.gpsAssist) {
                 (activity as MainActivity).locationSubscribe()
             } else {
                 runBlocking { gpsMutex.withLock { gpsData.isValid = false } }
@@ -49,7 +51,7 @@ class OptionsFragment : Fragment(R.layout.fragment_options) {
 
         // Switch - Auto-detect waypoint
         bind.settingAutoNext.setOnCheckedChangeListener { _, isChecked ->
-            G.vm.options.value!!.autoNext = isChecked
+            vm.options.value!!.autoNext = isChecked
             save = true
             saveForm()
         }
@@ -58,8 +60,8 @@ class OptionsFragment : Fragment(R.layout.fragment_options) {
         bind.spinnerNextRadius.onItemSelectedListener =
             object : AdapterView.OnItemSelectedListener {
                 override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
-                    if (position != G.vm.options.value!!.nextRadiusIndex) {
-                        G.vm.options.value!!.nextRadiusIndex = position
+                    if (position != vm.options.value!!.nextRadiusIndex) {
+                        vm.options.value!!.nextRadiusIndex = position
                         save = true
                         saveForm()
                     }
@@ -76,7 +78,7 @@ class OptionsFragment : Fragment(R.layout.fragment_options) {
             if (dToSpd != null) {
                 dToSpd = fromUserUnitsSpd(dToSpd)!!
                 if (dToSpd < C.AUTO_TAKEOFF_MIN_SPEED_KT) dToSpd = C.AUTO_TAKEOFF_MIN_SPEED_KT
-                G.vm.options.value!!.autoTakeoffSpd = kt2mps(dToSpd)
+                vm.options.value!!.autoTakeoffSpd = kt2mps(dToSpd)
                 save = true
             }
         }
@@ -88,7 +90,7 @@ class OptionsFragment : Fragment(R.layout.fragment_options) {
             if (dLndSpd != null) {
                 dLndSpd = fromUserUnitsSpd(dLndSpd)!!
                 if (dLndSpd < C.AUTO_LANDING_MIN_SPEED_KT) dLndSpd = C.AUTO_LANDING_MIN_SPEED_KT
-                G.vm.options.value!!.autoLandingSpd = kt2mps(dLndSpd)
+                vm.options.value!!.autoLandingSpd = kt2mps(dLndSpd)
                 save = true
             }
         }
@@ -98,8 +100,8 @@ class OptionsFragment : Fragment(R.layout.fragment_options) {
         bind.spinnerUnitsSpd.onItemSelectedListener =
             object : AdapterView.OnItemSelectedListener {
                 override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
-                    if (position != G.vm.options.value!!.spdUnits) {
-                        G.vm.options.value!!.spdUnits = position
+                    if (position != vm.options.value!!.spdUnits) {
+                        vm.options.value!!.spdUnits = position
                         save = true
                         saveForm()
                     }
@@ -114,8 +116,8 @@ class OptionsFragment : Fragment(R.layout.fragment_options) {
         bind.spinnerUnitsDist.onItemSelectedListener =
             object : AdapterView.OnItemSelectedListener {
                 override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
-                    if (position != G.vm.options.value!!.distUnits) {
-                        G.vm.options.value!!.distUnits = position
+                    if (position != vm.options.value!!.distUnits) {
+                        vm.options.value!!.distUnits = position
                         save = true
                         setupUI()
                         saveForm()
@@ -131,8 +133,8 @@ class OptionsFragment : Fragment(R.layout.fragment_options) {
         bind.spinnerUnitsVol.onItemSelectedListener =
             object : AdapterView.OnItemSelectedListener {
                 override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
-                    if (position != G.vm.options.value!!.volUnits) {
-                        G.vm.options.value!!.volUnits = position
+                    if (position != vm.options.value!!.volUnits) {
+                        vm.options.value!!.volUnits = position
                         save = true
                         saveForm()
                     }
@@ -147,8 +149,8 @@ class OptionsFragment : Fragment(R.layout.fragment_options) {
         bind.spinnerMapOrientation.onItemSelectedListener =
             object : AdapterView.OnItemSelectedListener {
                 override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
-                    if (position != G.vm.options.value!!.mapOrientation) {
-                        G.vm.options.value!!.mapOrientation = position
+                    if (position != vm.options.value!!.mapOrientation) {
+                        vm.options.value!!.mapOrientation = position
                         save = true
                         saveForm()
                     }
@@ -161,28 +163,28 @@ class OptionsFragment : Fragment(R.layout.fragment_options) {
 
         // Switch - Display trace
         bind.settingTrace.setOnCheckedChangeListener { _, isChecked ->
-            G.vm.options.value!!.displayTrace = isChecked
+            vm.options.value!!.displayTrace = isChecked
             save = true
             saveForm()
         }
 
         // Switch - Display wind arrow
         bind.settingWindArrow.setOnCheckedChangeListener { _, isChecked ->
-            G.vm.options.value!!.drawWindArrow = isChecked
+            vm.options.value!!.drawWindArrow = isChecked
             save = true
             saveForm()
         }
 
         // Switch - Display radials
         bind.settingRadials.setOnCheckedChangeListener { _, isChecked ->
-            G.vm.options.value!!.drawRadials = isChecked
+            vm.options.value!!.drawRadials = isChecked
             save = true
             saveForm()
         }
 
         // Switch - Display radial markers
         bind.settingRadialsMarkers.setOnCheckedChangeListener { _, isChecked ->
-            G.vm.options.value!!.drawRadialsMarkers = isChecked
+            vm.options.value!!.drawRadialsMarkers = isChecked
             save = true
             saveForm()
         }
@@ -191,8 +193,8 @@ class OptionsFragment : Fragment(R.layout.fragment_options) {
         bind.spinnerScreenOrientation.onItemSelectedListener =
             object : AdapterView.OnItemSelectedListener {
                 override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
-                    if (position != G.vm.options.value!!.screenOrientation) {
-                        G.vm.options.value!!.screenOrientation = position
+                    if (position != vm.options.value!!.screenOrientation) {
+                        vm.options.value!!.screenOrientation = position
                         save = true
                         (activity as MainActivity).setScreenOrientation()
                         saveForm()
@@ -206,28 +208,28 @@ class OptionsFragment : Fragment(R.layout.fragment_options) {
 
         // Switch - Keep the screen ON
         bind.settingsScreenOn.setOnCheckedChangeListener { _, isChecked ->
-            G.vm.options.value!!.keepScreenOn = isChecked
+            vm.options.value!!.keepScreenOn = isChecked
             save = true
             saveForm()
         }
 
         // Switch - Time UTC
         bind.settingTimeUTC.setOnCheckedChangeListener { _, isChecked ->
-            G.vm.options.value!!.timeInUTC = isChecked
+            vm.options.value!!.timeInUTC = isChecked
             save = true
             saveForm()
         }
 
         // Switch - Disable edit after Off-Block
         bind.settingBlockPlanEdit.setOnCheckedChangeListener { _, isChecked ->
-            G.vm.options.value!!.blockPlanEdit = isChecked
+            vm.options.value!!.blockPlanEdit = isChecked
             save = true
             saveForm()
         }
 
         // Switch - Show hints
         bind.settingHints.setOnCheckedChangeListener { _, isChecked ->
-            G.vm.options.value!!.showHints = isChecked
+            vm.options.value!!.showHints = isChecked
             save = true
             saveForm()
         }
@@ -298,36 +300,36 @@ class OptionsFragment : Fragment(R.layout.fragment_options) {
         restore = true
 
         // Navigation options
-        bind.settingGpsAssist.isChecked = G.vm.options.value!!.gpsAssist
-        bind.settingAutoNext.isChecked = G.vm.options.value!!.autoNext
-        bind.spinnerNextRadius.setSelection(G.vm.options.value!!.nextRadiusIndex)
+        bind.settingGpsAssist.isChecked = vm.options.value!!.gpsAssist
+        bind.settingAutoNext.isChecked = vm.options.value!!.autoNext
+        bind.spinnerNextRadius.setSelection(vm.options.value!!.nextRadiusIndex)
 
-        bind.takeoffSpd.setText(formatDouble(toUserUnitsSpd(mps2kt(G.vm.options.value!!.autoTakeoffSpd))))
-        bind.landingSpd.setText(formatDouble(toUserUnitsSpd(mps2kt(G.vm.options.value!!.autoLandingSpd))))
+        bind.takeoffSpd.setText(formatDouble(toUserUnitsSpd(mps2kt(vm.options.value!!.autoTakeoffSpd))))
+        bind.landingSpd.setText(formatDouble(toUserUnitsSpd(mps2kt(vm.options.value!!.autoLandingSpd))))
 
         // Display units
-        bind.spinnerUnitsSpd.setSelection(G.vm.options.value!!.spdUnits)
-        bind.spinnerUnitsDist.setSelection(G.vm.options.value!!.distUnits)
-        bind.spinnerUnitsVol.setSelection(G.vm.options.value!!.volUnits)
+        bind.spinnerUnitsSpd.setSelection(vm.options.value!!.spdUnits)
+        bind.spinnerUnitsDist.setSelection(vm.options.value!!.distUnits)
+        bind.spinnerUnitsVol.setSelection(vm.options.value!!.volUnits)
 
         // Map options
-        bind.spinnerMapOrientation.setSelection(G.vm.options.value!!.mapOrientation)
-        bind.settingTrace.isChecked = G.vm.options.value!!.displayTrace
-        bind.settingWindArrow.isChecked = G.vm.options.value!!.drawWindArrow
-        bind.settingRadials.isChecked = G.vm.options.value!!.drawRadials
-        bind.settingRadialsMarkers.isChecked = G.vm.options.value!!.drawRadialsMarkers
+        bind.spinnerMapOrientation.setSelection(vm.options.value!!.mapOrientation)
+        bind.settingTrace.isChecked = vm.options.value!!.displayTrace
+        bind.settingWindArrow.isChecked = vm.options.value!!.drawWindArrow
+        bind.settingRadials.isChecked = vm.options.value!!.drawRadials
+        bind.settingRadialsMarkers.isChecked = vm.options.value!!.drawRadialsMarkers
 
         // Options
-        bind.spinnerScreenOrientation.setSelection(G.vm.options.value!!.screenOrientation)
-        bind.settingsScreenOn.isChecked = G.vm.options.value!!.keepScreenOn
-        bind.settingTimeUTC.isChecked = G.vm.options.value!!.timeInUTC
-        bind.settingBlockPlanEdit.isChecked = G.vm.options.value!!.blockPlanEdit
-        bind.settingHints.isChecked = G.vm.options.value!!.showHints
+        bind.spinnerScreenOrientation.setSelection(vm.options.value!!.screenOrientation)
+        bind.settingsScreenOn.isChecked = vm.options.value!!.keepScreenOn
+        bind.settingTimeUTC.isChecked = vm.options.value!!.timeInUTC
+        bind.settingBlockPlanEdit.isChecked = vm.options.value!!.blockPlanEdit
+        bind.settingHints.isChecked = vm.options.value!!.showHints
 
         // Enable / disable options
-        bind.settingAutoNext.isEnabled = G.vm.options.value!!.gpsAssist
-        bind.spinnerNextRadius.isEnabled = !(!G.vm.options.value!!.gpsAssist || !G.vm.options.value!!.autoNext)
-        bind.settingRadialsMarkers.isEnabled = G.vm.options.value!!.drawRadials
+        bind.settingAutoNext.isEnabled = vm.options.value!!.gpsAssist
+        bind.spinnerNextRadius.isEnabled = !(!vm.options.value!!.gpsAssist || !vm.options.value!!.autoNext)
+        bind.settingRadialsMarkers.isEnabled = vm.options.value!!.drawRadials
 
         bind.takeoffBox.isEnabled = bind.spinnerNextRadius.isEnabled
         bind.landingBox.isEnabled = bind.spinnerNextRadius.isEnabled

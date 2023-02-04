@@ -258,25 +258,27 @@ fun deleteFile(fileName: String) {
 fun saveOptions() {
     Log.d("saveOptions", "saveOptions")
 
+    val options = G.vm.options.value!!
+
     val jOptions = JSONObject()
-    jOptions.put("spdunits", G.vm.options.value!!.spdUnits)
-    jOptions.put("distunits", G.vm.options.value!!.distUnits)
-    jOptions.put("volunits", G.vm.options.value!!.volUnits)
-    jOptions.put("screenorient", G.vm.options.value!!.screenOrientation)
-    jOptions.put("screenon", G.vm.options.value!!.keepScreenOn)
-    jOptions.put("utc", G.vm.options.value!!.timeInUTC)
-    jOptions.put("takeoffspd", G.vm.options.value!!.autoTakeoffSpd)
-    jOptions.put("landingspd", G.vm.options.value!!.autoLandingSpd)
-    jOptions.put("maporient", G.vm.options.value!!.mapOrientation)
-    jOptions.put("trace", G.vm.options.value!!.displayTrace)
-    jOptions.put("maparrow", G.vm.options.value!!.drawWindArrow)
-    jOptions.put("radials", G.vm.options.value!!.drawRadials)
-    jOptions.put("radialsm", G.vm.options.value!!.drawRadialsMarkers)
-    jOptions.put("hints", G.vm.options.value!!.showHints)
-    jOptions.put("gps", G.vm.options.value!!.gpsAssist)
-    jOptions.put("autonext", G.vm.options.value!!.autoNext)
-    jOptions.put("nextr", G.vm.options.value!!.nextRadiusIndex)
-    jOptions.put("blockedit", G.vm.options.value!!.blockPlanEdit)
+    jOptions.put("spdunits", options.spdUnits)
+    jOptions.put("distunits", options.distUnits)
+    jOptions.put("volunits", options.volUnits)
+    jOptions.put("screenorient", options.screenOrientation)
+    jOptions.put("screenon", options.keepScreenOn)
+    jOptions.put("utc", options.timeInUTC)
+    jOptions.put("takeoffspd",options.autoTakeoffSpd)
+    jOptions.put("landingspd", options.autoLandingSpd)
+    jOptions.put("maporient", options.mapOrientation)
+    jOptions.put("trace", options.displayTrace)
+    jOptions.put("maparrow", options.drawWindArrow)
+    jOptions.put("radials", options.drawRadials)
+    jOptions.put("radialsm", options.drawRadialsMarkers)
+    jOptions.put("hints", options.showHints)
+    jOptions.put("gps", options.gpsAssist)
+    jOptions.put("autonext", options.autoNext)
+    jOptions.put("nextr", options.nextRadiusIndex)
+    jOptions.put("blockedit", options.blockPlanEdit)
 
     val json = JSONObject()
     json.put("options", jOptions)
@@ -443,13 +445,16 @@ fun savePlanAsCsv(): String {
         fileName = encodeFlightPlanName() + C.CSV_EXTENSION
         val file = File(externalAppDir, fileName)
 
+        val settings = G.vm.settings.value!!
+        val airplane = G.vm.airplane.value!!
+
         // Plan settings
-        file.writeText("PLAN NAME;;" + G.vm.settings.value!!.planName + "\n")
-        file.appendText("DEP/DEST;;" + G.vm.settings.value!!.departure + "/" + G.vm.settings.value!!.destination + "\n")
-        file.appendText("PLANE;;" + G.vm.airplane.value!!.type + "/" + G.vm.airplane.value!!.reg + "\n")
-        file.appendText("WIND DIR/SPD;;" + formatDouble(G.vm.settings.value!!.windDir) + "/" + formatDouble(G.vm.settings.value!!.windSpd) + getUnitsSpd() + "\n")
+        file.writeText("PLAN NAME;;" + settings.planName + "\n")
+        file.appendText("DEP/DEST;;" + settings.departure + "/" + settings.destination + "\n")
+        file.appendText("PLANE;;" + airplane.type + "/" + airplane.reg + "\n")
+        file.appendText("WIND DIR/SPD;;" + formatDouble(settings.windDir) + "/" + formatDouble(settings.windSpd) + getUnitsSpd() + "\n")
         file.appendText("TAS;;" + formatDouble(G.vm.airplane.value!!.tas) + getUnitsSpd() + "\n")
-        file.appendText("FUEL/FPH;;" + formatDouble(G.vm.settings.value!!.fob) + "/" + formatDouble(G.vm.airplane.value!!.fph) + "\n")
+        file.appendText("FUEL/FPH;;" + formatDouble(settings.fob) + "/" + formatDouble(airplane.fph) + "\n")
         file.appendText("UNITS DIST/SPD/FUEL;;" + getUnitsSpd() + "/" + getUnitsDis() + "/" + getUnitsVol() + "\n")
 
         // Table header
@@ -488,10 +493,12 @@ fun savePlanAsGpx(): String {
     var wpt = ""
     var trkpt = ""
 
-    if (navlogList.size > 0 && G.vm.settings.value!!.takeoffPos != null) {
+    val settings = G.vm.settings.value!!
+
+    if (navlogList.size > 0 && settings.takeoffPos != null) {
         var name = "Start"
-        var lat = formatDouble(G.vm.settings.value!!.takeoffPos?.latitude, C.POS_PRECISION)
-        var lng = formatDouble(G.vm.settings.value!!.takeoffPos?.longitude, C.POS_PRECISION)
+        var lat = formatDouble(settings.takeoffPos?.latitude, C.POS_PRECISION)
+        var lng = formatDouble(settings.takeoffPos?.longitude, C.POS_PRECISION)
         wpt += ("\t<wpt lat=\"$lat\" lon=\"$lng\"><name>$name</name></wpt>\n")
         trkpt += ("\t<trkpt lat=\"$lat\" lon=\"$lng\"></trkpt>\n")
 
@@ -510,7 +517,7 @@ fun savePlanAsGpx(): String {
     if (export) {
         val gpx = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
                 "<gpx version=\"1.0\">\n" +
-                "\t<name>${G.vm.settings.value!!.planName}</name>\n" +
+                "\t<name>${settings.planName}</name>\n" +
                 wpt +
                 "<trk><name>Track</name><trkseg>\n" +
                 trkpt +
@@ -524,7 +531,8 @@ fun savePlanAsGpx(): String {
 }
 
 fun saveTraceAsGpx(): String {
-    val trkFile = G.vm.settings.value!!.planId + C.TRK_EXTENSION
+    val settings = G.vm.settings.value!!
+    val trkFile = settings.planId + C.TRK_EXTENSION
     val file = File(externalAppDir, trkFile)
 
     if (file.exists()) {
@@ -540,14 +548,14 @@ fun saveTraceAsGpx(): String {
                 // Json fields: "lat", "lng", "date", "time"
                 trkpt += ("\t<trkpt lat=\"${item["lat"]}\" lon=\"${item["lng"]}\"><ele></ele><time>${item["date"]}T${item["time"]}</time></trkpt>\n")
                 cnt += 1
-            } catch (e: Exception) {
+            } catch (_: Exception) {
             }
         }
 
         if (cnt > 1) {
             val gpx = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
                     "<gpx version=\"1.0\">\n" +
-                    "\t<name>${G.vm.settings.value!!.planName}</name>\n" +
+                    "\t<name>${settings.planName}</name>\n" +
                     "<trk><name>Track</name><trkseg>\n" +
                     trkpt +
                     "</trkseg></trk></gpx>"

@@ -9,14 +9,15 @@ import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import androidx.core.widget.doOnTextChanged
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.ViewModelProvider
 import com.artyum.dynamicnavlog.databinding.FragmentSettingsBinding
 
 class SettingsFragment : Fragment(R.layout.fragment_settings) {
     private var _binding: FragmentSettingsBinding? = null
     private val bind get() = _binding!!
-
     private var change = false
     private var restore = false
+    private lateinit var vm: GlobalViewModel
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         _binding = FragmentSettingsBinding.inflate(inflater, container, false)
@@ -30,15 +31,16 @@ class SettingsFragment : Fragment(R.layout.fragment_settings) {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        bind.settingLayout.keepScreenOn = G.vm.options.value!!.keepScreenOn
+        vm = ViewModelProvider(requireActivity())[GlobalViewModel::class.java]
+        bind.settingLayout.keepScreenOn = vm.options.value!!.keepScreenOn
         (activity as MainActivity).displayButtons()
 
         // Flight plan name
         bind.settingFlightPlanName.doOnTextChanged { text, _, _, _ ->
             if (restore) return@doOnTextChanged
             val tmp = text.toString().trim()
-            if (G.vm.settings.value!!.planName != tmp) {
-                G.vm.settings.value!!.planName = tmp
+            if (vm.settings.value!!.planName != tmp) {
+                vm.settings.value!!.planName = tmp
                 change = true
             }
         }
@@ -50,8 +52,8 @@ class SettingsFragment : Fragment(R.layout.fragment_settings) {
         bind.settingFrom.doOnTextChanged { text, _, _, _ ->
             if (restore) return@doOnTextChanged
             val tmp = clearString(text.toString())
-            if (G.vm.settings.value!!.departure != tmp) {
-                G.vm.settings.value!!.departure = tmp
+            if (vm.settings.value!!.departure != tmp) {
+                vm.settings.value!!.departure = tmp
                 change = true
             }
         }
@@ -63,8 +65,8 @@ class SettingsFragment : Fragment(R.layout.fragment_settings) {
         bind.settingDestination.doOnTextChanged { text, _, _, _ ->
             if (restore) return@doOnTextChanged
             val tmp = clearString(text.toString())
-            if (G.vm.settings.value!!.destination != tmp) {
-                G.vm.settings.value!!.destination = tmp
+            if (vm.settings.value!!.destination != tmp) {
+                vm.settings.value!!.destination = tmp
                 change = true
             }
         }
@@ -79,8 +81,8 @@ class SettingsFragment : Fragment(R.layout.fragment_settings) {
             if (restore) return@doOnTextChanged
             val dWindDir = getDoubleOrNull(text.toString())
             if (!isValidWindDir(dWindDir)) showSettingsError(getString(R.string.txtInvalidWind))
-            else if (G.vm.settings.value!!.windDir != dWindDir) {
-                G.vm.settings.value!!.windDir = dWindDir!!
+            else if (vm.settings.value!!.windDir != dWindDir) {
+                vm.settings.value!!.windDir = dWindDir!!
                 bind.settingsInfoBox.visibility = View.GONE
                 change = true
                 refreshSummaryBox()
@@ -95,8 +97,8 @@ class SettingsFragment : Fragment(R.layout.fragment_settings) {
             if (restore) return@doOnTextChanged
             val dWindSpd = fromUserUnitsSpd(getDoubleOrNull(text.toString()))
             if (!isValidWindSpeed(dWindSpd)) showSettingsError(getString(R.string.txtInvalidWindSpeed))
-            else if (G.vm.settings.value!!.windSpd != dWindSpd) {
-                G.vm.settings.value!!.windSpd = dWindSpd!!
+            else if (vm.settings.value!!.windSpd != dWindSpd) {
+                vm.settings.value!!.windSpd = dWindSpd!!
                 bind.settingsInfoBox.visibility = View.GONE
                 change = true
                 refreshSummaryBox()
@@ -112,9 +114,9 @@ class SettingsFragment : Fragment(R.layout.fragment_settings) {
             var dFob = fromUserUnitsVol(getDoubleOrNull(text.toString()))
             if (dFob != null) {
                 if (dFob < 0.0) dFob = 0.0
-                if (dFob < G.vm.totals.value!!.fuel) dFob = G.vm.totals.value!!.fuel
-                if (dFob > G.vm.airplane.value!!.tank) dFob = G.vm.airplane.value!!.tank
-                G.vm.settings.value!!.fob = dFob
+                if (dFob < vm.totals.value!!.fuel) dFob = vm.totals.value!!.fuel
+                if (dFob > vm.airplane.value!!.tank) dFob = vm.airplane.value!!.tank
+                vm.settings.value!!.fob = dFob
                 bind.settingsInfoBox.visibility = View.GONE
                 change = true
                 refreshSummaryBox()
@@ -183,8 +185,8 @@ class SettingsFragment : Fragment(R.layout.fragment_settings) {
     private fun restoreSettings() {
         restore = true
 
-        val s = G.vm.settings.value!!
-        val a = G.vm.airplane.value!!
+        val s = vm.settings.value!!
+        val a = vm.airplane.value!!
 
         bind.settingFlightPlanName.setText(s.planName)
         bind.settingFrom.setText(s.departure)
@@ -227,9 +229,9 @@ class SettingsFragment : Fragment(R.layout.fragment_settings) {
     }
 
     private fun refreshSummaryBox() {
-        val s = G.vm.settings.value!!
-        val a = G.vm.airplane.value!!
-        val t = G.vm.totals.value!!
+        val s = vm.settings.value!!
+        val a = vm.airplane.value!!
+        val t = vm.totals.value!!
 
         if (s.airplaneId != "" && a.fph > 0.0) {
             val txtTotDist = formatDouble(toUserUnitsDis(t.dist))
@@ -292,7 +294,7 @@ class SettingsFragment : Fragment(R.layout.fragment_settings) {
     }
 
     private fun isValidWindSpeed(v: Double?): Boolean {
-        return v != null && v >= 0.0 && v < G.vm.airplane.value!!.tas
+        return v != null && v >= 0.0 && v < vm.airplane.value!!.tas
     }
 
     private fun getAirplaneListPosition(id: String): Int {

@@ -42,6 +42,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var navController: NavController
     private lateinit var appBarConfiguration: AppBarConfiguration
     private lateinit var mAdView: AdView
+    private lateinit var vm: GlobalViewModel
 
     //Billing
     private lateinit var billingClient: BillingClient
@@ -222,12 +223,13 @@ class MainActivity : AppCompatActivity() {
         // Set GlobalViewModel
         // Access from Fragment
         // val viewModel = ViewModelProvider(requireActivity()).get(GlobalViewModel::class.java)
-        G.vm = ViewModelProvider(this, ViewModelProvider.AndroidViewModelFactory(application))[GlobalViewModel::class.java]
-        G.vm.settings.value = Settings()
-        G.vm.airplane.value = Airplane()
-        G.vm.options.value = Options()
-        G.vm.timers.value = Timers()
-        G.vm.totals.value = Totals()
+        vm = ViewModelProvider(this, ViewModelProvider.AndroidViewModelFactory(application))[GlobalViewModel::class.java]
+        vm.settings.value = Settings()
+        vm.airplane.value = Airplane()
+        vm.options.value = Options()
+        vm.timers.value = Timers()
+        vm.totals.value = Totals()
+        G.vm = vm
 
         // Check purchase file to enable or disable ads
         checkPurchaseFile()
@@ -625,7 +627,7 @@ class MainActivity : AppCompatActivity() {
         resetAllSettings()
         resetFlight()
         resetRadials()
-        if (G.vm.options.value!!.gpsAssist) locationSubscribe() else locationUnsubscribe()
+        if (vm.options.value!!.gpsAssist) locationSubscribe() else locationUnsubscribe()
     }
 
     fun resetFlight() {
@@ -737,7 +739,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     fun setScreenOrientation() {
-        when (G.vm.options.value!!.screenOrientation) {
+        when (vm.options.value!!.screenOrientation) {
             C.SCREEN_PORTRAIT -> requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
             C.SCREEN_LANDSCAPE -> requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE
             C.SCREEN_SENSOR -> requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_FULL_SENSOR
@@ -778,7 +780,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     fun locationSubscribe() {
-        if (G.vm.options.value!!.gpsAssist && !locationSubscribed) {
+        if (vm.options.value!!.gpsAssist && !locationSubscribed) {
             if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
                 val builder = AlertDialog.Builder(this@MainActivity)
                 builder.setMessage(R.string.txtLocationMessage).setCancelable(false).setPositiveButton(R.string.txtOk) { _, _ ->
@@ -860,7 +862,7 @@ class MainActivity : AppCompatActivity() {
 
         while (true) {
             //Log.d(tag, "gpsHealthCheckThread: $gpsFailCnt")
-            if (G.vm.options.value!!.gpsAssist) {
+            if (vm.options.value!!.gpsAssist) {
                 gpsMutex.withLock {
                     if (!gpsData.heartbeat) {
                         if (gpsFailCnt >= C.GPS_ALIVE_SEC) {
@@ -903,7 +905,7 @@ class MainActivity : AppCompatActivity() {
 
                     if (stage == C.STAGE_2_ENGINE_RUNNING) {
                         // Detect takeoff
-                        if (gps.speedMps > G.vm.options.value!!.autoTakeoffSpd) speedCnt += 1 else speedCnt = 0
+                        if (gps.speedMps > vm.options.value!!.autoTakeoffSpd) speedCnt += 1 else speedCnt = 0
                         if (speedCnt >= C.AUTO_NEXT_WAIT_SEC) {
                             // Auto Takeoff
                             setStageTakeoff()
@@ -916,7 +918,7 @@ class MainActivity : AppCompatActivity() {
 
                         if (navlogList[item].pos != null) {
                             val dist = m2nm(calcDistance(gps.pos!!, navlogList[item].pos!!))
-                            if (dist <= nextRadiusList[G.vm.options.value!!.nextRadiusIndex]) {
+                            if (dist <= nextRadiusList[vm.options.value!!.nextRadiusIndex]) {
                                 if (item < last) {
                                     // Auto Next Waypoint
                                     // Detect passed waypoint when airplane is in the circle and the distance from waypoint is increasing
@@ -928,7 +930,7 @@ class MainActivity : AppCompatActivity() {
                                     } else prevDist = dist
                                 } else {
                                     // Auto Landing
-                                    if (gps.speedMps < G.vm.options.value!!.autoLandingSpd) speedCnt += 1 else speedCnt = 0
+                                    if (gps.speedMps < vm.options.value!!.autoLandingSpd) speedCnt += 1 else speedCnt = 0
                                     if (speedCnt >= C.AUTO_NEXT_WAIT_SEC) {
                                         //Log.d(tag, "Auto landing")
                                         setStageLanding()

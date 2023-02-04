@@ -8,6 +8,7 @@ import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.ViewModelProvider
 import com.artyum.dynamicnavlog.R.layout
 import com.artyum.dynamicnavlog.R.string
 import com.artyum.dynamicnavlog.databinding.FragmentCalcWindBinding
@@ -18,6 +19,7 @@ import kotlin.math.sin
 class CalcWindFragment : Fragment(layout.fragment_calc_wind) {
     private var _binding: FragmentCalcWindBinding? = null
     private val bind get() = _binding!!
+    private lateinit var vm: GlobalViewModel
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         _binding = FragmentCalcWindBinding.inflate(inflater, container, false)
@@ -31,7 +33,8 @@ class CalcWindFragment : Fragment(layout.fragment_calc_wind) {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        bind.calcWindLayout.keepScreenOn = G.vm.options.value!!.keepScreenOn
+        vm = ViewModelProvider(requireActivity())[GlobalViewModel::class.java]
+        bind.calcWindLayout.keepScreenOn = vm.options.value!!.keepScreenOn
         (activity as MainActivity).displayButtons()
 
         bind.btnCalculate.setOnClickListener {
