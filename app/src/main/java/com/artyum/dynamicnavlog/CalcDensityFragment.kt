@@ -8,12 +8,14 @@ import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.ViewModelProvider
 import com.artyum.dynamicnavlog.databinding.FragmentCalcDensityBinding
 import kotlin.math.pow
 
 class CalcDensityFragment : Fragment(R.layout.fragment_calc_density) {
     private var _binding: FragmentCalcDensityBinding? = null
     private val bind get() = _binding!!
+    private lateinit var vm: GlobalViewModel
 
     private var pressureUnits: Int = C.PRESSURE_INHG
     private var temperatureUnits: Int = C.TEMP_F
@@ -31,7 +33,8 @@ class CalcDensityFragment : Fragment(R.layout.fragment_calc_density) {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        bind.densityLayout.keepScreenOn = G.vm.options.value!!.keepScreenOn
+        vm = ViewModelProvider(requireActivity())[GlobalViewModel::class.java]
+        bind.densityLayout.keepScreenOn = vm.options.value!!.keepScreenOn
         (activity as MainActivity).displayButtons()
 
         bind.btnCalculate.setOnClickListener {

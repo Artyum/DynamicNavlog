@@ -7,12 +7,14 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.ViewModelProvider
 import com.artyum.dynamicnavlog.databinding.FragmentCalcFuelBinding
 import kotlin.math.roundToLong
 
 class CalcFuelFragment : Fragment(R.layout.fragment_calc_fuel) {
     private var _binding: FragmentCalcFuelBinding? = null
     private val bind get() = _binding!!
+    private lateinit var vm: GlobalViewModel
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         _binding = FragmentCalcFuelBinding.inflate(inflater, container, false)
@@ -26,7 +28,8 @@ class CalcFuelFragment : Fragment(R.layout.fragment_calc_fuel) {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        bind.fuelLayout.keepScreenOn = G.vm.options.value!!.keepScreenOn
+        vm = ViewModelProvider(requireActivity())[GlobalViewModel::class.java]
+        bind.fuelLayout.keepScreenOn = vm.options.value!!.keepScreenOn
         (activity as MainActivity).displayButtons()
 
         bind.btnCalculate.setOnClickListener {

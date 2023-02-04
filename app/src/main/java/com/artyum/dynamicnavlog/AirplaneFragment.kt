@@ -10,12 +10,14 @@ import android.widget.ArrayAdapter
 import androidx.core.widget.doAfterTextChanged
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.setFragmentResultListener
+import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import com.artyum.dynamicnavlog.databinding.FragmentAirplaneBinding
 
 class AirplaneFragment : Fragment() {
     private var _binding: FragmentAirplaneBinding? = null
     private val bind get() = _binding!!
+    private lateinit var vm: GlobalViewModel
 
     private var spdUnits = 0
     private var volUnits = 0
@@ -33,7 +35,8 @@ class AirplaneFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        bind.airplaneLayout.keepScreenOn = G.vm.options.value!!.keepScreenOn
+        vm = ViewModelProvider(requireActivity())[GlobalViewModel::class.java]
+        bind.airplaneLayout.keepScreenOn = vm.options.value!!.keepScreenOn
         (activity as MainActivity).displayButtons()
 
         // Speed units
@@ -173,18 +176,18 @@ class AirplaneFragment : Fragment() {
         }
 
         if (ok) {
-            G.vm.airplane.value!!.type = type
-            G.vm.airplane.value!!.reg = reg
-            G.vm.airplane.value!!.rmk = rmk
-            G.vm.airplane.value!!.tas = tas!!
-            G.vm.airplane.value!!.tank = tank!!
-            G.vm.airplane.value!!.fph = fph!!
-            G.vm.airplane.value!!.spdUnits = spdUnits
-            G.vm.airplane.value!!.volUnits = volUnits
+            vm.airplane.value!!.type = type
+            vm.airplane.value!!.reg = reg
+            vm.airplane.value!!.rmk = rmk
+            vm.airplane.value!!.tas = tas!!
+            vm.airplane.value!!.tank = tank!!
+            vm.airplane.value!!.fph = fph!!
+            vm.airplane.value!!.spdUnits = spdUnits
+            vm.airplane.value!!.volUnits = volUnits
             addAirplane()
 
             // Refresh airplane settings
-            getAirplaneByID(G.vm.settings.value!!.airplaneId)
+            getAirplaneByID(vm.settings.value!!.airplaneId)
             calcNavlog()
 
             // Go back to the list of airplanes
@@ -200,27 +203,28 @@ class AirplaneFragment : Fragment() {
             // Search in airplane list
             for (i in airplaneList.indices) {
                 if (airplaneList[i].id == editAirplaneId) {
-                    G.vm.airplane.value = airplaneList[i].copy()
+                    vm.airplane.value = airplaneList[i].copy()
                     return
                 }
             }
         } else {
-            G.vm.airplane.value = Airplane()
-            G.vm.airplane.value!!.id = generateStringId()
+            vm.airplane.value = Airplane()
+            vm.airplane.value!!.id = generateStringId()
         }
     }
 
     private fun restoreSettings() {
-        bind.airplaneType.setText(G.vm.airplane.value!!.type)
-        bind.airplaneReg.setText(G.vm.airplane.value!!.reg)
-        bind.airplaneRmk.setText(G.vm.airplane.value!!.rmk)
+        val airplane = vm.airplane.value!!
+        bind.airplaneType.setText(airplane.type)
+        bind.airplaneReg.setText(airplane.reg)
+        bind.airplaneRmk.setText(airplane.rmk)
 
-        bind.spinnerSpeedUnits.setSelection(G.vm.airplane.value!!.spdUnits)
-        bind.spinnerVolUnits.setSelection(G.vm.airplane.value!!.volUnits)
+        bind.spinnerSpeedUnits.setSelection(airplane.spdUnits)
+        bind.spinnerVolUnits.setSelection(airplane.volUnits)
 
-        val tas = G.vm.airplane.value!!.tas
-        val tank = G.vm.airplane.value!!.tank
-        val fph = G.vm.airplane.value!!.fph
+        val tas = airplane.tas
+        val tank = airplane.tank
+        val fph = airplane.fph
 
         if (tas > 0.0) bind.airplaneTas.setText(formatDouble(tas))
         if (tank > 0.0) bind.airplaneTank.setText(formatDouble(tank))
@@ -229,12 +233,12 @@ class AirplaneFragment : Fragment() {
 
     private fun addAirplane() {
         for (i in airplaneList.indices) {
-            if (airplaneList[i].id == G.vm.airplane.value!!.id) {
+            if (airplaneList[i].id == vm.airplane.value!!.id) {
                 airplaneList.removeAt(i)
                 break
             }
         }
-        airplaneList.add(G.vm.airplane.value!!)
+        airplaneList.add(vm.airplane.value!!)
         airplaneList.sortBy { it.reg }
         saveAirplaneList()
     }

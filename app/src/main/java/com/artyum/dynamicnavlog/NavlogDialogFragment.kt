@@ -2,7 +2,6 @@ package com.artyum.dynamicnavlog
 
 import android.content.DialogInterface
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -186,7 +185,19 @@ class NavlogDialogFragment(private val item: Int, private val adapter: NavlogAda
                 }
             }
         } else dismiss()
+
+        //Focus on DEST
+        bind.dialogDest.requestFocus()
+
+        //val inputManager = requireContext().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+        //inputManager.showSoftInput(editText, InputMethodManager.SHOW_IMPLICIT);
     }
+
+    /*override fun onStart() {
+        super.onStart()
+        val inputManager = requireContext().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+        bind.dialogDest.postDelayed({ inputManager.showSoftInput(view, InputMethodManager.SHOW_IMPLICIT) }, 1000)
+    }*/
 
     private fun calcTt() {
         cmt = false

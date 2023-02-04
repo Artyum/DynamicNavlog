@@ -8,6 +8,7 @@ import androidx.core.os.bundleOf
 import androidx.core.widget.doAfterTextChanged
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.setFragmentResult
+import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -19,6 +20,7 @@ class AirplaneListFragment : Fragment(R.layout.fragment_airplanelist), AirplaneL
     private val bind get() = _binding!!
     private var adapterList = ArrayList<Airplane>()
     private var adapter = AirplaneListAdapter(adapterList, this)
+    private lateinit var vm: GlobalViewModel
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         _binding = FragmentAirplanelistBinding.inflate(inflater, container, false)
@@ -32,7 +34,8 @@ class AirplaneListFragment : Fragment(R.layout.fragment_airplanelist), AirplaneL
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        bind.airplaneListLayout.keepScreenOn = G.vm.options.value!!.keepScreenOn
+        vm = ViewModelProvider(requireActivity())[GlobalViewModel::class.java]
+        bind.airplaneListLayout.keepScreenOn = vm.options.value!!.keepScreenOn
         (activity as MainActivity).displayButtons()
 
         // Add airplane
