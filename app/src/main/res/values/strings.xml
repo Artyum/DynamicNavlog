@@ -206,6 +206,10 @@
     <string name="txtLatitude">Latitude</string>
     <string name="txtLongitude">Longitude</string>
     <string name="txtMap">Map</string>
+    <string name="txtFollow">Follow</string>
+    <string name="txtMapType">Map type</string>
+    <string name="txtZoomIn">Zoom in</string>
+    <string name="txtZoomOut">Zoom out</string>
     <string name="txtNoAirplaneInSettings">An airplane must be selected for the flight plan</string>
     <string name="txtCannotConnectToGooglePlay">Cannot fetch data from Google Play. Check your Internet connection. Please try again later.</string>
     <string name="txtLocationMessage">The application will ask for access to device\'s location.\n\nDynamic NavLog collects location data to present position on maps and for proper functionality
