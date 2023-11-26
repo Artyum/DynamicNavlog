@@ -1,7 +1,6 @@
 package com.artyum.dynamicnavlog
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -10,14 +9,12 @@ import android.widget.ArrayAdapter
 import androidx.core.widget.doAfterTextChanged
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.setFragmentResultListener
-import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import com.artyum.dynamicnavlog.databinding.FragmentAirplaneBinding
 
 class AirplaneFragment : Fragment() {
     private var _binding: FragmentAirplaneBinding? = null
     private val bind get() = _binding!!
-    private lateinit var vm: GlobalViewModel
 
     private var spdUnits = 0
     private var volUnits = 0
@@ -35,35 +32,32 @@ class AirplaneFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        vm = ViewModelProvider(requireActivity())[GlobalViewModel::class.java]
-        bind.airplaneLayout.keepScreenOn = vm.options.value!!.keepScreenOn
+        bind.airplaneLayout.keepScreenOn = State.options.keepScreenOn
         (activity as MainActivity).displayButtons()
 
         // Speed units
-        bind.spinnerSpeedUnits.onItemSelectedListener =
-            object : AdapterView.OnItemSelectedListener {
-                override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
-                    spdUnits = position
-                    onChange()
-                }
-
-                override fun onNothingSelected(parent: AdapterView<*>?) {
-                    return
-                }
+        bind.spinnerSpeedUnits.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+            override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
+                spdUnits = position
+                onChange()
             }
+
+            override fun onNothingSelected(parent: AdapterView<*>?) {
+                return
+            }
+        }
 
         // Tank units
-        bind.spinnerVolUnits.onItemSelectedListener =
-            object : AdapterView.OnItemSelectedListener {
-                override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
-                    volUnits = position
-                    onChange()
-                }
-
-                override fun onNothingSelected(parent: AdapterView<*>?) {
-                    return
-                }
+        bind.spinnerVolUnits.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+            override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
+                volUnits = position
+                onChange()
             }
+
+            override fun onNothingSelected(parent: AdapterView<*>?) {
+                return
+            }
+        }
 
         setFragmentResultListener("requestKey") { _, bundle ->
             editAirplaneId = bundle.getString("airplaneId").toString()
@@ -90,9 +84,9 @@ class AirplaneFragment : Fragment() {
     }
 
     private fun calcPerformance() {
-        val tas = getDoubleOrNull(bind.airplaneTas.text.toString())
-        val tank = getDoubleOrNull(bind.airplaneTank.text.toString())
-        val fph = getDoubleOrNull(bind.airplaneFph.text.toString())
+        val tas = Utils.getDoubleOrNull(bind.airplaneTas.text.toString())
+        val tank = Utils.getDoubleOrNull(bind.airplaneTank.text.toString())
+        val fph = Utils.getDoubleOrNull(bind.airplaneFph.text.toString())
 
         if (tas != null && tank != null && fph != null) {
             val time = tank / fph   // time in h
@@ -104,9 +98,9 @@ class AirplaneFragment : Fragment() {
                 else -> ""
             }
 
-            bind.perfRange.text = formatDouble(range)
+            bind.perfRange.text = Utils.formatDouble(range)
             bind.perfRangeUnits.text = units
-            bind.perfFlightTime.text = formatSecondsToTime((time * 3600.0).toLong())
+            bind.perfFlightTime.text = TimeUtils.formatSecondsToTime((time * 3600.0).toLong())
 
         } else {
             bind.perfRange.text = "-"
@@ -141,12 +135,12 @@ class AirplaneFragment : Fragment() {
 
     private fun saveAirplane() {
         hideErrorBox()
-        val type = clearString(bind.airplaneType.text.toString())
-        val reg = clearString(bind.airplaneReg.text.toString())
-        val rmk = clearString(bind.airplaneRmk.text.toString())
-        val tas = getDoubleOrNull(bind.airplaneTas.text.toString())
-        val tank = getDoubleOrNull(bind.airplaneTank.text.toString())
-        val fph = getDoubleOrNull(bind.airplaneFph.text.toString())
+        val type = Utils.clearString(bind.airplaneType.text.toString())
+        val reg = Utils.clearString(bind.airplaneReg.text.toString())
+        val rmk = Utils.clearString(bind.airplaneRmk.text.toString())
+        val tas = Utils.getDoubleOrNull(bind.airplaneTas.text.toString())
+        val tank = Utils.getDoubleOrNull(bind.airplaneTank.text.toString())
+        val fph = Utils.getDoubleOrNull(bind.airplaneFph.text.toString())
 
         // Validation
         var ok = true
@@ -176,19 +170,21 @@ class AirplaneFragment : Fragment() {
         }
 
         if (ok) {
-            vm.airplane.value!!.type = type
-            vm.airplane.value!!.reg = reg
-            vm.airplane.value!!.rmk = rmk
-            vm.airplane.value!!.tas = tas!!
-            vm.airplane.value!!.tank = tank!!
-            vm.airplane.value!!.fph = fph!!
-            vm.airplane.value!!.spdUnits = spdUnits
-            vm.airplane.value!!.volUnits = volUnits
+            State.airplane.type = type
+            State.airplane.reg = reg
+            State.airplane.rmk = rmk
+            State.airplane.tas = tas!!
+            State.airplane.tank = tank!!
+            State.airplane.fph = fph!!
+            State.airplane.spdUnits = spdUnits
+            State.airplane.volUnits = volUnits
+
             addAirplane()
 
             // Refresh airplane settings
-            getAirplaneByID(vm.settings.value!!.airplaneId)
-            calcNavlog()
+            AirplaneUtils.getAirplaneByID(State.settings.airplaneId)
+
+            NavLogUtils.calcNavlog()
 
             // Go back to the list of airplanes
             findNavController().popBackStack()
@@ -201,85 +197,90 @@ class AirplaneFragment : Fragment() {
     private fun loadAirplane() {
         if (editAirplaneId.isNotEmpty()) {
             // Search in airplane list
-            for (i in airplaneList.indices) {
-                if (airplaneList[i].id == editAirplaneId) {
-                    vm.airplane.value = airplaneList[i].copy()
+            for (i in State.airplaneList.indices) {
+                if (State.airplaneList[i].id == editAirplaneId) {
+                    State.airplane = State.airplaneList[i].copy()
                     return
                 }
             }
         } else {
-            vm.airplane.value = Airplane()
-            vm.airplane.value!!.id = generateStringId()
+            State.airplane = AirplaneData()
+            State.airplane.id = Utils.generateStringId()
         }
     }
 
     private fun restoreSettings() {
-        val airplane = vm.airplane.value!!
-        bind.airplaneType.setText(airplane.type)
-        bind.airplaneReg.setText(airplane.reg)
-        bind.airplaneRmk.setText(airplane.rmk)
+        bind.airplaneType.setText(State.airplane.type)
+        bind.airplaneReg.setText(State.airplane.reg)
+        bind.airplaneRmk.setText(State.airplane.rmk)
 
-        bind.spinnerSpeedUnits.setSelection(airplane.spdUnits)
-        bind.spinnerVolUnits.setSelection(airplane.volUnits)
+        bind.spinnerSpeedUnits.setSelection(State.airplane.spdUnits)
+        bind.spinnerVolUnits.setSelection(State.airplane.volUnits)
 
-        val tas = airplane.tas
-        val tank = airplane.tank
-        val fph = airplane.fph
+        val tas = State.airplane.tas
+        val tank = State.airplane.tank
+        val fph = State.airplane.fph
 
-        if (tas > 0.0) bind.airplaneTas.setText(formatDouble(tas))
-        if (tank > 0.0) bind.airplaneTank.setText(formatDouble(tank))
-        if (fph > 0.0) bind.airplaneFph.setText(formatDouble(fph))
+        if (tas > 0.0) bind.airplaneTas.setText(Utils.formatDouble(tas))
+        if (tank > 0.0) bind.airplaneTank.setText(Utils.formatDouble(tank))
+        if (fph > 0.0) bind.airplaneFph.setText(Utils.formatDouble(fph))
     }
 
     private fun addAirplane() {
-        for (i in airplaneList.indices) {
-            if (airplaneList[i].id == vm.airplane.value!!.id) {
-                airplaneList.removeAt(i)
+        for (i in State.airplaneList.indices) {
+            if (State.airplaneList[i].id == State.airplane.id) {
+                State.airplaneList.removeAt(i)
                 break
             }
         }
-        airplaneList.add(vm.airplane.value!!)
-        airplaneList.sortBy { it.reg }
-        saveAirplaneList()
+        State.airplaneList.add(State.airplane)
+        State.airplaneList.sortBy { it.reg }
+        FileUtils.saveAirplaneList()
     }
 }
 
-fun getAirplaneByID(id: String) {
-    if (id == "") {
-        resetAirplaneSettings()
-        return
-    }
-
-    for (i in airplaneList.indices) {
-        if (airplaneList[i].id == id) {
-            // Convert airplane units to flight plan units
-            val a = airplaneList[i].copy()
-
-            // Convert to kt and litres
-            when (a.spdUnits) {
-                C.SPD_MPH -> a.tas = mph2kt(a.tas)
-                C.SPD_KPH -> a.tas = kph2kt(a.tas)
-            }
-            when (a.volUnits) {
-                C.VOL_USGAL -> {
-                    a.tank = usgal2l(a.tank)
-                    a.fph = usgal2l(a.fph)
-                }
-                C.VOL_UKGAL -> {
-                    a.tank = ukgal2l(a.tank)
-                    a.fph = ukgal2l(a.fph)
-                }
-            }
-
-            G.vm.airplane.value = a
-            G.vm.settings.value!!.airplaneId = id
+object AirplaneUtils {
+    fun getAirplaneByID(id: String) {
+        if (id == "") {
+            resetAirplaneSettings()
             return
         }
-    }
-    resetAirplaneSettings()
-}
 
-fun resetAirplaneSettings() {
-    G.vm.settings.value!!.airplaneId = ""
-    G.vm.airplane.value = Airplane()
+        for (i in State.airplaneList.indices) {
+            if (State.airplaneList[i].id == id) {
+                // Convert airplane units to flight plan units
+                val a = State.airplaneList[i].copy()
+
+                // Convert to kt and litres
+                when (a.spdUnits) {
+                    C.SPD_MPH -> a.tas = Convert.mph2kt(a.tas)
+                    C.SPD_KPH -> a.tas = Convert.kph2kt(a.tas)
+                }
+                when (a.volUnits) {
+                    C.VOL_USGAL -> {
+                        a.tank = Convert.usgal2l(a.tank)
+                        a.fph = Convert.usgal2l(a.fph)
+                    }
+
+                    C.VOL_UKGAL -> {
+                        a.tank = Convert.ukgal2l(a.tank)
+                        a.fph = Convert.ukgal2l(a.fph)
+                    }
+                }
+
+                State.airplane = a.copy()
+                State.settings.airplaneId = id
+                if (State.settings.fob < 0.0) State.settings.fob = 0.0
+                if (State.settings.fob > a.tank) State.settings.fob = a.tank
+
+                return
+            }
+        }
+        resetAirplaneSettings()
+    }
+
+    fun resetAirplaneSettings() {
+        State.settings.airplaneId = ""
+        State.airplane = AirplaneData()
+    }
 }

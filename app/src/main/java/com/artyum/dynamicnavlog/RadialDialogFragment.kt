@@ -34,12 +34,12 @@ class RadialDialogFragment(private val pos1: LatLng? = null, private val pos2: L
 
         // Button Apply
         bind.btnDialogSubmit.setOnClickListener {
-            var angle = getDoubleOrNull(bind.dialogRadial.text.toString())
-            val dist = getDoubleOrNull(bind.dialogDistance.text.toString())
-            val lat1 = getDoubleOrNull(bind.dialogLat1.text.toString())
-            val lng1 = getDoubleOrNull(bind.dialogLng1.text.toString())
-            val lat2 = getDoubleOrNull(bind.dialogLat2.text.toString())
-            val lng2 = getDoubleOrNull(bind.dialogLng2.text.toString())
+            val angle = Utils.getDoubleOrNull(bind.dialogRadial.text.toString())
+            val dist = Utils.getDoubleOrNull(bind.dialogDistance.text.toString())
+            val lat1 = Utils.getDoubleOrNull(bind.dialogLat1.text.toString())
+            val lng1 = Utils.getDoubleOrNull(bind.dialogLng1.text.toString())
+            val lat2 = Utils.getDoubleOrNull(bind.dialogLat2.text.toString())
+            val lng2 = Utils.getDoubleOrNull(bind.dialogLng2.text.toString())
             var chk = true
 
             if (angle == null || angle < 0.0 || angle > 360.0) {
@@ -54,13 +54,13 @@ class RadialDialogFragment(private val pos1: LatLng? = null, private val pos2: L
 
             if (chk && lat1 != null && lng1 != null && lat2 != null && lng2 != null) {
                 if (item != null) {
-                    radialList[item].angle = angle!!
-                    radialList[item].dist = fromUserUnitsDis(dist!!)!!
-                    radialList[item].pos1 = LatLng(lat1, lng1)
-                    radialList[item].pos2 = LatLng(lat2, lng2)
+                    State.radialList[item].angle = angle!!
+                    State.radialList[item].dist = Convert.fromUserUnitsDis(dist!!)!!
+                    State.radialList[item].pos1 = LatLng(lat1, lng1)
+                    State.radialList[item].pos2 = LatLng(lat2, lng2)
                 } else {
-                    val radial = Radial(angle = angle!!, dist = dist!!, pos1 = LatLng(lat1, lng1), pos2 = LatLng(lat2, lng2))
-                    radialList.add(radial)
+                    val radial = RadialData(angle = angle!!, dist = dist!!, pos1 = LatLng(lat1, lng1), pos2 = LatLng(lat2, lng2))
+                    State.radialList.add(radial)
                 }
 
                 setFragmentResult("requestKey", bundleOf("action" to "refresh"))
@@ -75,58 +75,52 @@ class RadialDialogFragment(private val pos1: LatLng? = null, private val pos2: L
 
         // Button delete
         bind.btnDialogRemove.setOnClickListener {
-            if (item != null && radialList.size > 0 && item >= 0 && item < radialList.size) {
-                radialList.removeAt(item)
-                saveState()
+            if (item != null && State.radialList.size > 0 && item >= 0 && item < State.radialList.size) {
+                State.radialList.removeAt(item)
+                FileUtils.saveState()
                 setFragmentResult("requestKey", bundleOf("action" to "refresh"))
             }
             dismiss()
         }
 
         // Display form
-        bind.labelDistance.hint = getString(R.string.txtDistance) + " (" + getUnitsDis() + ")"
+        bind.labelDistance.hint = getString(R.string.txtDistance) + " (" + Convert.getUnitsDis() + ")"
         if (item != null) {
             // Edit radial
-            bind.dialogRadial.setText(formatDouble(radialList[item].angle, 0))
-            bind.dialogDistance.setText(formatDouble(toUserUnitsDis(radialList[item].dist), 2))
-            bind.dialogLat1.setText(formatDouble(radialList[item].pos1.latitude, C.POS_PRECISION))
-            bind.dialogLng1.setText(formatDouble(radialList[item].pos1.longitude, C.POS_PRECISION))
-            bind.dialogLat2.setText(formatDouble(radialList[item].pos2.latitude, C.POS_PRECISION))
-            bind.dialogLng2.setText(formatDouble(radialList[item].pos2.longitude, C.POS_PRECISION))
+            bind.dialogRadial.setText(Utils.formatDouble(State.radialList[item].angle, 0))
+            bind.dialogDistance.setText(Utils.formatDouble(Convert.toUserUnitsDis(State.radialList[item].dist), 2))
+            bind.dialogLat1.setText(Utils.formatDouble(State.radialList[item].pos1.latitude, C.POS_PRECISION))
+            bind.dialogLng1.setText(Utils.formatDouble(State.radialList[item].pos1.longitude, C.POS_PRECISION))
+            bind.dialogLat2.setText(Utils.formatDouble(State.radialList[item].pos2.latitude, C.POS_PRECISION))
+            bind.dialogLng2.setText(Utils.formatDouble(State.radialList[item].pos2.longitude, C.POS_PRECISION))
         } else if (pos1 != null && pos2 != null) {
             // New radial
             // Calculate Radial and distance
-            val radial = calcBearing(pos1, pos2)
-            val dist = m2nm(calcDistance(pos1, pos2))
+            val radial = GPSUtils.calcBearing(pos1, pos2)
+            val dist = Convert.m2nm(GPSUtils.calcDistance(pos1, pos2))
 
-            bind.dialogRadial.setText(formatDouble(radial))
-            bind.dialogDistance.setText(formatDouble(toUserUnitsDis(dist), 2))
-            bind.dialogLat1.setText(formatDouble(pos1.latitude, C.POS_PRECISION))
-            bind.dialogLng1.setText(formatDouble(pos1.longitude, C.POS_PRECISION))
-            bind.dialogLat2.setText(formatDouble(pos2.latitude, C.POS_PRECISION))
-            bind.dialogLng2.setText(formatDouble(pos2.longitude, C.POS_PRECISION))
+            bind.dialogRadial.setText(Utils.formatDouble(radial))
+            bind.dialogDistance.setText(Utils.formatDouble(Convert.toUserUnitsDis(dist), 2))
+            bind.dialogLat1.setText(Utils.formatDouble(pos1.latitude, C.POS_PRECISION))
+            bind.dialogLng1.setText(Utils.formatDouble(pos1.longitude, C.POS_PRECISION))
+            bind.dialogLat2.setText(Utils.formatDouble(pos2.latitude, C.POS_PRECISION))
+            bind.dialogLng2.setText(Utils.formatDouble(pos2.longitude, C.POS_PRECISION))
 
             bind.btnDialogRemove.visibility = View.GONE
         }
     }
 
     private fun calculateEndPoint() {
-        var angle = getDoubleOrNull(bind.dialogRadial.text.toString())
-        var dist = getDoubleOrNull(bind.dialogDistance.text.toString())
-        val lat1 = getDoubleOrNull(bind.dialogLat1.text.toString())
-        val lng1 = getDoubleOrNull(bind.dialogLng1.text.toString())
+        var angle = Utils.getDoubleOrNull(bind.dialogRadial.text.toString())
+        var dist = Utils.getDoubleOrNull(bind.dialogDistance.text.toString())
+        val lat1 = Utils.getDoubleOrNull(bind.dialogLat1.text.toString())
+        val lng1 = Utils.getDoubleOrNull(bind.dialogLng1.text.toString())
         if (angle != null && dist != null && lat1 != null && lng1 != null) {
-            dist = nm2m(fromUserUnitsDis(dist)!!)
-            angle = normalizeBearing(angle - getDeclination(LatLng(lat1, lng1)))
-            val pos2 = calcDestinationPos(LatLng(lat1, lng1), angle, dist)
-            bind.dialogLat2.setText(formatDouble(pos2.latitude, C.POS_PRECISION))
-            bind.dialogLng2.setText(formatDouble(pos2.longitude, C.POS_PRECISION))
+            dist = Convert.nm2m(Convert.fromUserUnitsDis(dist)!!)
+            angle = GPSUtils.normalizeBearing(angle - GPSUtils.getDeclination(LatLng(lat1, lng1)))
+            val pos2 = GPSUtils.calcDestinationPos(LatLng(lat1, lng1), angle, dist)
+            bind.dialogLat2.setText(Utils.formatDouble(pos2.latitude, C.POS_PRECISION))
+            bind.dialogLng2.setText(Utils.formatDouble(pos2.longitude, C.POS_PRECISION))
         }
     }
-}
-
-fun recalculateRadial(i: Int) {
-    if (i < 0 || i > radialList.size - 1) return
-    radialList[i].angle = normalizeBearing(calcBearing(radialList[i].pos1, radialList[i].pos2) + getDeclination(radialList[i].pos1))
-    radialList[i].dist = m2nm(calcDistance(radialList[i].pos1, radialList[i].pos2))
 }

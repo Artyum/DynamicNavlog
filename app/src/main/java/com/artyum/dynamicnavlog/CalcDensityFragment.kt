@@ -8,14 +8,12 @@ import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.ViewModelProvider
 import com.artyum.dynamicnavlog.databinding.FragmentCalcDensityBinding
 import kotlin.math.pow
 
 class CalcDensityFragment : Fragment(R.layout.fragment_calc_density) {
     private var _binding: FragmentCalcDensityBinding? = null
     private val bind get() = _binding!!
-    private lateinit var vm: GlobalViewModel
 
     private var pressureUnits: Int = C.PRESSURE_INHG
     private var temperatureUnits: Int = C.TEMP_F
@@ -33,8 +31,7 @@ class CalcDensityFragment : Fragment(R.layout.fragment_calc_density) {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        vm = ViewModelProvider(requireActivity())[GlobalViewModel::class.java]
-        bind.densityLayout.keepScreenOn = vm.options.value!!.keepScreenOn
+        bind.densityLayout.keepScreenOn = State.options.keepScreenOn
         (activity as MainActivity).displayButtons()
 
         bind.btnCalculate.setOnClickListener {
@@ -70,16 +67,16 @@ class CalcDensityFragment : Fragment(R.layout.fragment_calc_density) {
     }
 
     private fun densityCalculate() {
-        val inPressure = getDoubleOrNull(bind.edtDensityStation.text.toString())
+        val inPressure = Utils.getDoubleOrNull(bind.edtDensityStation.text.toString())
         val pressure_inhg: Double
         val pressure_hpa: Double
 
-        val inTemp = getDoubleOrNull(bind.edtDensityTemperature.text.toString())
+        val inTemp = Utils.getDoubleOrNull(bind.edtDensityTemperature.text.toString())
         val temp_f: Double
         val temp_c: Double
         val temp_k: Double
 
-        var inElev = getDoubleOrNull(bind.edtDensityElevation.text.toString())
+        var inElev = Utils.getDoubleOrNull(bind.edtDensityElevation.text.toString())
         if (inElev == null) inElev = 0.0
         val elev_ft: Double
         val elev_m: Double
@@ -88,29 +85,29 @@ class CalcDensityFragment : Fragment(R.layout.fragment_calc_density) {
             // Pressure units
             if (pressureUnits == C.PRESSURE_INHG) {
                 pressure_inhg = inPressure
-                pressure_hpa = inhg2hpa(pressure_inhg)
+                pressure_hpa = Convert.inhg2hpa(pressure_inhg)
             } else {
                 pressure_hpa = inPressure
-                pressure_inhg = hpa2inhg(pressure_hpa)
+                pressure_inhg = Convert.hpa2inhg(pressure_hpa)
             }
 
             // Temperature units
             if (temperatureUnits == C.TEMP_F) {
                 temp_f = inTemp
-                temp_c = f2c(temp_f)
+                temp_c = Convert.f2c(temp_f)
             } else {
                 temp_c = inTemp
-                temp_f = c2f(temp_c)
+                temp_f = Convert.c2f(temp_c)
             }
-            temp_k = c2k(temp_c)
+            temp_k = Convert.c2k(temp_c)
 
             // Elevation units
             if (elevationUnits == C.ELEV_FT) {
                 elev_ft = inElev
-                elev_m = ft2m(elev_ft)
+                elev_m = Convert.ft2m(elev_ft)
             } else {
                 elev_m = inElev
-                elev_ft = m2ft(elev_m)
+                elev_ft = Convert.m2ft(elev_m)
             }
 
             //println("pressure_inhg $pressure_inhg")
@@ -128,11 +125,11 @@ class CalcDensityFragment : Fragment(R.layout.fragment_calc_density) {
             val pressureAltitude_ft = pressureAltitude
             var elevation = elev_ft + pressureAltitude
             if (elevationUnits == C.ELEV_M) {
-                pressureAltitude = ft2m(pressureAltitude)
-                elevation = ft2m(elevation)
+                pressureAltitude = Convert.ft2m(pressureAltitude)
+                elevation = Convert.ft2m(elevation)
             }
-            var strPA = formatDouble(pressureAltitude, 1)
-            var strElev = formatDouble(elevation, 1)
+            var strPA = Utils.formatDouble(pressureAltitude, 1)
+            var strElev = Utils.formatDouble(elevation, 1)
             if (pressureAltitude > 0.0) strPA = "+$strPA"
             bind.outPressureAltitude.setText("$strPA$units")
             if (inElev != 0.0) bind.outPressureAltitudeElev.setText("$strElev$units") else bind.outPressureAltitudeElev.setText("")
@@ -148,11 +145,11 @@ class CalcDensityFragment : Fragment(R.layout.fragment_calc_density) {
             var densityAltitude = (tsl / ro) * (1.0 - ((pressure_hpa / psl) / (temp_k / tsl)).pow((((g * M) / (ro * R)) - 1.0).pow(-1.0)))
             elevation = elev_m + densityAltitude
             if (elevationUnits == C.ELEV_FT) {
-                densityAltitude = m2ft(densityAltitude)
-                elevation = m2ft(elevation)
+                densityAltitude = Convert.m2ft(densityAltitude)
+                elevation = Convert.m2ft(elevation)
             }
-            var strDA = formatDouble(densityAltitude, 1)
-            strElev = formatDouble(elevation, 1)
+            var strDA = Utils.formatDouble(densityAltitude, 1)
+            strElev = Utils.formatDouble(elevation, 1)
             if (densityAltitude > 0.0) strDA = "+$strDA"
             bind.outDensityAltitude.setText("$strDA$units")
             if (inElev != 0.0) bind.outDensityAltitudeElev.setText("$strElev$units") else bind.outDensityAltitudeElev.setText("")
@@ -161,11 +158,11 @@ class CalcDensityFragment : Fragment(R.layout.fragment_calc_density) {
             var densityAltitudeNWS = 145442.16 * (1.0 - (17.326 * (pressure_inhg / (459.67 + temp_f))).pow(0.235))
             elevation = elev_ft + densityAltitudeNWS
             if (elevationUnits == C.ELEV_M) {
-                densityAltitudeNWS = ft2m(densityAltitudeNWS)
-                elevation = ft2m(elevation)
+                densityAltitudeNWS = Convert.ft2m(densityAltitudeNWS)
+                elevation = Convert.ft2m(elevation)
             }
-            strDA = formatDouble(densityAltitudeNWS, 1)
-            strElev = formatDouble(elevation, 1)
+            strDA = Utils.formatDouble(densityAltitudeNWS, 1)
+            strElev = Utils.formatDouble(elevation, 1)
             if (densityAltitudeNWS > 0.0) strDA = "+$strDA"
             bind.outDensityAltitudeNws.setText("$strDA$units")
             if (inElev != 0.0) bind.outDensityAltitudeNwsElev.setText("$strElev$units") else bind.outDensityAltitudeNwsElev.setText("")
@@ -174,11 +171,11 @@ class CalcDensityFragment : Fragment(R.layout.fragment_calc_density) {
             var densityAltitudeAprox = pressureAltitude_ft + 118.8 * (temp_c + pressureAltitude_ft / 500.0 - 15.0)
             elevation = elev_ft + densityAltitudeAprox
             if (elevationUnits == C.ELEV_M) {
-                densityAltitudeAprox = ft2m(densityAltitudeAprox)
-                elevation = ft2m(elevation)
+                densityAltitudeAprox = Convert.ft2m(densityAltitudeAprox)
+                elevation = Convert.ft2m(elevation)
             }
-            strDA = formatDouble(densityAltitudeAprox, 1)
-            strElev = formatDouble(elevation, 1)
+            strDA = Utils.formatDouble(densityAltitudeAprox, 1)
+            strElev = Utils.formatDouble(elevation, 1)
             if (densityAltitudeAprox > 0.0) strDA = "+$strDA"
             bind.outDensityAltitudeAprox.setText("$strDA$units")
             if (inElev != 0.0) bind.outDensityAltitudeAproxElev.setText("$strElev$units") else bind.outDensityAltitudeAproxElev.setText("")

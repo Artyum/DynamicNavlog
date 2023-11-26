@@ -12,7 +12,6 @@ import com.artyum.dynamicnavlog.databinding.FragmentAboutBinding
 class AboutFragment : Fragment(R.layout.fragment_about) {
     private var _binding: FragmentAboutBinding? = null
     private val bind get() = _binding!!
-    private lateinit var vm: GlobalViewModel
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         _binding = FragmentAboutBinding.inflate(inflater, container, false)
@@ -26,8 +25,7 @@ class AboutFragment : Fragment(R.layout.fragment_about) {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        vm = ViewModelProvider(requireActivity())[GlobalViewModel::class.java]
-        bind.aboutLayout.keepScreenOn = vm.options.value!!.keepScreenOn
+        bind.aboutLayout.keepScreenOn = State.options.keepScreenOn
         (activity as MainActivity).displayButtons()
 
         // Clickable links

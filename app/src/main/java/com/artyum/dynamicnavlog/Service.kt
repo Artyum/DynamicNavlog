@@ -2,6 +2,7 @@ package com.artyum.dynamicnavlog
 
 import android.app.Notification
 import android.app.PendingIntent
+import android.content.Context
 import android.content.Intent
 import android.os.IBinder
 import com.artyum.dynamicnavlog.App.Companion.CHANNEL_ID
@@ -31,5 +32,21 @@ class Service : android.app.Service() {
 
     override fun onBind(intent: Intent?): IBinder? {
         return null
+    }
+}
+
+object ServiceUtils {
+    fun startNavlogService(context: Context) {
+        if (!Vars.isServiceRunning) {
+            Vars.isServiceRunning = true
+            val serviceIntent = Intent(context, Service::class.java)
+            context.startService(serviceIntent)
+        }
+    }
+
+    fun stopNavlogService(context: Context) {
+        Vars.isServiceRunning = false
+        val serviceIntent = Intent(context, Service::class.java)
+        context.stopService(serviceIntent)
     }
 }

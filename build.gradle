@@ -1,6 +1,7 @@
 // Top-level build file where you can add configuration options common to all sub-projects/modules.
 buildscript {
-    ext.nav_version = "2.5.3"  // 2.3.5 working
+    //ext.nav_version = "2.5.3"  // 2.3.5 working
+    ext.nav_version = "2.7.5"
 
     repositories {
         google()

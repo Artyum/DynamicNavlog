@@ -9,15 +9,18 @@ import android.util.Log
 import android.view.View
 import android.widget.ImageView
 import androidx.core.content.res.ResourcesCompat
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.model.LatLng
 import kotlinx.coroutines.sync.Mutex
 import java.time.LocalDateTime
-import kotlin.math.*
+import kotlin.math.asin
+import kotlin.math.cos
+import kotlin.math.pow
+import kotlin.math.roundToInt
+import kotlin.math.roundToLong
+import kotlin.math.sin
 
-data class Settings(
+data class SettingsData(
     var planId: String = "",
     var planName: String = "",
     var departure: String = "",
@@ -32,7 +35,7 @@ data class Settings(
     var tfDisplayToggle: Int = C.TF_DISPLAY_REM,  // Switch to display time and fuel on the Navlog screen
 )
 
-data class NavlogItem(
+data class NavlogItemData(
     var dest: String,                     // Waypoint name
     var tt: Double? = null,               // True track
     var d: Double? = null,                // Declination
@@ -53,14 +56,14 @@ data class NavlogItem(
     var pos: LatLng? = null               // Waypoint coordinates
 )
 
-data class Radial(
+data class RadialData(
     var angle: Double,
     var dist: Double,
     var pos1: LatLng,
     var pos2: LatLng
 )
 
-data class Airplane(
+data class AirplaneData(
     var id: String = "",
     var type: String = "",
     var reg: String = "",
@@ -72,15 +75,15 @@ data class Airplane(
     var volUnits: Int = 0
 )
 
-data class Options(
+data class OptionsData(
     var spdUnits: Int = 0,
     var distUnits: Int = 0,
     var volUnits: Int = 0,
     var screenOrientation: Int = C.SCREEN_SENSOR,
     var timeInUTC: Boolean = false,
     var keepScreenOn: Boolean = false,
-    var autoTakeoffSpd: Double = kt2mps(40.0),      // Minimum speed for takeoff detection in m/s
-    var autoLandingSpd: Double = kt2mps(30.0),      // Maximum speed for landing detection in m/s
+    var autoTakeoffSpd: Double = Convert.kt2mps(40.0),      // Minimum speed for takeoff detection in m/s
+    var autoLandingSpd: Double = Convert.kt2mps(30.0),      // Maximum speed for landing detection in m/s
     var mapOrientation: Int = C.MAP_ORIENTATION_NORTH,
     var displayTrace: Boolean = true,
     var drawWindArrow: Boolean = true,
@@ -93,7 +96,12 @@ data class Options(
     var showHints: Boolean = true
 )
 
-data class Timers(
+data class ReleaseOptionsData(
+    val initializeAds: Boolean,
+    val startBillingClient: Boolean
+)
+
+data class TimersData(
     var offblock: LocalDateTime? = null,
     var takeoff: LocalDateTime? = null,
     var landing: LocalDateTime? = null,
@@ -115,13 +123,13 @@ data class GpsData(
     var isValid: Boolean = false
 )
 
-data class Totals(
+data class TotalsData(
     var dist: Double = 0.0,
     var time: Long = 0,
     var fuel: Double = 0.0
 )
 
-data class PlanListItem(
+data class PlanListItemData(
     var id: String,
     var planName: String
 )
@@ -135,14 +143,9 @@ data class FlightData(
     val dist: Double?
 )
 
-data class SinCosAngle(
+data class SinCosAngleData(
     val sina: Float,
     val cosa: Float
-)
-
-data class ReleaseOptions(
-    val initializeAds: Boolean,
-    val startBillingClient: Boolean
 )
 
 object C {
@@ -236,8 +239,8 @@ object C {
     const val SCREEN_SENSOR = 2              // Auto
 
     // Limit in free version
-    const val FREE_PURCHASE_DELAY_SEC = 6    // Time of the donate notice on app startup
-    //const val FREE_WPT_NUMBER_LIMIT = 10     // Limit of waypoints in free version (disabled)
+    const val FREE_PURCHASE_DELAY_SEC = 5    // Time of the donate notice on app startup
+    //const val FREE_WPT_NUMBER_LIMIT = 10   // Limit of waypoints in free version (disabled)
 
     // Flight stages
     const val STAGE_1_BEFORE_ENGINE_START = 1
@@ -257,361 +260,376 @@ object C {
     const val MAP_ITEM_TRACK = 0
     const val MAP_ITEM_RADIAL = 1
     const val RADIAL_RADIUS_M = 3000.0
+
+    // Next circle radius in NM
+    val nextRadiusList = arrayListOf(0.5, 1.0, 2.0)
 }
 
-class GlobalViewModel : ViewModel() {
-    var settings: MutableLiveData<Settings> = MutableLiveData()
-    var airplane: MutableLiveData<Airplane> = MutableLiveData()
-    var options: MutableLiveData<Options> = MutableLiveData()
-    var timers: MutableLiveData<Timers> = MutableLiveData()
-    var totals: MutableLiveData<Totals> = MutableLiveData()
+object State {
+    var settings = SettingsData()
+    var options = OptionsData()
+    var timers = TimersData()
+    var navlogList = ArrayList<NavlogItemData>()
+    var radialList = ArrayList<RadialData>()
+    var planList = ArrayList<PlanListItemData>()
+    var airplane = AirplaneData()
+    var totals = TotalsData()
+    var airplaneList = ArrayList<AirplaneData>()
+    var tracePointsList = ArrayList<LatLng>()
 }
 
-object G {
-    lateinit var vm: GlobalViewModel
+object Vars {
+    var appInit = true
+    var isServiceRunning = false
+    var isLocationSubscribed = false
+    var isAppPurchased = false
+    var globalRefresh = false   // Refresh home, navlog and map pages on flight stage or waypoint change
+    var gpsData = GpsData()
+    var gpsMutex = Mutex()      // Mutex for GPS location
 }
 
-var navlogList = ArrayList<NavlogItem>()
-var radialList = ArrayList<Radial>()
-var planList = ArrayList<PlanListItem>()
-var airplaneList = ArrayList<Airplane>()
-var tracePointsList = ArrayList<LatLng>()
+object ReleaseOption {
+    // Key in activity_main.xml
 
-val nextRadiusList = arrayListOf(0.5, 1.0, 2.0)  // Next circle radius in NM
+    //const val GOOGLE_PLAY_PRODUCT_ID = "ads_remove_test2"
+    //const val GOOGLE_PLAY_PRODUCT_ID = "ads_remove_test3"
+    //const val GOOGLE_PLAY_PRODUCT_ID = "ads_remove_test4"
+    //const val GOOGLE_PLAY_PRODUCT_ID = "ads_remove_test5"
+    //const val GOOGLE_PLAY_PRODUCT_ID = "ads_remove_test6" // Not purchased
+    //const val GOOGLE_PLAY_PRODUCT_ID = "not_exists"
 
-var serviceRunning = false
-var locationSubscribed = false
-var isAppPurchased = false
-
-var gpsData = GpsData()
-var gpsMutex = Mutex()
-
-var globalRefresh = false   // Refresh home, navlog and map pages on flight stage or waypoint change
-
-fun generateStringId(): String {
-    // No. of combinations
-    // 2 ->               1 891
-    // 3 ->              37 820
-    // 4 ->             557 845
-    // 5 ->           6 471 002
-    // 6 ->          61 474 519
-    // 7 ->         491 796 152
-    // 8 ->       3 381 098 545
-    // 9 ->      20 286 591 270
-    // 10 ->    107 518 933 731
-    // 15 -> 93 052 749 919 920
-    val charPool: List<Char> = ('a'..'z') + ('A'..'Z') + ('0'..'9')
-    val randomString = (1..10).map { _ -> kotlin.random.Random.nextInt(0, charPool.size) }.map(charPool::get).joinToString("");
-    Log.d("generateStringId", "New StringId: $randomString")
-    return randomString
+    // PROD
+    const val GOOGLE_PLAY_PRODUCT_ID = "dynamic_navlog_pro"
+    const val initializeAds = false
+    const val startBillingClient = true
 }
 
-fun roundDouble(value: Double, precision: Int): Double = (value * 10.0.pow(precision)).roundToLong() / 10.0.pow(precision)
-
-fun angleCalc(rad: Double): SinCosAngle {
-    return SinCosAngle(sin(rad).toFloat(), cos(rad).toFloat())
-}
-
-fun generateWindCircle(imgView: ImageView, resources: Resources, course: Double, windDir: Double, hdg: Double, speedRatio: Double) {
-    val bitmap = Bitmap.createBitmap(400, 400, Bitmap.Config.ARGB_8888)
-    val canvas = Canvas(bitmap)
-    val paint = Paint()
-    paint.isAntiAlias = true
-
-    val customTypeface = resources.getFont(R.font.hind_vadodara)
-    paint.typeface = customTypeface
-
-    //paint.typeface = Typeface.create(ResourcesCompat.getFont(this, R.font.sail), Typeface.NORMAL)
-    //paint.typeface = Typeface.create("Helvetica", Typeface.NORMAL)
-
-    val x = canvas.width / 2f
-    val y = canvas.height / 2f
-    val radius = 190f
-    val radiusCourse = radius * 0.5f
-    val radiusHdg = radiusCourse * speedRatio.toFloat()
-    val radiusArrow = radius * 0.2f
-    val radiusShort = radius * 0.9f
-    val angleArrow = 10f
-    val smallCircleRadius = 5f
-
-    var x1: Float
-    var x2: Float
-    var y1: Float
-    var y2: Float
-    var sc: SinCosAngle
-
-    paint.textSize = 25f
-    paint.style = Paint.Style.FILL
-    paint.strokeWidth = 1f
-
-    // HDG
-    paint.color = ResourcesCompat.getColor(resources, R.color.cyan, null)
-    canvas.drawText("HDG", 0f, 30f, paint)
-    canvas.drawText(hdg.roundToInt().toString(), 0f, 60f, paint)
-
-    // WIND
-    paint.color = ResourcesCompat.getColor(resources, R.color.blue, null)
-    canvas.drawText("WIND", 0f, 380f, paint)
-    canvas.drawText(windDir.roundToInt().toString(), 0f, 350f, paint)
-
-    // DTK
-    paint.color = ResourcesCompat.getColor(resources, R.color.magenta, null)
-    val textBounds = Rect()
-    var txt = "DTK"
-    paint.getTextBounds(txt, 0, txt.length, textBounds)
-    canvas.drawText(txt, (canvas.width - textBounds.width() - 3).toFloat(), 30f, paint)
-    txt = course.roundToInt().toString()
-    paint.getTextBounds(txt, 0, txt.length, textBounds)
-    canvas.drawText(txt, (canvas.width - textBounds.width() - 3).toFloat(), 60f, paint)
-
-    canvas.rotate(-hdg.toFloat(), x, y)
-
-    // Circle
-    paint.strokeWidth = 1f
-    paint.style = Paint.Style.STROKE
-    paint.color = ResourcesCompat.getColor(resources, R.color.gray, null)
-    canvas.drawCircle(x, y, radius, paint)
-    paint.style = Paint.Style.FILL
-
-    // Scale 5 deg
-    paint.strokeWidth = 1.5f
-    for (i in 0..72) {
-        sc = angleCalc(deg2rad(i * 5.0 - 90.0))
-        x1 = x + sc.cosa * radius
-        y1 = y + sc.sina * radius
-        x2 = x + sc.cosa * radiusShort * 1.04f
-        y2 = y + sc.sina * radiusShort * 1.04f
-        canvas.drawLine(x1, y1, x2, y2, paint)
+object Utils {
+    fun generateStringId(): String {
+        // No. of combinations
+        // 2 ->               1 891
+        // 3 ->              37 820
+        // 4 ->             557 845
+        // 5 ->           6 471 002
+        // 6 ->          61 474 519
+        // 7 ->         491 796 152
+        // 8 ->       3 381 098 545
+        // 9 ->      20 286 591 270
+        // 10 ->    107 518 933 731
+        // 15 -> 93 052 749 919 920
+        val charPool: List<Char> = ('a'..'z') + ('A'..'Z') + ('0'..'9')
+        val randomString = (1..10).map { _ -> kotlin.random.Random.nextInt(0, charPool.size) }.map(charPool::get).joinToString("");
+        Log.d("generateStringId", "New StringId: $randomString")
+        return randomString
     }
 
-    // Scale 10 deg
-    for (i in 0..36) {
-        sc = angleCalc(deg2rad(i * 10.0 - 90.0))
-        x1 = x + sc.cosa * radius
-        y1 = y + sc.sina * radius
-        x2 = x + sc.cosa * radiusShort
-        y2 = y + sc.sina * radiusShort
-        canvas.drawLine(x1, y1, x2, y2, paint)
-    }
+    fun generateWindCircle(imgView: ImageView, resources: Resources, course: Double, windDir: Double, hdg: Double, speedRatio: Double) {
+        val bitmap = Bitmap.createBitmap(400, 400, Bitmap.Config.ARGB_8888)
+        val canvas = Canvas(bitmap)
+        val paint = Paint()
+        paint.isAntiAlias = true
 
-    // NEWS
-    paint.strokeWidth = 1.5f
-    paint.textSize = 30f
-    paint.color = ResourcesCompat.getColor(resources, R.color.gray, null)
-    val news = arrayOf("N", "E", "S", "W")
-    x1 = x
-    y1 = radius * 0.25f
-    canvas.rotate(-90f, x, y)
-    for (i in 0..3) {
-        canvas.rotate(90f, x, y)
-        val txtBounds = Rect()
-        paint.getTextBounds(news[i], 0, news[i].length, txtBounds)
-        canvas.drawText(news[i], x1 - txtBounds.width() / 2f, y1 + txtBounds.height() / 2f, paint)
-    }
+        val customTypeface = resources.getFont(R.font.hind_vadodara)
+        paint.typeface = customTypeface
 
-    // Degrees
-    paint.textSize -= 5f
-    canvas.rotate(60f, x, y)
-    for (i in 0..11) {
-        canvas.rotate(30f, x, y)
-        if (i % 3 != 0) {
-            var num = (i * 30).toString()
-            num = (num.subSequence(0, num.length - 1)).toString()
+        //paint.typeface = Typeface.create(ResourcesCompat.getFont(this, R.font.sail), Typeface.NORMAL)
+        //paint.typeface = Typeface.create("Helvetica", Typeface.NORMAL)
+
+        val x = canvas.width / 2f
+        val y = canvas.height / 2f
+        val radius = 190f
+        val radiusCourse = radius * 0.5f
+        val radiusHdg = radiusCourse * speedRatio.toFloat()
+        val radiusArrow = radius * 0.2f
+        val radiusShort = radius * 0.9f
+        val angleArrow = 10f
+        val smallCircleRadius = 5f
+
+        var x1: Float
+        var x2: Float
+        var y1: Float
+        var y2: Float
+        var sc: SinCosAngleData
+
+        paint.textSize = 25f
+        paint.style = Paint.Style.FILL
+        paint.strokeWidth = 1f
+
+        // HDG
+        paint.color = ResourcesCompat.getColor(resources, R.color.cyan, null)
+        canvas.drawText("HDG", 0f, 30f, paint)
+        canvas.drawText(hdg.roundToInt().toString(), 0f, 60f, paint)
+
+        // WIND
+        paint.color = ResourcesCompat.getColor(resources, R.color.blue, null)
+        canvas.drawText("WIND", 0f, 380f, paint)
+        canvas.drawText(windDir.roundToInt().toString(), 0f, 350f, paint)
+
+        // DTK
+        paint.color = ResourcesCompat.getColor(resources, R.color.magenta, null)
+        val textBounds = Rect()
+        var txt = "DTK"
+        paint.getTextBounds(txt, 0, txt.length, textBounds)
+        canvas.drawText(txt, (canvas.width - textBounds.width() - 3).toFloat(), 30f, paint)
+        txt = course.roundToInt().toString()
+        paint.getTextBounds(txt, 0, txt.length, textBounds)
+        canvas.drawText(txt, (canvas.width - textBounds.width() - 3).toFloat(), 60f, paint)
+
+        canvas.rotate(-hdg.toFloat(), x, y)
+
+        // Circle
+        paint.strokeWidth = 1f
+        paint.style = Paint.Style.STROKE
+        paint.color = ResourcesCompat.getColor(resources, R.color.gray, null)
+        canvas.drawCircle(x, y, radius, paint)
+        paint.style = Paint.Style.FILL
+
+        // Scale 5 deg
+        paint.strokeWidth = 1.5f
+        for (i in 0..72) {
+            sc = angleCalc(Convert.deg2rad(i * 5.0 - 90.0))
+            x1 = x + sc.cosa * radius
+            y1 = y + sc.sina * radius
+            x2 = x + sc.cosa * radiusShort * 1.04f
+            y2 = y + sc.sina * radiusShort * 1.04f
+            canvas.drawLine(x1, y1, x2, y2, paint)
+        }
+
+        // Scale 10 deg
+        for (i in 0..36) {
+            sc = angleCalc(Convert.deg2rad(i * 10.0 - 90.0))
+            x1 = x + sc.cosa * radius
+            y1 = y + sc.sina * radius
+            x2 = x + sc.cosa * radiusShort
+            y2 = y + sc.sina * radiusShort
+            canvas.drawLine(x1, y1, x2, y2, paint)
+        }
+
+        // NEWS
+        paint.strokeWidth = 1.5f
+        paint.textSize = 30f
+        paint.color = ResourcesCompat.getColor(resources, R.color.gray, null)
+        val news = arrayOf("N", "E", "S", "W")
+        x1 = x
+        y1 = radius * 0.25f
+        canvas.rotate(-90f, x, y)
+        for (i in 0..3) {
+            canvas.rotate(90f, x, y)
             val txtBounds = Rect()
-            paint.getTextBounds(num, 0, num.length, txtBounds)
-            canvas.drawText(num, x1 - txtBounds.width() / 2f, y1 + txtBounds.height() / 2f, paint)
+            paint.getTextBounds(news[i], 0, news[i].length, txtBounds)
+            canvas.drawText(news[i], x1 - txtBounds.width() / 2f, y1 + txtBounds.height() / 2f, paint)
         }
+
+        // Degrees
+        paint.textSize -= 5f
+        canvas.rotate(60f, x, y)
+        for (i in 0..11) {
+            canvas.rotate(30f, x, y)
+            if (i % 3 != 0) {
+                var num = (i * 30).toString()
+                num = (num.subSequence(0, num.length - 1)).toString()
+                val txtBounds = Rect()
+                paint.getTextBounds(num, 0, num.length, txtBounds)
+                canvas.drawText(num, x1 - txtBounds.width() / 2f, y1 + txtBounds.height() / 2f, paint)
+            }
+        }
+
+        canvas.rotate(30f, x, y)
+        paint.strokeWidth = 3f
+
+        // Course
+        paint.color = ResourcesCompat.getColor(resources, R.color.magenta, null)
+        sc = angleCalc(Convert.deg2rad(course - 90f))
+        x2 = x + sc.cosa * radiusCourse
+        y2 = y + sc.sina * radiusCourse
+        canvas.drawLine(x, y, x2, y2, paint)
+        x1 = x + sc.cosa * radius
+        y1 = y + sc.sina * radius
+        paint.style = Paint.Style.STROKE
+        canvas.drawCircle(x1, y1, smallCircleRadius, paint)
+        paint.style = Paint.Style.FILL
+        sc = angleCalc(Convert.deg2rad(course - 90f - angleArrow))
+        x1 = x2 - sc.cosa * radiusArrow
+        y1 = y2 - sc.sina * radiusArrow
+        canvas.drawLine(x1, y1, x2, y2, paint)
+        sc = angleCalc(Convert.deg2rad(course - 90f + angleArrow))
+        x1 = x2 - sc.cosa * radiusArrow
+        y1 = y2 - sc.sina * radiusArrow
+        canvas.drawLine(x1, y1, x2, y2, paint)
+
+        // Heading
+        paint.color = ResourcesCompat.getColor(resources, R.color.cyan, null)
+        sc = angleCalc(Convert.deg2rad(hdg - 90.0))
+        x2 = x + sc.cosa * radiusHdg
+        y2 = y + sc.sina * radiusHdg
+        canvas.drawLine(x, y, x2, y2, paint)
+        x1 = x + sc.cosa * radius
+        y1 = y + sc.sina * radius
+        paint.style = Paint.Style.STROKE
+        canvas.drawCircle(x1, y1, smallCircleRadius, paint)
+        paint.style = Paint.Style.FILL
+        sc = angleCalc(Convert.deg2rad(hdg - 90f - angleArrow))
+        x1 = x2 - sc.cosa * radiusArrow
+        y1 = y2 - sc.sina * radiusArrow
+        canvas.drawLine(x1, y1, x2, y2, paint)
+        sc = angleCalc(Convert.deg2rad(hdg - 90f + angleArrow))
+        x1 = x2 - sc.cosa * radiusArrow
+        y1 = y2 - sc.sina * radiusArrow
+        canvas.drawLine(x1, y1, x2, y2, paint)
+
+        // Wind
+        paint.color = ResourcesCompat.getColor(resources, R.color.blue, null)
+        sc = angleCalc(Convert.deg2rad(windDir - 90f))
+        x1 = x + sc.cosa * radius
+        y1 = y + sc.sina * radius
+        x2 = x + sc.cosa * radiusCourse
+        y2 = y + sc.sina * radiusCourse
+        canvas.drawLine(x1, y1, x2, y2, paint)
+        sc = angleCalc(Convert.deg2rad(windDir - 90f - angleArrow))
+        x1 = x2 + sc.cosa * radiusArrow
+        y1 = y2 + sc.sina * radiusArrow
+        canvas.drawLine(x1, y1, x2, y2, paint)
+        sc = angleCalc(Convert.deg2rad(windDir - 90f + angleArrow))
+        x1 = x2 + sc.cosa * radiusArrow
+        y1 = y2 + sc.sina * radiusArrow
+        canvas.drawLine(x1, y1, x2, y2, paint)
+
+        imgView.setImageBitmap(bitmap)
+        imgView.visibility = View.VISIBLE
     }
 
-    canvas.rotate(30f, x, y)
-    paint.strokeWidth = 3f
+    fun generateWindArrow(imgView: ImageView, resources: Resources, bearing: Double) {
+        val bitmap = Bitmap.createBitmap(100, 100, Bitmap.Config.ARGB_8888)
+        val canvas = Canvas(bitmap)
+        val paint = Paint()
+        paint.isAntiAlias = true
 
-    // Course
-    paint.color = ResourcesCompat.getColor(resources, R.color.magenta, null)
-    sc = angleCalc(deg2rad(course - 90f))
-    x2 = x + sc.cosa * radiusCourse
-    y2 = y + sc.sina * radiusCourse
-    canvas.drawLine(x, y, x2, y2, paint)
-    x1 = x + sc.cosa * radius
-    y1 = y + sc.sina * radius
-    paint.style = Paint.Style.STROKE
-    canvas.drawCircle(x1, y1, smallCircleRadius, paint)
-    paint.style = Paint.Style.FILL
-    sc = angleCalc(deg2rad(course - 90f - angleArrow))
-    x1 = x2 - sc.cosa * radiusArrow
-    y1 = y2 - sc.sina * radiusArrow
-    canvas.drawLine(x1, y1, x2, y2, paint)
-    sc = angleCalc(deg2rad(course - 90f + angleArrow))
-    x1 = x2 - sc.cosa * radiusArrow
-    y1 = y2 - sc.sina * radiusArrow
-    canvas.drawLine(x1, y1, x2, y2, paint)
+        val customTypeface = resources.getFont(R.font.hind_vadodara)
+        paint.typeface = customTypeface
 
-    // Heading
-    paint.color = ResourcesCompat.getColor(resources, R.color.cyan, null)
-    sc = angleCalc(deg2rad(hdg - 90.0))
-    x2 = x + sc.cosa * radiusHdg
-    y2 = y + sc.sina * radiusHdg
-    canvas.drawLine(x, y, x2, y2, paint)
-    x1 = x + sc.cosa * radius
-    y1 = y + sc.sina * radius
-    paint.style = Paint.Style.STROKE
-    canvas.drawCircle(x1, y1, smallCircleRadius, paint)
-    paint.style = Paint.Style.FILL
-    sc = angleCalc(deg2rad(hdg - 90f - angleArrow))
-    x1 = x2 - sc.cosa * radiusArrow
-    y1 = y2 - sc.sina * radiusArrow
-    canvas.drawLine(x1, y1, x2, y2, paint)
-    sc = angleCalc(deg2rad(hdg - 90f + angleArrow))
-    x1 = x2 - sc.cosa * radiusArrow
-    y1 = y2 - sc.sina * radiusArrow
-    canvas.drawLine(x1, y1, x2, y2, paint)
+        // Center
+        val x = canvas.width / 2f
+        val y = canvas.height / 2f
 
-    // Wind
-    paint.color = ResourcesCompat.getColor(resources, R.color.blue, null)
-    sc = angleCalc(deg2rad(windDir - 90f))
-    x1 = x + sc.cosa * radius
-    y1 = y + sc.sina * radius
-    x2 = x + sc.cosa * radiusCourse
-    y2 = y + sc.sina * radiusCourse
-    canvas.drawLine(x1, y1, x2, y2, paint)
-    sc = angleCalc(deg2rad(windDir - 90f - angleArrow))
-    x1 = x2 + sc.cosa * radiusArrow
-    y1 = y2 + sc.sina * radiusArrow
-    canvas.drawLine(x1, y1, x2, y2, paint)
-    sc = angleCalc(deg2rad(windDir - 90f + angleArrow))
-    x1 = x2 + sc.cosa * radiusArrow
-    y1 = y2 + sc.sina * radiusArrow
-    canvas.drawLine(x1, y1, x2, y2, paint)
+        // Map bearing to canvas angle
+        val angle = -bearing - 90.0
 
-    imgView.setImageBitmap(bitmap)
-    imgView.visibility = View.VISIBLE
-}
+        val len = canvas.width / 2
+        val len2 = (canvas.width / 2.7).toFloat()
 
-fun generateWindArrow(imgView: ImageView, resources: Resources, bearing: Double) {
-    val bitmap = Bitmap.createBitmap(100, 100, Bitmap.Config.ARGB_8888)
-    val canvas = Canvas(bitmap)
-    val paint = Paint()
-    paint.isAntiAlias = true
+        paint.strokeWidth = 3f
+        paint.style = Paint.Style.FILL
+        paint.color = ResourcesCompat.getColor(resources, R.color.windArrow, null)
 
-    val customTypeface = resources.getFont(R.font.hind_vadodara)
-    paint.typeface = customTypeface
+        // Back line
+        var sc = angleCalc(Convert.deg2rad(angle))
+        var x1 = x + sc.cosa * len
+        var y1 = y + sc.sina * len
+        canvas.drawLine(x, y, x1, y1, paint)
 
-    // Center
-    val x = canvas.width / 2f
-    val y = canvas.height / 2f
+        // Front line
+        sc = angleCalc(Convert.deg2rad(angle + 180))
+        x1 = x + sc.cosa * len
+        y1 = y + sc.sina * len
+        canvas.drawLine(x, y, x1, y1, paint)
 
-    // Map bearing to canvas angle
-    val angle = -bearing - 90.0
+        // Arrow 1
+        sc = angleCalc(Convert.deg2rad(angle + 10))
+        val x2 = x1 + sc.cosa * len2
+        val y2 = y1 + sc.sina * len2
+        canvas.drawLine(x1, y1, x2, y2, paint)
 
-    val len = canvas.width / 2
-    val len2 = (canvas.width / 2.7).toFloat()
+        // Arrow 2
+        sc = angleCalc(Convert.deg2rad(angle - 10))
+        val x3 = x1 + sc.cosa * len2
+        val y3 = y1 + sc.sina * len2
+        canvas.drawLine(x2, y2, x3, y3, paint)
 
-    paint.strokeWidth = 3f
-    paint.style = Paint.Style.FILL
-    paint.color = ResourcesCompat.getColor(resources, R.color.windArrow, null)
+        imgView.setImageBitmap(bitmap)
+    }
 
-    // Back line
-    var sc: SinCosAngle = angleCalc(deg2rad(angle))
-    var x1 = x + sc.cosa * len
-    var y1 = y + sc.sina * len
-    canvas.drawLine(x, y, x1, y1, paint)
+    fun roundDouble(value: Double, precision: Int): Double = (value * 10.0.pow(precision)).roundToLong() / 10.0.pow(precision)
 
-    // Front line
-    sc = angleCalc(deg2rad(angle + 180))
-    x1 = x + sc.cosa * len
-    y1 = y + sc.sina * len
-    canvas.drawLine(x, y, x1, y1, paint)
+    private fun angleCalc(rad: Double): SinCosAngleData {
+        return SinCosAngleData(sin(rad).toFloat(), cos(rad).toFloat())
+    }
 
-    // Arrow 1
-    sc = angleCalc(deg2rad(angle + 10))
-    val x2 = x1 + sc.cosa * len2
-    val y2 = y1 + sc.sina * len2
-    canvas.drawLine(x1, y1, x2, y2, paint)
+    fun formatDouble(value: Double?, precision: Int = 0): String {
+        if (value == null || value.isNaN()) return ""
+        var tmp = if (precision == 0) value.roundToInt().toString() else Utils.roundDouble(value, precision).toString()
+        if (tmp.contains('.')) tmp = tmp.trimEnd('0').trimEnd('.')
+        return tmp
+    }
 
-    // Arrow 2
-    sc = angleCalc(deg2rad(angle - 10))
-    val x3 = x1 + sc.cosa * len2
-    val y3 = y1 + sc.sina * len2
-    canvas.drawLine(x2, y2, x3, y3, paint)
+    fun getDoubleOrNull(value: String?): Double? {
+        if (value == null) return null
+        var str = value.trim()
+        val regex = Regex("[^0-9.,-]")
+        str = regex.replace(str, "")
+        return str.replace(",", ".").toDoubleOrNull()
+    }
 
-    imgView.setImageBitmap(bitmap)
-}
+    fun clearString(str: String?): String {
+        return str?.trim() ?: ""
+    }
 
-fun flightCalculator(course: Double, windDir: Double, windSpd: Double, tas: Double, dist: Double? = null, fob: Double? = null, fph: Double? = null): FlightData {
-    val wtAngle = deg2rad(course - windDir + 180f)
-    val sinWca = windSpd * sin(wtAngle) / tas
+    fun flightCalculator(course: Double, windDir: Double, windSpd: Double, tas: Double, dist: Double? = null, fob: Double? = null, fph: Double? = null): FlightData {
+        val wtAngle = Convert.deg2rad(course - windDir + 180f)
+        val sinWca = windSpd * sin(wtAngle) / tas
 
-    // WCA
-    var wca = asin(sinWca)
+        // WCA
+        var wca = asin(sinWca)
 
-    // GS
-    val gs = tas * cos(wca) + windSpd * cos(wtAngle)
+        // GS
+        val gs = tas * cos(wca) + windSpd * cos(wtAngle)
 
-    // HDG
-    wca = rad2deg(wca)
-    val hdg = normalizeBearing(course + wca)
+        // HDG
+        wca = Convert.rad2deg(wca)
+        val hdg = GPSUtils.normalizeBearing(course + wca)
 
-    var time: Long? = null
-    var fuel: Double? = null
-    var dis: Double? = null
+        var time: Long? = null
+        var fuel: Double? = null
+        var dis: Double? = null
 
-    if (dist != null) {
-        // Time
-        time = (dist / gs * 3600.0).toLong()
-
-        // Fuel required
-        if (fph != null && fph > 0.0) {
-            fuel = dist / gs * fph
-        }
-    } else {
-        if (fob != null && fph != null && fph > 0.0) {
-            // Distance
-            val h = fob / fph
-            dis = gs * h
-
+        if (dist != null) {
             // Time
-            time = (h * 3600.0).toLong()
+            time = (dist / gs * 3600.0).toLong()
+
+            // Fuel required
+            if (fph != null && fph > 0.0) {
+                fuel = dist / gs * fph
+            }
+        } else {
+            if (fob != null && fph != null && fph > 0.0) {
+                // Distance
+                val h = fob / fph
+                dis = gs * h
+
+                // Time
+                time = (h * 3600.0).toLong()
+            }
         }
+
+        return FlightData(wca = wca, hdg = hdg, gs = gs, time = time, fuel = fuel, dist = dis)
     }
 
-    return FlightData(wca = wca, hdg = hdg, gs = gs, time = time, fuel = fuel, dist = dis)
-}
+    fun isFlightInProgress(): Boolean {
+        return NavLogUtils.isNavlogReady() && State.timers.takeoff != null && State.timers.landing == null
+    }
 
-fun isFlightInProgress(): Boolean {
-    return isNavlogReady() && G.vm.timers.value!!.takeoff != null && G.vm.timers.value!!.landing == null
-}
+    fun isEngineRunning(): Boolean {
+        return State.timers.offblock != null && State.timers.onblock == null
+    }
 
-fun isEngineRunning(): Boolean {
-    return G.vm.timers.value!!.offblock != null && G.vm.timers.value!!.onblock == null
-}
+    fun isSettingsReady(): Boolean {
+        return State.settings.airplaneId != "" && State.airplane.tas > State.settings.windSpd
+    }
 
-fun isSettingsReady(): Boolean {
-    return G.vm.settings.value!!.airplaneId != "" && G.vm.airplane.value!!.tas > G.vm.settings.value!!.windSpd
-}
+    fun isPlanEditDisabled(): Boolean {
+        return NavLogUtils.getFlightStage() > C.STAGE_1_BEFORE_ENGINE_START && State.options.blockPlanEdit
+    }
 
-fun isPlanEditDisabled(): Boolean {
-    return getFlightStage() > C.STAGE_1_BEFORE_ENGINE_START && G.vm.options.value!!.blockPlanEdit
-}
-
-fun formatDouble(value: Double?, precision: Int = 0): String {
-    if (value == null || value.isNaN()) return ""
-    var tmp = if (precision == 0) value.roundToInt().toString() else roundDouble(value, precision).toString()
-    if (tmp.contains('.')) tmp = tmp.trimEnd('0').trimEnd('.')
-    return tmp
-}
-
-fun getDoubleOrNull(value: String?): Double? {
-    if (value == null) return null
-    var str = value.trim()
-    val regex = Regex("[^0-9.,-]")
-    str = regex.replace(str, "")
-    return str.replace(",", ".").toDoubleOrNull()
-}
-
-fun clearString(str: String?): String {
-    return str?.trim() ?: ""
-}
-
-fun resetRadials() {
-    radialList.clear()
+    fun resetRadials() {
+        State.radialList.clear()
+    }
 }
