@@ -17,8 +17,7 @@ import com.artyum.dynamicnavlog.databinding.FragmentPlanlistBinding
 class PlanListFragment : Fragment(R.layout.fragment_planlist), PlanListAdapter.OnItemClickInterface {
     private var _binding: FragmentPlanlistBinding? = null
     private val bind get() = _binding!!
-    private val adapter = PlanListAdapter(planList, this)
-    private lateinit var vm: GlobalViewModel
+    private val adapter = PlanListAdapter(State.planList, this)
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         _binding = FragmentPlanlistBinding.inflate(inflater, container, false)
@@ -32,14 +31,13 @@ class PlanListFragment : Fragment(R.layout.fragment_planlist), PlanListAdapter.O
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        vm = ViewModelProvider(requireActivity())[GlobalViewModel::class.java]
-        bind.planListLayout.keepScreenOn = vm.options.value!!.keepScreenOn
+        bind.planListLayout.keepScreenOn = State.options.keepScreenOn
         (activity as MainActivity).displayButtons()
 
         // Search box
         bind.searchInput.doAfterTextChanged {
             val search = bind.searchInput.text.toString().trim()
-            loadFlightPlanList(search)
+            FileUtils.loadFlightPlanList(search)
             adapter.notifyDataSetChanged()
         }
 
@@ -51,12 +49,12 @@ class PlanListFragment : Fragment(R.layout.fragment_planlist), PlanListAdapter.O
         val itemTouchHelper = ItemTouchHelper(simpleCallback)
         itemTouchHelper.attachToRecyclerView(recyclerView)
 
-        loadFlightPlanList()
+        FileUtils.loadFlightPlanList()
     }
 
     // Open flight plan
     override fun onItemClick(position: Int) {
-        if (isEngineRunning()) {
+        if (Utils.isEngineRunning()) {
             val builder = AlertDialog.Builder(this.context)
             builder.setMessage(R.string.txtWarningFlightInProgressDialog)
                 .setCancelable(false)
@@ -81,27 +79,27 @@ class PlanListFragment : Fragment(R.layout.fragment_planlist), PlanListAdapter.O
 
         override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
             val pos = viewHolder.absoluteAdapterPosition
-            val fileName = planList[pos].id
+            val fileName = State.planList[pos].id
 
             // Delete json
-            deleteFile(fileName)
+            FileUtils.deleteFile(fileName)
             // Delete trk
-            deleteFile(fileName.replace(C.JSON_EXTENSION, C.TRK_EXTENSION, ignoreCase = true))
+            FileUtils.deleteFile(fileName.replace(C.JSON_EXTENSION, C.TRK_EXTENSION, ignoreCase = true))
 
-            planList.removeAt(pos)
+            State.planList.removeAt(pos)
             adapter.notifyItemRemoved(pos)
         }
     }
 
     private fun loadFLightPlan(i: Int) {
-        val fpn = planList[i].id
+        val fpn = State.planList[i].id
 
-        if (fpn != vm.settings.value!!.planId) {
-            loadState(planList[i].id)
-            calcNavlog()
+        if (fpn != State.settings.planId) {
+            FileUtils.loadState(State.planList[i].id)
+            NavLogUtils.calcNavlog()
         }
 
         (activity as MainActivity).resetFlight()
-        findNavController().navigate(SettingsFragmentDirections.actionGlobalSettingsFragment())
+        findNavController().navigate(R.id.action_global_settingsFragment)
     }
 }

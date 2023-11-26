@@ -7,7 +7,7 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 
 class PlanListAdapter(
-    private val planList: List<PlanListItem>,
+    private val planList: List<PlanListItemData>,
     private val listenerClick: OnItemClickInterface,
 ) : RecyclerView.Adapter<PlanListAdapter.PlanListViewHolder>() {
 
@@ -18,7 +18,7 @@ class PlanListAdapter(
 
     override fun onBindViewHolder(holder: PlanListViewHolder, position: Int) {
         holder.id.text = planList[position].id
-        holder.planName.text = getPlanNameFromJson(planList[position].id)
+        holder.planName.text = FileUtils.getPlanNameFromJson(planList[position].id)
     }
 
     override fun getItemCount(): Int = planList.size

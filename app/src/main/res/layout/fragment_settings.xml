@@ -253,17 +253,15 @@
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="30dp"
+                android:layout_marginTop="15dp"
                 android:orientation="horizontal">
 
                 <LinearLayout
                     android:id="@+id/boxFlightPlan"
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginEnd="5dp"
                     android:orientation="vertical"
                     app:layout_constraintLeft_toLeftOf="parent"
-                    app:layout_constraintRight_toLeftOf="@id/boxEndurance"
                     app:layout_constraintTop_toTopOf="parent">
 
                     <LinearLayout
@@ -284,8 +282,7 @@
                     </LinearLayout>
 
                     <TableLayout
-                        style="@style/sumTable"
-                        android:layout_gravity="center">
+                        style="@style/sumTable">
 
                         <TableRow style="@style/sumTableRow">
 
@@ -343,14 +340,14 @@
 
                 <LinearLayout
                     android:id="@+id/boxEndurance"
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
-                    android:layout_marginStart="5dp"
+                    android:layout_marginTop="10dp"
                     android:orientation="vertical"
-                    app:layout_constraintLeft_toRightOf="@id/boxFlightPlan"
+                    app:layout_constraintLeft_toLeftOf="parent"
                     app:layout_constraintRight_toRightOf="parent"
-                    app:layout_constraintTop_toTopOf="parent">
+                    app:layout_constraintTop_toBottomOf="@id/boxFlightPlan">
 
                     <LinearLayout
                         style="@style/dividerBox"

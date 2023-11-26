@@ -6,7 +6,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -14,15 +13,14 @@ import androidx.recyclerview.widget.RecyclerView
 import com.artyum.dynamicnavlog.databinding.FragmentNavlogBinding
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import java.util.*
+import java.util.Collections
 
 class NavlogFragment : Fragment(R.layout.fragment_navlog), NavlogAdapter.OnItemClickInterface, NavlogAdapter.OnItemLongClickInterface {
     private var _binding: FragmentNavlogBinding? = null
     private val bind get() = _binding!!
-    private val adapter = NavlogAdapter(navlogList, this, this)
+    private val adapter = NavlogAdapter(State.navlogList, this, this)
     private var isNavlogChanged: Boolean = false
-    private lateinit var vm: GlobalViewModel
-    
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         _binding = FragmentNavlogBinding.inflate(inflater, container, false)
         return bind.root
@@ -35,20 +33,19 @@ class NavlogFragment : Fragment(R.layout.fragment_navlog), NavlogAdapter.OnItemC
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        vm = ViewModelProvider(requireActivity())[GlobalViewModel::class.java]
-        bind.navlogLayout.keepScreenOn = vm.options.value!!.keepScreenOn
+        bind.navlogLayout.keepScreenOn = State.options.keepScreenOn
         (activity as MainActivity).displayButtons()
 
         // Current & Incrementally switch
         bind.btnDisplayToggle.setOnClickListener {
-            if (vm.settings.value!!.tfDisplayToggle == C.TF_DISPLAY_CUR) {
-                vm.settings.value!!.tfDisplayToggle = C.TF_DISPLAY_REM
+            if (State.settings.tfDisplayToggle == C.TF_DISPLAY_CUR) {
+                State.settings.tfDisplayToggle = C.TF_DISPLAY_REM
                 Toast.makeText(view.context, R.string.txtDisplayIncremental, Toast.LENGTH_SHORT).show()
             } else {
-                vm.settings.value!!.tfDisplayToggle = C.TF_DISPLAY_CUR
+                State.settings.tfDisplayToggle = C.TF_DISPLAY_CUR
                 Toast.makeText(view.context, R.string.txtDisplayCurrent, Toast.LENGTH_SHORT).show()
             }
-            calcNavlog(adapter)
+            NavLogUtils.calcNavlog(adapter)
         }
 
         val recyclerView = bind.navlogRecycler
@@ -56,7 +53,7 @@ class NavlogFragment : Fragment(R.layout.fragment_navlog), NavlogAdapter.OnItemC
         recyclerView.layoutManager = LinearLayoutManager(this.context)
 
         refreshBottomBar()
-        if (isNavlogReady()) recyclerView.scrollToPosition(getNavlogCurrentItemId())
+        if (NavLogUtils.isNavlogReady()) recyclerView.scrollToPosition(NavLogUtils.getNavlogCurrentItemId())
 
         // Helper on end drag item
         val itemTouchHelper = ItemTouchHelper(simpleCallback)
@@ -70,10 +67,10 @@ class NavlogFragment : Fragment(R.layout.fragment_navlog), NavlogAdapter.OnItemC
         override fun onMove(recyclerView: RecyclerView, viewHolder: RecyclerView.ViewHolder, target: RecyclerView.ViewHolder): Boolean {
             val startPosition = viewHolder.absoluteAdapterPosition
             val endPosition = target.absoluteAdapterPosition
-            val i = getNavlogCurrentItemId()
+            val i = NavLogUtils.getNavlogCurrentItemId()
 
             if (startPosition > i && endPosition > i && startPosition != endPosition) {
-                Collections.swap(navlogList, startPosition, endPosition)
+                Collections.swap(State.navlogList, startPosition, endPosition)
                 recyclerView.adapter?.notifyItemMoved(startPosition, endPosition)
                 isNavlogChanged = true
                 return true
@@ -90,8 +87,8 @@ class NavlogFragment : Fragment(R.layout.fragment_navlog), NavlogAdapter.OnItemC
             when (actionState) {
                 ItemTouchHelper.ACTION_STATE_IDLE -> {
                     if (isNavlogChanged) {
-                        calcNavlog(adapter)
-                        saveState()
+                        NavLogUtils.calcNavlog(adapter)
+                        FileUtils.saveState()
                         isNavlogChanged = false
                     }
                 }
@@ -108,21 +105,21 @@ class NavlogFragment : Fragment(R.layout.fragment_navlog), NavlogAdapter.OnItemC
     override fun onItemLongClick(position: Int) {}
 
     private fun refreshBottomBar() {
-        val p1 = if (vm.totals.value!!.dist < C.DIST_THRESHOLD) 1 else 0
-        val p2 = if (vm.totals.value!!.fuel < C.VOL_THRESHOLD) 1 else 0
-        val strDist = formatDouble(toUserUnitsDis(vm.totals.value!!.dist), p1) + " " + getUnitsDis()
-        val strFuel = formatDouble(toUserUnitsVol(vm.totals.value!!.fuel), p2) + " " + getUnitsVol()
+        val p1 = if (State.totals.dist < C.DIST_THRESHOLD) 1 else 0
+        val p2 = if (State.totals.fuel < C.VOL_THRESHOLD) 1 else 0
+        val strDist = Utils.formatDouble(Convert.toUserUnitsDis(State.totals.dist), p1) + " " + Convert.getUnitsDis()
+        val strFuel = Utils.formatDouble(Convert.toUserUnitsVol(State.totals.fuel), p2) + " " + Convert.getUnitsVol()
         bind.txtTotalDist.text = strDist
-        bind.txtTotalTime.text = formatSecondsToTime(vm.totals.value!!.time)
+        bind.txtTotalTime.text = TimeUtils.formatSecondsToTime(State.totals.time)
         bind.txtTotalFuel.text = strFuel
 
-        if (navlogList.size == 0) bind.btnDisplayToggle.visibility = View.GONE else bind.btnDisplayToggle.visibility = View.VISIBLE
+        if (State.navlogList.size == 0) bind.btnDisplayToggle.visibility = View.GONE else bind.btnDisplayToggle.visibility = View.VISIBLE
     }
 
     private suspend fun updateNavlogPageThread() {
         while (_binding != null) {
-            if (globalRefresh) {
-                globalRefresh = false
+            if (Vars.globalRefresh) {
+                Vars.globalRefresh = false
                 adapter.notifyDataSetChanged()
             }
             delay(1000)

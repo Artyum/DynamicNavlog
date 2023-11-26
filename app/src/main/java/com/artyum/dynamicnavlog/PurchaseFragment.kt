@@ -13,7 +13,6 @@ import com.artyum.dynamicnavlog.databinding.FragmentPurchaseBinding
 class PurchaseFragment : Fragment(R.layout.fragment_purchase) {
     private var _binding: FragmentPurchaseBinding? = null
     private val bind get() = _binding!!
-    private lateinit var vm: GlobalViewModel
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         _binding = FragmentPurchaseBinding.inflate(inflater, container, false)
@@ -27,8 +26,7 @@ class PurchaseFragment : Fragment(R.layout.fragment_purchase) {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        vm = ViewModelProvider(requireActivity())[GlobalViewModel::class.java]
-        bind.purchaseLayout.keepScreenOn = vm.options.value!!.keepScreenOn
+        bind.purchaseLayout.keepScreenOn = State.options.keepScreenOn
         (activity as MainActivity).displayButtons()
 
         bind.btnPurchase.setOnClickListener {
