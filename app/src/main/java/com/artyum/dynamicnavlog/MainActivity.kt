@@ -35,7 +35,6 @@ import com.google.android.gms.ads.AdView
 import com.google.android.gms.ads.LoadAdError
 import com.google.android.gms.ads.MobileAds
 import com.google.android.gms.maps.model.LatLng
-import com.google.android.material.button.MaterialButton
 import com.google.android.material.navigation.NavigationView
 import kotlinx.coroutines.CoroutineName
 import kotlinx.coroutines.CoroutineScope
@@ -47,8 +46,8 @@ import java.io.File
 
 class MainActivity : AppCompatActivity() {
     private val tag = "MainActivity"
-    private lateinit var bind: ActivityMainBinding
-    private lateinit var navController: NavController
+    lateinit var bind: ActivityMainBinding
+    lateinit var navController: NavController
     private lateinit var appBarConfiguration: AppBarConfiguration
     private lateinit var mAdView: AdView
 
@@ -121,7 +120,7 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
-        // LocationManager setup
+        // Setup LocationManager
         LocationManager.activity = this
 
         // Drawer menu
@@ -308,6 +307,15 @@ class MainActivity : AppCompatActivity() {
 
     override fun onSupportNavigateUp(): Boolean {
         return navController.navigateUp(appBarConfiguration) || super.onSupportNavigateUp()
+    }
+
+    // Set screen orientation
+    fun setScreenOrientation() {
+        when (State.options.screenOrientation) {
+            C.SCREEN_PORTRAIT -> requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
+            C.SCREEN_LANDSCAPE -> requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE
+            C.SCREEN_SENSOR -> requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_FULL_SENSOR
+        }
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
@@ -676,107 +684,12 @@ class MainActivity : AppCompatActivity() {
         Vars.globalRefresh = true
     }
 
-    fun displayButtons() {/*
-        Buttons structure
-        btnBox                // Main box with all buttons
-          - btnOffBlock
-          - btnTakeoff
-          - btnBoxPrevNext    // Box with Back/Next
-              - btnPrevWpt
-              - btnNextWpt
-              - btnNextLand
-          - btnLanding
-          - btnOnBlock
-        */
-
+    fun displayButtons() {
         // Hide all buttons
-        hideButtons()
-
+        ButtonManager.hide(bind)
         // Display buttons only on specific Fragments
         val currentFragment = navController.currentDestination.toString()
-        if (!currentFragment.contains("HomeFragment") and !currentFragment.contains("MapFragment")) return
-
-        val stage = NavLogUtils.getFlightStage()
-
-        if (stage == C.STAGE_1_BEFORE_ENGINE_START) {
-            if (NavLogUtils.isNavlogReady()) bind.btnOffBlock.visibility = View.VISIBLE
-        } else if (stage == C.STAGE_2_ENGINE_RUNNING) {
-            if (!SettingUtils.isAutoNextEnabled()) bind.btnTakeoff.visibility = View.VISIBLE
-        } else if (stage == C.STAGE_3_FLIGHT_IN_PROGRESS) {
-            if (!SettingUtils.isAutoNextEnabled()) {
-                val item = NavLogUtils.getNavlogCurrentItemId()
-                val first = NavLogUtils.getNavlogFirstActiveItemId()
-                val last = NavLogUtils.getNavlogLastActiveItemId()
-                bind.btnBoxPrevNext.visibility = View.VISIBLE
-                if (item < last) {
-                    if (item == first) disableBtnPrev() else enableBtnPrev()
-                    showBtnNext()
-                    hideBtnNextLand()
-                } else {
-                    hideBtnNext()
-                    enableBtnPrev()
-                    showBtnNextLand()
-                }
-            }
-        } else if (stage == C.STAGE_4_AFTER_LANDING) {
-            bind.btnOnBlock.visibility = View.VISIBLE
-        }
-    }
-
-    private fun hideButtons() {
-        bind.btnBoxPrevNext.visibility = View.GONE
-        bind.btnOffBlock.visibility = View.GONE
-        bind.btnTakeoff.visibility = View.GONE
-        bind.btnLanding.visibility = View.GONE
-        bind.btnOnBlock.visibility = View.GONE
-    }
-
-    private fun disableBtnPrev() {
-        bind.btnPrevWpt.isEnabled = false
-        (bind.btnPrevWpt as MaterialButton).setStrokeColorResource(R.color.grayTransparent)
-        (bind.btnPrevWpt as MaterialButton).setTextColor(bind.btnPrevWpt.context.getColor(R.color.grayTransparent))
-    }
-
-    private fun enableBtnPrev() {
-        bind.btnPrevWpt.isEnabled = true
-        (bind.btnPrevWpt as MaterialButton).setStrokeColorResource(R.color.colorPrimaryTransparent)
-        (bind.btnPrevWpt as MaterialButton).setTextColor(bind.btnPrevWpt.context.getColor(R.color.colorPrimaryTransparent))
-    }
-
-    private fun disableBtnNext() {
-        bind.btnNextWpt.isEnabled = false
-        (bind.btnNextWpt as MaterialButton).background.setTint(bind.btnNextWpt.context.getColor(R.color.grayTransparent2))
-    }
-
-    private fun enableBtnNext() {
-        bind.btnNextWpt.isEnabled = true
-        (bind.btnNextWpt as MaterialButton).background.setTint(bind.btnNextWpt.context.getColor(R.color.colorPrimaryTransparent))
-    }
-
-    private fun hideBtnNext() {
-        bind.btnNextWpt.visibility = View.GONE
-        disableBtnNext()
-    }
-
-    private fun showBtnNext() {
-        bind.btnNextWpt.visibility = View.VISIBLE
-        enableBtnNext()
-    }
-
-    private fun showBtnNextLand() {
-        bind.btnNextLand.visibility = View.VISIBLE
-    }
-
-    private fun hideBtnNextLand() {
-        bind.btnNextLand.visibility = View.GONE
-    }
-
-    fun setScreenOrientation() {
-        when (State.options.screenOrientation) {
-            C.SCREEN_PORTRAIT -> requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
-            C.SCREEN_LANDSCAPE -> requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE
-            C.SCREEN_SENSOR -> requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_FULL_SENSOR
-        }
+        if (currentFragment.contains("HomeFragment") or currentFragment.contains("MapFragment")) ButtonManager.display(bind)
     }
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {

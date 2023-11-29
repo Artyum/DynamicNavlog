@@ -20,7 +20,6 @@ class SettingsFragment : Fragment(R.layout.fragment_settings) {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         Log.d("SettingsFragment", "onCreate")
-        //super.onCreate(savedInstanceState)
         super.onCreate(null)
     }
 
@@ -38,7 +37,6 @@ class SettingsFragment : Fragment(R.layout.fragment_settings) {
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
-        // Do not save fragment sate to prevent restoring previous data on entering the fragment
         super.onSaveInstanceState(outState)
         Log.d("SettingsFragment", "onSaveInstanceState")
     }

@@ -8,9 +8,17 @@ import android.graphics.Rect
 import android.util.Log
 import android.view.View
 import android.widget.ImageView
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.res.ResourcesCompat
+import androidx.navigation.NavController
+import androidx.navigation.findNavController
+import com.artyum.dynamicnavlog.databinding.ActivityMainBinding
+import com.google.android.gms.location.FusedLocationProviderClient
+import com.google.android.gms.location.LocationCallback
+import com.google.android.gms.location.LocationRequest
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.model.LatLng
+import com.google.android.material.button.MaterialButton
 import kotlinx.coroutines.sync.Mutex
 import java.time.LocalDateTime
 import kotlin.math.asin
@@ -262,7 +270,7 @@ object C {
     const val RADIAL_RADIUS_M = 3000.0
 
     // Next circle radius in NM
-    val nextRadiusList = arrayListOf(0.5, 1.0, 2.0)
+    val nextRadiusList = arrayListOf(0.01, 0.5, 1.0, 2.0)
 }
 
 object State {
@@ -631,5 +639,95 @@ object Utils {
 
     fun resetRadials() {
         State.radialList.clear()
+    }
+}
+
+object ButtonManager {
+    fun display(bind: ActivityMainBinding) {
+        /*
+        Buttons structure
+        btnBox                // Main box with all buttons
+          - btnOffBlock
+          - btnTakeoff
+          - btnBoxPrevNext    // Box with Back/Next
+              - btnPrevWpt
+              - btnNextWpt
+              - btnNextLand
+          - btnLanding
+          - btnOnBlock
+        */
+        val stage = NavLogUtils.getFlightStage()
+
+        if (stage == C.STAGE_1_BEFORE_ENGINE_START) {
+            if (NavLogUtils.isNavlogReady()) bind.btnOffBlock.visibility = View.VISIBLE
+        } else if (stage == C.STAGE_2_ENGINE_RUNNING) {
+            if (!SettingUtils.isAutoNextEnabled()) bind.btnTakeoff.visibility = View.VISIBLE
+        } else if (stage == C.STAGE_3_FLIGHT_IN_PROGRESS) {
+            if (!SettingUtils.isAutoNextEnabled()) {
+                val item = NavLogUtils.getNavlogCurrentItemId()
+                val first = NavLogUtils.getNavlogFirstActiveItemId()
+                val last = NavLogUtils.getNavlogLastActiveItemId()
+                bind.btnBoxPrevNext.visibility = View.VISIBLE
+                if (item < last) {
+                    if (item == first) disableBtnPrev(bind) else enableBtnPrev(bind)
+                    showBtnNext(bind)
+                    hideBtnNextLand(bind)
+                } else {
+                    hideBtnNext(bind)
+                    enableBtnPrev(bind)
+                    showBtnNextLand(bind)
+                }
+            }
+        } else if (stage == C.STAGE_4_AFTER_LANDING) {
+            bind.btnOnBlock.visibility = View.VISIBLE
+        }
+    }
+
+    fun hide(bind: ActivityMainBinding) {
+        bind.btnBoxPrevNext.visibility = View.GONE
+        bind.btnOffBlock.visibility = View.GONE
+        bind.btnTakeoff.visibility = View.GONE
+        bind.btnLanding.visibility = View.GONE
+        bind.btnOnBlock.visibility = View.GONE
+    }
+
+    private fun disableBtnPrev(bind: ActivityMainBinding) {
+        bind.btnPrevWpt.isEnabled = false
+        (bind.btnPrevWpt as MaterialButton).setStrokeColorResource(R.color.grayTransparent)
+        (bind.btnPrevWpt as MaterialButton).setTextColor(bind.btnPrevWpt.context.getColor(R.color.grayTransparent))
+    }
+
+    private fun enableBtnPrev(bind: ActivityMainBinding) {
+        bind.btnPrevWpt.isEnabled = true
+        (bind.btnPrevWpt as MaterialButton).setStrokeColorResource(R.color.colorPrimaryTransparent)
+        (bind.btnPrevWpt as MaterialButton).setTextColor(bind.btnPrevWpt.context.getColor(R.color.colorPrimaryTransparent))
+    }
+
+    private fun disableBtnNext(bind: ActivityMainBinding) {
+        bind.btnNextWpt.isEnabled = false
+        (bind.btnNextWpt as MaterialButton).background.setTint(bind.btnNextWpt.context.getColor(R.color.grayTransparent2))
+    }
+
+    private fun enableBtnNext(bind: ActivityMainBinding) {
+        bind.btnNextWpt.isEnabled = true
+        (bind.btnNextWpt as MaterialButton).background.setTint(bind.btnNextWpt.context.getColor(R.color.colorPrimaryTransparent))
+    }
+
+    private fun hideBtnNext(bind: ActivityMainBinding) {
+        bind.btnNextWpt.visibility = View.GONE
+        disableBtnNext(bind)
+    }
+
+    private fun showBtnNext(bind: ActivityMainBinding) {
+        bind.btnNextWpt.visibility = View.VISIBLE
+        enableBtnNext(bind)
+    }
+
+    private fun showBtnNextLand(bind: ActivityMainBinding) {
+        bind.btnNextLand.visibility = View.VISIBLE
+    }
+
+    private fun hideBtnNextLand(bind: ActivityMainBinding) {
+        bind.btnNextLand.visibility = View.GONE
     }
 }

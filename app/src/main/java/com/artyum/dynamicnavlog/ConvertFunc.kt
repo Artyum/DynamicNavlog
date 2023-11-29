@@ -127,7 +127,7 @@ object Convert {
         }
     }
 
-// Convert from user to internal units -> kt / nm / l / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / /
+    // Convert from user to internal units -> kt / nm / l / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / /
 
     fun fromUserUnitsSpd(v: Double?): Double? {
         if (v == null) return null

@@ -1,5 +1,6 @@
 package com.artyum.dynamicnavlog
 
+import android.content.pm.ActivityInfo
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -30,13 +31,12 @@ class OptionsFragment : Fragment(R.layout.fragment_options) {
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
-        // Do not save fragment sate to prevent restoring previous data on entering the fragment
-        //super.onSaveInstanceState(outState)
+        super.onSaveInstanceState(outState)
         Log.d("OptionsFragment", "onSaveInstanceState")
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
+        super.onViewCreated(view, null)
         bind.optionsLayout.keepScreenOn = State.options.keepScreenOn
         (activity as MainActivity).displayButtons()
 
@@ -263,7 +263,7 @@ class OptionsFragment : Fragment(R.layout.fragment_options) {
         unitsSpdList.add("Kilometers/h (kph)")    // 2
         bind.spinnerUnitsSpd.adapter = ArrayAdapter(this.requireContext(), R.layout.support_simple_spinner_dropdown_item, unitsSpdList)
 
-        // Spinner - Speed units
+        // Spinner - Distance units
         val unitsDistList = ArrayList<String>()
         unitsDistList.add("Nautical miles (nm)")  // 0
         unitsDistList.add("Statute miles (sm)")   // 1
@@ -294,7 +294,7 @@ class OptionsFragment : Fragment(R.layout.fragment_options) {
         // Switch - Auto-next radius
         val nextRadiusOptions = ArrayList<String>()
         for (i in C.nextRadiusList.indices) {
-            val r = Utils.formatDouble(Convert.toUserUnitsDis(C.nextRadiusList[i]), 1) + " " + Convert.getUnitsDis()
+            val r = Utils.formatDouble(Convert.toUserUnitsDis(C.nextRadiusList[i]), 3) + " " + Convert.getUnitsDis()
             nextRadiusOptions.add(r)
         }
         bind.spinnerNextRadius.adapter = ArrayAdapter(this.requireContext(), R.layout.support_simple_spinner_dropdown_item, nextRadiusOptions)

@@ -77,11 +77,13 @@ class MapFragment : Fragment(R.layout.fragment_map) {
         bind.mapLayout.keepScreenOn = State.options.keepScreenOn
         (activity as MainActivity).displayButtons()
 
-        val con = (activity as MainActivity).applicationContext
+        val context = (activity as MainActivity).applicationContext
         val mapFragment = childFragmentManager.findFragmentById(R.id.mapFragment) as SupportMapFragment
         val mapFragmentHidden = childFragmentManager.findFragmentById(R.id.mapFragmentHidden) as SupportMapFragment
 
-        if (ActivityCompat.checkSelfPermission(con, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+        val aip = OpenAIP()
+
+        if (ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions((activity as MainActivity), arrayOf(Manifest.permission.ACCESS_FINE_LOCATION), C.LOCATION_PERMISSION_REQ_CODE)
         } else {
             mapFragmentHidden.getMapAsync {
@@ -181,7 +183,7 @@ class MapFragment : Fragment(R.layout.fragment_map) {
                 }
 
                 // Draw wind arrow on map move
-                map.setOnCameraMoveListener { drawWindArrow() }
+                if (_binding!=null) map.setOnCameraMoveListener { drawWindArrow() }
 
                 mapReady = true
 
@@ -355,7 +357,7 @@ class MapFragment : Fragment(R.layout.fragment_map) {
     private fun drawWindArrow() {
         if (!mapReady) return
         if (!State.options.drawWindArrow) return
-        Utils.generateWindArrow(bind.mapWindIndicator, resources, GPSUtils.normalizeBearing(map.cameraPosition.bearing - State.settings.windDir + GPSUtils.getDeclination(map.cameraPosition.target)))
+        if (_binding != null) Utils.generateWindArrow(bind.mapWindIndicator, resources, GPSUtils.normalizeBearing(map.cameraPosition.bearing - State.settings.windDir + GPSUtils.getDeclination(map.cameraPosition.target)))
     }
 
     private fun drawRadials() {
