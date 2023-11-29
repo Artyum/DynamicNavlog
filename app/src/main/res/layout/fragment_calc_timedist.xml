@@ -21,6 +21,7 @@
 
             <TextView
                 style="@style/globalCaption"
+                android:layout_marginTop="0dp"
                 android:text="@string/txtTimeAndDistance" />
 
             <androidx.constraintlayout.widget.ConstraintLayout
