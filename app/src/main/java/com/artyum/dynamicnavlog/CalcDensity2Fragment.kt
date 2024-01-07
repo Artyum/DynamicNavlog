@@ -32,7 +32,7 @@ class CalcDensity2Fragment : Fragment(R.layout.fragment_calc_density2) {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        bind.density2Layout.keepScreenOn = G.vm.options.value!!.keepScreenOn
+        bind.density2Layout.keepScreenOn = State.options.keepScreenOn
         (activity as MainActivity).displayButtons()
 
         bind.btnCalculate.setOnClickListener {
@@ -75,21 +75,21 @@ class CalcDensity2Fragment : Fragment(R.layout.fragment_calc_density2) {
     }
 
     private fun densityCalculate() {
-        val inAirTemp = getDoubleOrNull(bind.edtDensityAirTemperature.text.toString())
+        val inAirTemp = Utils.getDoubleOrNull(bind.edtDensityAirTemperature.text.toString())
         val air_f: Double
         val air_c: Double
         val air_k: Double
 
-        val inDewpoint = getDoubleOrNull(bind.edtDensityDewpoint.text.toString())
+        val inDewpoint = Utils.getDoubleOrNull(bind.edtDensityDewpoint.text.toString())
         val dewpoint_f: Double
         val dewpoint_c: Double
         //var dewpoint_k: Double
 
-        val inPressure = getDoubleOrNull(bind.edtDensityAltimeter.text.toString())
+        val inPressure = Utils.getDoubleOrNull(bind.edtDensityAltimeter.text.toString())
         val pressure_inhg: Double
         val pressure_hpa: Double
 
-        var inElev = getDoubleOrNull(bind.edtDensityElevation.text.toString())
+        var inElev = Utils.getDoubleOrNull(bind.edtDensityElevation.text.toString())
         if (inElev == null) {
             inElev = 0.0
             bind.edtDensityElevation.setText("0")
@@ -101,17 +101,17 @@ class CalcDensity2Fragment : Fragment(R.layout.fragment_calc_density2) {
             // Air temperature units
             if (airTempUnits == C.TEMP_F) {
                 air_f = inAirTemp
-                air_c = f2c(air_f)
+                air_c = Units.f2c(air_f)
             } else {
                 air_c = inAirTemp
                 //air_f = c2f(air_c)
             }
-            air_k = c2k(air_c)
+            air_k = Units.c2k(air_c)
 
             // Dewpoint units
             if (dewpointUnits == C.TEMP_F) {
                 dewpoint_f = inDewpoint
-                dewpoint_c = f2c(dewpoint_f)
+                dewpoint_c = Units.f2c(dewpoint_f)
             } else {
                 dewpoint_c = inDewpoint
                 //dewpoint_f = c2f(dewpoint_c)
@@ -121,7 +121,7 @@ class CalcDensity2Fragment : Fragment(R.layout.fragment_calc_density2) {
             // Pressure units
             if (pressureUnits == C.PRESSURE_INHG) {
                 pressure_inhg = inPressure
-                pressure_hpa = inhg2hpa(pressure_inhg)
+                pressure_hpa = Units.inhg2hpa(pressure_inhg)
             } else {
                 pressure_hpa = inPressure
                 //pressure_inhg = hpa2inhg(pressure_hpa)
@@ -130,7 +130,7 @@ class CalcDensity2Fragment : Fragment(R.layout.fragment_calc_density2) {
             // Elevation units
             if (elevationUnits == C.ELEV_FT) {
                 elev_ft = inElev
-                elev_m = ft2m(elev_ft)
+                elev_m = Units.ft2m(elev_ft)
             } else {
                 elev_m = inElev
                 //elev_ft = m2ft(elev_m)
@@ -184,28 +184,28 @@ class CalcDensity2Fragment : Fragment(R.layout.fragment_calc_density2) {
                 val h = 44.3308 - 42.2665 * (ad.pow(0.234696))
 
                 // Output
-                bind.outRelativeHumidity.text = formatDouble(rh * 100, 1)
+                bind.outRelativeHumidity.text = Utils.formatDouble(rh * 100, 1)
                 bind.outRelativeHumidityUnits.text = "%"
 
-                bind.outAirDensity.text = formatDouble(ad, 3)
+                bind.outAirDensity.text = Utils.formatDouble(ad, 3)
                 bind.outAirDensityUnits.text = "kg/m³"
 
-                bind.outRelativeDensity.text = formatDouble(rd * 100, 1)
+                bind.outRelativeDensity.text = Utils.formatDouble(rd * 100, 1)
                 bind.outRelativeDensityUnits.text = "%"
 
                 if (pressureUnits == C.PRESSURE_INHG) {
-                    bind.outAbsolutePressure.text = formatDouble(hpa2inhg(pd), 2)
+                    bind.outAbsolutePressure.text = Utils.formatDouble(Units.hpa2inhg(pd), 2)
                     bind.outAbsolutePressureUnits.text = "inHG"
                 } else {
-                    bind.outAbsolutePressure.text = formatDouble(pd, 2)
+                    bind.outAbsolutePressure.text = Utils.formatDouble(pd, 2)
                     bind.outAbsolutePressureUnits.text = "HPa"
                 }
 
                 if (elevationUnits == C.ELEV_FT) {
-                    bind.outDensityAltitude.text = formatDouble(km2ft(h), 2)
+                    bind.outDensityAltitude.text = Utils.formatDouble(Units.km2ft(h), 2)
                     bind.outDensityAltitudeUnits.text = "ft"
                 } else {
-                    bind.outDensityAltitude.text = formatDouble(km2m(h), 2)
+                    bind.outDensityAltitude.text = Utils.formatDouble(Units.km2m(h), 2)
                     bind.outDensityAltitudeUnits.text = "m"
                 }
             } else {

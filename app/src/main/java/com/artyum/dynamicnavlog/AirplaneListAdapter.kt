@@ -7,7 +7,7 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 
 class AirplaneListAdapter(
-    private val airplaneList: List<Airplane>,
+    private val airplaneList: List<AirplaneData>,
     private val listenerClick: OnItemClickInterface
 ) : RecyclerView.Adapter<AirplaneListAdapter.AirplaneListViewHolder>() {
 

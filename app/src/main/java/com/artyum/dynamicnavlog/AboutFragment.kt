@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.ViewModelProvider
 import com.artyum.dynamicnavlog.databinding.FragmentAboutBinding
 
 class AboutFragment : Fragment(R.layout.fragment_about) {
@@ -24,8 +25,11 @@ class AboutFragment : Fragment(R.layout.fragment_about) {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        bind.aboutLayout.keepScreenOn = G.vm.options.value!!.keepScreenOn
+        bind.aboutLayout.keepScreenOn = State.options.keepScreenOn
         (activity as MainActivity).displayButtons()
+
+        // Set version number
+        bind.appVersion.text = C.appVersion
 
         // Clickable links
         bind.linkManual.movementMethod = LinkMovementMethod.getInstance()

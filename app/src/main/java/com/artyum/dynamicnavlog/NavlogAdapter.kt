@@ -8,9 +8,7 @@ import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 
 class NavlogAdapter(
-    private val navlogList: List<NavlogItem>,
-    private val listenerClick: OnItemClickInterface,
-    private val listenerLongClick: OnItemLongClickInterface
+    private val navlogList: List<NavlogItemData>, private val listenerClick: OnItemClickInterface, private val listenerLongClick: OnItemLongClickInterface
 ) : RecyclerView.Adapter<NavlogAdapter.NavlogViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): NavlogViewHolder {
@@ -25,50 +23,50 @@ class NavlogAdapter(
         holder.tvDest.text = item.dest
 
         // TT
-        holder.tvTt.text = formatDouble(item.tt)
+        holder.tvTt.text = Utils.formatDouble(item.tt)
 
         // d
         var tmp = ""
         if (item.d != null) {
-            tmp = if (item.d!! < 0.0) formatDouble(-item.d!!) + C.SIGN_EAST
-            else formatDouble(item.d) + C.SIGN_WEST
+            tmp = if (item.d!! < 0.0) Utils.formatDouble(-item.d!!) + C.SIGN_EAST
+            else Utils.formatDouble(item.d) + C.SIGN_WEST
         }
         holder.tvDec.text = tmp
 
         // MT
-        holder.tvMt.text = formatDouble(item.mt)
+        holder.tvMt.text = Utils.formatDouble(item.mt)
 
         // DIST
         tmp = ""
         if (item.dist != null) {
             val p = if (item.dist!! < C.DIST_THRESHOLD) 1 else 0
-            tmp = formatDouble(toUserUnitsDis(item.dist), p)
+            tmp = Utils.formatDouble(Units.toUserUnitsDis(item.dist), p)
         }
         holder.tvDist.text = tmp
 
         if (item.active) {
             //WCA
-            holder.tvWca.text = formatDouble(item.wca)
+            holder.tvWca.text = Utils.formatDouble(item.wca)
 
             //HDG
-            holder.tvHdg.text = formatDouble(item.hdg)
+            holder.tvHdg.text = Utils.formatDouble(item.hdg)
 
             //GS
-            holder.tvGs.text = formatDouble(toUserUnitsSpd(item.gs))
+            holder.tvGs.text = Utils.formatDouble(Units.toUserUnitsSpd(item.gs))
 
             // TIME
-            if (G.vm.settings.value!!.tfDisplayToggle == C.TF_DISPLAY_CUR) holder.tvTime.text = formatSecondsToTime(item.time)
-            else holder.tvTime.text = formatSecondsToTime(item.timeIncrement)
+            if (State.settings.tfDisplayToggle == C.TF_DISPLAY_CUR) holder.tvTime.text = TimeUtils.formatSecondsToTime(item.time)
+            else holder.tvTime.text = TimeUtils.formatSecondsToTime(item.timeIncrement)
 
             // ETA / ATA
-            holder.tvEta.text = formatDateTime(item.eta, C.FORMAT_TIME)
-            holder.tvAta.text = formatDateTime(item.ata, C.FORMAT_TIME)
+            holder.tvEta.text = TimeUtils.formatDateTime(item.eta, C.FORMAT_TIME)
+            holder.tvAta.text = TimeUtils.formatDateTime(item.ata, C.FORMAT_TIME)
 
             // Fuel
             val p1 = if (item.fuel != null && item.fuel!! < C.VOL_THRESHOLD) 1 else 0
             val p2 = if (item.fuelRemaining != null && item.fuelRemaining!! < C.VOL_THRESHOLD) 1 else 0
-            if (G.vm.settings.value!!.tfDisplayToggle == C.TF_DISPLAY_CUR) holder.tvFuel.text = formatDouble(toUserUnitsVol(item.fuel), p1)
-            else holder.tvFuel.text = formatDouble(toUserUnitsVol(item.fuelRemaining), p2)
+            if (State.settings.tfDisplayToggle == C.TF_DISPLAY_CUR) holder.tvFuel.text = Utils.formatDouble(Units.toUserUnitsVol(item.fuel), p1)
+            else holder.tvFuel.text = Utils.formatDouble(Units.toUserUnitsVol(item.fuelRemaining), p2)
         } else {
             holder.tvWca.text = ""
             holder.tvHdg.text = ""
@@ -83,16 +81,18 @@ class NavlogAdapter(
             item.current -> {
                 setColor(holder, item, R.color.colorSecondary)
             }
+
             position % 2 == 0 -> {
                 setColor(holder, item, R.color.color1)
             }
+
             else -> {
                 setColor(holder, item, R.color.color2)
             }
         }
     }
 
-    private fun setColor(holder: NavlogViewHolder, item: NavlogItem, color: Int) {
+    private fun setColor(holder: NavlogViewHolder, item: NavlogItemData, color: Int) {
         if (item.active) {
             val col = R.color.black
             setContextColor(holder.tvDest, col)

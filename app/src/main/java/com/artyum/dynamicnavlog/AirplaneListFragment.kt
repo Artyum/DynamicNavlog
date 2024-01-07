@@ -17,7 +17,7 @@ import com.artyum.dynamicnavlog.databinding.FragmentAirplanelistBinding
 class AirplaneListFragment : Fragment(R.layout.fragment_airplanelist), AirplaneListAdapter.OnItemClickInterface {
     private var _binding: FragmentAirplanelistBinding? = null
     private val bind get() = _binding!!
-    private var adapterList = ArrayList<Airplane>()
+    private var adapterList = ArrayList<AirplaneData>()
     private var adapter = AirplaneListAdapter(adapterList, this)
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
@@ -32,13 +32,13 @@ class AirplaneListFragment : Fragment(R.layout.fragment_airplanelist), AirplaneL
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        bind.airplaneListLayout.keepScreenOn = G.vm.options.value!!.keepScreenOn
+        bind.airplaneListLayout.keepScreenOn = State.options.keepScreenOn
         (activity as MainActivity).displayButtons()
 
         // Add airplane
         bind.addAirplane.setOnClickListener {
             setFragmentResult("requestKey", bundleOf("airplaneId" to ""))
-            findNavController().navigate(AirplaneListFragmentDirections.actionAirplaneListFragmentToAirplaneFragment())
+            findNavController().navigate(R.id.action_airplaneListFragment_to_airplaneFragment)
         }
 
         // Search box
@@ -73,32 +73,32 @@ class AirplaneListFragment : Fragment(R.layout.fragment_airplanelist), AirplaneL
     }
 
     override fun onItemClick(position: Int) {
-        setFragmentResult("requestKey", bundleOf("airplaneId" to airplaneList[position].id))
-        findNavController().navigate(AirplaneListFragmentDirections.actionAirplaneListFragmentToAirplaneFragment())
+        setFragmentResult("requestKey", bundleOf("airplaneId" to State.airplaneList[position].id))
+        findNavController().navigate(R.id.action_airplaneListFragment_to_airplaneFragment)
     }
 
     private fun refreshList() {
         adapterList.clear()
         val search = bind.searchInput.text.toString().trim()
         if (search != "") {
-            for (i in airplaneList.indices) {
-                if (airplaneList[i].type.indexOf(search, ignoreCase = true) != -1 ||
-                    airplaneList[i].reg.indexOf(search, ignoreCase = true) != -1
-                ) adapterList.add(airplaneList[i])
+            for (i in State.airplaneList.indices) {
+                if (State.airplaneList[i].type.indexOf(search, ignoreCase = true) != -1 ||
+                    State.airplaneList[i].reg.indexOf(search, ignoreCase = true) != -1
+                ) adapterList.add(State.airplaneList[i])
             }
         } else {
-            adapterList.addAll(airplaneList)
+            adapterList.addAll(State.airplaneList)
         }
         adapter.notifyDataSetChanged()
     }
 
     private fun deleteAirplane(id: String) {
-        for (i in airplaneList.indices) {
-            if (airplaneList[i].id == id) {
-                airplaneList.removeAt(i)
+        for (i in State.airplaneList.indices) {
+            if (State.airplaneList[i].id == id) {
+                State.airplaneList.removeAt(i)
                 break
             }
         }
-        saveAirplaneList()
+        FileUtils.saveAirplaneList()
     }
 }

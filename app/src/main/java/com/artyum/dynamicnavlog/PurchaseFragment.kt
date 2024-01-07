@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.ViewModelProvider
 import com.artyum.dynamicnavlog.databinding.FragmentPurchaseBinding
 
 class PurchaseFragment : Fragment(R.layout.fragment_purchase) {
@@ -25,7 +26,7 @@ class PurchaseFragment : Fragment(R.layout.fragment_purchase) {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        bind.purchaseLayout.keepScreenOn = G.vm.options.value!!.keepScreenOn
+        bind.purchaseLayout.keepScreenOn = State.options.keepScreenOn
         (activity as MainActivity).displayButtons()
 
         bind.btnPurchase.setOnClickListener {

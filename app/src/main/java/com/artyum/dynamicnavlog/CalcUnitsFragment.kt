@@ -15,7 +15,6 @@ import com.artyum.dynamicnavlog.databinding.FragmentCalcUnitsBinding
 class CalcUnitsFragment : Fragment(R.layout.fragment_calc_units) {
     private var _binding: FragmentCalcUnitsBinding? = null
     private val bind get() = _binding!!
-
     private val unitsTypeList = ArrayList<String>()
     private val unitsList = ArrayList<String>()
     private var unitsType: Int = 0
@@ -33,7 +32,7 @@ class CalcUnitsFragment : Fragment(R.layout.fragment_calc_units) {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        bind.unitsLayout.keepScreenOn = G.vm.options.value!!.keepScreenOn
+        bind.unitsLayout.keepScreenOn = State.options.keepScreenOn
         (activity as MainActivity).displayButtons()
 
         val con = view.context
@@ -61,6 +60,7 @@ class CalcUnitsFragment : Fragment(R.layout.fragment_calc_units) {
                         unitsList.add("m")   // 3
                         unitsList.add("ft")  // 4
                     }
+
                     1 -> {
                         unitsList.add("kt")      // 0
                         unitsList.add("mph")     // 1
@@ -68,22 +68,26 @@ class CalcUnitsFragment : Fragment(R.layout.fragment_calc_units) {
                         unitsList.add("m/s")     // 3
                         unitsList.add("ft/min")  // 4
                     }
+
                     2 -> {
                         unitsList.add("\u2109")  // 0 F
                         unitsList.add("\u2103")  // 1 C
                         unitsList.add("\u212A")  // 2 K
                     }
+
                     3 -> {
                         unitsList.add("inhg")  // 0
                         unitsList.add("mmhg")  // 1
                         unitsList.add("hpa")   // 2
                         unitsList.add("atm")   // 3
                     }
+
                     4 -> {
                         unitsList.add("kg")  // 0
                         unitsList.add("lb")  // 1
                         unitsList.add("oz")  // 2
                     }
+
                     5 -> {
                         unitsList.add("Liters")        // 0
                         unitsList.add("US gallons")    // 1
@@ -111,7 +115,7 @@ class CalcUnitsFragment : Fragment(R.layout.fragment_calc_units) {
             it.hideKeyboard()
 
             bind.outputFrame.text = ""
-            var value = getDoubleOrNull(bind.edtInputVal.text.toString())
+            var value = Utils.getDoubleOrNull(bind.edtInputVal.text.toString())
 
             if (value == null) {
                 Toast.makeText(view.context, getString(R.string.txtEnterValue), Toast.LENGTH_SHORT).show()
@@ -124,72 +128,72 @@ class CalcUnitsFragment : Fragment(R.layout.fragment_calc_units) {
 
             // Distance
             if (unitsType == 0) {
-                if (unitsBase == 1) value = sm2nm(value)   //sm -> nm
-                if (unitsBase == 2) value = km2nm(value)   //km -> nm
-                if (unitsBase == 3) value = m2nm(value)    //m -> nm
-                if (unitsBase == 4) value = ft2nm(value)   //ft -> nm
+                if (unitsBase == 1) value = Units.sm2nm(value)   //sm -> nm
+                if (unitsBase == 2) value = Units.km2nm(value)   //km -> nm
+                if (unitsBase == 3) value = Units.m2nm(value)    //m -> nm
+                if (unitsBase == 4) value = Units.ft2nm(value)   //ft -> nm
 
-                msg += formatDouble(value, p) + " nm".padEnd(pad, ' ') + "\n"
-                msg += formatDouble(nm2sm(value), p) + " sm".padEnd(pad, ' ') + "\n"
-                msg += formatDouble(nm2km(value), p) + " km".padEnd(pad, ' ') + "\n"
-                msg += formatDouble(nm2m(value), p) + " m".padEnd(pad, ' ') + "\n"
-                msg += formatDouble(nm2ft(value), p) + " ft".padEnd(pad, ' ')
+                msg += Utils.formatDouble(value, p) + " nm".padEnd(pad, ' ') + "\n"
+                msg += Utils.formatDouble(Units.nm2sm(value), p) + " sm".padEnd(pad, ' ') + "\n"
+                msg += Utils.formatDouble(Units.nm2km(value), p) + " km".padEnd(pad, ' ') + "\n"
+                msg += Utils.formatDouble(Units.nm2m(value), p) + " m".padEnd(pad, ' ') + "\n"
+                msg += Utils.formatDouble(Units.nm2ft(value), p) + " ft".padEnd(pad, ' ')
             }
 
             // Speed
             if (unitsType == 1) {
-                if (unitsBase == 1) value = mph2kt(value)   //mph -> kt
-                if (unitsBase == 2) value = kph2kt(value)   //kph -> kt
-                if (unitsBase == 3) value = mps2kt(value)   //m/s -> kt
-                if (unitsBase == 4) value = fpm2kt(value)   //ft/min -> kt
+                if (unitsBase == 1) value = Units.mph2kt(value)   //mph -> kt
+                if (unitsBase == 2) value = Units.kph2kt(value)   //kph -> kt
+                if (unitsBase == 3) value = Units.mps2kt(value)   //m/s -> kt
+                if (unitsBase == 4) value = Units.fpm2kt(value)   //ft/min -> kt
 
-                msg += formatDouble(value, p) + " kt".padEnd(pad, ' ') + "\n"
-                msg += formatDouble(kt2mph(value), p) + " mph".padEnd(pad, ' ') + "\n"
-                msg += formatDouble(kt2kph(value), p) + " kph".padEnd(pad, ' ') + "\n"
-                msg += formatDouble(kt2mps(value), p) + " m/s".padEnd(pad, ' ') + "\n"
-                msg += formatDouble(kt2fpm(value), p) + " ft/min".padEnd(pad, ' ')
+                msg += Utils.formatDouble(value, p) + " kt".padEnd(pad, ' ') + "\n"
+                msg += Utils.formatDouble(Units.kt2mph(value), p) + " mph".padEnd(pad, ' ') + "\n"
+                msg += Utils.formatDouble(Units.kt2kph(value), p) + " kph".padEnd(pad, ' ') + "\n"
+                msg += Utils.formatDouble(Units.kt2mps(value), p) + " m/s".padEnd(pad, ' ') + "\n"
+                msg += Utils.formatDouble(Units.kt2fpm(value), p) + " ft/min".padEnd(pad, ' ')
             }
 
             // Temperature
             if (unitsType == 2) {
-                if (unitsBase == 0) value = f2c(value)   //F -> C
-                if (unitsBase == 2) value = k2c(value)   //K -> C
+                if (unitsBase == 0) value = Units.f2c(value)   //F -> C
+                if (unitsBase == 2) value = Units.k2c(value)   //K -> C
 
-                msg += formatDouble(c2f(value), p) + " \u2109".padEnd(pad, ' ') + "\n"
-                msg += formatDouble(value, p) + " \u2103".padEnd(pad, ' ') + "\n"
-                msg += formatDouble(c2k(value), p) + " \u212A".padEnd(pad, ' ')
+                msg += Utils.formatDouble(Units.c2f(value), p) + " \u2109".padEnd(pad, ' ') + "\n"
+                msg += Utils.formatDouble(value, p) + " \u2103".padEnd(pad, ' ') + "\n"
+                msg += Utils.formatDouble(Units.c2k(value), p) + " \u212A".padEnd(pad, ' ')
             }
 
             // Pressure
             if (unitsType == 3) {
-                if (unitsBase == 1) value = mmhg2inhg(value)   //mmhg -> inhg
-                if (unitsBase == 2) value = hpa2inhg(value)    //hpa -> inhg
-                if (unitsBase == 3) value = atm2inhg(value)    //atm -> inhg
+                if (unitsBase == 1) value = Units.mmhg2inhg(value)   //mmhg -> inhg
+                if (unitsBase == 2) value = Units.hpa2inhg(value)    //hpa -> inhg
+                if (unitsBase == 3) value = Units.atm2inhg(value)    //atm -> inhg
 
-                msg += formatDouble(value, p) + " inhg".padEnd(pad, ' ') + "\n"
-                msg += formatDouble(inhg2mmhg(value), p) + " mmhg".padEnd(pad, ' ') + "\n"
-                msg += formatDouble(inhg2hpa(value), p) + " hpa".padEnd(pad, ' ') + "\n"
-                msg += formatDouble(inhg2atm(value), 3) + " atm".padEnd(pad, ' ')
+                msg += Utils.formatDouble(value, p) + " inhg".padEnd(pad, ' ') + "\n"
+                msg += Utils.formatDouble(Units.inhg2mmhg(value), p) + " mmhg".padEnd(pad, ' ') + "\n"
+                msg += Utils.formatDouble(Units.inhg2hpa(value), p) + " hpa".padEnd(pad, ' ') + "\n"
+                msg += Utils.formatDouble(Units.inhg2atm(value), 3) + " atm".padEnd(pad, ' ')
             }
 
             // Weight & Mass
             if (unitsType == 4) {
-                if (unitsBase == 1) value = lb2kg(value)    //lb -> kg
-                if (unitsBase == 2) value = oz2kg(value)    //oz -> kg
+                if (unitsBase == 1) value = Units.lb2kg(value)    //lb -> kg
+                if (unitsBase == 2) value = Units.oz2kg(value)    //oz -> kg
 
-                msg += formatDouble(value, p) + " kg".padEnd(pad, ' ') + "\n"
-                msg += formatDouble(kg2lb(value), p) + " lb".padEnd(pad, ' ') + "\n"
-                msg += formatDouble(kg2oz(value), p) + " oz".padEnd(pad, ' ')
+                msg += Utils.formatDouble(value, p) + " kg".padEnd(pad, ' ') + "\n"
+                msg += Utils.formatDouble(Units.kg2lb(value), p) + " lb".padEnd(pad, ' ') + "\n"
+                msg += Utils.formatDouble(Units.kg2oz(value), p) + " oz".padEnd(pad, ' ')
             }
 
             // Volume
             if (unitsType == 5) {
-                if (unitsBase == 1) value = usgal2l(value)   //US gal -> l
-                if (unitsBase == 2) value = ukgal2l(value)   //UK gal -> l
+                if (unitsBase == 1) value = Units.usgal2l(value)   //US gal -> l
+                if (unitsBase == 2) value = Units.ukgal2l(value)   //UK gal -> l
 
-                msg += formatDouble(value, p) + " l".padEnd(pad, ' ') + "\n"
-                msg += formatDouble(l2usgal(value), p) + " US gal".padEnd(pad, ' ') + "\n"
-                msg += formatDouble(l2ukgal(value), p) + " UK gal".padEnd(pad, ' ')
+                msg += Utils.formatDouble(value, p) + " l".padEnd(pad, ' ') + "\n"
+                msg += Utils.formatDouble(Units.l2usgal(value), p) + " US gal".padEnd(pad, ' ') + "\n"
+                msg += Utils.formatDouble(Units.l2ukgal(value), p) + " UK gal".padEnd(pad, ' ')
             }
 
             bind.outputFrame.text = msg
