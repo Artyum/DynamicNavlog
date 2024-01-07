@@ -2,7 +2,7 @@
 <resources>
     <string name="manualDACalc1">Enter <b>Station pressure</b> and <b>Temperature</b>. The field <b>Elevation</b> is optional. The application will calculate pressure altitude and 3
         results of density altitude (for comparison). All implemented equations are described on Wikipedia pages: https://en.wikipedia.org/wiki/Pressure_altitude and
-        https://en.wikipedia.org/wiki/Density_altitude. Choose corresponding units G.vm.options.value!!. You can also select ft or m for output units.</string>
+        https://en.wikipedia.org/wiki/Density_altitude. Choose corresponding units G.State.options. You can also select ft or m for output units.</string>
 
     <string name="manualDACalc2">The first density altitude equation is calculated from the atmospheric pressure and the outside air temperature (assuming dry air).</string>
 

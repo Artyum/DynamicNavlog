@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.ViewModelProvider
 import com.artyum.dynamicnavlog.databinding.FragmentCalcFuelBinding
 import kotlin.math.roundToLong
 
@@ -26,7 +27,7 @@ class CalcFuelFragment : Fragment(R.layout.fragment_calc_fuel) {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        bind.fuelLayout.keepScreenOn = G.vm.options.value!!.keepScreenOn
+        bind.fuelLayout.keepScreenOn = State.options.keepScreenOn
         (activity as MainActivity).displayButtons()
 
         bind.btnCalculate.setOnClickListener {
@@ -44,14 +45,14 @@ class CalcFuelFragment : Fragment(R.layout.fragment_calc_fuel) {
     }
 
     private fun fuelCalculate() {
-        val fuelStart = getDoubleOrNull(bind.edtFuelStart.text.toString())
-        var fuelEnd = getDoubleOrNull(bind.edtFuelEnd.text.toString())
-        val fuelFPH = getDoubleOrNull(bind.edtFuelFph.text.toString())
+        val fuelStart = Utils.getDoubleOrNull(bind.edtFuelStart.text.toString())
+        var fuelEnd = Utils.getDoubleOrNull(bind.edtFuelEnd.text.toString())
+        val fuelFPH = Utils.getDoubleOrNull(bind.edtFuelFph.text.toString())
         val fuelTime: Double?
 
         val txtTime = bind.edtFuelTime.text.toString()
-        fuelTime = strTime2Sec(txtTime)
-        bind.edtFuelTime.setText(formatSecondsToTime(fuelTime?.roundToLong(), true))
+        fuelTime = TimeUtils.strTime2Sec(txtTime)
+        bind.edtFuelTime.setText(TimeUtils.formatSecondsToTime(fuelTime?.roundToLong(), true))
 
         if (fuelEnd == null) {
             bind.edtFuelEnd.setText("0")
@@ -61,25 +62,25 @@ class CalcFuelFragment : Fragment(R.layout.fragment_calc_fuel) {
         // Fph
         if (fuelStart != null && fuelTime != null && fuelFPH == null) {
             val tmp = (fuelStart - fuelEnd) / fuelTime * 3600.0
-            bind.edtFuelFph.setText(formatDouble(tmp, 1))
+            bind.edtFuelFph.setText(Utils.formatDouble(tmp, 1))
         }
 
         // Time
         if (fuelStart != null && fuelTime == null && fuelFPH != null) {
             val tmp = (fuelStart - fuelEnd) / fuelFPH * 3600.0
-            bind.edtFuelTime.setText(formatSecondsToTime(tmp.roundToLong(), true))
+            bind.edtFuelTime.setText(TimeUtils.formatSecondsToTime(tmp.roundToLong(), true))
         }
 
         // Fuel after flight
         if (fuelStart != null && fuelTime != null && fuelFPH != null) {
             val tmp = fuelStart - (fuelTime / 3600.0 * fuelFPH)
-            bind.edtFuelEnd.setText(formatDouble(tmp, 1))
+            bind.edtFuelEnd.setText(Utils.formatDouble(tmp, 1))
         }
 
         // Fuel for start
         if (fuelStart == null && fuelTime != null && fuelFPH != null) {
             val tmp = fuelEnd + (fuelTime / 3600.0 * fuelFPH)
-            bind.edtFuelStart.setText(formatDouble(tmp, 1))
+            bind.edtFuelStart.setText(Utils.formatDouble(tmp, 1))
         }
     }
 

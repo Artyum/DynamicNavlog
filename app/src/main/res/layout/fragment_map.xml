@@ -7,18 +7,38 @@
     android:layout_height="match_parent"
     tools:context="MapFragment">
 
+    <fragment
+        android:id="@+id/mapFragmentHidden"
+        android:name="com.google.android.gms.maps.SupportMapFragment"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:visibility="invisible"
+        app:layout_constraintBottom_toTopOf="@id/summaryTotals"
+        app:layout_constraintTop_toBottomOf="@id/topNavigation"
+        tools:layout="@layout/empty" />
+
+    <fragment
+        android:id="@+id/mapFragment"
+        android:name="com.google.android.gms.maps.SupportMapFragment"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toTopOf="@id/summaryTotals"
+        app:layout_constraintTop_toBottomOf="@id/topNavigation"
+        tools:layout="@layout/empty" />
+
     <LinearLayout
         android:id="@+id/topNavigation"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
+        android:visibility="gone"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@color/colorPrimary"
+            android:background="#4A178AC7"
             android:gravity="center"
             android:orientation="horizontal">
 
@@ -127,23 +147,6 @@
         </androidx.constraintlayout.widget.ConstraintLayout>
     </LinearLayout>
 
-    <fragment
-        android:id="@+id/mapFragmentHidden"
-        android:name="com.google.android.gms.maps.SupportMapFragment"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:visibility="invisible"
-        app:layout_constraintBottom_toTopOf="@id/summaryTotals"
-        app:layout_constraintTop_toBottomOf="@id/topNavigation" />
-
-    <fragment
-        android:id="@+id/mapFragment"
-        android:name="com.google.android.gms.maps.SupportMapFragment"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        app:layout_constraintBottom_toTopOf="@id/summaryTotals"
-        app:layout_constraintTop_toBottomOf="@id/topNavigation" />
-
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -155,7 +158,7 @@
         <com.google.android.material.floatingactionbutton.FloatingActionButton
             android:id="@+id/btnFollowToggle"
             style="@style/mapButton"
-            android:contentDescription="Follow"
+            android:contentDescription="@string/txtFollow"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:srcCompat="@drawable/ic_gps_lock" />
@@ -163,7 +166,7 @@
         <com.google.android.material.floatingactionbutton.FloatingActionButton
             android:id="@+id/btnMapType"
             style="@style/mapButton"
-            android:contentDescription="Map type"
+            android:contentDescription="@string/txtMapType"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintTop_toBottomOf="@id/btnFollowToggle"
             app:srcCompat="@drawable/ic_layer" />
@@ -171,7 +174,7 @@
         <com.google.android.material.floatingactionbutton.FloatingActionButton
             android:id="@+id/btnMapZoomIn"
             style="@style/mapButton"
-            android:contentDescription="Zoom out"
+            android:contentDescription="@string/txtZoomOut"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintTop_toBottomOf="@id/btnMapType"
             app:srcCompat="@drawable/ic_add" />
@@ -179,7 +182,7 @@
         <com.google.android.material.floatingactionbutton.FloatingActionButton
             android:id="@+id/btnMapZoomOut"
             style="@style/mapButton"
-            android:contentDescription="Zoom in"
+            android:contentDescription="@string/txtZoomIn"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintTop_toBottomOf="@id/btnMapZoomIn"
             app:srcCompat="@drawable/ic_remove" />

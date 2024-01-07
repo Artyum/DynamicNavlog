@@ -2,10 +2,10 @@ package com.artyum.dynamicnavlog
 
 import android.content.DialogInterface
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.WindowManager
 import android.widget.Toast
 import androidx.core.os.bundleOf
 import androidx.core.widget.doAfterTextChanged
@@ -59,22 +59,22 @@ class NavlogDialogFragment(private val item: Int, private val adapter: NavlogAda
 
         // Button Apply
         bind.btnDialogSubmit.setOnClickListener {
-            val dest = clearString(bind.dialogDest.text.toString())
-            val remarks = clearString(bind.dialogRemarks.text.toString())
-            val tt = clearString(bind.dialogTt.text.toString())
-            val declination = clearString(bind.dialogDeclination.text.toString())
-            val mt = clearString(bind.dialogMt.text.toString())
-            val dist = clearString(bind.dialogDist.text.toString().trim())
-            val lat = clearString(bind.dialogLat.text.toString().trim())
-            val lng = clearString(bind.dialogLng.text.toString().trim())
+            val dest = Utils.clearString(bind.dialogDest.text.toString())
+            val remarks = Utils.clearString(bind.dialogRemarks.text.toString())
+            val tt = Utils.clearString(bind.dialogTt.text.toString())
+            val declination = Utils.clearString(bind.dialogDeclination.text.toString())
+            val mt = Utils.clearString(bind.dialogMt.text.toString())
+            val dist = Utils.clearString(bind.dialogDist.text.toString().trim())
+            val lat = Utils.clearString(bind.dialogLat.text.toString().trim())
+            val lng = Utils.clearString(bind.dialogLng.text.toString().trim())
 
             if (dest != "" && mt != "" && dist != "") {
-                val dMagneticTrack = getDoubleOrNull(mt)
-                val dDist = fromUserUnitsDis(getDoubleOrNull(dist))
-                var dTrueTrack = getDoubleOrNull(tt)
-                val dDeclination = getDoubleOrNull(declination)
-                val dLat = getDoubleOrNull(lat)
-                val dLng = getDoubleOrNull(lng)
+                val dMagneticTrack = Utils.getDoubleOrNull(mt)
+                val dDist = Units.fromUserUnitsDis(Utils.getDoubleOrNull(dist))
+                var dTrueTrack = Utils.getDoubleOrNull(tt)
+                val dDeclination = Utils.getDoubleOrNull(declination)
+                val dLat = Utils.getDoubleOrNull(lat)
+                val dLng = Utils.getDoubleOrNull(lng)
                 var chk = true
 
                 if (dMagneticTrack == null || dMagneticTrack < 0.0 || dMagneticTrack > 360.0) {
@@ -87,23 +87,23 @@ class NavlogDialogFragment(private val item: Int, private val adapter: NavlogAda
                     chk = false
                 }
 
-                if (dTrueTrack == null && dDeclination != null && dMagneticTrack != null) dTrueTrack = normalizeBearing(dMagneticTrack - dDeclination)
+                if (dTrueTrack == null && dDeclination != null && dMagneticTrack != null) dTrueTrack = GPSUtils.normalizeBearing(dMagneticTrack - dDeclination)
 
                 var pos: LatLng? = null
                 if (dLat != null && dLng != null) pos = LatLng(dLat, dLng)
 
                 if (chk) {
-                    navlogList[item].dest = dest.uppercase()
-                    navlogList[item].tt = dTrueTrack
-                    navlogList[item].d = dDeclination
-                    navlogList[item].mt = dMagneticTrack!!
-                    navlogList[item].dist = dDist!!
-                    navlogList[item].remarks = remarks
-                    navlogList[item].pos = pos
-                    navlogList[item].active = bind.dialogCheckboxActive.isChecked
+                    State.navlogList[item].dest = dest.uppercase()
+                    State.navlogList[item].tt = dTrueTrack
+                    State.navlogList[item].d = dDeclination
+                    State.navlogList[item].mt = dMagneticTrack!!
+                    State.navlogList[item].dist = dDist!!
+                    State.navlogList[item].remarks = remarks
+                    State.navlogList[item].pos = pos
+                    State.navlogList[item].active = bind.dialogCheckboxActive.isChecked
 
                     adapter?.notifyItemChanged(item)
-                    calcNavlog(adapter)
+                    NavLogUtils.calcNavlog(adapter)
                     setFragmentResult("requestKey", bundleOf("action" to "refresh"))
                     dismiss()
                 }
@@ -117,114 +117,120 @@ class NavlogDialogFragment(private val item: Int, private val adapter: NavlogAda
 
         // Button Del
         bind.btnDialogRemove.setOnClickListener {
-            if (item < navlogList.size) {
-                navlogList.removeAt(item)
+            if (item < State.navlogList.size) {
+                State.navlogList.removeAt(item)
                 adapter?.notifyItemRemoved(item)
-                calcNavlog(adapter)
+                NavLogUtils.calcNavlog(adapter)
                 setFragmentResult("requestKey", bundleOf("action" to "refresh"))
                 dismiss()
             }
         }
 
         // Fill values
-        if (item < navlogList.size) {
-            val prev = (getNavlogPrevItemId(item))
+        if (item < State.navlogList.size) {
+            val prev = (NavLogUtils.getNavlogPrevItemId(item))
 
             // Dest
-            bind.dialogDest.setText(navlogList[item].dest.uppercase())
+            bind.dialogDest.setText(State.navlogList[item].dest.uppercase())
 
             // True track
-            bind.dialogTt.setText(formatDouble(navlogList[item].tt, 1))
+            bind.dialogTt.setText(Utils.formatDouble(State.navlogList[item].tt, 1))
 
             // Declination
-            if (navlogList[item].d != null) {
-                bind.dialogDeclination.setText(formatDouble(navlogList[item].d, 1))
+            if (State.navlogList[item].d != null) {
+                bind.dialogDeclination.setText(Utils.formatDouble(State.navlogList[item].d, 1))
             } else {
-                if (item > 0 && prev >= 0 && navlogList[prev].d != null) {
-                    val declination = navlogList[prev].d!!
-                    bind.dialogDeclination.setText(formatDouble(declination, 1))
-                    if (navlogList[item].mt != null && navlogList[item].tt == null) {
-                        bind.dialogTt.setText(formatDouble(navlogList[item].mt!! - declination, 1))
+                if (item > 0 && prev >= 0 && State.navlogList[prev].d != null) {
+                    val declination = State.navlogList[prev].d!!
+                    bind.dialogDeclination.setText(Utils.formatDouble(declination, 1))
+                    if (State.navlogList[item].mt != null && State.navlogList[item].tt == null) {
+                        bind.dialogTt.setText(Utils.formatDouble(State.navlogList[item].mt!! - declination, 1))
                     }
                 }
             }
 
             // Magnetic track
-            if (navlogList[item].mt != null) bind.dialogMt.setText(formatDouble(navlogList[item].mt, 1))
+            if (State.navlogList[item].mt != null) bind.dialogMt.setText(Utils.formatDouble(State.navlogList[item].mt, 1))
 
             // Distance
-            bind.dialogDist.setText(formatDouble(toUserUnitsDis(navlogList[item].dist), 1))
-            bind.boxDistance.hint = getString(R.string.txtDistance) + " (" + getUnitsDis() + ")"
+            bind.dialogDist.setText(Utils.formatDouble(Units.toUserUnitsDis(State.navlogList[item].dist), 1))
+            bind.boxDistance.hint = getString(R.string.txtDistance) + " (" + Units.getUnitsDis() + ")"
 
             // Latitude
-            if (navlogList[item].pos != null) {
-                bind.dialogLat.setText(formatDouble(navlogList[item].pos?.latitude, C.POS_PRECISION))
-                bind.dialogLng.setText(formatDouble(navlogList[item].pos?.longitude, C.POS_PRECISION))
+            if (State.navlogList[item].pos != null) {
+                bind.dialogLat.setText(Utils.formatDouble(State.navlogList[item].pos?.latitude, C.POS_PRECISION))
+                bind.dialogLng.setText(Utils.formatDouble(State.navlogList[item].pos?.longitude, C.POS_PRECISION))
             } else {
                 bind.dialogLat.setText("")
                 bind.dialogLng.setText("")
             }
 
             // Remarks
-            bind.dialogRemarks.setText(navlogList[item].remarks)
+            bind.dialogRemarks.setText(State.navlogList[item].remarks)
 
             // Active
-            bind.dialogCheckboxActive.isChecked = navlogList[item].active
+            bind.dialogCheckboxActive.isChecked = State.navlogList[item].active
 
             // Current
-            if (navlogList[item].current) {
+            if (State.navlogList[item].current) {
                 bind.dialogCheckboxActive.isEnabled = false
                 bind.btnDialogRemove.visibility = View.GONE
             }
 
             // Hide options for "Current"
-            if (item < getNavlogCurrentItemId()) {
+            if (item < NavLogUtils.getNavlogCurrentItemId()) {
                 bind.dialogCheckboxActive.isEnabled = false
-                if (isFlightInProgress()) {
+                if (Utils.isFlightInProgress()) {
                     bind.btnDialogSubmit.visibility = View.GONE
                     bind.btnDialogRemove.visibility = View.GONE
                 }
             }
         } else dismiss()
+
+        //Focus on Destination
+        bind.dialogDest.requestFocus()
+
+        // Open keyboard
+        dialog?.window?.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE);
     }
 
     private fun calcTt() {
         cmt = false
-        val mt = getDoubleOrNull(bind.dialogMt.text.toString())
-        val d = getDoubleOrNull(bind.dialogDeclination.text.toString())
+        val mt = Utils.getDoubleOrNull(bind.dialogMt.text.toString())
+        val d = Utils.getDoubleOrNull(bind.dialogDeclination.text.toString())
         if (mt != null && d != null && mt in 0.0..360.0) {
-            val tt = normalizeBearing(mt - d)
-            bind.dialogTt.setText(formatDouble(tt, 1))
+            val tt = GPSUtils.normalizeBearing(mt - d)
+            bind.dialogTt.setText(Utils.formatDouble(tt, 1))
         } else bind.dialogTt.setText("")
         cmt = true
     }
 
     private fun calcMt() {
         ctt = false
-        val tt = getDoubleOrNull(bind.dialogTt.text.toString())
-        val d = getDoubleOrNull(bind.dialogDeclination.text.toString())
+        val tt = Utils.getDoubleOrNull(bind.dialogTt.text.toString())
+        val d = Utils.getDoubleOrNull(bind.dialogDeclination.text.toString())
         if (tt != null && d != null && tt in 0.0..360.0) {
-            val mt = normalizeBearing(tt + d)
-            bind.dialogMt.setText(formatDouble(mt, 1))
+            val mt = GPSUtils.normalizeBearing(tt + d)
+            bind.dialogMt.setText(Utils.formatDouble(mt, 1))
         } else bind.dialogMt.setText("")
         ctt = true
     }
 
     private fun calcPos() {
-        val tt = getDoubleOrNull(bind.dialogTt.text.toString())
-        val dist = fromUserUnitsDis(getDoubleOrNull(bind.dialogDist.text.toString()))
-        val prevPos = getPrevCoords(item)
+        val tt = Utils.getDoubleOrNull(bind.dialogTt.text.toString())
+        val dist = Units.fromUserUnitsDis(Utils.getDoubleOrNull(bind.dialogDist.text.toString()))
+        val prevPos = NavLogUtils.getPrevCoords(item)
         if (tt != null && dist != null && prevPos != null) {
-            val newPos = calcDestinationPos(from = prevPos, bearing = tt, distance = nm2m(dist))
-            bind.dialogLat.setText(formatDouble(newPos.latitude, C.POS_PRECISION))
-            bind.dialogLng.setText(formatDouble(newPos.longitude, C.POS_PRECISION))
+            val newPos = GPSUtils.calcDestinationPos(from = prevPos, bearing = tt, distance = Units.nm2m(dist))
+            bind.dialogLat.setText(Utils.formatDouble(newPos.latitude, C.POS_PRECISION))
+            bind.dialogLng.setText(Utils.formatDouble(newPos.longitude, C.POS_PRECISION))
         }
     }
 
     override fun onDismiss(dialog: DialogInterface) {
-        if (item < navlogList.size) {
-            if (!isNavlogItemValid(item)) {
-                navlogList.removeAt(item)
+        if (item < State.navlogList.size) {
+            if (!NavLogUtils.isNavlogItemValid(item)) {
+                State.navlogList.removeAt(item)
                 adapter?.notifyItemRemoved(item)
             }
         }

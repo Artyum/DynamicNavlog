@@ -33,11 +33,11 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        bind.homeLayout.keepScreenOn = G.vm.options.value!!.keepScreenOn
+        bind.homeLayout.keepScreenOn = State.options.keepScreenOn
         (activity as MainActivity).displayButtons()
 
         // GPS indicator
-        if (!G.vm.options.value!!.gpsAssist) bind.txtTrackAngleIndicatorBox.visibility = View.GONE
+        if (!State.options.gpsAssist) bind.txtTrackAngleIndicatorBox.visibility = View.GONE
 
         // Display units
         displayUnits()
@@ -50,24 +50,24 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
     }
 
     private fun displayUnits() {
-        bind.txtHomeDistUnits.text = getUnitsDis()
-        bind.txtHomeGsUnits.text = getUnitsSpd()
+        bind.txtHomeDistUnits.text = Units.getUnitsDis()
+        bind.txtHomeGsUnits.text = Units.getUnitsSpd()
     }
 
     private fun drawHomeWinStar() {
-        val sr = if (G.vm.airplane.value!!.tas == 0.0) 1.0 else G.vm.airplane.value!!.tas
+        val sr = if (State.airplane.tas == 0.0) 1.0 else State.airplane.tas
 
-        if (getFlightStage() == C.STAGE_3_FLIGHT_IN_PROGRESS) {
+        if (NavLogUtils.getFlightStage() == C.STAGE_3_FLIGHT_IN_PROGRESS) {
             // Flight in progress
-            val i = getNavlogCurrentItemId()
-            generateWindCircle(bind.imgHomeView, resources, course = navlogList[i].mt!!, windDir = G.vm.settings.value!!.windDir, hdg = navlogList[i].hdg!!, speedRatio = navlogList[i].gs!! / sr)
-        } else if (isNavlogReady() && G.vm.timers.value!!.takeoff == null) {
+            val i = NavLogUtils.getNavlogCurrentItemId()
+            Utils.generateWindCircle(bind.imgHomeView, resources, course = State.navlogList[i].mt!!, windDir = State.settings.windDir, hdg = State.navlogList[i].hdg!!, speedRatio = State.navlogList[i].gs!! / sr)
+        } else if (NavLogUtils.isNavlogReady() && State.timers.takeoff == null) {
             // Stage OffBlock
-            val first = getNavlogFirstActiveItemId()
-            generateWindCircle(bind.imgHomeView, resources, course = navlogList[first].mt!!, windDir = G.vm.settings.value!!.windDir, hdg = navlogList[first].hdg!!, speedRatio = navlogList[first].gs!! / sr)
+            val first = NavLogUtils.getNavlogFirstActiveItemId()
+            Utils.generateWindCircle(bind.imgHomeView, resources, course = State.navlogList[first].mt!!, windDir = State.settings.windDir, hdg = State.navlogList[first].hdg!!, speedRatio = State.navlogList[first].gs!! / sr)
         } else {
             // Plan not ready
-            generateWindCircle(bind.imgHomeView, resources, course = 0.0, windDir = 180.0, hdg = 0.0, speedRatio = 1.0)
+            Utils.generateWindCircle(bind.imgHomeView, resources, course = 0.0, windDir = 180.0, hdg = 0.0, speedRatio = 1.0)
         }
     }
 
@@ -80,9 +80,9 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
 
             // Loop every 1 sec
             val curTime = System.currentTimeMillis() / 1000L
-            if (curTime != prevTime || globalRefresh) {
+            if (curTime != prevTime || Vars.globalRefresh) {
                 prevTime = curTime
-                globalRefresh = false
+                Vars.globalRefresh = false
                 //println("Home Thread: $coroutineContext")
 
                 val h = HomeItem()
@@ -202,7 +202,7 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
     }
 
     private fun setGpsTag(a: MainActivity, b: FragmentHomeBinding, h: HomeItem) {
-        if (G.vm.options.value!!.gpsAssist) {
+        if (State.options.gpsAssist) {
             safeVisibility(a, b.txtGsGpsTag, View.VISIBLE)
             if (h.gps.isValid) {
                 a.runOnUiThread { b.txtGsGpsTag.paintFlags = Paint.STRIKE_THRU_TEXT_FLAG.dec() }
