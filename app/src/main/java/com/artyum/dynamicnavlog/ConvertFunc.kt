@@ -5,7 +5,7 @@ import kotlin.math.PI
 // Convert Units - Measurement Unit Converter
 // https://www.convertunits.com/
 
-object Convert {
+object Units {
     // Angle
     fun deg2rad(deg: Double): Double = deg * PI / 180f
     fun rad2deg(rad: Double): Double = rad * 180f / PI
@@ -98,7 +98,7 @@ object Convert {
         return ""
     }
 
-// Convert to display units / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / /
+    // Convert to display units / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / /
 
     fun toUserUnitsSpd(v: Double?): Double? {
         if (v == null) return null

@@ -312,7 +312,7 @@ object NavLogUtils {
                     val tt = GPSUtils.calcBearing(prevCoords, State.navlogList[i].pos!!)
                     val d = GPSUtils.getDeclination(State.navlogList[i].pos!!)
                     val mt = GPSUtils.normalizeBearing(tt + d)
-                    val dist = Convert.m2nm(GPSUtils.calcDistance(prevCoords, State.navlogList[i].pos!!))
+                    val dist = Units.m2nm(GPSUtils.calcDistance(prevCoords, State.navlogList[i].pos!!))
 
                     State.navlogList[i].tt = tt
                     State.navlogList[i].d = d

@@ -8,17 +8,13 @@ import android.graphics.Rect
 import android.util.Log
 import android.view.View
 import android.widget.ImageView
-import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.res.ResourcesCompat
-import androidx.navigation.NavController
-import androidx.navigation.findNavController
 import com.artyum.dynamicnavlog.databinding.ActivityMainBinding
-import com.google.android.gms.location.FusedLocationProviderClient
-import com.google.android.gms.location.LocationCallback
-import com.google.android.gms.location.LocationRequest
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.material.button.MaterialButton
+import com.google.gson.GsonBuilder
+import com.google.gson.JsonObject
 import kotlinx.coroutines.sync.Mutex
 import java.time.LocalDateTime
 import kotlin.math.asin
@@ -90,8 +86,8 @@ data class OptionsData(
     var screenOrientation: Int = C.SCREEN_SENSOR,
     var timeInUTC: Boolean = false,
     var keepScreenOn: Boolean = false,
-    var autoTakeoffSpd: Double = Convert.kt2mps(40.0),      // Minimum speed for takeoff detection in m/s
-    var autoLandingSpd: Double = Convert.kt2mps(30.0),      // Maximum speed for landing detection in m/s
+    var autoTakeoffSpd: Double = Units.kt2mps(40.0),      // Minimum speed for takeoff detection in m/s
+    var autoLandingSpd: Double = Units.kt2mps(30.0),      // Maximum speed for landing detection in m/s
     var mapOrientation: Int = C.MAP_ORIENTATION_NORTH,
     var displayTrace: Boolean = true,
     var drawWindArrow: Boolean = true,
@@ -271,6 +267,8 @@ object C {
 
     // Next circle radius in NM
     val nextRadiusList = arrayListOf(0.01, 0.5, 1.0, 2.0)
+
+    val appVersion = BuildConfig.VERSION_NAME
 }
 
 object State {
@@ -291,9 +289,9 @@ object Vars {
     var isServiceRunning = false
     var isLocationSubscribed = false
     var isAppPurchased = false
-    var globalRefresh = false   // Refresh home, navlog and map pages on flight stage or waypoint change
+    var globalRefresh = false  // Refresh home, navlog and map pages on flight stage or waypoint change
     var gpsData = GpsData()
-    var gpsMutex = Mutex()      // Mutex for GPS location
+    var gpsMutex = Mutex()  // Mutex for GPS location
 }
 
 object ReleaseOption {
@@ -395,7 +393,7 @@ object Utils {
         // Scale 5 deg
         paint.strokeWidth = 1.5f
         for (i in 0..72) {
-            sc = angleCalc(Convert.deg2rad(i * 5.0 - 90.0))
+            sc = angleCalc(Units.deg2rad(i * 5.0 - 90.0))
             x1 = x + sc.cosa * radius
             y1 = y + sc.sina * radius
             x2 = x + sc.cosa * radiusShort * 1.04f
@@ -405,7 +403,7 @@ object Utils {
 
         // Scale 10 deg
         for (i in 0..36) {
-            sc = angleCalc(Convert.deg2rad(i * 10.0 - 90.0))
+            sc = angleCalc(Units.deg2rad(i * 10.0 - 90.0))
             x1 = x + sc.cosa * radius
             y1 = y + sc.sina * radius
             x2 = x + sc.cosa * radiusShort
@@ -447,7 +445,7 @@ object Utils {
 
         // Course
         paint.color = ResourcesCompat.getColor(resources, R.color.magenta, null)
-        sc = angleCalc(Convert.deg2rad(course - 90f))
+        sc = angleCalc(Units.deg2rad(course - 90f))
         x2 = x + sc.cosa * radiusCourse
         y2 = y + sc.sina * radiusCourse
         canvas.drawLine(x, y, x2, y2, paint)
@@ -456,18 +454,18 @@ object Utils {
         paint.style = Paint.Style.STROKE
         canvas.drawCircle(x1, y1, smallCircleRadius, paint)
         paint.style = Paint.Style.FILL
-        sc = angleCalc(Convert.deg2rad(course - 90f - angleArrow))
+        sc = angleCalc(Units.deg2rad(course - 90f - angleArrow))
         x1 = x2 - sc.cosa * radiusArrow
         y1 = y2 - sc.sina * radiusArrow
         canvas.drawLine(x1, y1, x2, y2, paint)
-        sc = angleCalc(Convert.deg2rad(course - 90f + angleArrow))
+        sc = angleCalc(Units.deg2rad(course - 90f + angleArrow))
         x1 = x2 - sc.cosa * radiusArrow
         y1 = y2 - sc.sina * radiusArrow
         canvas.drawLine(x1, y1, x2, y2, paint)
 
         // Heading
         paint.color = ResourcesCompat.getColor(resources, R.color.cyan, null)
-        sc = angleCalc(Convert.deg2rad(hdg - 90.0))
+        sc = angleCalc(Units.deg2rad(hdg - 90.0))
         x2 = x + sc.cosa * radiusHdg
         y2 = y + sc.sina * radiusHdg
         canvas.drawLine(x, y, x2, y2, paint)
@@ -476,28 +474,28 @@ object Utils {
         paint.style = Paint.Style.STROKE
         canvas.drawCircle(x1, y1, smallCircleRadius, paint)
         paint.style = Paint.Style.FILL
-        sc = angleCalc(Convert.deg2rad(hdg - 90f - angleArrow))
+        sc = angleCalc(Units.deg2rad(hdg - 90f - angleArrow))
         x1 = x2 - sc.cosa * radiusArrow
         y1 = y2 - sc.sina * radiusArrow
         canvas.drawLine(x1, y1, x2, y2, paint)
-        sc = angleCalc(Convert.deg2rad(hdg - 90f + angleArrow))
+        sc = angleCalc(Units.deg2rad(hdg - 90f + angleArrow))
         x1 = x2 - sc.cosa * radiusArrow
         y1 = y2 - sc.sina * radiusArrow
         canvas.drawLine(x1, y1, x2, y2, paint)
 
         // Wind
         paint.color = ResourcesCompat.getColor(resources, R.color.blue, null)
-        sc = angleCalc(Convert.deg2rad(windDir - 90f))
+        sc = angleCalc(Units.deg2rad(windDir - 90f))
         x1 = x + sc.cosa * radius
         y1 = y + sc.sina * radius
         x2 = x + sc.cosa * radiusCourse
         y2 = y + sc.sina * radiusCourse
         canvas.drawLine(x1, y1, x2, y2, paint)
-        sc = angleCalc(Convert.deg2rad(windDir - 90f - angleArrow))
+        sc = angleCalc(Units.deg2rad(windDir - 90f - angleArrow))
         x1 = x2 + sc.cosa * radiusArrow
         y1 = y2 + sc.sina * radiusArrow
         canvas.drawLine(x1, y1, x2, y2, paint)
-        sc = angleCalc(Convert.deg2rad(windDir - 90f + angleArrow))
+        sc = angleCalc(Units.deg2rad(windDir - 90f + angleArrow))
         x1 = x2 + sc.cosa * radiusArrow
         y1 = y2 + sc.sina * radiusArrow
         canvas.drawLine(x1, y1, x2, y2, paint)
@@ -530,25 +528,25 @@ object Utils {
         paint.color = ResourcesCompat.getColor(resources, R.color.windArrow, null)
 
         // Back line
-        var sc = angleCalc(Convert.deg2rad(angle))
+        var sc = angleCalc(Units.deg2rad(angle))
         var x1 = x + sc.cosa * len
         var y1 = y + sc.sina * len
         canvas.drawLine(x, y, x1, y1, paint)
 
         // Front line
-        sc = angleCalc(Convert.deg2rad(angle + 180))
+        sc = angleCalc(Units.deg2rad(angle + 180))
         x1 = x + sc.cosa * len
         y1 = y + sc.sina * len
         canvas.drawLine(x, y, x1, y1, paint)
 
         // Arrow 1
-        sc = angleCalc(Convert.deg2rad(angle + 10))
+        sc = angleCalc(Units.deg2rad(angle + 10))
         val x2 = x1 + sc.cosa * len2
         val y2 = y1 + sc.sina * len2
         canvas.drawLine(x1, y1, x2, y2, paint)
 
         // Arrow 2
-        sc = angleCalc(Convert.deg2rad(angle - 10))
+        sc = angleCalc(Units.deg2rad(angle - 10))
         val x3 = x1 + sc.cosa * len2
         val y3 = y1 + sc.sina * len2
         canvas.drawLine(x2, y2, x3, y3, paint)
@@ -582,7 +580,7 @@ object Utils {
     }
 
     fun flightCalculator(course: Double, windDir: Double, windSpd: Double, tas: Double, dist: Double? = null, fob: Double? = null, fph: Double? = null): FlightData {
-        val wtAngle = Convert.deg2rad(course - windDir + 180f)
+        val wtAngle = Units.deg2rad(course - windDir + 180f)
         val sinWca = windSpd * sin(wtAngle) / tas
 
         // WCA
@@ -592,7 +590,7 @@ object Utils {
         val gs = tas * cos(wca) + windSpd * cos(wtAngle)
 
         // HDG
-        wca = Convert.rad2deg(wca)
+        wca = Units.rad2deg(wca)
         val hdg = GPSUtils.normalizeBearing(course + wca)
 
         var time: Long? = null
@@ -640,9 +638,13 @@ object Utils {
     fun resetRadials() {
         State.radialList.clear()
     }
+
+    fun formatJson(json: JsonObject): String {
+        return GsonBuilder().setPrettyPrinting().create().toJson(json)
+    }
 }
 
-object ButtonManager {
+object ButtonController {
     fun display(bind: ActivityMainBinding) {
         /*
         Buttons structure

@@ -85,29 +85,29 @@ class CalcDensityFragment : Fragment(R.layout.fragment_calc_density) {
             // Pressure units
             if (pressureUnits == C.PRESSURE_INHG) {
                 pressure_inhg = inPressure
-                pressure_hpa = Convert.inhg2hpa(pressure_inhg)
+                pressure_hpa = Units.inhg2hpa(pressure_inhg)
             } else {
                 pressure_hpa = inPressure
-                pressure_inhg = Convert.hpa2inhg(pressure_hpa)
+                pressure_inhg = Units.hpa2inhg(pressure_hpa)
             }
 
             // Temperature units
             if (temperatureUnits == C.TEMP_F) {
                 temp_f = inTemp
-                temp_c = Convert.f2c(temp_f)
+                temp_c = Units.f2c(temp_f)
             } else {
                 temp_c = inTemp
-                temp_f = Convert.c2f(temp_c)
+                temp_f = Units.c2f(temp_c)
             }
-            temp_k = Convert.c2k(temp_c)
+            temp_k = Units.c2k(temp_c)
 
             // Elevation units
             if (elevationUnits == C.ELEV_FT) {
                 elev_ft = inElev
-                elev_m = Convert.ft2m(elev_ft)
+                elev_m = Units.ft2m(elev_ft)
             } else {
                 elev_m = inElev
-                elev_ft = Convert.m2ft(elev_m)
+                elev_ft = Units.m2ft(elev_m)
             }
 
             //println("pressure_inhg $pressure_inhg")
@@ -125,8 +125,8 @@ class CalcDensityFragment : Fragment(R.layout.fragment_calc_density) {
             val pressureAltitude_ft = pressureAltitude
             var elevation = elev_ft + pressureAltitude
             if (elevationUnits == C.ELEV_M) {
-                pressureAltitude = Convert.ft2m(pressureAltitude)
-                elevation = Convert.ft2m(elevation)
+                pressureAltitude = Units.ft2m(pressureAltitude)
+                elevation = Units.ft2m(elevation)
             }
             var strPA = Utils.formatDouble(pressureAltitude, 1)
             var strElev = Utils.formatDouble(elevation, 1)
@@ -145,8 +145,8 @@ class CalcDensityFragment : Fragment(R.layout.fragment_calc_density) {
             var densityAltitude = (tsl / ro) * (1.0 - ((pressure_hpa / psl) / (temp_k / tsl)).pow((((g * M) / (ro * R)) - 1.0).pow(-1.0)))
             elevation = elev_m + densityAltitude
             if (elevationUnits == C.ELEV_FT) {
-                densityAltitude = Convert.m2ft(densityAltitude)
-                elevation = Convert.m2ft(elevation)
+                densityAltitude = Units.m2ft(densityAltitude)
+                elevation = Units.m2ft(elevation)
             }
             var strDA = Utils.formatDouble(densityAltitude, 1)
             strElev = Utils.formatDouble(elevation, 1)
@@ -158,8 +158,8 @@ class CalcDensityFragment : Fragment(R.layout.fragment_calc_density) {
             var densityAltitudeNWS = 145442.16 * (1.0 - (17.326 * (pressure_inhg / (459.67 + temp_f))).pow(0.235))
             elevation = elev_ft + densityAltitudeNWS
             if (elevationUnits == C.ELEV_M) {
-                densityAltitudeNWS = Convert.ft2m(densityAltitudeNWS)
-                elevation = Convert.ft2m(elevation)
+                densityAltitudeNWS = Units.ft2m(densityAltitudeNWS)
+                elevation = Units.ft2m(elevation)
             }
             strDA = Utils.formatDouble(densityAltitudeNWS, 1)
             strElev = Utils.formatDouble(elevation, 1)
@@ -171,8 +171,8 @@ class CalcDensityFragment : Fragment(R.layout.fragment_calc_density) {
             var densityAltitudeAprox = pressureAltitude_ft + 118.8 * (temp_c + pressureAltitude_ft / 500.0 - 15.0)
             elevation = elev_ft + densityAltitudeAprox
             if (elevationUnits == C.ELEV_M) {
-                densityAltitudeAprox = Convert.ft2m(densityAltitudeAprox)
-                elevation = Convert.ft2m(elevation)
+                densityAltitudeAprox = Units.ft2m(densityAltitudeAprox)
+                elevation = Units.ft2m(elevation)
             }
             strDA = Utils.formatDouble(densityAltitudeAprox, 1)
             strElev = Utils.formatDouble(elevation, 1)

@@ -29,6 +29,7 @@ import com.android.billingclient.api.PurchasesUpdatedListener
 import com.android.billingclient.api.SkuDetails
 import com.android.billingclient.api.SkuDetailsParams
 import com.artyum.dynamicnavlog.databinding.ActivityMainBinding
+import com.artyum.dynamicnavlog.openaip.OpenAIPClient
 import com.google.android.gms.ads.AdListener
 import com.google.android.gms.ads.AdRequest
 import com.google.android.gms.ads.AdView
@@ -685,11 +686,9 @@ class MainActivity : AppCompatActivity() {
     }
 
     fun displayButtons() {
-        // Hide all buttons
-        ButtonManager.hide(bind)
-        // Display buttons only on specific Fragments
+        ButtonController.hide(bind)
         val currentFragment = navController.currentDestination.toString()
-        if (currentFragment.contains("HomeFragment") or currentFragment.contains("MapFragment")) ButtonManager.display(bind)
+        if (currentFragment.contains("HomeFragment") or currentFragment.contains("MapFragment")) ButtonController.display(bind)
     }
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
@@ -783,7 +782,7 @@ class MainActivity : AppCompatActivity() {
                         val last = NavLogUtils.getNavlogLastActiveItemId()
 
                         if (State.navlogList[item].pos != null) {
-                            val dist = Convert.m2nm(GPSUtils.calcDistance(gps.pos!!, State.navlogList[item].pos!!))
+                            val dist = Units.m2nm(GPSUtils.calcDistance(gps.pos!!, State.navlogList[item].pos!!))
                             if (dist <= C.nextRadiusList[State.options.nextRadiusIndex]) {
                                 if (item < last) {
                                     // Auto Next Waypoint

@@ -70,7 +70,7 @@ class NavlogDialogFragment(private val item: Int, private val adapter: NavlogAda
 
             if (dest != "" && mt != "" && dist != "") {
                 val dMagneticTrack = Utils.getDoubleOrNull(mt)
-                val dDist = Convert.fromUserUnitsDis(Utils.getDoubleOrNull(dist))
+                val dDist = Units.fromUserUnitsDis(Utils.getDoubleOrNull(dist))
                 var dTrueTrack = Utils.getDoubleOrNull(tt)
                 val dDeclination = Utils.getDoubleOrNull(declination)
                 val dLat = Utils.getDoubleOrNull(lat)
@@ -153,8 +153,8 @@ class NavlogDialogFragment(private val item: Int, private val adapter: NavlogAda
             if (State.navlogList[item].mt != null) bind.dialogMt.setText(Utils.formatDouble(State.navlogList[item].mt, 1))
 
             // Distance
-            bind.dialogDist.setText(Utils.formatDouble(Convert.toUserUnitsDis(State.navlogList[item].dist), 1))
-            bind.boxDistance.hint = getString(R.string.txtDistance) + " (" + Convert.getUnitsDis() + ")"
+            bind.dialogDist.setText(Utils.formatDouble(Units.toUserUnitsDis(State.navlogList[item].dist), 1))
+            bind.boxDistance.hint = getString(R.string.txtDistance) + " (" + Units.getUnitsDis() + ")"
 
             // Latitude
             if (State.navlogList[item].pos != null) {
@@ -218,10 +218,10 @@ class NavlogDialogFragment(private val item: Int, private val adapter: NavlogAda
 
     private fun calcPos() {
         val tt = Utils.getDoubleOrNull(bind.dialogTt.text.toString())
-        val dist = Convert.fromUserUnitsDis(Utils.getDoubleOrNull(bind.dialogDist.text.toString()))
+        val dist = Units.fromUserUnitsDis(Utils.getDoubleOrNull(bind.dialogDist.text.toString()))
         val prevPos = NavLogUtils.getPrevCoords(item)
         if (tt != null && dist != null && prevPos != null) {
-            val newPos = GPSUtils.calcDestinationPos(from = prevPos, bearing = tt, distance = Convert.nm2m(dist))
+            val newPos = GPSUtils.calcDestinationPos(from = prevPos, bearing = tt, distance = Units.nm2m(dist))
             bind.dialogLat.setText(Utils.formatDouble(newPos.latitude, C.POS_PRECISION))
             bind.dialogLng.setText(Utils.formatDouble(newPos.longitude, C.POS_PRECISION))
         }

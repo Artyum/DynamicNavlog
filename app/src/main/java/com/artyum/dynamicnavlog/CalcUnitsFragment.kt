@@ -128,72 +128,72 @@ class CalcUnitsFragment : Fragment(R.layout.fragment_calc_units) {
 
             // Distance
             if (unitsType == 0) {
-                if (unitsBase == 1) value = Convert.sm2nm(value)   //sm -> nm
-                if (unitsBase == 2) value = Convert.km2nm(value)   //km -> nm
-                if (unitsBase == 3) value = Convert.m2nm(value)    //m -> nm
-                if (unitsBase == 4) value = Convert.ft2nm(value)   //ft -> nm
+                if (unitsBase == 1) value = Units.sm2nm(value)   //sm -> nm
+                if (unitsBase == 2) value = Units.km2nm(value)   //km -> nm
+                if (unitsBase == 3) value = Units.m2nm(value)    //m -> nm
+                if (unitsBase == 4) value = Units.ft2nm(value)   //ft -> nm
 
                 msg += Utils.formatDouble(value, p) + " nm".padEnd(pad, ' ') + "\n"
-                msg += Utils.formatDouble(Convert.nm2sm(value), p) + " sm".padEnd(pad, ' ') + "\n"
-                msg += Utils.formatDouble(Convert.nm2km(value), p) + " km".padEnd(pad, ' ') + "\n"
-                msg += Utils.formatDouble(Convert.nm2m(value), p) + " m".padEnd(pad, ' ') + "\n"
-                msg += Utils.formatDouble(Convert.nm2ft(value), p) + " ft".padEnd(pad, ' ')
+                msg += Utils.formatDouble(Units.nm2sm(value), p) + " sm".padEnd(pad, ' ') + "\n"
+                msg += Utils.formatDouble(Units.nm2km(value), p) + " km".padEnd(pad, ' ') + "\n"
+                msg += Utils.formatDouble(Units.nm2m(value), p) + " m".padEnd(pad, ' ') + "\n"
+                msg += Utils.formatDouble(Units.nm2ft(value), p) + " ft".padEnd(pad, ' ')
             }
 
             // Speed
             if (unitsType == 1) {
-                if (unitsBase == 1) value = Convert.mph2kt(value)   //mph -> kt
-                if (unitsBase == 2) value = Convert.kph2kt(value)   //kph -> kt
-                if (unitsBase == 3) value = Convert.mps2kt(value)   //m/s -> kt
-                if (unitsBase == 4) value = Convert.fpm2kt(value)   //ft/min -> kt
+                if (unitsBase == 1) value = Units.mph2kt(value)   //mph -> kt
+                if (unitsBase == 2) value = Units.kph2kt(value)   //kph -> kt
+                if (unitsBase == 3) value = Units.mps2kt(value)   //m/s -> kt
+                if (unitsBase == 4) value = Units.fpm2kt(value)   //ft/min -> kt
 
                 msg += Utils.formatDouble(value, p) + " kt".padEnd(pad, ' ') + "\n"
-                msg += Utils.formatDouble(Convert.kt2mph(value), p) + " mph".padEnd(pad, ' ') + "\n"
-                msg += Utils.formatDouble(Convert.kt2kph(value), p) + " kph".padEnd(pad, ' ') + "\n"
-                msg += Utils.formatDouble(Convert.kt2mps(value), p) + " m/s".padEnd(pad, ' ') + "\n"
-                msg += Utils.formatDouble(Convert.kt2fpm(value), p) + " ft/min".padEnd(pad, ' ')
+                msg += Utils.formatDouble(Units.kt2mph(value), p) + " mph".padEnd(pad, ' ') + "\n"
+                msg += Utils.formatDouble(Units.kt2kph(value), p) + " kph".padEnd(pad, ' ') + "\n"
+                msg += Utils.formatDouble(Units.kt2mps(value), p) + " m/s".padEnd(pad, ' ') + "\n"
+                msg += Utils.formatDouble(Units.kt2fpm(value), p) + " ft/min".padEnd(pad, ' ')
             }
 
             // Temperature
             if (unitsType == 2) {
-                if (unitsBase == 0) value = Convert.f2c(value)   //F -> C
-                if (unitsBase == 2) value = Convert.k2c(value)   //K -> C
+                if (unitsBase == 0) value = Units.f2c(value)   //F -> C
+                if (unitsBase == 2) value = Units.k2c(value)   //K -> C
 
-                msg += Utils.formatDouble(Convert.c2f(value), p) + " \u2109".padEnd(pad, ' ') + "\n"
+                msg += Utils.formatDouble(Units.c2f(value), p) + " \u2109".padEnd(pad, ' ') + "\n"
                 msg += Utils.formatDouble(value, p) + " \u2103".padEnd(pad, ' ') + "\n"
-                msg += Utils.formatDouble(Convert.c2k(value), p) + " \u212A".padEnd(pad, ' ')
+                msg += Utils.formatDouble(Units.c2k(value), p) + " \u212A".padEnd(pad, ' ')
             }
 
             // Pressure
             if (unitsType == 3) {
-                if (unitsBase == 1) value = Convert.mmhg2inhg(value)   //mmhg -> inhg
-                if (unitsBase == 2) value = Convert.hpa2inhg(value)    //hpa -> inhg
-                if (unitsBase == 3) value = Convert.atm2inhg(value)    //atm -> inhg
+                if (unitsBase == 1) value = Units.mmhg2inhg(value)   //mmhg -> inhg
+                if (unitsBase == 2) value = Units.hpa2inhg(value)    //hpa -> inhg
+                if (unitsBase == 3) value = Units.atm2inhg(value)    //atm -> inhg
 
                 msg += Utils.formatDouble(value, p) + " inhg".padEnd(pad, ' ') + "\n"
-                msg += Utils.formatDouble(Convert.inhg2mmhg(value), p) + " mmhg".padEnd(pad, ' ') + "\n"
-                msg += Utils.formatDouble(Convert.inhg2hpa(value), p) + " hpa".padEnd(pad, ' ') + "\n"
-                msg += Utils.formatDouble(Convert.inhg2atm(value), 3) + " atm".padEnd(pad, ' ')
+                msg += Utils.formatDouble(Units.inhg2mmhg(value), p) + " mmhg".padEnd(pad, ' ') + "\n"
+                msg += Utils.formatDouble(Units.inhg2hpa(value), p) + " hpa".padEnd(pad, ' ') + "\n"
+                msg += Utils.formatDouble(Units.inhg2atm(value), 3) + " atm".padEnd(pad, ' ')
             }
 
             // Weight & Mass
             if (unitsType == 4) {
-                if (unitsBase == 1) value = Convert.lb2kg(value)    //lb -> kg
-                if (unitsBase == 2) value = Convert.oz2kg(value)    //oz -> kg
+                if (unitsBase == 1) value = Units.lb2kg(value)    //lb -> kg
+                if (unitsBase == 2) value = Units.oz2kg(value)    //oz -> kg
 
                 msg += Utils.formatDouble(value, p) + " kg".padEnd(pad, ' ') + "\n"
-                msg += Utils.formatDouble(Convert.kg2lb(value), p) + " lb".padEnd(pad, ' ') + "\n"
-                msg += Utils.formatDouble(Convert.kg2oz(value), p) + " oz".padEnd(pad, ' ')
+                msg += Utils.formatDouble(Units.kg2lb(value), p) + " lb".padEnd(pad, ' ') + "\n"
+                msg += Utils.formatDouble(Units.kg2oz(value), p) + " oz".padEnd(pad, ' ')
             }
 
             // Volume
             if (unitsType == 5) {
-                if (unitsBase == 1) value = Convert.usgal2l(value)   //US gal -> l
-                if (unitsBase == 2) value = Convert.ukgal2l(value)   //UK gal -> l
+                if (unitsBase == 1) value = Units.usgal2l(value)   //US gal -> l
+                if (unitsBase == 2) value = Units.ukgal2l(value)   //UK gal -> l
 
                 msg += Utils.formatDouble(value, p) + " l".padEnd(pad, ' ') + "\n"
-                msg += Utils.formatDouble(Convert.l2usgal(value), p) + " US gal".padEnd(pad, ' ') + "\n"
-                msg += Utils.formatDouble(Convert.l2ukgal(value), p) + " UK gal".padEnd(pad, ' ')
+                msg += Utils.formatDouble(Units.l2usgal(value), p) + " US gal".padEnd(pad, ' ') + "\n"
+                msg += Utils.formatDouble(Units.l2ukgal(value), p) + " UK gal".padEnd(pad, ' ')
             }
 
             bind.outputFrame.text = msg

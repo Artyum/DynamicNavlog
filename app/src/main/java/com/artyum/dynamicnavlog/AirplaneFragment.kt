@@ -253,18 +253,18 @@ object AirplaneUtils {
 
                 // Convert to kt and litres
                 when (a.spdUnits) {
-                    C.SPD_MPH -> a.tas = Convert.mph2kt(a.tas)
-                    C.SPD_KPH -> a.tas = Convert.kph2kt(a.tas)
+                    C.SPD_MPH -> a.tas = Units.mph2kt(a.tas)
+                    C.SPD_KPH -> a.tas = Units.kph2kt(a.tas)
                 }
                 when (a.volUnits) {
                     C.VOL_USGAL -> {
-                        a.tank = Convert.usgal2l(a.tank)
-                        a.fph = Convert.usgal2l(a.fph)
+                        a.tank = Units.usgal2l(a.tank)
+                        a.fph = Units.usgal2l(a.fph)
                     }
 
                     C.VOL_UKGAL -> {
-                        a.tank = Convert.ukgal2l(a.tank)
-                        a.fph = Convert.ukgal2l(a.fph)
+                        a.tank = Units.ukgal2l(a.tank)
+                        a.fph = Units.ukgal2l(a.fph)
                     }
                 }
 

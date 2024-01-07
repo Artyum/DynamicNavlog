@@ -28,6 +28,9 @@ class AboutFragment : Fragment(R.layout.fragment_about) {
         bind.aboutLayout.keepScreenOn = State.options.keepScreenOn
         (activity as MainActivity).displayButtons()
 
+        // Set version number
+        bind.appVersion.text = C.appVersion
+
         // Clickable links
         bind.linkManual.movementMethod = LinkMovementMethod.getInstance()
         bind.linkEmail.movementMethod = LinkMovementMethod.getInstance()

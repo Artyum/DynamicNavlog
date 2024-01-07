@@ -459,10 +459,10 @@ object FileUtils {
             file.writeText("PLAN NAME;;" + State.settings.planName + "\n")
             file.appendText("DEP/DEST;;" + State.settings.departure + "/" + State.settings.destination + "\n")
             file.appendText("PLANE;;" + State.airplane.type + "/" + State.airplane.reg + "\n")
-            file.appendText("WIND DIR/SPD;;" + Utils.formatDouble(State.settings.windDir) + "/" + Utils.formatDouble(State.settings.windSpd) + Convert.getUnitsSpd() + "\n")
-            file.appendText("TAS;;" + Utils.formatDouble(State.airplane.tas) + Convert.getUnitsSpd() + "\n")
+            file.appendText("WIND DIR/SPD;;" + Utils.formatDouble(State.settings.windDir) + "/" + Utils.formatDouble(State.settings.windSpd) + Units.getUnitsSpd() + "\n")
+            file.appendText("TAS;;" + Utils.formatDouble(State.airplane.tas) + Units.getUnitsSpd() + "\n")
             file.appendText("FUEL/FPH;;" + Utils.formatDouble(State.settings.fob) + "/" + Utils.formatDouble(State.airplane.fph) + "\n")
-            file.appendText("UNITS DIST/SPD/FUEL;;" + Convert.getUnitsSpd() + "/" + Convert.getUnitsDis() + "/" + Convert.getUnitsVol() + "\n")
+            file.appendText("UNITS DIST/SPD/FUEL;;" + Units.getUnitsSpd() + "/" + Units.getUnitsDis() + "/" + Units.getUnitsVol() + "\n")
 
             // Table header
             file.appendText("\n")

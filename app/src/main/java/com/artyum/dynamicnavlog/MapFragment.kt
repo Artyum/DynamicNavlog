@@ -3,6 +3,7 @@ package com.artyum.dynamicnavlog
 import android.Manifest
 import android.content.pm.PackageManager
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -13,6 +14,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.setFragmentResultListener
 import androidx.lifecycle.lifecycleScope
 import com.artyum.dynamicnavlog.databinding.FragmentMapBinding
+import com.artyum.dynamicnavlog.openaip.OpenAIPClient
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.SupportMapFragment
@@ -34,13 +36,14 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.sync.withLock
+import okhttp3.internal.Util
 import kotlin.math.abs
 
 class MapFragment : Fragment(R.layout.fragment_map) {
     private var _binding: FragmentMapBinding? = null
     private val bind get() = _binding!!
     private lateinit var map: GoogleMap
-    private lateinit var map2: GoogleMap   // Used for setting a zoom level
+    private lateinit var map2: GoogleMap   // Used for setting zoom level
     private var mapReady: Boolean = false
 
     private val trackMarkers = ArrayList<Marker>()
@@ -80,8 +83,6 @@ class MapFragment : Fragment(R.layout.fragment_map) {
         val context = (activity as MainActivity).applicationContext
         val mapFragment = childFragmentManager.findFragmentById(R.id.mapFragment) as SupportMapFragment
         val mapFragmentHidden = childFragmentManager.findFragmentById(R.id.mapFragmentHidden) as SupportMapFragment
-
-        val aip = OpenAIP()
 
         if (ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions((activity as MainActivity), arrayOf(Manifest.permission.ACCESS_FINE_LOCATION), C.LOCATION_PERMISSION_REQ_CODE)
@@ -183,7 +184,7 @@ class MapFragment : Fragment(R.layout.fragment_map) {
                 }
 
                 // Draw wind arrow on map move
-                if (_binding!=null) map.setOnCameraMoveListener { drawWindArrow() }
+                if (_binding != null) map.setOnCameraMoveListener { drawWindArrow() }
 
                 mapReady = true
 
@@ -258,13 +259,16 @@ class MapFragment : Fragment(R.layout.fragment_map) {
         refreshBottomBar()
 
         // Display units in top navigation bar
-        val txtGs = getString(R.string.txtGs) + " (" + Convert.getUnitsSpd() + ")"
+        val txtGs = getString(R.string.txtGs) + " (" + Units.getUnitsSpd() + ")"
         bind.txtNavGs.text = txtGs
-        val txtDist = getString(R.string.txtDist) + " (" + Convert.getUnitsDis() + ")"
+        val txtDist = getString(R.string.txtDist) + " (" + Units.getUnitsDis() + ")"
         bind.txtNavDist.text = txtDist
 
         // Start home thread
         CoroutineScope(CoroutineName("map")).launch { updateNavigationBoxThread() }
+
+        // Start OpenAIP thread
+        //CoroutineScope(CoroutineName("OpenAIP")).launch { openAIPThread() }
 
         // Run map update thread
         lifecycleScope.launch { updateMapThread() }
@@ -307,7 +311,7 @@ class MapFragment : Fragment(R.layout.fragment_map) {
                 // Auto-next circle
                 if (SettingUtils.isAutoNextEnabled() && i >= item) {
                     val pos = State.navlogList[i].pos!!
-                    val radius = Convert.nm2m(C.nextRadiusList[State.options.nextRadiusIndex])
+                    val radius = Units.nm2m(C.nextRadiusList[State.options.nextRadiusIndex])
                     val fill = R.color.grayTransparent2
 
                     if (Utils.isFlightInProgress()) {
@@ -348,7 +352,11 @@ class MapFragment : Fragment(R.layout.fragment_map) {
         if (!mapReady || State.tracePointsList.size < 2) return
 
         traceLine?.remove()
-        val line = PolylineOptions().clickable(false).color(ContextCompat.getColor(this.requireContext(), R.color.traceLine)).geodesic(true).pattern(listOf(Dash(15f), Gap(15f))).width(8f)
+        val line = PolylineOptions()
+            .clickable(false)
+            .color(ContextCompat.getColor(this.requireContext(), R.color.traceLine))
+            .geodesic(true)
+            .pattern(listOf(Dash(15f), Gap(15f))).width(8f)
 
         for (i in State.tracePointsList.indices) line.add(State.tracePointsList[i])
         traceLine = map.addPolyline(line)
@@ -574,7 +582,11 @@ class MapFragment : Fragment(R.layout.fragment_map) {
 
     private fun addCircle(pos: LatLng, radius: Double, strokeColor: Int = R.color.gray, fillColor: Int = R.color.transparent, strokeWidth: Float = 3f, type: Int) {
         val c = map.addCircle(
-            CircleOptions().center(pos).radius(radius).strokeColor(ContextCompat.getColor(this.requireContext(), strokeColor)).strokeWidth(strokeWidth)
+            CircleOptions()
+                .center(pos)
+                .radius(radius)
+                .strokeColor(ContextCompat.getColor(this.requireContext(), strokeColor))
+                .strokeWidth(strokeWidth)
                 .fillColor(ContextCompat.getColor(this.requireContext(), fillColor))
         )
         when (type) {
@@ -622,7 +634,7 @@ class MapFragment : Fragment(R.layout.fragment_map) {
         val tt = GPSUtils.calcBearing(prevCoords, pos)
 
         // Distance
-        val dist = Convert.m2nm(GPSUtils.calcDistance(prevCoords, pos))
+        val dist = Units.m2nm(GPSUtils.calcDistance(prevCoords, pos))
 
         // Add item
         State.navlogList.add(position, NavlogItemData(dest = "", pos = pos, tt = tt, d = GPSUtils.getDeclination(pos), dist = dist))
@@ -638,21 +650,21 @@ class MapFragment : Fragment(R.layout.fragment_map) {
     private fun recalculateRadial(i: Int) {
         if (i < 0 || i > State.radialList.size - 1) return
         State.radialList[i].angle = GPSUtils.normalizeBearing(GPSUtils.calcBearing(State.radialList[i].pos1, State.radialList[i].pos2) + GPSUtils.getDeclination(State.radialList[i].pos1))
-        State.radialList[i].dist = Convert.m2nm(GPSUtils.calcDistance(State.radialList[i].pos1, State.radialList[i].pos2))
+        State.radialList[i].dist = Units.m2nm(GPSUtils.calcDistance(State.radialList[i].pos1, State.radialList[i].pos2))
     }
 
     private fun refreshBottomBar() {
         val p1 = if (State.totals.dist < C.DIST_THRESHOLD) 1 else 0
         val p2 = if (State.totals.fuel < C.VOL_THRESHOLD) 1 else 0
-        val strDist = Utils.formatDouble(Convert.toUserUnitsDis(State.totals.dist), p1) + " " + Convert.getUnitsDis()
-        val strFuel = Utils.formatDouble(Convert.toUserUnitsVol(State.totals.fuel), p2) + " " + Convert.getUnitsVol()
+        val strDist = Utils.formatDouble(Units.toUserUnitsDis(State.totals.dist), p1) + " " + Units.getUnitsDis()
+        val strFuel = Utils.formatDouble(Units.toUserUnitsVol(State.totals.fuel), p2) + " " + Units.getUnitsVol()
         bind.txtTotalDist.text = strDist
         bind.txtTotalTime.text = TimeUtils.formatSecondsToTime(State.totals.time)
         bind.txtTotalFuel.text = strFuel
     }
 
     private fun getZoomLevel(pos: LatLng, distance: Double): Float {
-        val pos2 = GPSUtils.calcDestinationPos(pos, 0.0, Convert.nm2m(distance))
+        val pos2 = GPSUtils.calcDestinationPos(pos, 0.0, Units.nm2m(distance))
         val builder = LatLngBounds.Builder()
         builder.include(pos)
         builder.include(pos2)
@@ -768,6 +780,44 @@ class MapFragment : Fragment(R.layout.fragment_map) {
                 } else {
                     // Hide top navigation
                     a.runOnUiThread { b.topNavigation.visibility = View.GONE }
+                }
+            }
+        }
+    }
+
+    private fun openAIPThread() {
+        val tag = "openAIPThread"
+        var prevTime = 0L
+        var position= LatLng(0.0, 0.0)
+        var prevPosition = LatLng(0.0, 0.0)
+
+        while (true) {
+            val a = activity as? MainActivity ?: break
+            val b = _binding ?: break
+
+            // Loop every 1 sec
+            val curTime = System.currentTimeMillis() / 1000L
+            if (curTime != prevTime) {
+                prevTime = curTime
+
+                if (mapReady) {
+                    //val health = OpenAIPClient.checkHealth()
+                    //Log.d(tag, Utils.formatJson(health!!))
+
+                    //val airports = OpenAIPClient.getAirports("52.224527,20.963743", 15000)
+                    //Log.d(tag, Utils.formatJson(airports!!))
+
+                    a.runOnUiThread {
+                        // Get current position
+                        val cameraPosition = map.cameraPosition
+                        position = cameraPosition.target
+                    }
+                    // If the position has changed
+                    if (prevPosition.latitude != position.latitude || prevPosition.longitude != position.longitude) {
+                        prevPosition = position
+                        Log.d(tag, Utils.formatDouble(position.latitude, 6))
+                        Log.d(tag, Utils.formatDouble(position.longitude, 6))
+                    }
                 }
             }
         }

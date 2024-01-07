@@ -120,7 +120,7 @@ class SettingsFragment : Fragment(R.layout.fragment_settings) {
         bind.settingWindSpd.doOnTextChanged { text, _, _, _ ->
             Log.d("SettingsFragment", "trigger settingWindSpd")
             if (restore) return@doOnTextChanged
-            val dWindSpd = Convert.fromUserUnitsSpd(Utils.getDoubleOrNull(text.toString()))
+            val dWindSpd = Units.fromUserUnitsSpd(Utils.getDoubleOrNull(text.toString()))
             if (!isValidWindSpeed(dWindSpd)) showSettingsError(getString(R.string.txtInvalidWindSpeed))
             else if (State.settings.windSpd != dWindSpd) {
                 Log.d("SettingsFragment", "new WindSpd")
@@ -138,7 +138,7 @@ class SettingsFragment : Fragment(R.layout.fragment_settings) {
         bind.settingFuel.doOnTextChanged { text, _, _, _ ->
             Log.d("SettingsFragment", "trigger settingFuel")
             if (restore) return@doOnTextChanged
-            var dFob = Convert.fromUserUnitsVol(Utils.getDoubleOrNull(text.toString()))
+            var dFob = Units.fromUserUnitsVol(Utils.getDoubleOrNull(text.toString()))
             if (dFob != null) {
                 if (dFob < 0.0) dFob = 0.0
                 if (dFob < State.totals.fuel) dFob = State.totals.fuel
@@ -251,19 +251,19 @@ class SettingsFragment : Fragment(R.layout.fragment_settings) {
 
         // Takeoff fuel
         val p = if (State.settings.fob < C.VOL_THRESHOLD) 1 else 0
-        bind.settingFuel.setText(Utils.formatDouble(Convert.toUserUnitsVol(s.fob), p))
-        bind.hintTakeoffFuel.hint = getString(R.string.txtTakeoffFuel) + " (" + Convert.getUnitsVol() + ")"
+        bind.settingFuel.setText(Utils.formatDouble(Units.toUserUnitsVol(s.fob), p))
+        bind.hintTakeoffFuel.hint = getString(R.string.txtTakeoffFuel) + " (" + Units.getUnitsVol() + ")"
 
         // Airplane
         val id = getAirplaneListPosition(s.airplaneId)
         if (id > 0) {
             bind.spinnerAirplane.setSelection(id)
-            bind.airplaneTas.text = Utils.formatDouble(Convert.toUserUnitsSpd(a.tas))
-            bind.airplaneTasUnits.text = Convert.getUnitsSpd()
-            bind.airplaneTank.text = Utils.formatDouble(Convert.toUserUnitsVol(a.tank))
-            bind.airplaneTankUnits.text = Convert.getUnitsVol()
-            bind.airplaneFph.text = Utils.formatDouble(Convert.toUserUnitsVol(a.fph), 1)
-            bind.airplaneFphUnits.text = Convert.getUnitsVol()
+            bind.airplaneTas.text = Utils.formatDouble(Units.toUserUnitsSpd(a.tas))
+            bind.airplaneTasUnits.text = Units.getUnitsSpd()
+            bind.airplaneTank.text = Utils.formatDouble(Units.toUserUnitsVol(a.tank))
+            bind.airplaneTankUnits.text = Units.getUnitsVol()
+            bind.airplaneFph.text = Utils.formatDouble(Units.toUserUnitsVol(a.fph), 1)
+            bind.airplaneFphUnits.text = Units.getUnitsVol()
             bind.settingsSelectAirplaneMsg.visibility = View.GONE
         } else {
             c++
@@ -278,8 +278,8 @@ class SettingsFragment : Fragment(R.layout.fragment_settings) {
 
         // Wind conditions
         bind.settingWindDir.setText(Utils.formatDouble(s.windDir, 1))
-        bind.settingWindSpd.setText(Utils.formatDouble(Convert.toUserUnitsSpd(s.windSpd), 1))
-        bind.hintWindSpd.hint = getString(R.string.txtWindSpeed) + " (" + Convert.getUnitsSpd() + ")"
+        bind.settingWindSpd.setText(Utils.formatDouble(Units.toUserUnitsSpd(s.windSpd), 1))
+        bind.hintWindSpd.hint = getString(R.string.txtWindSpeed) + " (" + Units.getUnitsSpd() + ")"
 
         refreshSummaryBox()
 
@@ -294,9 +294,9 @@ class SettingsFragment : Fragment(R.layout.fragment_settings) {
         val t = State.totals
 
         if (s.airplaneId != "" && a.fph > 0.0) {
-            val txtTotDist = Utils.formatDouble(Convert.toUserUnitsDis(t.dist))
+            val txtTotDist = Utils.formatDouble(Units.toUserUnitsDis(t.dist))
             val txtTotTime = TimeUtils.formatSecondsToTime(t.time)
-            val txtTotFuel = Utils.formatDouble(Convert.toUserUnitsVol(t.fuel))
+            val txtTotFuel = Utils.formatDouble(Units.toUserUnitsVol(t.fuel))
 
             val spareFuel = s.fob - t.fuel
 
@@ -306,28 +306,28 @@ class SettingsFragment : Fragment(R.layout.fragment_settings) {
             // Distance with the wind
             val fData2 = Utils.flightCalculator(course = GPSUtils.normalizeBearing(s.windDir + 180.0), windDir = s.windDir, windSpd = s.windSpd, tas = a.tas, fob = spareFuel, fph = a.fph)
 
-            val txtSpareFuel = Utils.formatDouble(Convert.toUserUnitsVol(spareFuel))
+            val txtSpareFuel = Utils.formatDouble(Units.toUserUnitsVol(spareFuel))
             val txtExtraTime = TimeUtils.formatSecondsToTime(fData1.time)
 
-            val dist1 = Utils.formatDouble(Convert.toUserUnitsDis(fData1.dist))
-            val dist2 = Utils.formatDouble(Convert.toUserUnitsDis(fData2.dist))
+            val dist1 = Utils.formatDouble(Units.toUserUnitsDis(fData1.dist))
+            val dist2 = Utils.formatDouble(Units.toUserUnitsDis(fData2.dist))
             val txtExtraDist = if (dist1 == dist2) dist1 else "$dist1-$dist2"
 
             // Display
 
             // Total distance
             bind.totsDist.text = txtTotDist
-            bind.totsDistUnits.text = Convert.getUnitsDis()
+            bind.totsDistUnits.text = Units.getUnitsDis()
             bind.totFuel.text = txtTotFuel
-            bind.totFuelUnits.text = Convert.getUnitsVol()
+            bind.totFuelUnits.text = Units.getUnitsVol()
 
             //  Extra fuel
             bind.spareFuel.text = txtSpareFuel
-            bind.spareFuelUnits.text = Convert.getUnitsVol()
+            bind.spareFuelUnits.text = Units.getUnitsVol()
 
             // Extra distance
             bind.extraDistance.text = txtExtraDist
-            bind.extraDistanceUnits.text = Convert.getUnitsDis()
+            bind.extraDistanceUnits.text = Units.getUnitsDis()
 
             // Plan flight time
             bind.totTime.text = txtTotTime
