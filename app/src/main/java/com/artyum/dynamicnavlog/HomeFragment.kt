@@ -50,8 +50,8 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
     }
 
     private fun displayUnits() {
-        bind.txtHomeDistUnits.text = Convert.getUnitsDis()
-        bind.txtHomeGsUnits.text = Convert.getUnitsSpd()
+        bind.txtHomeDistUnits.text = Units.getUnitsDis()
+        bind.txtHomeGsUnits.text = Units.getUnitsSpd()
     }
 
     private fun drawHomeWinStar() {

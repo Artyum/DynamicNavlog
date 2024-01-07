@@ -40,7 +40,7 @@ class NavlogAdapter(
         tmp = ""
         if (item.dist != null) {
             val p = if (item.dist!! < C.DIST_THRESHOLD) 1 else 0
-            tmp = Utils.formatDouble(Convert.toUserUnitsDis(item.dist), p)
+            tmp = Utils.formatDouble(Units.toUserUnitsDis(item.dist), p)
         }
         holder.tvDist.text = tmp
 
@@ -52,7 +52,7 @@ class NavlogAdapter(
             holder.tvHdg.text = Utils.formatDouble(item.hdg)
 
             //GS
-            holder.tvGs.text = Utils.formatDouble(Convert.toUserUnitsSpd(item.gs))
+            holder.tvGs.text = Utils.formatDouble(Units.toUserUnitsSpd(item.gs))
 
             // TIME
             if (State.settings.tfDisplayToggle == C.TF_DISPLAY_CUR) holder.tvTime.text = TimeUtils.formatSecondsToTime(item.time)
@@ -65,8 +65,8 @@ class NavlogAdapter(
             // Fuel
             val p1 = if (item.fuel != null && item.fuel!! < C.VOL_THRESHOLD) 1 else 0
             val p2 = if (item.fuelRemaining != null && item.fuelRemaining!! < C.VOL_THRESHOLD) 1 else 0
-            if (State.settings.tfDisplayToggle == C.TF_DISPLAY_CUR) holder.tvFuel.text = Utils.formatDouble(Convert.toUserUnitsVol(item.fuel), p1)
-            else holder.tvFuel.text = Utils.formatDouble(Convert.toUserUnitsVol(item.fuelRemaining), p2)
+            if (State.settings.tfDisplayToggle == C.TF_DISPLAY_CUR) holder.tvFuel.text = Utils.formatDouble(Units.toUserUnitsVol(item.fuel), p1)
+            else holder.tvFuel.text = Utils.formatDouble(Units.toUserUnitsVol(item.fuelRemaining), p2)
         } else {
             holder.tvWca.text = ""
             holder.tvHdg.text = ""

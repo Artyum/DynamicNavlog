@@ -89,8 +89,8 @@ class HomeItem() {
                 distFromPrevWpt = GPSUtils.calcDistance(prevPos!!, gps.pos!!)
                 val distTotal = distFromPrevWpt + distToCurrentWpt
                 distPct = distFromPrevWpt / distTotal * 100.0
-                distToCurrentWpt = Convert.m2nm(distToCurrentWpt)
-                distFromPrevWpt = Convert.m2nm(distFromPrevWpt)
+                distToCurrentWpt = Units.m2nm(distToCurrentWpt)
+                distFromPrevWpt = Units.m2nm(distFromPrevWpt)
             } else {
                 val legTime = Duration.between(prevTime, eta2wpt).toMillis() / 1000
                 val legPct = eteSec.toDouble() / legTime.toDouble()
@@ -178,14 +178,14 @@ class HomeItem() {
         var gsDiff = ""
 
         if (gps.isValid) {
-            gs = Utils.formatDouble(Convert.toUserUnitsSpd(gps.speedKt))
+            gs = Utils.formatDouble(Units.toUserUnitsSpd(gps.speedKt))
             if (stage == C.STAGE_3_FLIGHT_IN_PROGRESS) {
-                val diff = Convert.toUserUnitsSpd(gps.speedKt - State.navlogList[item].gs!!)!!
+                val diff = Units.toUserUnitsSpd(gps.speedKt - State.navlogList[item].gs!!)!!
                 gsDiff = if (diff > 0.0) ("+" + Utils.formatDouble(diff)) else Utils.formatDouble(diff)
             }
         } else {
-            if (stage < C.STAGE_3_FLIGHT_IN_PROGRESS && first >= 0) gs = Utils.formatDouble(Convert.toUserUnitsSpd(State.navlogList[first].gs))
-            else if (stage == C.STAGE_3_FLIGHT_IN_PROGRESS) gs = Utils.formatDouble(Convert.toUserUnitsSpd(State.navlogList[item].gs))
+            if (stage < C.STAGE_3_FLIGHT_IN_PROGRESS && first >= 0) gs = Utils.formatDouble(Units.toUserUnitsSpd(State.navlogList[first].gs))
+            else if (stage == C.STAGE_3_FLIGHT_IN_PROGRESS) gs = Utils.formatDouble(Units.toUserUnitsSpd(State.navlogList[item].gs))
         }
         return listOf(gs, gsDiff)
     }
@@ -224,9 +224,9 @@ class HomeItem() {
 
         // Check hit waypoint circle
         if (stage == C.STAGE_3_FLIGHT_IN_PROGRESS && distToCurrentWpt > 0 && gps.isValid && gps.bearing != null && item >= 0) {
-            val p = GPSUtils.calcDestinationPos(gps.pos!!, gps.bearing!!.toDouble(), Convert.nm2m(distToCurrentWpt))
+            val p = GPSUtils.calcDestinationPos(gps.pos!!, gps.bearing!!.toDouble(), Units.nm2m(distToCurrentWpt))
             val d = GPSUtils.calcDistance(p, State.navlogList[item].pos!!)
-            if (Convert.m2nm(d) > C.nextRadiusList[State.options.nextRadiusIndex]) hit = false
+            if (Units.m2nm(d) > C.nextRadiusList[State.options.nextRadiusIndex]) hit = false
         }
 
         return HomeDtkAngleBar(left, right, hit)
@@ -237,15 +237,15 @@ class HomeItem() {
 
         if (stage < C.STAGE_3_FLIGHT_IN_PROGRESS) {
             if (first >= 0 && State.navlogList[first].dist != null) {
-                if (State.navlogList[first].dist!! > C.DIST_THRESHOLD) ret.dist = Utils.formatDouble(Convert.toUserUnitsDis(State.navlogList[first].dist!!))
-                else ret.dist = Utils.formatDouble(Convert.toUserUnitsDis(State.navlogList[first].dist!!), 1)
+                if (State.navlogList[first].dist!! > C.DIST_THRESHOLD) ret.dist = Utils.formatDouble(Units.toUserUnitsDis(State.navlogList[first].dist!!))
+                else ret.dist = Utils.formatDouble(Units.toUserUnitsDis(State.navlogList[first].dist!!), 1)
             }
         } else if (stage == C.STAGE_3_FLIGHT_IN_PROGRESS) {
-            var p = if (Convert.toUserUnitsDis(abs(distToCurrentWpt))!! > C.DIST_THRESHOLD) 0 else 1
-            ret.dist = Utils.formatDouble(Convert.toUserUnitsDis(abs(distToCurrentWpt)), p)
+            var p = if (Units.toUserUnitsDis(abs(distToCurrentWpt))!! > C.DIST_THRESHOLD) 0 else 1
+            ret.dist = Utils.formatDouble(Units.toUserUnitsDis(abs(distToCurrentWpt)), p)
 
-            p = if (Convert.toUserUnitsDis(abs(distFromPrevWpt))!! > C.DIST_THRESHOLD) 0 else 1
-            ret.distTravelled = Utils.formatDouble(Convert.toUserUnitsDis(abs(distFromPrevWpt)), p)
+            p = if (Units.toUserUnitsDis(abs(distFromPrevWpt))!! > C.DIST_THRESHOLD) 0 else 1
+            ret.distTravelled = Utils.formatDouble(Units.toUserUnitsDis(abs(distFromPrevWpt)), p)
 
             ret.pct = Utils.formatDouble(distPct) + "%"
             if (distToCurrentWpt < 0.0) ret.sign = true
@@ -308,12 +308,12 @@ class HomeItem() {
     fun getFuel(): HomeFuelTime {
         val ret = HomeFuelTime()
 
-        if (stage < C.STAGE_5_AFTER_ENGINE_SHUTDOWN && fuelToLand > 0.0) ret.ftl = Utils.formatDouble(Convert.toUserUnitsVol(fuelToLand))
+        if (stage < C.STAGE_5_AFTER_ENGINE_SHUTDOWN && fuelToLand > 0.0) ret.ftl = Utils.formatDouble(Units.toUserUnitsVol(fuelToLand))
         if (distToCurrentWpt < 0.0) ret.ftlmark = "?"
         if (engineTimeSec > 0.0) ret.engineTime = TimeUtils.formatSecondsToTime(engineTimeSec) else ret.engineTime = "-"
 
         ret.fuelTime = TimeUtils.formatSecondsToTime(fuelTimeRemaining.toLong())
-        ret.fuelRemaining = Utils.formatDouble(Convert.toUserUnitsVol(fuelRemaining))
+        ret.fuelRemaining = Utils.formatDouble(Units.toUserUnitsVol(fuelRemaining))
 
         if (State.airplane.tank > 0.0) {
             val pct = fuelRemaining / State.airplane.tank * 100.0

@@ -67,11 +67,11 @@ class CalcWindFragment : Fragment(layout.fragment_calc_wind) {
 
     private fun calculate(view: View) {
         val dCourse = Utils.getDoubleOrNull(bind.edtCourse.text.toString())
-        val dDist = Convert.fromUserUnitsDis(Utils.getDoubleOrNull(bind.edtDistance.text.toString()))
+        val dDist = Units.fromUserUnitsDis(Utils.getDoubleOrNull(bind.edtDistance.text.toString()))
         val dWindDir = Utils.getDoubleOrNull(bind.edtWindDir.text.toString())
-        val dWindSpd = Convert.fromUserUnitsSpd(Utils.getDoubleOrNull(bind.edtWindSpd.text.toString()))
-        val dTas = Convert.fromUserUnitsSpd(Utils.getDoubleOrNull(bind.edtTas.text.toString()))
-        val dFph = Convert.fromUserUnitsVol(Utils.getDoubleOrNull(bind.edtFph.text.toString()))
+        val dWindSpd = Units.fromUserUnitsSpd(Utils.getDoubleOrNull(bind.edtWindSpd.text.toString()))
+        val dTas = Units.fromUserUnitsSpd(Utils.getDoubleOrNull(bind.edtTas.text.toString()))
+        val dFph = Units.fromUserUnitsVol(Utils.getDoubleOrNull(bind.edtFph.text.toString()))
 
         if (dCourse != null && dWindDir != null && dWindSpd != null && dTas != null) {
             // Validate
@@ -89,22 +89,22 @@ class CalcWindFragment : Fragment(layout.fragment_calc_wind) {
 
             bind.outWca.setText(Utils.formatDouble(wca))
             bind.outHdg.setText(Utils.formatDouble(hdg))
-            bind.outGs.setText(Utils.formatDouble(Convert.toUserUnitsSpd(gs)))
+            bind.outGs.setText(Utils.formatDouble(Units.toUserUnitsSpd(gs)))
             bind.outFlightTime.setText(TimeUtils.formatSecondsToTime(timeSec))
-            bind.outFuel.setText(Utils.formatDouble(Convert.toUserUnitsVol(fuel)))
+            bind.outFuel.setText(Utils.formatDouble(Units.toUserUnitsVol(fuel)))
 
             // Headwind / Crosswind
-            val angle = Convert.deg2rad(dCourse - dWindDir + 360.0)
+            val angle = Units.deg2rad(dCourse - dWindDir + 360.0)
             val hw = dWindSpd * cos(angle)
             val cw = dWindSpd * sin(angle)
 
-            if (hw >= 0) bind.labelHeadwind.hint = getString(string.txtHeadwind) + " (" + Convert.getUnitsSpd() + ")"
-            else bind.labelHeadwind.hint = getString(string.txtTailwind) + " (" + Convert.getUnitsSpd() + ")"
-            bind.outHeadwind.setText(Utils.formatDouble(Convert.toUserUnitsSpd(abs(hw))))
+            if (hw >= 0) bind.labelHeadwind.hint = getString(string.txtHeadwind) + " (" + Units.getUnitsSpd() + ")"
+            else bind.labelHeadwind.hint = getString(string.txtTailwind) + " (" + Units.getUnitsSpd() + ")"
+            bind.outHeadwind.setText(Utils.formatDouble(Units.toUserUnitsSpd(abs(hw))))
 
-            if (cw >= 0) bind.labelCrosswind.hint = getString(string.txtLeftxwind) + " (" + Convert.getUnitsSpd() + ")"
-            else bind.labelCrosswind.hint = getString(string.txtRightxwind) + " (" + Convert.getUnitsSpd() + ")"
-            bind.outCrosswind.setText(Utils.formatDouble(Convert.toUserUnitsSpd(abs(cw))))
+            if (cw >= 0) bind.labelCrosswind.hint = getString(string.txtLeftxwind) + " (" + Units.getUnitsSpd() + ")"
+            else bind.labelCrosswind.hint = getString(string.txtRightxwind) + " (" + Units.getUnitsSpd() + ")"
+            bind.outCrosswind.setText(Utils.formatDouble(Units.toUserUnitsSpd(abs(cw))))
 
             // Image
             Utils.generateWindCircle(bind.imgView, resources, course = dCourse, windDir = dWindDir, hdg = hdg, speedRatio = gs / dTas)
@@ -115,14 +115,14 @@ class CalcWindFragment : Fragment(layout.fragment_calc_wind) {
     }
 
     private fun setupUI() {
-        bind.boxTas.hint = getString(string.txtTAS) + " (" + Convert.getUnitsSpd() + ")"
-        bind.boxGs.hint = getString(string.txtGs) + " (" + Convert.getUnitsSpd() + ")"
-        bind.boxWindSpd.hint = getString(string.txtWindSpeed) + " (" + Convert.getUnitsSpd() + ")"
-        bind.boxDist.hint = getString(string.txtDistance) + " (" + Convert.getUnitsDis() + ")"
-        bind.boxFuel1.hint = getString(string.txtFuelPerHour) + " (" + Convert.getUnitsVol() + ")"
-        bind.boxFuel2.hint = getString(string.txtFuelRequired) + " (" + Convert.getUnitsVol() + ")"
-        bind.labelHeadwind.hint = getString(string.txtHeadwind) + " (" + Convert.getUnitsSpd() + ")"
-        bind.labelCrosswind.hint = getString(string.txtCrosswind) + " (" + Convert.getUnitsSpd() + ")"
+        bind.boxTas.hint = getString(string.txtTAS) + " (" + Units.getUnitsSpd() + ")"
+        bind.boxGs.hint = getString(string.txtGs) + " (" + Units.getUnitsSpd() + ")"
+        bind.boxWindSpd.hint = getString(string.txtWindSpeed) + " (" + Units.getUnitsSpd() + ")"
+        bind.boxDist.hint = getString(string.txtDistance) + " (" + Units.getUnitsDis() + ")"
+        bind.boxFuel1.hint = getString(string.txtFuelPerHour) + " (" + Units.getUnitsVol() + ")"
+        bind.boxFuel2.hint = getString(string.txtFuelRequired) + " (" + Units.getUnitsVol() + ")"
+        bind.labelHeadwind.hint = getString(string.txtHeadwind) + " (" + Units.getUnitsSpd() + ")"
+        bind.labelCrosswind.hint = getString(string.txtCrosswind) + " (" + Units.getUnitsSpd() + ")"
     }
 
     private fun View.hideKeyboard() {

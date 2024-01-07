@@ -83,9 +83,9 @@ class OptionsFragment : Fragment(R.layout.fragment_options) {
         bind.takeoffSpd.doOnTextChanged { text, _, _, _ ->
             var dToSpd = Utils.getDoubleOrNull(text.toString())
             if (dToSpd != null) {
-                dToSpd = Convert.fromUserUnitsSpd(dToSpd)!!
+                dToSpd = Units.fromUserUnitsSpd(dToSpd)!!
                 if (dToSpd < C.AUTO_TAKEOFF_MIN_SPEED_KT) dToSpd = C.AUTO_TAKEOFF_MIN_SPEED_KT
-                State.options.autoTakeoffSpd = Convert.kt2mps(dToSpd)
+                State.options.autoTakeoffSpd = Units.kt2mps(dToSpd)
                 save = true
             }
         }
@@ -95,9 +95,9 @@ class OptionsFragment : Fragment(R.layout.fragment_options) {
         bind.landingSpd.doOnTextChanged { text, _, _, _ ->
             var dLndSpd = Utils.getDoubleOrNull(text.toString())
             if (dLndSpd != null) {
-                dLndSpd = Convert.fromUserUnitsSpd(dLndSpd)!!
+                dLndSpd = Units.fromUserUnitsSpd(dLndSpd)!!
                 if (dLndSpd < C.AUTO_LANDING_MIN_SPEED_KT) dLndSpd = C.AUTO_LANDING_MIN_SPEED_KT
-                State.options.autoLandingSpd = Convert.kt2mps(dLndSpd)
+                State.options.autoLandingSpd = Units.kt2mps(dLndSpd)
                 save = true
             }
         }
@@ -294,7 +294,7 @@ class OptionsFragment : Fragment(R.layout.fragment_options) {
         // Switch - Auto-next radius
         val nextRadiusOptions = ArrayList<String>()
         for (i in C.nextRadiusList.indices) {
-            val r = Utils.formatDouble(Convert.toUserUnitsDis(C.nextRadiusList[i]), 3) + " " + Convert.getUnitsDis()
+            val r = Utils.formatDouble(Units.toUserUnitsDis(C.nextRadiusList[i]), 3) + " " + Units.getUnitsDis()
             nextRadiusOptions.add(r)
         }
         bind.spinnerNextRadius.adapter = ArrayAdapter(this.requireContext(), R.layout.support_simple_spinner_dropdown_item, nextRadiusOptions)
@@ -308,8 +308,8 @@ class OptionsFragment : Fragment(R.layout.fragment_options) {
         bind.settingAutoNext.isChecked = State.options.autoNext
         bind.spinnerNextRadius.setSelection(State.options.nextRadiusIndex)
 
-        bind.takeoffSpd.setText(Utils.formatDouble(Convert.toUserUnitsSpd(Convert.mps2kt(State.options.autoTakeoffSpd))))
-        bind.landingSpd.setText(Utils.formatDouble(Convert.toUserUnitsSpd(Convert.mps2kt(State.options.autoLandingSpd))))
+        bind.takeoffSpd.setText(Utils.formatDouble(Units.toUserUnitsSpd(Units.mps2kt(State.options.autoTakeoffSpd))))
+        bind.landingSpd.setText(Utils.formatDouble(Units.toUserUnitsSpd(Units.mps2kt(State.options.autoLandingSpd))))
 
         // Display units
         bind.spinnerUnitsSpd.setSelection(State.options.spdUnits)
@@ -337,8 +337,8 @@ class OptionsFragment : Fragment(R.layout.fragment_options) {
 
         bind.takeoffBox.isEnabled = bind.spinnerNextRadius.isEnabled
         bind.landingBox.isEnabled = bind.spinnerNextRadius.isEnabled
-        bind.takeoffBox.hint = getString(R.string.txtTakeoffSpeed) + " (" + Convert.getUnitsSpd() + ")"
-        bind.landingBox.hint = getString(R.string.txtLandingSpeed) + " (" + Convert.getUnitsSpd() + ")"
+        bind.takeoffBox.hint = getString(R.string.txtTakeoffSpeed) + " (" + Units.getUnitsSpd() + ")"
+        bind.landingBox.hint = getString(R.string.txtLandingSpeed) + " (" + Units.getUnitsSpd() + ")"
 
         restore = false
     }

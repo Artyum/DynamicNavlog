@@ -101,17 +101,17 @@ class CalcDensity2Fragment : Fragment(R.layout.fragment_calc_density2) {
             // Air temperature units
             if (airTempUnits == C.TEMP_F) {
                 air_f = inAirTemp
-                air_c = Convert.f2c(air_f)
+                air_c = Units.f2c(air_f)
             } else {
                 air_c = inAirTemp
                 //air_f = c2f(air_c)
             }
-            air_k = Convert.c2k(air_c)
+            air_k = Units.c2k(air_c)
 
             // Dewpoint units
             if (dewpointUnits == C.TEMP_F) {
                 dewpoint_f = inDewpoint
-                dewpoint_c = Convert.f2c(dewpoint_f)
+                dewpoint_c = Units.f2c(dewpoint_f)
             } else {
                 dewpoint_c = inDewpoint
                 //dewpoint_f = c2f(dewpoint_c)
@@ -121,7 +121,7 @@ class CalcDensity2Fragment : Fragment(R.layout.fragment_calc_density2) {
             // Pressure units
             if (pressureUnits == C.PRESSURE_INHG) {
                 pressure_inhg = inPressure
-                pressure_hpa = Convert.inhg2hpa(pressure_inhg)
+                pressure_hpa = Units.inhg2hpa(pressure_inhg)
             } else {
                 pressure_hpa = inPressure
                 //pressure_inhg = hpa2inhg(pressure_hpa)
@@ -130,7 +130,7 @@ class CalcDensity2Fragment : Fragment(R.layout.fragment_calc_density2) {
             // Elevation units
             if (elevationUnits == C.ELEV_FT) {
                 elev_ft = inElev
-                elev_m = Convert.ft2m(elev_ft)
+                elev_m = Units.ft2m(elev_ft)
             } else {
                 elev_m = inElev
                 //elev_ft = m2ft(elev_m)
@@ -194,7 +194,7 @@ class CalcDensity2Fragment : Fragment(R.layout.fragment_calc_density2) {
                 bind.outRelativeDensityUnits.text = "%"
 
                 if (pressureUnits == C.PRESSURE_INHG) {
-                    bind.outAbsolutePressure.text = Utils.formatDouble(Convert.hpa2inhg(pd), 2)
+                    bind.outAbsolutePressure.text = Utils.formatDouble(Units.hpa2inhg(pd), 2)
                     bind.outAbsolutePressureUnits.text = "inHG"
                 } else {
                     bind.outAbsolutePressure.text = Utils.formatDouble(pd, 2)
@@ -202,10 +202,10 @@ class CalcDensity2Fragment : Fragment(R.layout.fragment_calc_density2) {
                 }
 
                 if (elevationUnits == C.ELEV_FT) {
-                    bind.outDensityAltitude.text = Utils.formatDouble(Convert.km2ft(h), 2)
+                    bind.outDensityAltitude.text = Utils.formatDouble(Units.km2ft(h), 2)
                     bind.outDensityAltitudeUnits.text = "ft"
                 } else {
-                    bind.outDensityAltitude.text = Utils.formatDouble(Convert.km2m(h), 2)
+                    bind.outDensityAltitude.text = Utils.formatDouble(Units.km2m(h), 2)
                     bind.outDensityAltitudeUnits.text = "m"
                 }
             } else {

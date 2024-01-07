@@ -30,10 +30,10 @@ import kotlin.math.sqrt
 object GPSUtils {
     // Calculate distance in meters between coordinates
     fun calcDistance(c1: LatLng, c2: LatLng): Double {
-        val lat1 = Convert.deg2rad(c1.latitude)
-        val lat2 = Convert.deg2rad(c2.latitude)
-        val dfi = Convert.deg2rad(c2.latitude - c1.latitude) / 2.0
-        val dla = Convert.deg2rad(c2.longitude - c1.longitude) / 2.0
+        val lat1 = Units.deg2rad(c1.latitude)
+        val lat2 = Units.deg2rad(c2.latitude)
+        val dfi = Units.deg2rad(c2.latitude - c1.latitude) / 2.0
+        val dla = Units.deg2rad(c2.longitude - c1.longitude) / 2.0
 
         val a = sin(dfi) * sin(dfi) + cos(lat1) * cos(lat2) * sin(dla) * sin(dla)
         val c = 2 * atan2(sqrt(a), sqrt(1.0 - a))
@@ -43,20 +43,20 @@ object GPSUtils {
 
     // Calculate destination point given distance and bearing from start point (distance in meters)
     fun calcDestinationPos(from: LatLng, bearing: Double, distance: Double): LatLng {
-        val lat1 = Convert.deg2rad(from.latitude)
-        val lon1 = Convert.deg2rad(from.longitude)
-        val brg = Convert.deg2rad(bearing)
+        val lat1 = Units.deg2rad(from.latitude)
+        val lon1 = Units.deg2rad(from.longitude)
+        val brg = Units.deg2rad(bearing)
         val dR = distance / calcEarthRadius(from.latitude)
 
         val lat2 = asin(sin(lat1) * cos(dR) + cos(lat1) * sin(dR) * cos(brg))
         val lon2 = lon1 + atan2(sin(brg) * sin(dR) * cos(lat1), cos(dR) - sin(lat1) * sin(lat2))
 
-        return LatLng(Utils.roundDouble(Convert.rad2deg(lat2), C.POS_PRECISION), Utils.roundDouble(normalizeLongitude(Convert.rad2deg(lon2)), C.POS_PRECISION))
+        return LatLng(Utils.roundDouble(Units.rad2deg(lat2), C.POS_PRECISION), Utils.roundDouble(normalizeLongitude(Units.rad2deg(lon2)), C.POS_PRECISION))
     }
 
     // Calculate the radius of the Earth on a given latitude
     private fun calcEarthRadius(latitude: Double): Double {
-        val lat = Convert.deg2rad(latitude)
+        val lat = Units.deg2rad(latitude)
         val a = C.EARTH_RADIUS_LONG_M
         val b = C.EARTH_RADIUS_SHORT_M
 
@@ -70,16 +70,16 @@ object GPSUtils {
 
     // Calculate bearing between two points
     fun calcBearing(c1: LatLng, c2: LatLng): Double {
-        val lat1 = Convert.deg2rad(c1.latitude)
-        val lon1 = Convert.deg2rad(c1.longitude)
-        val lat2 = Convert.deg2rad(c2.latitude)
-        val lon2 = Convert.deg2rad(c2.longitude)
+        val lat1 = Units.deg2rad(c1.latitude)
+        val lon1 = Units.deg2rad(c1.longitude)
+        val lat2 = Units.deg2rad(c2.latitude)
+        val lon2 = Units.deg2rad(c2.longitude)
 
         val y = sin(lon2 - lon1) * cos(lat2)
         val x = cos(lat1) * sin(lat2) - sin(lat1) * cos(lat2) * cos(lon2 - lon1)
         val t = atan2(y, x)
 
-        return normalizeBearing(Convert.rad2deg(t))
+        return normalizeBearing(Units.rad2deg(t))
     }
 
     // Calculate angle from-destination-current
@@ -166,7 +166,7 @@ object LocationManager {
             Vars.gpsData.time = loc.time
             Vars.gpsData.pos = (LatLng(Utils.roundDouble(loc.latitude, C.POS_PRECISION), Utils.roundDouble(loc.longitude, C.POS_PRECISION)))
             Vars.gpsData.speedMps = loc.speed.toDouble()
-            Vars.gpsData.speedKt = Convert.mps2kt(Vars.gpsData.speedMps)
+            Vars.gpsData.speedKt = Units.mps2kt(Vars.gpsData.speedMps)
 
             //gpsData.hAccuracy = loc.accuracy.toDouble()  // Get the estimated horizontal accuracy of this location, radial, in meters (68%)
             //gpsData.altitude = loc.altitude              // Altitude if available, in meters above the WGS 84 reference ellipsoid.

@@ -86,36 +86,36 @@ class CalcTimeDistFragment : Fragment(R.layout.fragment_calc_timedist) {
             bind.edtTime.setText(TimeUtils.formatSecondsToTime(time?.roundToLong(), true))
 
             if (dist != null) {
-                if (unitsDistance == 1) dist = Convert.sm2nm(dist)
-                if (unitsDistance == 2) dist = Convert.km2nm(dist)
-                if (unitsDistance == 3) dist = Convert.m2nm(dist)
-                if (unitsDistance == 4) dist = Convert.ft2nm(dist)
+                if (unitsDistance == 1) dist = Units.sm2nm(dist)
+                if (unitsDistance == 2) dist = Units.km2nm(dist)
+                if (unitsDistance == 3) dist = Units.m2nm(dist)
+                if (unitsDistance == 4) dist = Units.ft2nm(dist)
             }
 
             if (speed != null) {
-                if (unitsSpeed == 1) speed = Convert.mph2kt(speed)
-                if (unitsSpeed == 2) speed = Convert.kph2kt(speed)
-                if (unitsSpeed == 3) speed = Convert.mps2kt(speed)
-                if (unitsSpeed == 4) speed = Convert.fpm2kt(speed)
+                if (unitsSpeed == 1) speed = Units.mph2kt(speed)
+                if (unitsSpeed == 2) speed = Units.kph2kt(speed)
+                if (unitsSpeed == 3) speed = Units.mps2kt(speed)
+                if (unitsSpeed == 4) speed = Units.fpm2kt(speed)
             }
 
             //distance = speed * time
             if (dist == null && speed != null && time != null) {
                 dist = speed * (time / 3600.0)
-                if (unitsDistance == 1) dist = Convert.nm2sm(dist)
-                if (unitsDistance == 2) dist = Convert.nm2km(dist)
-                if (unitsDistance == 3) dist = Convert.nm2m(dist)
-                if (unitsDistance == 4) dist = Convert.nm2ft(dist)
+                if (unitsDistance == 1) dist = Units.nm2sm(dist)
+                if (unitsDistance == 2) dist = Units.nm2km(dist)
+                if (unitsDistance == 3) dist = Units.nm2m(dist)
+                if (unitsDistance == 4) dist = Units.nm2ft(dist)
                 bind.edtDistance.setText(Utils.formatDouble(dist, p))
             }
 
             //speed = distance / time
             if (dist != null && speed == null && time != null && time > 0) {
                 speed = dist / (time / 3600.0)
-                if (unitsSpeed == 1) speed = Convert.kt2mph(speed)
-                if (unitsSpeed == 2) speed = Convert.kt2kph(speed)
-                if (unitsSpeed == 3) speed = Convert.kt2mps(speed)
-                if (unitsSpeed == 4) speed = Convert.kt2fpm(speed)
+                if (unitsSpeed == 1) speed = Units.kt2mph(speed)
+                if (unitsSpeed == 2) speed = Units.kt2kph(speed)
+                if (unitsSpeed == 3) speed = Units.kt2mps(speed)
+                if (unitsSpeed == 4) speed = Units.kt2fpm(speed)
                 bind.edtSpeed.setText(Utils.formatDouble(speed, p))
             }
 
