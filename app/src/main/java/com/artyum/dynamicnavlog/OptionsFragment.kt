@@ -1,6 +1,5 @@
 package com.artyum.dynamicnavlog
 
-import android.content.pm.ActivityInfo
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater

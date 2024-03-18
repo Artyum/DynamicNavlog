@@ -29,7 +29,6 @@ import com.android.billingclient.api.PurchasesUpdatedListener
 import com.android.billingclient.api.SkuDetails
 import com.android.billingclient.api.SkuDetailsParams
 import com.artyum.dynamicnavlog.databinding.ActivityMainBinding
-import com.artyum.dynamicnavlog.openaip.OpenAIPClient
 import com.google.android.gms.ads.AdListener
 import com.google.android.gms.ads.AdRequest
 import com.google.android.gms.ads.AdView
