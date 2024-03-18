@@ -153,6 +153,9 @@ data class SinCosAngleData(
 )
 
 object C {
+    // Application version
+    const val appVersion = BuildConfig.VERSION_NAME
+
     //const val FORMAT_DATETIME = "yyyy-MM-dd  HH:mm"
     const val FORMAT_DATETIME_SEC = "yyyy-MM-dd  HH:mm:ss"
     const val FORMAT_TIME = "HH:mm"
@@ -267,8 +270,6 @@ object C {
 
     // Next circle radius in NM
     val nextRadiusList = arrayListOf(0.01, 0.5, 1.0, 2.0)
-
-    val appVersion = BuildConfig.VERSION_NAME
 }
 
 object State {
