@@ -51,7 +51,7 @@ class CalcTimeDistFragment : Fragment(R.layout.fragment_calc_timedist) {
         unitsSpeedList.add("m/s")     // 3
         unitsSpeedList.add("ft/min")  // 4
 
-        bind.spinnerDistance.adapter = ArrayAdapter(con, R.layout.support_simple_spinner_dropdown_item, unitsDistanceList)
+        bind.spinnerDistance.adapter = ArrayAdapter(con, androidx.appcompat.R.layout.support_simple_spinner_dropdown_item, unitsDistanceList)
         bind.spinnerDistance.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
             override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
                 unitsDistance = position
@@ -63,7 +63,7 @@ class CalcTimeDistFragment : Fragment(R.layout.fragment_calc_timedist) {
 
         }
 
-        bind.spinnerSpeed.adapter = ArrayAdapter(con, R.layout.support_simple_spinner_dropdown_item, unitsSpeedList)
+        bind.spinnerSpeed.adapter = ArrayAdapter(con, androidx.appcompat.R.layout.support_simple_spinner_dropdown_item, unitsSpeedList)
         bind.spinnerSpeed.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
             override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
                 unitsSpeed = position

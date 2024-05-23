@@ -45,7 +45,7 @@ class CalcUnitsFragment : Fragment(R.layout.fragment_calc_units) {
         unitsTypeList.add("Weight & Mass")  // 4
         unitsTypeList.add("Volume")         // 5
 
-        bind.spinnerUnitsType.adapter = ArrayAdapter(con, R.layout.support_simple_spinner_dropdown_item, unitsTypeList)
+        bind.spinnerUnitsType.adapter = ArrayAdapter(con, androidx.appcompat.R.layout.support_simple_spinner_dropdown_item, unitsTypeList)
         bind.spinnerUnitsType.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
             override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
                 //val sel = parent?.getItemAtPosition(position).toString()
@@ -94,7 +94,7 @@ class CalcUnitsFragment : Fragment(R.layout.fragment_calc_units) {
                         unitsList.add("UK gallons")  // 2
                     }
                 }
-                bind.spinnerUnits.adapter = ArrayAdapter(con, R.layout.support_simple_spinner_dropdown_item, unitsList)
+                bind.spinnerUnits.adapter = ArrayAdapter(con, androidx.appcompat.R.layout.support_simple_spinner_dropdown_item, unitsList)
                 bind.spinnerUnits.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
                     override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
                         unitsBase = position

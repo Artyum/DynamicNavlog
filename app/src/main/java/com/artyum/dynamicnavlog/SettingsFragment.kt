@@ -233,7 +233,7 @@ class SettingsFragment : Fragment(R.layout.fragment_settings) {
             val plane = State.airplaneList[i].reg + "  (" + State.airplaneList[i].type + ")"
             planeList.add(plane)
         }
-        bind.spinnerAirplane.adapter = ArrayAdapter(view.context, R.layout.support_simple_spinner_dropdown_item, planeList)
+        bind.spinnerAirplane.adapter = ArrayAdapter(view.context, androidx.appcompat.R.layout.support_simple_spinner_dropdown_item, planeList)
     }
 
     private fun restoreSettings() {

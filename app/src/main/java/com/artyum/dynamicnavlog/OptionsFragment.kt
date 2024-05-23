@@ -260,35 +260,35 @@ class OptionsFragment : Fragment(R.layout.fragment_options) {
         unitsSpdList.add("Knots (kt)")            // 0
         unitsSpdList.add("Miles/h (mph)")         // 1
         unitsSpdList.add("Kilometers/h (kph)")    // 2
-        bind.spinnerUnitsSpd.adapter = ArrayAdapter(this.requireContext(), R.layout.support_simple_spinner_dropdown_item, unitsSpdList)
+        bind.spinnerUnitsSpd.adapter = ArrayAdapter(this.requireContext(), androidx.appcompat.R.layout.support_simple_spinner_dropdown_item, unitsSpdList)
 
         // Spinner - Distance units
         val unitsDistList = ArrayList<String>()
         unitsDistList.add("Nautical miles (nm)")  // 0
         unitsDistList.add("Statute miles (sm)")   // 1
         unitsDistList.add("Kilometers (km)")      // 2
-        bind.spinnerUnitsDist.adapter = ArrayAdapter(this.requireContext(), R.layout.support_simple_spinner_dropdown_item, unitsDistList)
+        bind.spinnerUnitsDist.adapter = ArrayAdapter(this.requireContext(), androidx.appcompat.R.layout.support_simple_spinner_dropdown_item, unitsDistList)
 
         // Spinner - Volume units
         val unitsFuelList = ArrayList<String>()
         unitsFuelList.add("US Gal (gal)")         // 0
         unitsFuelList.add("UK Gal (gal)")         // 1
         unitsFuelList.add("Liters (l)")           // 2
-        bind.spinnerUnitsVol.adapter = ArrayAdapter(this.requireContext(), R.layout.support_simple_spinner_dropdown_item, unitsFuelList)
+        bind.spinnerUnitsVol.adapter = ArrayAdapter(this.requireContext(), androidx.appcompat.R.layout.support_simple_spinner_dropdown_item, unitsFuelList)
 
         // Spinner - Screen orientation
         val screenOrientationList = ArrayList<String>()
         screenOrientationList.add("Portrait")     // 0
         screenOrientationList.add("Landscape")    // 1
         screenOrientationList.add("Auto")         // 2
-        bind.spinnerScreenOrientation.adapter = ArrayAdapter(this.requireContext(), R.layout.support_simple_spinner_dropdown_item, screenOrientationList)
+        bind.spinnerScreenOrientation.adapter = ArrayAdapter(this.requireContext(), androidx.appcompat.R.layout.support_simple_spinner_dropdown_item, screenOrientationList)
 
         // Spinner - Map orientation
         val mapOrientationList = ArrayList<String>()
         mapOrientationList.add("North Up")     // 0
         mapOrientationList.add("Track Up")     // 1
         mapOrientationList.add("Bearing Up")   // 2
-        bind.spinnerMapOrientation.adapter = ArrayAdapter(this.requireContext(), R.layout.support_simple_spinner_dropdown_item, mapOrientationList)
+        bind.spinnerMapOrientation.adapter = ArrayAdapter(this.requireContext(), androidx.appcompat.R.layout.support_simple_spinner_dropdown_item, mapOrientationList)
 
         // Switch - Auto-next radius
         val nextRadiusOptions = ArrayList<String>()
@@ -296,7 +296,7 @@ class OptionsFragment : Fragment(R.layout.fragment_options) {
             val r = Utils.formatDouble(Units.toUserUnitsDis(C.nextRadiusList[i]), 3) + " " + Units.getUnitsDis()
             nextRadiusOptions.add(r)
         }
-        bind.spinnerNextRadius.adapter = ArrayAdapter(this.requireContext(), R.layout.support_simple_spinner_dropdown_item, nextRadiusOptions)
+        bind.spinnerNextRadius.adapter = ArrayAdapter(this.requireContext(), androidx.appcompat.R.layout.support_simple_spinner_dropdown_item, nextRadiusOptions)
     }
 
     private fun restoreOptions() {
