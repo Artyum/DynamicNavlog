@@ -697,13 +697,13 @@ object ButtonController {
     private fun disableBtnPrev(bind: ActivityMainBinding) {
         bind.btnPrevWpt.isEnabled = false
         (bind.btnPrevWpt as MaterialButton).setStrokeColorResource(R.color.grayTransparent)
-        (bind.btnPrevWpt as MaterialButton).setTextColor(bind.btnPrevWpt.context.getColor(R.color.grayTransparent))
+        bind.btnPrevWpt.setTextColor(bind.btnPrevWpt.context.getColor(R.color.grayTransparent))
     }
 
     private fun enableBtnPrev(bind: ActivityMainBinding) {
         bind.btnPrevWpt.isEnabled = true
         (bind.btnPrevWpt as MaterialButton).setStrokeColorResource(R.color.colorPrimaryTransparent)
-        (bind.btnPrevWpt as MaterialButton).setTextColor(bind.btnPrevWpt.context.getColor(R.color.colorPrimaryTransparent))
+        bind.btnPrevWpt.setTextColor(bind.btnPrevWpt.context.getColor(R.color.colorPrimaryTransparent))
     }
 
     private fun disableBtnNext(bind: ActivityMainBinding) {
