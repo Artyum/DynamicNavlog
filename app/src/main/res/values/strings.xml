@@ -2,8 +2,6 @@
 <resources>
     <string name="appName">Dynamic NavLog</string>
     <string name="linkEmail"><a href="mailto:dynamicnavlog@gmail.com\">dynamicnavlog@gmail.com</a></string>
-    <string name="adStaticInfo">If the app is useful to you, please consider donation to support further development. Thank you!</string>
-    <string name="txtTooManyItems">Only 10 waypoints in free version are allowed. Please consider purchasing the app to disable the limit.</string>
     <string name="txtInvalidFlightParams">Please enter Course, Wind direction, Wind speed, and TAS</string>
     <string name="txtInvalidCourseAndWind">Course and Wind Direction must be between 0 and 360</string>
     <string name="txtInvalidCourse">Course must be between 0 and 360</string>
@@ -212,7 +210,5 @@
     <string name="txtZoomOut">Zoom out</string>
     <string name="txtNoAirplaneInSettings">An airplane must be selected for the flight plan</string>
     <string name="txtCannotConnectToGooglePlay">Cannot fetch data from Google Play. Check your Internet connection. Please try again later.</string>
-    <string name="txtLocationMessage">The application will ask for access to device\'s location.\n\nDynamic NavLog collects location data to present position on maps and for proper functionality
-        of features like automatic detection of takeoff, landing and waypoint arrival.\n\n\It is also strongly recommended to allow the app to collect location data while running in the background
-        or while the screen is off.\n\nPlease find the link to instructional video on the About page.</string>
+    <string name="txtLocationMessage">Dynamic NavLog requests access to your device\'s location to enhance its features and performance. By collecting location data, the app can accurately display your position on maps and enable functionalities such as automatic detection of takeoff, landing, and waypoint arrival.\n\nFor optimal performance, it is strongly recommended to allow the app to collect location data even when running in the background or when the screen is off.\n\nYou can find an instructional video link on the About page for further guidance.</string>
 </resources>
