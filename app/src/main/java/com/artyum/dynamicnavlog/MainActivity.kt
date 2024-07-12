@@ -19,22 +19,8 @@ import androidx.navigation.ui.navigateUp
 import androidx.navigation.ui.onNavDestinationSelected
 import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
-import com.android.billingclient.api.AcknowledgePurchaseParams
-import com.android.billingclient.api.BillingClient
-import com.android.billingclient.api.BillingClientStateListener
-import com.android.billingclient.api.BillingFlowParams
-import com.android.billingclient.api.BillingResult
-import com.android.billingclient.api.Purchase
-import com.android.billingclient.api.PurchasesUpdatedListener
-import com.android.billingclient.api.SkuDetails
-import com.android.billingclient.api.SkuDetailsParams
 import com.artyum.dynamicnavlog.databinding.ActivityMainBinding
-import com.artyum.dynamicnavlog.openaip.OpenAIPClient
-import com.google.android.gms.ads.AdListener
-import com.google.android.gms.ads.AdRequest
 import com.google.android.gms.ads.AdView
-import com.google.android.gms.ads.LoadAdError
-import com.google.android.gms.ads.MobileAds
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.material.navigation.NavigationView
 import kotlinx.coroutines.CoroutineName
@@ -42,7 +28,6 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.sync.withLock
-import org.json.JSONObject
 import java.io.File
 
 class MainActivity : AppCompatActivity() {
@@ -51,11 +36,6 @@ class MainActivity : AppCompatActivity() {
     lateinit var navController: NavController
     private lateinit var appBarConfiguration: AppBarConfiguration
     private lateinit var mAdView: AdView
-
-    //Billing
-    private lateinit var billingClient: BillingClient
-    private var billingItem: SkuDetails? = null
-    private var queryPurchasesRetryCnt = (60 * 10) / 5 // 10 minutes
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -72,7 +52,6 @@ class MainActivity : AppCompatActivity() {
                 R.id.settingsFragment,
                 R.id.navlogFragment,
                 R.id.mapFragment,
-                R.id.purchaseFragment,
                 R.id.calcWindFragment,
                 R.id.calcFuelFragment,
                 R.id.calcTimeDistFragment,
@@ -130,13 +109,6 @@ class MainActivity : AppCompatActivity() {
         // Initialize folders path
         //internalAppDir = getInternalAppDir()
         FileUtils.externalAppDir = getExternalAppDir()
-
-        // Purchase
-        navView.menu.findItem(R.id.drawerItemPurchase).setOnMenuItemClickListener {
-            bind.drawerLayout.close()
-            navController.navigate(R.id.action_global_purchaseFragment)
-            true
-        }
 
         // New flight pLan
         navView.menu.findItem(R.id.drawerItemNew).setOnMenuItemClickListener {
@@ -265,12 +237,6 @@ class MainActivity : AppCompatActivity() {
             displayButtons()
         }
 
-        // Check purchase file to enable or disable ads
-        checkPurchaseFile()
-
-        // Billing client
-        if (ReleaseOption.startBillingClient) startBillingClient() else disableAds()
-
         // Clear unused files
         FileUtils.clearFiles(C.GPX_EXTENSION)
         FileUtils.clearFiles(C.CSV_EXTENSION)
@@ -396,261 +362,6 @@ class MainActivity : AppCompatActivity() {
             }
         }
         return item.onNavDestinationSelected(navController) || super.onOptionsItemSelected(item)
-    }
-
-    // Billing // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // //
-    private fun startBillingClient() {
-        Log.d(tag, "startBillingClient")
-
-        billingClient = BillingClient.newBuilder(this).setListener(purchaseUpdateListener).enablePendingPurchases().build()
-
-        billingClient.startConnection(object : BillingClientStateListener {
-            override fun onBillingSetupFinished(billingResult: BillingResult) {
-                if (billingResult.responseCode == BillingClient.BillingResponseCode.OK) {
-                    Log.d(tag, "onBillingSetupFinished")
-                    queryAvailableProducts()
-                    //queryPurchaseHistory()
-                    queryPurchases()
-                }
-            }
-
-            override fun onBillingServiceDisconnected() {
-                Log.d(tag, "onBillingServiceDisconnected")
-                checkPurchaseFile()
-            }
-        })
-    }
-
-    private fun queryAvailableProducts() {
-        Log.d(tag, "queryAvailableProducts")
-
-        val skuList = ArrayList<String>()
-        skuList.add(ReleaseOption.GOOGLE_PLAY_PRODUCT_ID)
-
-        val params = SkuDetailsParams.newBuilder()
-        params.setSkusList(skuList).setType(BillingClient.SkuType.INAPP)
-
-        billingClient.querySkuDetailsAsync(params.build()) { billingResult, skuDetailsList ->
-            Log.d(tag, "querySkuDetailsAsync")
-            if (billingResult.responseCode == BillingClient.BillingResponseCode.OK && !skuDetailsList.isNullOrEmpty()) {
-                Log.d(tag, "querySkuDetailsAsync success")
-                for (skuDetails in skuDetailsList) {
-                    val json = JSONObject(skuDetails.originalJson)
-                    val productId = json.getString("productId")
-                    if (productId == ReleaseOption.GOOGLE_PLAY_PRODUCT_ID) {
-                        Log.d(tag, "querySkuDetailsAsync item found!")
-                        billingItem = skuDetails
-                        setPurchaseOptionVisibility(true)
-                    }
-                    //println("Title: ${skuDetails.title}")
-                    //println("Description: ${skuDetails.description}")
-                    //println("Price: ${skuDetails.price}")
-                    //println("Currency: ${skuDetails.priceCurrencyCode}")
-                    //println("JSON: ${skuDetails.originalJson}")
-                }
-            } else {
-                Log.d(tag, "querySkuDetailsAsync item NOT found")
-                //Thread.sleep(1000)
-                //queryAvailableProducts()
-            }
-        }
-    }
-
-    private fun queryPurchases() {
-        Log.d(tag, "queryPurchasesAsync")
-        billingClient.queryPurchasesAsync(BillingClient.SkuType.INAPP) { billingResult, purchases ->
-            if (billingResult.responseCode == BillingClient.BillingResponseCode.OK) {
-                if (purchases.isNotEmpty()) {
-                    var itemExists = false
-                    for (purchase in purchases) {
-                        val json = JSONObject(purchase.originalJson)
-                        val productId = json.getString("productId")
-                        if (productId == ReleaseOption.GOOGLE_PLAY_PRODUCT_ID && purchase.purchaseState == Purchase.PurchaseState.PURCHASED) {
-                            Log.d(tag, "queryPurchasesAsync item found!")
-                            itemExists = true
-                            if (!purchase.isAcknowledged) acknowledgePurchase(purchase)
-                            checkPurchaseToken(purchase.purchaseToken)
-                        }
-                    }
-                    if (!itemExists) {
-                        Log.d(tag, "queryPurchasesAsync item NOT found!")
-                        enableAds()
-                    }
-                } else {
-                    if (queryPurchasesRetryCnt > 0) {
-                        Log.d(tag, "queryPurchasesAsync RETRY $queryPurchasesRetryCnt")
-                        Thread.sleep(5000)
-                        queryPurchases()
-                        queryPurchasesRetryCnt -= 1
-                    } else {
-                        Log.d(tag, "queryPurchasesAsync RETRY END")
-                    }
-                }
-            } else {
-                Log.d(tag, "queryPurchasesAsync response NOT OK; responseCode: " + billingResult.responseCode)
-            }
-        }
-    }
-
-    fun launchPurchase() {
-        Log.d(tag, "launchPurchase")
-
-        if (billingItem != null) {
-            val json = JSONObject(billingItem!!.originalJson)
-            val productId = json.getString("productId")
-            //Log.d(tag, "launchPurchase productId: $productId")
-            if (productId == ReleaseOption.GOOGLE_PLAY_PRODUCT_ID) {
-                val billingFlowParams = BillingFlowParams.newBuilder().setSkuDetails(billingItem!!).build()
-                billingClient.launchBillingFlow(this, billingFlowParams)
-            } else {
-                Log.d(tag, "billingItem item NOT found")
-                Toast.makeText(this, getString(R.string.txtCannotConnectToGooglePlay), Toast.LENGTH_LONG).show()
-            }
-        } else {
-            Toast.makeText(this, getString(R.string.txtCannotConnectToGooglePlay), Toast.LENGTH_LONG).show()
-            Log.d(tag, "billingItem is null")
-        }
-    }
-
-    private val purchaseUpdateListener = PurchasesUpdatedListener { billingResult, purchases ->
-        Log.d(tag, "purchaseUpdateListener")
-
-        if (billingResult.responseCode == BillingClient.BillingResponseCode.OK && purchases != null) {
-            for (purchase in purchases) {
-                Log.d(tag, "PURCHASE responseCode OK")
-                //println(purchase.originalJson)
-                acknowledgePurchase(purchase)
-            }
-        } else if (billingResult.responseCode == BillingClient.BillingResponseCode.USER_CANCELED) {
-            Log.d(tag, "PURCHASE USER CANCELED")
-        } else {
-            // Payment declined
-            Log.d(tag, "PURCHASE OTHER PROBLEM")
-        }
-    }
-
-    private fun acknowledgePurchase(purchase: Purchase) {
-        Log.d(tag, "acknowledgePurchase")
-
-        if (purchase.purchaseState == Purchase.PurchaseState.PURCHASED) {
-            Log.d(tag, "PurchaseState.PURCHASED")
-            if (!purchase.isAcknowledged) {
-                Log.d(tag, "!purchase.isAcknowledged")
-                val acknowledgePurchaseParams = AcknowledgePurchaseParams.newBuilder().setPurchaseToken(purchase.purchaseToken).build()
-                billingClient.acknowledgePurchase(acknowledgePurchaseParams) { billingResult ->
-                    if (billingResult.responseCode == BillingClient.BillingResponseCode.OK) {
-                        Log.d(tag, "acknowledgePurchase OK")
-                        savePurchaseToken(purchase.purchaseToken)
-                    } else {
-                        Log.d(tag, "acknowledgePurchase NOT OK")
-                        Log.d(tag, "billingResponseCode: " + billingResult.responseCode)
-                        Log.d(tag, "billingDebugMessage: " + billingResult.debugMessage)
-                    }
-                }
-            } else {
-                Log.d(tag, "acknowledgePurchase isAcknowledged")
-            }
-        } else {
-            Log.d(tag, "acknowledgePurchase purchaseState NOT PURCHASED")
-        }
-    }
-
-    // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // //
-    // Advertisement
-
-    private fun enableAds() {
-        Log.d(tag, "enableAds")
-        Vars.isAppPurchased = false
-        mAdView = findViewById(R.id.adView)
-
-        mAdView.adListener = object : AdListener() {
-            override fun onAdLoaded() {
-                runOnUiThread { bind.adStaticInfo.visibility = View.GONE }
-                runOnUiThread { bind.boxAdView.visibility = View.VISIBLE }
-            }
-
-            override fun onAdFailedToLoad(adError: LoadAdError) {
-                val msg = "enableAds onAdFailedToLoad Code: ${adError.code} Message: ${adError.message}"
-                Log.d(tag, msg)
-                runOnUiThread { bind.adStaticInfo.visibility = View.VISIBLE }
-                runOnUiThread { bind.boxAdView.visibility = View.GONE }
-            }
-        }
-        runOnUiThread { bind.adBox.visibility = View.VISIBLE }
-        runOnUiThread { bind.boxAdView.visibility = View.GONE }
-
-        deletePurchaseFile()
-
-        if (ReleaseOption.initializeAds) {
-            Log.d(tag, "initializeAds")
-            MobileAds.initialize(applicationContext)
-            val adRequest = AdRequest.Builder().build()
-            runOnUiThread { mAdView.loadAd(adRequest) }
-        } else {
-            CoroutineScope(CoroutineName("main")).launch { delayPurchaseNotice() }
-        }
-    }
-
-    private fun disableAds() {
-        Log.d(tag, "disableAds")
-        Vars.isAppPurchased = true
-        runOnUiThread { bind.adBox.visibility = View.GONE }
-        setPurchaseOptionVisibility(false)
-    }
-
-    private fun setPurchaseOptionVisibility(visibility: Boolean) {
-        Log.d(tag, "setPurchaseOptionVisibility")
-        var visible = visibility
-        if (visible && Vars.isAppPurchased) {
-            Log.d(tag, "Vars.isAppPurchased=true")
-            visible = false
-        }
-        Log.d(tag, "groupPurchase visible: $visible")
-        val navView: NavigationView = findViewById(R.id.drawerView)
-        runOnUiThread { navView.menu.setGroupVisible(R.id.groupPurchase, visible) }
-    }
-
-    // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // //
-    // Purchase file
-
-    private fun checkPurchaseToken(purchaseToken: String) {
-        Log.d(tag, "checkPurchaseToken")
-        val file = File(getInternalAppDir(), ReleaseOption.GOOGLE_PLAY_PRODUCT_ID)
-        if (file.exists()) {
-            val lines = file.readLines()
-            for (line in lines) {
-                if (line == purchaseToken) {
-                    Log.d(tag, "purchaseToken check OK")
-                    disableAds()
-                } else {
-                    Log.d(tag, "purchaseToken check NOT OK")
-                    enableAds()
-                    file.delete()
-                }
-            }
-        } else {
-            savePurchaseToken(purchaseToken)
-        }
-    }
-
-    private fun savePurchaseToken(purchaseToken: String) {
-        Log.d(tag, "savePurchaseToken")
-        val file = File(getInternalAppDir(), ReleaseOption.GOOGLE_PLAY_PRODUCT_ID)
-        file.writeText(purchaseToken)
-        disableAds()
-    }
-
-    private fun checkPurchaseFile() {
-        Log.d(tag, "checkPurchaseFile")
-        val file = File(getInternalAppDir(), ReleaseOption.GOOGLE_PLAY_PRODUCT_ID)
-        if (file.exists()) disableAds()
-        else enableAds()
-    }
-
-    private fun deletePurchaseFile() {
-        Log.d(tag, "deletePurchaseFile")
-        val file = File(getInternalAppDir(), ReleaseOption.GOOGLE_PLAY_PRODUCT_ID)
-        if (file.exists()) file.delete()
     }
 
     // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // //
@@ -832,14 +543,5 @@ class MainActivity : AppCompatActivity() {
             }
             delay(5000)
         }
-    }
-
-    // Countdown to hide "support the developer message"
-    private suspend fun delayPurchaseNotice() {
-        for (i in C.FREE_PURCHASE_DELAY_SEC downTo 1) {
-            runOnUiThread { bind.purchaseCountdown.text = i.toString() }
-            delay(1000)
-        }
-        runOnUiThread { bind.adBox.visibility = View.GONE }
     }
 }

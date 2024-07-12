@@ -14,7 +14,6 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.setFragmentResultListener
 import androidx.lifecycle.lifecycleScope
 import com.artyum.dynamicnavlog.databinding.FragmentMapBinding
-import com.artyum.dynamicnavlog.openaip.OpenAIPClient
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.SupportMapFragment
@@ -36,7 +35,6 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.sync.withLock
-import okhttp3.internal.Util
 import kotlin.math.abs
 
 class MapFragment : Fragment(R.layout.fragment_map) {

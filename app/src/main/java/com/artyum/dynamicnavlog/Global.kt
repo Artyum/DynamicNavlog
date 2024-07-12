@@ -153,6 +153,9 @@ data class SinCosAngleData(
 )
 
 object C {
+    // Application version
+    const val appVersion = BuildConfig.VERSION_NAME
+
     //const val FORMAT_DATETIME = "yyyy-MM-dd  HH:mm"
     const val FORMAT_DATETIME_SEC = "yyyy-MM-dd  HH:mm:ss"
     const val FORMAT_TIME = "HH:mm"
@@ -267,8 +270,6 @@ object C {
 
     // Next circle radius in NM
     val nextRadiusList = arrayListOf(0.01, 0.5, 1.0, 2.0)
-
-    val appVersion = BuildConfig.VERSION_NAME
 }
 
 object State {
@@ -307,7 +308,6 @@ object ReleaseOption {
     // PROD
     const val GOOGLE_PLAY_PRODUCT_ID = "dynamic_navlog_pro"
     const val initializeAds = false
-    const val startBillingClient = true
 }
 
 object Utils {
@@ -696,13 +696,13 @@ object ButtonController {
     private fun disableBtnPrev(bind: ActivityMainBinding) {
         bind.btnPrevWpt.isEnabled = false
         (bind.btnPrevWpt as MaterialButton).setStrokeColorResource(R.color.grayTransparent)
-        (bind.btnPrevWpt as MaterialButton).setTextColor(bind.btnPrevWpt.context.getColor(R.color.grayTransparent))
+        bind.btnPrevWpt.setTextColor(bind.btnPrevWpt.context.getColor(R.color.grayTransparent))
     }
 
     private fun enableBtnPrev(bind: ActivityMainBinding) {
         bind.btnPrevWpt.isEnabled = true
         (bind.btnPrevWpt as MaterialButton).setStrokeColorResource(R.color.colorPrimaryTransparent)
-        (bind.btnPrevWpt as MaterialButton).setTextColor(bind.btnPrevWpt.context.getColor(R.color.colorPrimaryTransparent))
+        bind.btnPrevWpt.setTextColor(bind.btnPrevWpt.context.getColor(R.color.colorPrimaryTransparent))
     }
 
     private fun disableBtnNext(bind: ActivityMainBinding) {

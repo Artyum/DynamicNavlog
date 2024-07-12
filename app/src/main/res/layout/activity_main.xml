@@ -22,71 +22,13 @@
             app:layout_constraintTop_toTopOf="parent"
             app:popupTheme="@style/Theme.MaterialComponents.DayNight" />
 
-        <LinearLayout
-            android:id="@+id/adBox"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            app:layout_constraintTop_toBottomOf="@id/toolbar">
-
-            <LinearLayout
-                android:id="@+id/boxAdView"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content">
-
-                <com.google.android.gms.ads.AdView
-                    android:id="@+id/adView"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    app:adSize="SMART_BANNER"
-                    app:adUnitId="ca-app-pub-8806963678579253/5360800057" />
-                <!-- ca-app-pub-3940256099942544/6300978111 TEST -->
-                <!-- ca-app-pub-8806963678579253/5360800057 PROD -->
-            </LinearLayout>
-
-            <androidx.constraintlayout.widget.ConstraintLayout
-                android:id="@+id/adStaticInfo"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="@color/lightBlue"
-                android:paddingHorizontal="15dp"
-                android:paddingVertical="5dp">
-
-                <ImageView
-                    android:id="@+id/logo"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:src="@mipmap/ic_launcher_icon"
-                    app:layout_constraintLeft_toLeftOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
-
-                <TextView
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="10dp"
-                    android:gravity="center"
-                    android:text="@string/adStaticInfo"
-                    android:textSize="15sp"
-                    app:layout_constraintLeft_toRightOf="@id/logo"
-                    app:layout_constraintRight_toRightOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
-
-                <TextView
-                    android:id="@+id/purchaseCountdown"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintRight_toRightOf="parent" />
-            </androidx.constraintlayout.widget.ConstraintLayout>
-        </LinearLayout>
-
         <TextView
             android:id="@+id/gpsLostBox"
             style="@style/gpsLostBox"
             android:text="@string/txtGPSLost"
             android:visibility="gone"
             app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/adBox" />
+            app:layout_constraintTop_toBottomOf="@id/toolbar" />
 
         <androidx.fragment.app.FragmentContainerView
             android:id="@+id/nav_host_fragment"

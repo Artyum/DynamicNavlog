@@ -123,14 +123,14 @@ class AirplaneFragment : Fragment() {
         unitsTypeList.add("Knots")    // 0
         unitsTypeList.add("Mph")      // 1
         unitsTypeList.add("Kph")      // 2
-        bind.spinnerSpeedUnits.adapter = ArrayAdapter(view.context, R.layout.support_simple_spinner_dropdown_item, unitsTypeList)
+        bind.spinnerSpeedUnits.adapter = ArrayAdapter(view.context, androidx.appcompat.R.layout.support_simple_spinner_dropdown_item, unitsTypeList)
 
         // Volume
         val volumeTypeList = ArrayList<String>()
         volumeTypeList.add("US Gal")     // 0
         volumeTypeList.add("Imp. Gal")   // 1
         volumeTypeList.add("Liters")     // 2
-        bind.spinnerVolUnits.adapter = ArrayAdapter(view.context, R.layout.support_simple_spinner_dropdown_item, volumeTypeList)
+        bind.spinnerVolUnits.adapter = ArrayAdapter(view.context, androidx.appcompat.R.layout.support_simple_spinner_dropdown_item, volumeTypeList)
     }
 
     private fun saveAirplane() {
