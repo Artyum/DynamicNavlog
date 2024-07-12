@@ -308,7 +308,6 @@ object ReleaseOption {
     // PROD
     const val GOOGLE_PLAY_PRODUCT_ID = "dynamic_navlog_pro"
     const val initializeAds = false
-    const val startBillingClient = true
 }
 
 object Utils {

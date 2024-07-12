@@ -152,21 +152,6 @@
         app:popUpToInclusive="true" />
 
     <fragment
-        android:id="@+id/purchaseFragment"
-        android:name="com.artyum.dynamicnavlog.PurchaseFragment"
-        android:label="@string/txtPurchase"
-        tools:layout="@layout/fragment_purchase" />
-    <action
-        android:id="@+id/action_global_purchaseFragment"
-        app:destination="@id/purchaseFragment"
-        app:enterAnim="@anim/nav_default_enter_anim"
-        app:exitAnim="@anim/nav_default_exit_anim"
-        app:popEnterAnim="@anim/nav_default_pop_enter_anim"
-        app:popExitAnim="@anim/nav_default_pop_exit_anim"
-        app:popUpTo="@id/homeFragment"
-        app:popUpToInclusive="true" />
-
-    <fragment
         android:id="@+id/aboutFragment"
         android:name="com.artyum.dynamicnavlog.AboutFragment"
         android:label="@string/txtAbout"
