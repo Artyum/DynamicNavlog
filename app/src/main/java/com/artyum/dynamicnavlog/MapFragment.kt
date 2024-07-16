@@ -783,6 +783,7 @@ class MapFragment : Fragment(R.layout.fragment_map) {
         }
     }
 
+    /*
     private fun openAIPThread() {
         val tag = "openAIPThread"
         var prevTime = 0L
@@ -820,4 +821,5 @@ class MapFragment : Fragment(R.layout.fragment_map) {
             }
         }
     }
+    */
 }

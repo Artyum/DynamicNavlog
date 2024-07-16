@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<resources>
-    <string name="v1.0.0">- First release</string>
-    <string name="v1.0.3">- Overall stability improved\n- Density altitude calculator improved\n- Auto-save on settings page\n- Added flight plan list\n- New icon and graphics\n- Layout fixes and code optimization</string>
-    <string name="v1.0.4">- Added searching in a flight plan list\n- More compact waypoint edit window\n- Added optional True Course and Declination for waypoint\n- Added GPS support\n- Layout fixes and code optimization</string>
-    <string name="v1.1.0">- Google map added for route planning and tracking\n- Added Map orientation setting\n- Added the Auto-next waypoint option\n- Added export to GPX\n- Many changes and optimizations</string>
-    <string name="v1.1.9">- Reset Total Time on New Flight Plan</string>
-</resources>

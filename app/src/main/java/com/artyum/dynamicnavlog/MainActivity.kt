@@ -20,7 +20,6 @@ import androidx.navigation.ui.onNavDestinationSelected
 import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
 import com.artyum.dynamicnavlog.databinding.ActivityMainBinding
-import com.google.android.gms.ads.AdView
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.material.navigation.NavigationView
 import kotlinx.coroutines.CoroutineName
@@ -35,7 +34,6 @@ class MainActivity : AppCompatActivity() {
     lateinit var bind: ActivityMainBinding
     lateinit var navController: NavController
     private lateinit var appBarConfiguration: AppBarConfiguration
-    private lateinit var mAdView: AdView
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
