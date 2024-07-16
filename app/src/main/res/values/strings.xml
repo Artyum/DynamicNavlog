@@ -179,7 +179,7 @@
     <string name="txtMapTypeHybrid">Satellite map</string>
     <string name="txtMapTypeTerrain">Terrain map</string>
     <string name="txtMapTypeNormal">Street map</string>
-    <string name="txtWarningFlightInProgressDialog">Warning! Flight in progress. Are you sure?</string>
+    <string name="txtWarningFlightInProgressDialog">Warning! A flight is in progress. Are you sure you want to proceed?</string>
     <string name="txtWarningAreYouSure">Are you sure?</string>
     <string name="txtFlightTime">Flight time</string>
     <string name="txtExtraFlightTime">Extra flight time</string>
@@ -208,7 +208,6 @@
     <string name="txtMapType">Map type</string>
     <string name="txtZoomIn">Zoom in</string>
     <string name="txtZoomOut">Zoom out</string>
-    <string name="txtNoAirplaneInSettings">An airplane must be selected for the flight plan</string>
-    <string name="txtCannotConnectToGooglePlay">Cannot fetch data from Google Play. Check your Internet connection. Please try again later.</string>
+    <string name="txtNoAirplaneInSettings">An aircraft must be selected for the flight plan</string>
     <string name="txtLocationMessage">Dynamic NavLog requests access to your device\'s location to enhance its features and performance. By collecting location data, the app can accurately display your position on maps and enable functionalities such as automatic detection of takeoff, landing, and waypoint arrival.\n\nFor optimal performance, it is strongly recommended to allow the app to collect location data even when running in the background or when the screen is off.\n\nYou can find an instructional video link on the About page for further guidance.</string>
 </resources>
