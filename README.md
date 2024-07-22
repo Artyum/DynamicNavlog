@@ -16,15 +16,3 @@ The app is available on the [Google App Store](https://play.google.com/store/app
 ## Documentation
 
 For more detailed information, refer to the [Dynamic NavLog Manual](https://github.com/Artyum/DynamicNavlog).
-
-## Privacy Policy
-
-Refer to the app's privacy policy for information on data handling.
-
-## Change Log
-
-See the change log for updates and version history.
-
-## Support
-
-For support and further assistance, please visit the [Google App Store page](https://play.google.com/store/apps/details?id=com.artyum.dynamicnavlog).
