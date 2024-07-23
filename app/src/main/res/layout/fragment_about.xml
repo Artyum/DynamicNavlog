@@ -70,33 +70,39 @@
             </androidx.constraintlayout.widget.ConstraintLayout>
 
             <TextView
+                style="@style/aboutItem"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="40dp"
+                android:gravity="center"
+                android:lineHeight="25dp"
+                android:text="@string/txtInfoOpenSource" />
+
+            <TextView
                 android:id="@+id/linkManual"
                 style="@style/aboutItem"
                 android:layout_marginTop="40dp"
-                android:text="@string/linkManual"
-                app:layout_constraintLeft_toLeftOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+                android:text="@string/linkManual" />
 
             <TextView
                 android:id="@+id/linkChangeLog"
                 style="@style/aboutItem"
-                android:text="@string/linkChangeLog"
-                app:layout_constraintLeft_toLeftOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+                android:text="@string/linkChangeLog" />
 
             <TextView
                 android:id="@+id/linkPrivacyPolicy"
                 style="@style/aboutItem"
-                android:text="@string/linkPrivacyPolicy"
-                app:layout_constraintLeft_toLeftOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+                android:text="@string/linkPrivacyPolicy" />
 
             <TextView
                 android:id="@+id/linkPermissions"
                 style="@style/aboutItem"
-                android:text="@string/linkPermissions"
-                app:layout_constraintLeft_toLeftOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+                android:text="@string/linkPermissions" />
+
+            <TextView
+                android:id="@+id/linkGithub"
+                style="@style/aboutItem"
+                android:text="@string/linkGithub" />
 
         </LinearLayout>
     </LinearLayout>
