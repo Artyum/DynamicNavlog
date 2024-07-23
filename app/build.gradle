@@ -5,6 +5,13 @@ plugins {
     id 'com.google.android.libraries.mapsplatform.secrets-gradle-plugin'
 }
 
+def idToken = project.rootProject.file('local.properties').withInputStream { stream ->
+    new Properties().with {
+        load(stream)
+        getProperty('idToken')
+    }
+}
+
 android {
     namespace 'com.artyum.dynamicnavlog'
     compileSdk 34
@@ -13,10 +20,10 @@ android {
         applicationId "com.artyum.dynamicnavlog"
         minSdk 26
         targetSdk 34
-        versionCode 27
+        versionCode 28
         versionName "$app_version"
         buildConfigField "String", "VERSION_NAME", "\"$app_version\""
-        //testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        buildConfigField "String", "ID_TOKEN", "\"${idToken}\""
     }
     buildFeatures {
         viewBinding true
