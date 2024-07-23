@@ -1,4 +1,4 @@
-![Mockup 1](https://github.com/user-attachments/assets/8ad896f1-a0c2-4a84-8e17-df5d7dd14f0e)
+![Mockup 2](https://github.com/user-attachments/assets/86e7ba01-d14a-46d0-b47e-f310d54e1b79)
 
 DynamicNavlog is an app designed for VFR (Visual Flight Rules) aviation navigation. It helps pilots manage flight plans, track flight progress, and navigate by utilizing GPS data. 
 
