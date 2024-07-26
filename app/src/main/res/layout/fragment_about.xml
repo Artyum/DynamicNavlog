@@ -69,19 +69,37 @@
                     app:layout_constraintRight_toRightOf="parent" />
             </androidx.constraintlayout.widget.ConstraintLayout>
 
+            <LinearLayout
+                style="@style/dividerBox"
+                android:layout_marginTop="30dp">
+
+                <View
+                    style="@style/dividerLine"
+                    android:layout_weight="1" />
+
+            </LinearLayout>
+
             <TextView
                 style="@style/aboutItem"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="40dp"
+                android:layout_marginTop="0dp"
                 android:gravity="center"
-                android:lineHeight="25dp"
-                android:text="@string/txtInfoOpenSource" />
+                android:text="@string/txtInfoOpenSource"
+                android:textColor="#2C2C2C" />
+
+            <LinearLayout style="@style/dividerBox">
+
+                <View
+                    style="@style/dividerLine"
+                    android:layout_weight="1" />
+
+            </LinearLayout>
 
             <TextView
                 android:id="@+id/linkManual"
                 style="@style/aboutItem"
-                android:layout_marginTop="40dp"
+                android:layout_marginTop="20dp"
                 android:text="@string/linkManual" />
 
             <TextView
