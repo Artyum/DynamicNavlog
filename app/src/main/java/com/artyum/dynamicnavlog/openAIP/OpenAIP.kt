@@ -1,4 +1,4 @@
-package com.artyum.dynamicnavlog.openaip
+package com.artyum.dynamicnavlog.openAIP
 
 import android.util.Log
 import com.artyum.dynamicnavlog.BuildConfig

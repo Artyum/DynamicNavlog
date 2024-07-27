@@ -36,5 +36,6 @@ class AboutFragment : Fragment(R.layout.fragment_about) {
         bind.linkChangeLog.movementMethod = LinkMovementMethod.getInstance()
         bind.linkPrivacyPolicy.movementMethod = LinkMovementMethod.getInstance()
         bind.linkPermissions.movementMethod = LinkMovementMethod.getInstance()
+        bind.linkGithub.movementMethod = LinkMovementMethod.getInstance()
     }
 }
