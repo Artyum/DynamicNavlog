@@ -4,4 +4,5 @@
     <string name="linkChangeLog"><a href="https://artyum.github.io/dynamicnavlog/changelog.html">Change log</a></string>
     <string name="linkPrivacyPolicy"><a href="https://artyum.github.io/dynamicnavlog/privacy-policy.html">Privacy policy</a></string>
     <string name="linkPermissions"><a href="https://www.youtube.com/watch?v=98Y0nIItm38">Location permissions (video)</a></string>
+    <string name="linkGithub"><a href="https://github.com/Artyum/DynamicNavlog">Source code</a></string>
 </resources>

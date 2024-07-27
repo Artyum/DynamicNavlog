@@ -69,34 +69,58 @@
                     app:layout_constraintRight_toRightOf="parent" />
             </androidx.constraintlayout.widget.ConstraintLayout>
 
+            <LinearLayout
+                style="@style/dividerBox"
+                android:layout_marginTop="30dp">
+
+                <View
+                    style="@style/dividerLine"
+                    android:layout_weight="1" />
+
+            </LinearLayout>
+
+            <TextView
+                style="@style/aboutItem"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="0dp"
+                android:gravity="center"
+                android:text="@string/txtInfoOpenSource"
+                android:textColor="#2C2C2C" />
+
+            <LinearLayout style="@style/dividerBox">
+
+                <View
+                    style="@style/dividerLine"
+                    android:layout_weight="1" />
+
+            </LinearLayout>
+
             <TextView
                 android:id="@+id/linkManual"
                 style="@style/aboutItem"
-                android:layout_marginTop="40dp"
-                android:text="@string/linkManual"
-                app:layout_constraintLeft_toLeftOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+                android:layout_marginTop="20dp"
+                android:text="@string/linkManual" />
 
             <TextView
                 android:id="@+id/linkChangeLog"
                 style="@style/aboutItem"
-                android:text="@string/linkChangeLog"
-                app:layout_constraintLeft_toLeftOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+                android:text="@string/linkChangeLog" />
 
             <TextView
                 android:id="@+id/linkPrivacyPolicy"
                 style="@style/aboutItem"
-                android:text="@string/linkPrivacyPolicy"
-                app:layout_constraintLeft_toLeftOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+                android:text="@string/linkPrivacyPolicy" />
 
             <TextView
                 android:id="@+id/linkPermissions"
                 style="@style/aboutItem"
-                android:text="@string/linkPermissions"
-                app:layout_constraintLeft_toLeftOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+                android:text="@string/linkPermissions" />
+
+            <TextView
+                android:id="@+id/linkGithub"
+                style="@style/aboutItem"
+                android:text="@string/linkGithub" />
 
         </LinearLayout>
     </LinearLayout>
