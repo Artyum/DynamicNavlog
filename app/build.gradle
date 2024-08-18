@@ -5,6 +5,14 @@ plugins {
     id 'com.google.android.libraries.mapsplatform.secrets-gradle-plugin'
 }
 
+def localProperties = new Properties()
+def localPropertiesFile = rootProject.file("local.properties")
+if (localPropertiesFile.exists()) {
+    localPropertiesFile.withInputStream { stream ->
+        localProperties.load(stream)
+    }
+}
+
 def idToken = project.rootProject.file('local.properties').withInputStream { stream ->
     new Properties().with {
         load(stream)
@@ -17,6 +25,8 @@ android {
     compileSdk 34
 
     defaultConfig {
+        def mapsApiKey = localProperties.getProperty("MAPS_API_KEY", "")
+
         applicationId "com.artyum.dynamicnavlog"
         minSdk 26
         targetSdk 34
@@ -24,6 +34,7 @@ android {
         versionName "$app_version"
         buildConfigField "String", "VERSION_NAME", "\"$app_version\""
         buildConfigField "String", "ID_TOKEN", "\"${idToken}\""
+        resValue "string", "MAPS_API_KEY", mapsApiKey
     }
     buildFeatures {
         viewBinding true
