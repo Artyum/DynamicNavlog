@@ -1,4 +1,4 @@
-![Mockup 2](https://github.com/user-attachments/assets/86e7ba01-d14a-46d0-b47e-f310d54e1b79)
+![Mockup 2](https://github.com/user-attachments/assets/c57531e3-5eb1-464d-b2ef-190dc050bef7)
 
 DynamicNavlog is an Android app designed for VFR (Visual Flight Rules) aviation navigation. It assists pilots in managing flight plans, tracking flight progress, and navigating using GPS data. The application was developed and rigorously tested by a pilot holding a PPL(A) (Private Pilot License - Airplane).
 
